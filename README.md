@@ -15,7 +15,7 @@ Passo 1 - Entrar na pasta do repositório via cmd (linha de comando);
 Passo 2 - Digitar o comando git status e verificar em qual branch você está;
 Passo 3 - Caso NÃO esteja na branch "dev", executar o comando git checkout dev
 Passo 4 - Agora você está na branch dev, para criar uma nova branch, executar o comando: git checkout -b nomeDaBranch 
-Passo 5 - Para que sua branch seja enviada para o repositório, execute o comando: git push origin nomeDaBranch
+Passo 5 - Para que sua branch seja enviada para o repositório, execute o comando: git --set-upstream origin nomeDaBranch
 Passo 6 - Para baixar o código que esta na dev para sua branch, de o comando: git pull
 Passo 7 - Comece a trabalhar no seu código, e quando der commit, realize o mesmo na sua branch.
 
