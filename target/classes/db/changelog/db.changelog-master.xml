@@ -10,7 +10,11 @@
 
   <property name="TYPE_ID" value="varchar(36)" />
   <property name="TYPE_DESCRICAO" value="varchar(25)" />
-  <property name="TYPE_DATA" value="date" />
+  <property name="TYPE_DATA" value="date"/> 
+  <property name="TYPE_NUMBER" value="integer"/>
+  <property name="TYPE_TIME" value="timestamp"/>
+  
+  
   
   <include file="db/changelog/db.changelog-1.0.xml"/>
   
