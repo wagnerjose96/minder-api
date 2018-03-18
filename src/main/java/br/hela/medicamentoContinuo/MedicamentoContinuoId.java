@@ -1,8 +1,7 @@
 package br.hela.medicamentoContinuo;
 
 import javax.persistence.Embeddable;
-
-import br.unicesumar.BaseId;
+import br.hela.BaseId;
 
 @Embeddable
 public class MedicamentoContinuoId extends BaseId {

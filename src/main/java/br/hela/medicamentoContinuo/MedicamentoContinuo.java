@@ -13,7 +13,7 @@ import br.hela.medicamentoContinuo.comandos.CriarMedicamentoContinuo;
 public class MedicamentoContinuo {
 
 	@EmbeddedId
-	@AttributeOverride(name="value", column=@Column(name="id"))
+	@AttributeOverride(name="value", column=@Column(name="idMedicamentoContinuo"))
 	private MedicamentoContinuoId idMedicamentoContinuo; 
 	private int idMedicamento; //Será trocado pelo ID da classe medicamento
 	private String tipoMedicamento;

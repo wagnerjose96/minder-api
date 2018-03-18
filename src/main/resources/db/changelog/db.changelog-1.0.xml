@@ -5,14 +5,26 @@
 	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd
         http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
 
-	<changeSet id="1" author="arthur.zavadski">
-		<createTable tableName="cor">
-			<column name="id" type="${TYPE_ID}">
-				<constraints nullable="false" primaryKey="true" primaryKeyName="PK_COR"/>
+	<changeSet id="medicamentoContinuo1" author="alan.secundo">
+		<createTable tableName="medicamento_continuo">
+			<column name="id_medicamento_continuo" type="${TYPE_ID}">
+				<constraints nullable="false" primaryKey="true" primaryKeyName="PK_MEDICAMENTOCONTINUO"/>
 			</column>
-			<column name="nome" type="${TYPE_DESCRICAO}">
+			<column name="id_medicamento" type="${TYPE_DESCRICAO}">
 				<constraints nullable="false" />
-			</column>						
+			</column>
+			<column name="tipo_medicamento" type="${TYPE_DESCRICAO}">
+				<constraints nullable="false" />
+			</column>
+			<column name="quantidade_de_consumo" type="${TYPE_NUMBER}">
+				<constraints nullable="false" />
+			</column>	
+			<column name="intervalo_de_consumo" type="${TYPE_TIME}">
+				<constraints nullable="false" />
+			</column>	
+			<column name="data_consumo" type="${TYPE_DATA}">
+				<constraints nullable="false" />
+			</column>							
 		</createTable>
 	</changeSet>
 	

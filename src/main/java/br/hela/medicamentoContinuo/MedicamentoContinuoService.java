@@ -14,22 +14,28 @@ import br.hela.medicamentoContinuo.comandos.CriarMedicamentoContinuo;
 public class MedicamentoContinuoService {
 	
 	@Autowired
-	private MedicamentoContinuoRepository repo;
+	private MedicamentoContinuoRepository medicamentoContinuoRepo;
 	
 	public Optional<MedicamentoContinuoId> executar(CriarMedicamentoContinuo comando) {
-		MedicamentoContinuo nova = repo.save(new MedicamentoContinuo(comando));
+		MedicamentoContinuo nova = medicamentoContinuoRepo.save(new MedicamentoContinuo(comando));
 		return Optional.of(nova.getIdMedicamentoContinuo());
 	}
 	
 	public Optional<MedicamentoContinuo> encontrar(MedicamentoContinuoId id) {
-		return repo.findById(id);
+		return medicamentoContinuoRepo.findById(id);
 	}
 
 	public List<MedicamentoContinuo> encontrar() {
-		return repo.findAll();
+		return medicamentoContinuoRepo.findAll();
 	}
 
 	public void deletar(MedicamentoContinuoId id) {
-		repo.deleteById(id);
+		medicamentoContinuoRepo.deleteById(id);
 	}
+	
+	public Optional<MedicamentoContinuoId> alterar(MedicamentoContinuo comando) {
+		medicamentoContinuoRepo.save(comando);
+		return Optional.of(comando.getIdMedicamentoContinuo());
+	}
+	
 }	
