@@ -4,6 +4,7 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
 	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd
         http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
+	
 	<changeSet id="alergia" author="larissa.andrade">
 		<createTable tableName="alergia">
 			<column name="id_alergia" type="${TYPE_ID}">
@@ -59,6 +60,26 @@
 			<column name="medicamento" type="${TYPE_DESCRICAO}">
 				<constraints nullable="false" />
 			</column>			
+		</createTable>
+	</changeSet>
+
+	<changeSet id="cirurgia1" author="camila.morais">
+		<createTable tableName="cirurgia">
+			<column name="id" type="${TYPE_ID}">
+				<constraints nullable="false" primaryKey="true" primaryKeyName="PK_CIRURGIA"/>
+			</column>
+			<column name="tipo_cirurgia" type="${TYPE_TEXTO}">
+				<constraints nullable="false" />
+			</column>	
+			<column name="data" type="${TYPE_DATA}">
+				<constraints nullable="false" />
+			</column>
+			<column name="clinica_responsavel" type="${TYPE_TEXTO}">
+				<constraints nullable="false" />
+			</column>	
+			<column name="medico_responsavel" type="${TYPE_TEXTO}">
+				<constraints nullable="false" />
+			</column>
 		</createTable>
 	</changeSet>
 	
