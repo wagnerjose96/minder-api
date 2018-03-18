@@ -27,5 +27,22 @@
 			</column>							
 		</createTable>
 	</changeSet>
+
+	<changeSet id="doenca1" author="douglas.mendonca">
+		<createTable tableName="doenca">
+			<column name="id_doenca" type="${TYPE_ID}">
+				<constraints nullable="false" primaryKey="true" primaryKeyName="PK_DOENCA"/>
+			</column>
+			<column name="nome_doenca" type="${TYPE_DESCRICAO}">
+				<constraints nullable="false" />
+			</column>	
+			<column name="data_descoberta" type="${TYPE_DATA}">
+				<constraints nullable="false" />
+			</column>
+			<column name="medicamento" type="${TYPE_DESCRICAO}">
+				<constraints nullable="false" />
+			</column>			
+		</createTable>
+	</changeSet>
 	
 </databaseChangeLog>
