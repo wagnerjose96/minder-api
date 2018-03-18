@@ -24,9 +24,9 @@
 			</column>	
 			<column name="data_consumo" type="${TYPE_DATA}">
 				<constraints nullable="false" />
-			</column>
+			</column>							
 		</createTable>
-	</changeSet>							
+	</changeSet>
 
 	<changeSet id="doenca1" author="douglas.mendonca">
 		<createTable tableName="doenca">
