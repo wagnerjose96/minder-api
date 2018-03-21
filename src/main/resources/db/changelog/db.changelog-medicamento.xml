@@ -19,7 +19,7 @@
 			<column name="quantidade_de_consumo" type="${TYPE_NUMBER}">
 				<constraints nullable="false" />
 			</column>	
-			<column name="intervalo_de_consumo" type="${TYPE_TIME}">
+			<column name="intervalo_de_consumo" type="${TYPE_NUMBER}">
 				<constraints nullable="false" />
 			</column>	
 			<column name="data_consumo" type="${TYPE_DATA}">
