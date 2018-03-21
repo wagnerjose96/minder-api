@@ -17,6 +17,10 @@
   
   
   
-  <include file="db/changelog/db.changelog-1.0.xml"/>
+  <include file="db/changelog/db.changelog-doenca.xml"/>
+  <include file="db/changelog/db.changelog-medicamento.xml"/>
+  <include file="db/changelog/db.changelog-alergia.xml"/>
+  <include file="db/changelog/db.changelog-cirugia.xml"/>
+  
   
 </databaseChangeLog>
