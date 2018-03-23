@@ -36,7 +36,6 @@ public class MedicamentoContinuoService {
 	
 	public Optional<MedicamentoContinuoId> alterar(MedicamentoContinuo comando) {
 		medicamentoContinuoRepo.save(comando);
-
 		return Optional.of(comando.getIdMedicamentoContinuo());
 	}
 	

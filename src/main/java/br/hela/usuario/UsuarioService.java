@@ -16,46 +16,26 @@ public class UsuarioService {
 	private UsuarioRepository repo;
 
 	public Optional<UsuarioId> salvar(CriarUsuario comando) {
-		UsuarioId resultado = null;
-		if (comando != null) {
-			Usuario novo = repo.save(new Usuario(comando));
-			resultado = novo.getId();
-		}
-		return Optional.of(resultado);
+		Usuario novo = repo.save(new Usuario(comando));
+		return Optional.of(novo.getId());
 	}
 
 	public Optional<Usuario> encontrar(UsuarioId id) {
-		Optional<Usuario> resultado = null;
-		if (repo.existsById(id)) {
-			resultado = repo.findById(id);
-		}
-		return resultado;
+		return repo.findById(id);
 	}
 
 	public Optional<List<Usuario>> encontrar() {
-		List<Usuario> resultado = null;
-		if (repo.count() != 0) {
-			resultado = repo.findAll();
-		}
-		return Optional.of(resultado);
+		return Optional.of(repo.findAll());
 	}
 
 	public Optional<String> deletar(UsuarioId id) {
-		String resultado = null;
-		if (repo.existsById(id)) {
-			repo.deleteById(id);
-			resultado = "Usuário -> " + id + ": deletado com sucesso";
-		}
-		return Optional.of(resultado);
+		repo.deleteById(id);
+		return Optional.of("Usuário -> " + id + ": deletado com sucesso");
 	}
 
 	public Optional<UsuarioId> alterar(Usuario comando) {
-		UsuarioId resultado = null;
-		if (repo.existsById(comando.getId())) {
-			repo.save(comando);
-			resultado = comando.getId();
-		}
-		return Optional.of(resultado);
+		repo.save(comando);
+		return Optional.of(comando.getId());
 	}
 
 }

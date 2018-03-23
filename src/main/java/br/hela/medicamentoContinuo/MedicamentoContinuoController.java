@@ -34,7 +34,7 @@ public class MedicamentoContinuoController {
 		verificaListaDeMedicamentosContinuos();
 		verificaRetornoSQL();
 		Optional<List<MedicamentoContinuo>> optionalMedicamentosContinuos = service.encontrar();
-		if(!optionalMedicamentosContinuos.isPresent()) {
+		if(optionalMedicamentosContinuos.isPresent()) {
 			return ResponseEntity.ok(optionalMedicamentosContinuos.get());
 		}	
 			throw new BadHttpRequest();
@@ -54,16 +54,15 @@ public class MedicamentoContinuoController {
 	}
 
 	@DeleteMapping("/{id}")
-	public ResponseEntity<MedicamentoContinuoId> deletarMedicamentoContinuo(@PathVariable MedicamentoContinuoId id) 
+	public ResponseEntity<Optional<String>> deletarMedicamentoContinuo(@PathVariable MedicamentoContinuoId id) 
 			throws SQLException, NullPointerException, BadHttpRequest { 
 		
 		verificaListaDeMedicamentosContinuos();
 		verificaRetornoSQL();
 		
-		Optional<MedicamentoContinuo> optionalMedicamentoContinuo = service.encontrar(id);
+		Optional<String> optionalMedicamentoContinuo = service.deletar(id);
 		if (optionalMedicamentoContinuo.isPresent()) {
-			service.deletar(id);
-			return ResponseEntity.accepted().build();
+			return ResponseEntity.ok(optionalMedicamentoContinuo);
 		}	
 		throw new BadHttpRequest();
 	}
@@ -101,19 +100,19 @@ public class MedicamentoContinuoController {
 	
 	private void verificaRetornoSQL() throws SQLException{
 		if (System.currentTimeMillis() == 10) {
-			throw new SQLException();
+			throw new SQLException("Servidor SQL sem resposta!");
 		}
 	}
 	
 	private void verificaMedicamentoContinuoExistente(MedicamentoContinuoId id) throws NullPointerException{
 		if (!service.encontrar(id).isPresent()) {
-			throw new NullPointerException();
+			throw new NullPointerException("Medicamento continuo não encontrado!");
 		}
 	}
 	
 	private void verificaListaDeMedicamentosContinuos() throws NullPointerException {
 		if (!service.encontrar().isPresent()) {
-			throw new NullPointerException();
+			throw new NullPointerException("Nenhum medicamento continuo cadastrado!");
 		}
 	}
 }	
