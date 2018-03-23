@@ -40,9 +40,9 @@
     - De o comando "git pull" para baixar as atualizações dos outros membros do time 
     - Caso de conflito, resolver o conflito na sua branch e depois subir o código
     - Depois de resolver o conflito, se houver, realize a sequência de comando padrão para subir o código: 
-            -> git add * 
-            -> git commit -m "comentário"   
-            -> git push origin id#'task'
+            - git add * 
+            - git commit -m "comentário"   
+            - git push origin id#'task'
 
 ## Banco de Dados
 * Configuração do PostgreSQL:
