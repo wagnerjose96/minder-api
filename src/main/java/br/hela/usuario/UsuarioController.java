@@ -61,7 +61,7 @@ public class UsuarioController {
 		verificaUsuarioExitente(id);
 		verificaTempoResposta();
 		Optional<String> resultado = service.deletar(id);
-		if (!resultado.isPresent()) {
+		if (resultado.isPresent()) {
 			return ResponseEntity.ok(resultado);
 		}
 		throw new BadHttpRequest();
