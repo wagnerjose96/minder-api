@@ -9,6 +9,7 @@ import javax.persistence.Entity;
 
 import br.hela.usuario.comandos.CriarUsuario;
 
+
 @Entity
 public class Usuario {
 	@EmbeddedId
