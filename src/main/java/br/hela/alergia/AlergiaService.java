@@ -22,12 +22,13 @@ public class AlergiaService {
 		return alergiaRepo.findById(id);
 	}
 
-	public List<Alergia> encontrar() {
-		return alergiaRepo.findAll();
+	public Optional<List<Alergia>> encontrar() {
+		return Optional.of(alergiaRepo.findAll());
 	}
 
-	public void deletar(AlergiaId id) {
+	public Optional<String> deletar(AlergiaId id) {
 		alergiaRepo.deleteById(id);
+		return Optional.of("Alergia -> " + id + ": deletada com sucesso");
 	}
 	
 	public Optional<AlergiaId> alterar(Alergia comando) {
