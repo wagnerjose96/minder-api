@@ -1,36 +1,72 @@
---- Boas práticas de utilização do GIT --- 
+## Informações gerais do Git
+* Informações básicas sobre como utilizar o GitLab
 
-Esquema de branchs:
+## Configurando suas branchs
+*Esquema de branchs
+    - master (Branch com código de produção)
+      - dev (Branch com código de desenvolvimento)
+		    - id#branch1 (Branch com o id relativo a sua tarefa do Redmine)
+		    - id#branch2
+		    - id#branch3
 
--- master (Branch com código de produção)
-      -- dev (Branch com código de desenvolvimento)
-		    -- id#branch1 (Branch com o código relativo a sua tarefa)
-		    -- id#branch2
-		    -- id#branch3
-		    ...
+## Clonando o projeto do GitLab    
+* Realizando o git clone no projeto
+    - Abra uma nova janela do terminal - "Ctrl + Alt + T"
+    - Para realizar o clone do projeto, execute - "git clone http://escoladeti.unicesumar.edu.br:8083/escoladeti2018time03/h-api.git"
+    - Caso necessite realizar um "clone" em uma branch - "git pull origin id#branch1"
+    
+## Importa projeto após o clone
+* Importar o projeto no STS
+    - Após realizar o clone do projeto importar o projeto pelo passo a passo a baixo.
+    - File -> Import -> General -> Projects From Folder or Archive
+    - Selecione a pasta do projeto clonado clicando em "Directory"
+    - "Finish"
 
-Como criar uma nova branch:
+## Criando uma nova branch
+* Criar uma nova branch a cada nova task no Redmine
+    - Entrar na pasta do repositório pelo terminal - "Ctrl + Alt + T"
+    - Digitar o comando "git branch" e verificar em qual branch você está - Referenciada por "*"
+    - Caso "NÃO" esteja na branch "dev", executar o comando - "git checkout dev"
+    - Agora você está na branch dev, para criar uma nova branch, executar o comando - "git checkout -b id#'task'" 
+    - Para que sua branch seja enviada para o repositório, execute o comando - "git --set-upstream origin id#'task'"
+    - Para baixar o código que esta na dev para sua branch, de o comando - "git pull"
+    - Comece a trabalhar no seu código.
 
-Passo 1 - Entrar na pasta do repositório via cmd (linha de comando);
-Passo 2 - Digitar o comando git status e verificar em qual branch você está;
-Passo 3 - Caso NÃO esteja na branch "dev", executar o comando git checkout dev
-Passo 4 - Agora você está na branch dev, para criar uma nova branch, executar o comando: git checkout -b nomeDaBranch 
-Passo 5 - Para que sua branch seja enviada para o repositório, execute o comando: git --set-upstream origin nomeDaBranch
-Passo 6 - Para baixar o código que esta na dev para sua branch, de o comando: git pull
-Passo 7 - Comece a trabalhar no seu código, e quando der commit, realize o mesmo na sua branch.
+## Salvando suas alterações em sua branch
+* Realizando o push após "terminar" sua tarefa
 
-Como subir o código na sua branch:
-
-Passo 1 - Verifique em que branch você está;
-Passo 2 - Entre na sua branch caso não esteja nela, utilizando o comando: git checkout nomeDaSuaBranch
-Passo 3 - De o comando git pull para baixar as atualizações dos outros membros do time (Caso de conflito, resolver o conflito na sua branch e depois subir o código)
-Passo 4 - Depois de resolver o conflito, se houver, realize a sequência de comando padrão para subir o código: 
+    - Verifique em que branch você está - "git branch"
+    - Entre na sua branch caso não esteja nela, utilizando o comando - "git checkout id#'task'"
+    - De o comando "git pull" para baixar as atualizações dos outros membros do time 
+    - Caso de conflito, resolver o conflito na sua branch e depois subir o código
+    - Depois de resolver o conflito, se houver, realize a sequência de comando padrão para subir o código: 
             -> git add * 
             -> git commit -m "comentário"   
-            -> git push origin nomeDaSuaBranch
+            -> git push origin id#'task'
 
-Como dar merge request: 
+## Banco de Dados
+* Configuração do PostgreSQL:
+    - Após executar o psql, crie o database "create database escoladeti2018;"
+    - Logo após, conecte no database "\c escoladeti2018;"
+    - Caso necessite sair, execute "\q"
+    - Caso necessite alterar a senha do psql, execute "psql \password" e informe sua nova senha.
 
-Passo 1 - Vá até a branch que você quer dar o Merge request (normalmente a DEV);
-Passo 2 - Execute o comando: git merge nomeDaSuaBranch (Ao fazer isso, você irá unir o código da sua branch com o da DEV);
-Passo 3 - Execute os comandos padrões para subir o repositório atualizado no gitlab.
+* Configuração do arquivo application-dev.properties:
+    - Procure o arquivo na pasta "src/main/resources"
+    - Altere a propriedade "spring.datasource.password" inserindo sua senha do postgreSQL.
+
+## Utilizando a API-REST com o postman
+* Após ter configurado o banco psql e executado a API no STS, abra abra o postman:
+    - Para executar um comando utilize a uri "http://localhost:9090/exemplo"
+    - Funcionalidades já implementadas:
+    - Get de todas os exemplos - "GET" - "http://localhost:9090/exemplo" - Não possui atributos
+    - Get pelo Id - "GET" - "http://localhost:9090/exemplo/Id" - Na uri, informar o "Id" referente ao objeto a ser retornado
+    - Post de novo exemplo - "POST" - "http://localhost:9090/exemplo" - No "Body" selecione "raw" e defina o formato de input como "JSON" e informe o corpo de um novo exemplo
+    - Put de um exemplo - "PUT" - "http://localhost:9090/exemplo" - No "Body" selecione "raw" e defina o formato de input como "JSON" e informe o corpo do exemplo a ser alterado, com o id
+    - Delete de um exemplo - "DELETE" - "http://localhost:9090/exemplo/id" - Na uri, informar o "Id" referente ao objeto a ser deletado
+
+
+
+
+
+
