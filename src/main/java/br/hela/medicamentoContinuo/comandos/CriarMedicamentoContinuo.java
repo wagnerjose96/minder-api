@@ -2,8 +2,6 @@ package br.hela.medicamentoContinuo.comandos;
 
 import java.util.Date;
 
-import br.hela.medicamentoContinuo.MedicamentoContinuoId;
-
 public class CriarMedicamentoContinuo {
 	
 	private int idMedicamento; //Será trocado pelo ID da classe medicamento
