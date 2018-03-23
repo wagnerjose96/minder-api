@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import br.hela.usuario.comandos.CriarUsuario;
+import br.hela.usuario.comandos.EditarUsuario;
 import javassist.tools.web.BadHttpRequest;
 
 @RestController
@@ -82,7 +83,7 @@ public class UsuarioController {
 	}
 
 	@PutMapping
-	public ResponseEntity<UsuarioId> putUsuario(@RequestBody Usuario comando)
+	public ResponseEntity<UsuarioId> putUsuario(@RequestBody EditarUsuario comando)
 			throws TimeoutException, NullPointerException, BadHttpRequest {
 
 		verificaUsuarioExitente(comando.getId());

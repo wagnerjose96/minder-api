@@ -1,29 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<databaseChangeLog
-	xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
 	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd
         http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
-
-	<changeSet id="create_hibernate_sequence"
-		author="camila.morais">
-		<createSequence sequenceName="hibernate_sequence"
-			startValue="1" incrementBy="1" />
-	</changeSet>
-
-	<changeSet id="create_table_revinfo" author="camila.morais">
-		<createTable tableName="revinfo">
-			<column name="rev" type="${TYPE_INTEGER}">
-				<constraints nullable="false" primaryKey="true"
-					primaryKeyName="revinfo_pkey" />
-			</column>
-			<column name="revtstmp" type="${TYPE_BIG_INTEGER}">
-				<constraints nullable="false" />
-			</column>
-		</createTable>
-	</changeSet>
 
 	<changeSet id="5" author="camila.morais">
 		<createTable tableName="cirurgia">
@@ -46,8 +26,7 @@
 		</createTable>
 	</changeSet>
 
-	<changeSet id="create_table_cirurgia_aud"
-		author="camila.morais">
+	<changeSet id="create_table_cirurgia_aud" author="camila.morais">
 		<createTable tableName="cirurgia_aud">
 			<column name="id" type="${TYPE_ID}">
 				<constraints nullable="false" />
@@ -65,9 +44,8 @@
 				<constraints nullable="false" />
 			</column>
 			<column name="rev" type="${TYPE_INTEGER}">
-				<constraints nullable="false"
-					referencedTableName="revinfo" referencedColumnNames="rev"
-					foreignKeyName="cirurgia_revinfo_fk" />
+				<constraints nullable="false" referencedTableName="revinfo"
+					referencedColumnNames="rev" foreignKeyName="cirurgia_revinfo_fk" />
 			</column>
 			<column name="revtype" type="${TYPE_INTEGER}">
 				<constraints nullable="false" />

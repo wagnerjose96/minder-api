@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import br.hela.usuario.comandos.CriarUsuario;
+import br.hela.usuario.comandos.EditarUsuario;
 
 @Service
 @Transactional
@@ -33,9 +34,15 @@ public class UsuarioService {
 		return Optional.of("Usuário -> " + id + ": deletado com sucesso");
 	}
 
-	public Optional<UsuarioId> alterar(Usuario comando) {
-		repo.save(comando);
-		return Optional.of(comando.getId());
+	public Optional<UsuarioId> alterar(EditarUsuario comando) {
+		Optional<Usuario> optional = repo.findById(comando.getId());
+		if (optional.isPresent()) {
+			Usuario user = optional.get();
+			user.apply(comando);
+			repo.save(user);
+			return Optional.of(comando.getId());
+		}
+		return Optional.empty();
 	}
 
 }

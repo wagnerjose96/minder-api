@@ -7,10 +7,14 @@ import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 
+import org.hibernate.envers.Audited;
+
 import br.hela.usuario.comandos.CriarUsuario;
+import br.hela.usuario.comandos.EditarUsuario;
 
 
 @Entity
+@Audited
 public class Usuario {
 	@EmbeddedId
 	@AttributeOverride(name = "value", column = @Column(name = "id"))
@@ -31,6 +35,19 @@ public class Usuario {
 
 	public Usuario(CriarUsuario comando) {
 		this.id = new UsuarioId();
+		this.nome_completo = comando.getNome_completo();
+		this.nome_usuario = comando.getNome_usuario();
+		this.email = comando.getEmail();
+		this.senha = comando.getSenha();
+		this.tipo_sangue = comando.getTipo_sangue();
+		this.endereco = comando.getEndereco();
+		this.telefone = comando.getTelefone();
+		this.data_nascimento = comando.getData_nascimento();
+		this.sexo = comando.getSexo();
+		this.imagem_usuario = comando.getImagem_usuario();
+	}
+	
+	public void apply(EditarUsuario comando) {
 		this.nome_completo = comando.getNome_completo();
 		this.nome_usuario = comando.getNome_usuario();
 		this.email = comando.getEmail();
