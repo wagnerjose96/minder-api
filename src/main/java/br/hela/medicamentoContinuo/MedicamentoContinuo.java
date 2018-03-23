@@ -18,7 +18,7 @@ public class MedicamentoContinuo {
 	private int idMedicamento; //Será trocado pelo ID da classe medicamento
 	private String tipoMedicamento;
 	private int quantidadeDeConsumo; 
-	private Date intervaloDeConsumo;
+	private int intervaloDeConsumo;
 	private Date dataConsumo;
 	
 	
@@ -64,11 +64,11 @@ public class MedicamentoContinuo {
 		this.quantidadeDeConsumo = quantidadeDeConsumo;
 	}
 
-	public Date getIntervaloDeConsumo() {
+	public int getIntervaloDeConsumo() {
 		return intervaloDeConsumo;
 	}
 
-	public void setIntervaloDeConsumo(Date intervaloDeConsumo) {
+	public void setIntervaloDeConsumo(int intervaloDeConsumo) {
 		this.intervaloDeConsumo = intervaloDeConsumo;
 	}
 
