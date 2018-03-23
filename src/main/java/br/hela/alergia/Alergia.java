@@ -5,22 +5,22 @@ import javax.persistence.AttributeOverride;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
+
+import org.hibernate.envers.Audited;
+
 import br.hela.alergia.comandos.CriarAlergia;
+import br.hela.alergia.comandos.EditarAlergia;
 
 @Entity
+@Audited
 public class Alergia {
 	@EmbeddedId
-	@AttributeOverride(name="value", column=@Column(name="idAlergia"))
+	@AttributeOverride(name="value", column=@Column(name="id"))
 	private AlergiaId idAlergia;
-	@Column
 	private String tipoAlergia;
-	@Column
 	private String localAfetado;
-	@Column
 	private Date dataDescoberta;
-	@Column
 	private String efeitos;
-	@Column
 	private String medicamento;
 	
 	public Alergia() {
@@ -34,6 +34,15 @@ public class Alergia {
 		this.dataDescoberta = comandos.getDataDescoberta();
 		this.efeitos = comandos.getEfeitos();
 		this.medicamento = comandos.getMedicamento();
+	}
+	
+	public void apply(EditarAlergia comando) {
+		this.idAlergia = comando.getIdAlergia();
+		this.tipoAlergia = comando.getTipoAlergia();
+		this.localAfetado = comando.getLocalAfetado();
+		this.dataDescoberta = comando.getDataDescoberta();
+		this.efeitos = comando.getEfeitos();
+		this.medicamento = comando.getMedicamento();
 	}
 
 	public AlergiaId getIdAlergia() {

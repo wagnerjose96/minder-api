@@ -4,7 +4,6 @@ import java.net.URI;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.TimeoutException;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -17,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import br.hela.alergia.comandos.CriarAlergia;
+import br.hela.alergia.comandos.EditarAlergia;
 import javassist.tools.web.BadHttpRequest;
 
 @RestController
@@ -53,8 +53,8 @@ public class AlergiaController {
 		verificaAlergiaExistente(id);
 		verificaTempoResposta();
 		Optional<String> optionalAlergia = alergiaService.deletar(id);
-		if (!optionalAlergia.isPresent()) {
-			return ResponseEntity.ok(optionalAlergia.get());
+		if (optionalAlergia.isPresent()) {
+			return ResponseEntity.ok("Alergia deletada com sucesso");
 		}
 		throw new BadHttpRequest();
 	}
@@ -63,7 +63,7 @@ public class AlergiaController {
 	public ResponseEntity<String> postAlergia(@RequestBody CriarAlergia comando)
 			throws TimeoutException, NullPointerException, BadHttpRequest {
 		verificaTempoResposta();
-		Optional<AlergiaId> optionalAlergiaId = alergiaService.executar(comando);
+		Optional<AlergiaId> optionalAlergiaId = alergiaService.salvar(comando);
 		verificaAlergiaExistente(optionalAlergiaId.get());
 		if (optionalAlergiaId.isPresent()) {
 			URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
@@ -74,7 +74,7 @@ public class AlergiaController {
 	}
 
 	@PutMapping()
-	public ResponseEntity<String> putAlergia(@RequestBody Alergia comando) throws TimeoutException, NullPointerException, BadHttpRequest {
+	public ResponseEntity<String> putAlergia(@RequestBody EditarAlergia comando) throws TimeoutException, NullPointerException, BadHttpRequest {
 		verificaAlergiaExistente(comando.getIdAlergia());
 		verificaTempoResposta();
 		Optional<AlergiaId> optionalAlergiaId = alergiaService.alterar(comando);

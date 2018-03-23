@@ -49,8 +49,6 @@ public class Usuario {
 	
 	public void apply(EditarUsuario comando) {
 		this.nome_completo = comando.getNome_completo();
-		this.nome_usuario = comando.getNome_usuario();
-		this.email = comando.getEmail();
 		this.senha = comando.getSenha();
 		this.tipo_sangue = comando.getTipo_sangue();
 		this.endereco = comando.getEndereco();

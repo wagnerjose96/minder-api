@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import br.hela.alergia.comandos.CriarAlergia;
+import br.hela.alergia.comandos.EditarAlergia;
 
 @Service
 @Transactional
@@ -13,7 +14,7 @@ public class AlergiaService {
 	@Autowired
 	private AlergiaRepository alergiaRepo;
 	
-	public Optional<AlergiaId> executar(CriarAlergia comando) {
+	public Optional<AlergiaId> salvar(CriarAlergia comando) {
 		Alergia nova = alergiaRepo.save(new Alergia(comando));
 		return Optional.of(nova.getIdAlergia());
 	}
@@ -31,9 +32,15 @@ public class AlergiaService {
 		return Optional.of("Alergia -> " + id + ": deletada com sucesso");
 	}
 	
-	public Optional<AlergiaId> alterar(Alergia comando) {
-		alergiaRepo.save(comando);
-		return Optional.of(comando.getIdAlergia());
+	public Optional<AlergiaId> alterar(EditarAlergia comando) {
+		Optional<Alergia> optional = alergiaRepo.findById(comando.getIdAlergia());
+		if (optional.isPresent()) {
+			Alergia alergia = optional.get();
+			alergia.apply(comando);
+			alergiaRepo.save(alergia);
+			return Optional.of(comando.getIdAlergia());
+		}
+		return Optional.empty();
 	}
 
 }
