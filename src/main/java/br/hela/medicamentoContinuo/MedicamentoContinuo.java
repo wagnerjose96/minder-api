@@ -7,9 +7,13 @@ import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 
+import org.hibernate.envers.Audited;
+
 import br.hela.medicamentoContinuo.comandos.CriarMedicamentoContinuo;
 
+
 @Entity
+@Audited
 public class MedicamentoContinuo {
 
 	@EmbeddedId
