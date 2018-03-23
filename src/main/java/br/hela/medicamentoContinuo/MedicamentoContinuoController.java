@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import br.hela.medicamentoContinuo.comandos.CriarMedicamentoContinuo;
+import javassist.tools.web.BadHttpRequest;
 
 @RestController
 @RequestMapping("/medicamentoContinuo")
@@ -27,53 +28,93 @@ public class MedicamentoContinuoController {
 	private MedicamentoContinuoService service;
 	
 	@GetMapping
-	public ResponseEntity<List<MedicamentoContinuo>> getMedicamentoContinuo(){
-		List<MedicamentoContinuo> optionalMedicamentosContinuos = service.encontrar();
-		if(!optionalMedicamentosContinuos.isEmpty()) {
-			return ResponseEntity.ok(optionalMedicamentosContinuos);
+	public ResponseEntity<List<MedicamentoContinuo>> getMedicamentoContinuo()
+			throws SQLException, NullPointerException, BadHttpRequest {
+		
+		verificaListaDeMedicamentosContinuos();
+		verificaRetornoSQL();
+		Optional<List<MedicamentoContinuo>> optionalMedicamentosContinuos = service.encontrar();
+		if(optionalMedicamentosContinuos.isPresent()) {
+			return ResponseEntity.ok(optionalMedicamentosContinuos.get());
 		}	
-			return ResponseEntity.notFound().build();
+			throw new BadHttpRequest();
 	}
 	
 	@GetMapping("/{id}")
-	public ResponseEntity<MedicamentoContinuo> getMedicamentoContinuo(@PathVariable MedicamentoContinuoId id){
+	public ResponseEntity<MedicamentoContinuo> getMedicamentoContinuo(@PathVariable MedicamentoContinuoId id)
+			throws SQLException, NullPointerException, BadHttpRequest {
+		
+		verificaMedicamentoContinuoExistente(id);
+		
 		Optional<MedicamentoContinuo> optionalMedicamentoContinuo = service.encontrar(id);
 		if(optionalMedicamentoContinuo.isPresent()) {
 			return ResponseEntity.ok(optionalMedicamentoContinuo.get());
 		}	
-			return ResponseEntity.notFound().build();
+			throw new BadHttpRequest();
 	}
-	
+
 	@DeleteMapping("/{id}")
-	public ResponseEntity<MedicamentoContinuoId> deletarMedicamentoContinuo(@PathVariable MedicamentoContinuoId id) throws SQLException {
-		Optional<MedicamentoContinuo> optionalMedicamentoContinuo = service.encontrar(id);
+	public ResponseEntity<Optional<String>> deletarMedicamentoContinuo(@PathVariable MedicamentoContinuoId id) 
+			throws SQLException, NullPointerException, BadHttpRequest { 
+		
+		verificaListaDeMedicamentosContinuos();
+		verificaRetornoSQL();
+		
+		Optional<String> optionalMedicamentoContinuo = service.deletar(id);
 		if (optionalMedicamentoContinuo.isPresent()) {
-			service.deletar(id);
-			return ResponseEntity.accepted().build();
+			return ResponseEntity.ok(optionalMedicamentoContinuo);
 		}	
-			return ResponseEntity.badRequest().build();
+		throw new BadHttpRequest();
 	}
 	
 	@PostMapping
-	public ResponseEntity<MedicamentoContinuoId> postMedicamentoContinuo(@RequestBody CriarMedicamentoContinuo comando) throws SQLException {
-		Optional<MedicamentoContinuoId> optionalMedicamentoContinuoId = service.executar(comando);
+	public ResponseEntity<MedicamentoContinuoId> postMedicamentoContinuo(@RequestBody CriarMedicamentoContinuo comando)
+		throws SQLException, NullPointerException, BadHttpRequest {
+		
+		verificaRetornoSQL();
+		Optional<MedicamentoContinuoId> optionalMedicamentoContinuoId = service.salvar(comando);
+		verificaMedicamentoContinuoExistente(optionalMedicamentoContinuoId.get());
+		
+		
 		if (optionalMedicamentoContinuoId.isPresent()) {
 			URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(optionalMedicamentoContinuoId.get()).toUri();
 			return ResponseEntity.created(location).build();
 		}
-		return ResponseEntity.badRequest().build();
+		throw new BadHttpRequest();
 	}
 	
-	@PutMapping("/{id}")
-	public ResponseEntity<MedicamentoContinuoId> putMedicamentoContinuo(@RequestBody MedicamentoContinuo comando) throws SQLException {
+	@PutMapping
+	public ResponseEntity<MedicamentoContinuoId> putMedicamentoContinuo(@RequestBody MedicamentoContinuo comando)
+		throws SQLException, NullPointerException, BadHttpRequest{
+		
+		verificaMedicamentoContinuoExistente(comando.getIdMedicamentoContinuo());
+		verificaRetornoSQL();
+		
 		Optional<MedicamentoContinuoId> optionalMedicamentoContinuoId = service.alterar(comando);
 		if (optionalMedicamentoContinuoId.isPresent()) {
 			URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(optionalMedicamentoContinuoId.get()).toUri();
 			return ResponseEntity.created(location).build();
 		}
-		return ResponseEntity.badRequest().build();
+		throw new BadHttpRequest();
 	}
 	
+	private void verificaRetornoSQL() throws SQLException{
+		if (System.currentTimeMillis() == 10) {
+			throw new SQLException("Servidor SQL sem resposta!");
+		}
+	}
+	
+	private void verificaMedicamentoContinuoExistente(MedicamentoContinuoId id) throws NullPointerException{
+		if (!service.encontrar(id).isPresent()) {
+			throw new NullPointerException("Medicamento continuo não encontrado!");
+		}
+	}
+	
+	private void verificaListaDeMedicamentosContinuos() throws NullPointerException {
+		if (!service.encontrar().isPresent()) {
+			throw new NullPointerException("Nenhum medicamento continuo cadastrado!");
+		}
+	}
 }	
 
 	

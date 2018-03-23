@@ -16,21 +16,22 @@ public class MedicamentoContinuoService {
 	@Autowired
 	private MedicamentoContinuoRepository medicamentoContinuoRepo;
 	
-	public Optional<MedicamentoContinuoId> executar(CriarMedicamentoContinuo comando) {
-		MedicamentoContinuo nova = medicamentoContinuoRepo.save(new MedicamentoContinuo(comando));
-		return Optional.of(nova.getIdMedicamentoContinuo());
+	public Optional<MedicamentoContinuoId> salvar(CriarMedicamentoContinuo comando) {
+		MedicamentoContinuo novo = medicamentoContinuoRepo.save(new MedicamentoContinuo(comando));
+		return Optional.of(novo.getIdMedicamentoContinuo());
 	}
 	
 	public Optional<MedicamentoContinuo> encontrar(MedicamentoContinuoId id) {
 		return medicamentoContinuoRepo.findById(id);
 	}
 
-	public List<MedicamentoContinuo> encontrar() {
-		return medicamentoContinuoRepo.findAll();
+	public Optional<List<MedicamentoContinuo>> encontrar() {
+		return Optional.of(medicamentoContinuoRepo.findAll());
 	}
 
-	public void deletar(MedicamentoContinuoId id) {
+	public Optional<String> deletar(MedicamentoContinuoId id) {
 		medicamentoContinuoRepo.deleteById(id);
+		return Optional.of("Usuário -> " + id + ": deletado com sucesso");
 	}
 	
 	public Optional<MedicamentoContinuoId> alterar(MedicamentoContinuo comando) {

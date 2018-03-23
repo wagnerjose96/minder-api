@@ -5,6 +5,7 @@
 	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd
         http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
 
+	
 
 	<property name="TYPE_ID" value="varchar(36)" />
 	<property name="TYPE_DESCRICAO" value="varchar(25)" />
