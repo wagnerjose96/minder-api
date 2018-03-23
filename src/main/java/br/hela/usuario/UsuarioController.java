@@ -1,9 +1,9 @@
 package br.hela.usuario;
 
 import java.net.URI;
-import java.sql.SQLException;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.TimeoutException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -19,20 +19,21 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import br.hela.usuario.comandos.CriarUsuario;
+import br.hela.usuario.comandos.EditarUsuario;
 import javassist.tools.web.BadHttpRequest;
 
 @RestController
-@RequestMapping("/usuario")
+@RequestMapping("/usuarios")
 public class UsuarioController {
 	@Autowired
 	private UsuarioService service;
 
 	@GetMapping
 	public ResponseEntity<List<Usuario>> getUsuarios() 
-			throws SQLException, NullPointerException, BadHttpRequest {
+			throws TimeoutException, NullPointerException, BadHttpRequest {
 
 		verificaListaUsuario();
-		verificaRetornoSQL();
+		verificaTempoResposta();
 		Optional<List<Usuario>> optionalUsuario = service.encontrar();
 		if (optionalUsuario.isPresent()) {
 			return ResponseEntity.ok(optionalUsuario.get());
@@ -42,11 +43,10 @@ public class UsuarioController {
 
 	@GetMapping("/{id}")
 	public ResponseEntity<Usuario> getUsuarioId(@PathVariable UsuarioId id)
-			throws SQLException, NullPointerException, BadHttpRequest {
+			throws TimeoutException, NullPointerException, BadHttpRequest {
 
 		verificaUsuarioExitente(id);
-		verificaRetornoSQL();
-
+		verificaTempoResposta();
 		Optional<Usuario> optionalUsuario = service.encontrar(id);
 		if (optionalUsuario.isPresent()) {
 			return ResponseEntity.ok(optionalUsuario.get());
@@ -56,11 +56,10 @@ public class UsuarioController {
 
 	@DeleteMapping("/{id}")
 	public ResponseEntity<Optional<String>> deleteUsuario(@PathVariable UsuarioId id)
-			throws SQLException, NullPointerException, BadHttpRequest {
+			throws TimeoutException, NullPointerException, BadHttpRequest {
 
 		verificaUsuarioExitente(id);
-		verificaRetornoSQL();
-
+		verificaTempoResposta();
 		Optional<String> resultado = service.deletar(id);
 		if (!resultado.isPresent()) {
 			return ResponseEntity.ok(resultado);
@@ -70,12 +69,11 @@ public class UsuarioController {
 
 	@PostMapping
 	public ResponseEntity<UsuarioId> postUsuario(@RequestBody CriarUsuario comando)
-			throws SQLException, NullPointerException, BadHttpRequest {
+			throws TimeoutException, NullPointerException, BadHttpRequest {
 
-		verificaRetornoSQL();
+		verificaTempoResposta();
 		Optional<UsuarioId> optionalUsuarioId = service.salvar(comando);
 		verificaUsuarioExitente(optionalUsuarioId.get());
-
 		if (optionalUsuarioId.isPresent()) {
 			URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
 					.buildAndExpand(optionalUsuarioId.get()).toUri();
@@ -85,12 +83,11 @@ public class UsuarioController {
 	}
 
 	@PutMapping
-	public ResponseEntity<UsuarioId> putUsuario(@RequestBody Usuario comando)
-			throws SQLException, NullPointerException, BadHttpRequest {
+	public ResponseEntity<UsuarioId> putUsuario(@RequestBody EditarUsuario comando)
+			throws TimeoutException, NullPointerException, BadHttpRequest {
 
 		verificaUsuarioExitente(comando.getId());
-		verificaRetornoSQL();
-
+		verificaTempoResposta();
 		Optional<UsuarioId> optionalUsuarioId = service.alterar(comando);
 		if (optionalUsuarioId.isPresent()) {
 			URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
@@ -100,21 +97,21 @@ public class UsuarioController {
 		throw new BadHttpRequest();
 	}
 
-	private void verificaRetornoSQL() throws SQLException {
+	private void verificaTempoResposta() throws TimeoutException {
 		if (System.currentTimeMillis() == 10) {
-			throw new SQLException();
+			throw new TimeoutException("Servidor sem resposta");
 		}
 	}
 
 	private void verificaUsuarioExitente(UsuarioId id) throws NullPointerException {
 		if (!service.encontrar(id).isPresent()) {
-			throw new NullPointerException();
+			throw new NullPointerException("Usuário não encontrado");
 		}
 	}
 
 	private void verificaListaUsuario() throws NullPointerException {
 		if (!service.encontrar().isPresent()) {
-			throw new NullPointerException();
+			throw new NullPointerException("Nenhum usuário cadastrado");
 		}
 	}
 
