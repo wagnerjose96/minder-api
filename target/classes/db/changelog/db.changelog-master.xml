@@ -29,6 +29,4 @@
   <include file="db/changelog/db.changelog-medicamento.xml"/>
   <include file="db/changelog/db.changelog-alergia.xml"/>
   
-  
-  
 </databaseChangeLog>

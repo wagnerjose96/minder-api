@@ -102,19 +102,19 @@ public class UsuarioController {
 
 	private void verificaRetornoSQL() throws SQLException {
 		if (System.currentTimeMillis() == 10) {
-			throw new SQLException();
+			throw new SQLException("Servidor SQL sem resposta");
 		}
 	}
 
 	private void verificaUsuarioExitente(UsuarioId id) throws NullPointerException {
 		if (!service.encontrar(id).isPresent()) {
-			throw new NullPointerException();
+			throw new NullPointerException("Usuário não encontrado");
 		}
 	}
 
 	private void verificaListaUsuario() throws NullPointerException {
 		if (!service.encontrar().isPresent()) {
-			throw new NullPointerException();
+			throw new NullPointerException("Nenhum usuário cadastrado");
 		}
 	}
 
