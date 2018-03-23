@@ -1,10 +1,10 @@
 package br.hela.cirurgia.comandos;
 
-import java.sql.Date;
+import java.util.Date;
 
 public class CriarCirurgia {
 	private String tipoCirurgia;
-	private Date data;
+	private Date dataCirurgia;
 	private String clinicaResponsavel;
 	private String medicoResponsavel;
 	
@@ -19,12 +19,12 @@ public class CriarCirurgia {
 		this.tipoCirurgia = tipoCirurgia;
 	}
 	
-	public Date getData() {
-		return data;
+	public Date getDataCirurgia() {
+		return dataCirurgia;
 	}
 
-	public void setData(Date data) {
-		this.data = data;
+	public void setDataCirurgia(Date dataCirurgia) {
+		this.dataCirurgia = dataCirurgia;
 	}
 	
 	public String getClinicaResponsavel() {

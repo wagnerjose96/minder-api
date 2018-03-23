@@ -22,6 +22,9 @@
   <property name="TYPE_SEXO" value="varchar(255)" />
   <property name="TYPE_IMAGEM" value="varchar(255)" />
   <property name="TYPE_SANGUE" value="varchar(255)" />
+  <property name="TYPE_INTEGER" value="integer" />
+  <property name="TYPE_BIG_INTEGER" value="bigint" />
+  
    
   <include file="db/changelog/db.changelog-cirurgia.xml"/>
   <include file="db/changelog/db.changelog-usuario.xml"/>

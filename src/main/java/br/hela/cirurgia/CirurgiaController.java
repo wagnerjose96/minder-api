@@ -1,10 +1,9 @@
 package br.hela.cirurgia;
 
 import java.net.URI;
-import java.sql.SQLException;
 import java.util.List;
 import java.util.Optional;
-
+import java.util.concurrent.TimeoutException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -16,60 +15,90 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
-
 import br.hela.cirurgia.comandos.CriarCirurgia;
+import javassist.tools.web.BadHttpRequest;
 
 @RestController
 @RequestMapping("/cirurgias")
 public class CirurgiaController {
 	@Autowired
-	private CirurgiaService service;
+	private CirurgiaService cirurgiaService;
 
 	@GetMapping
-	public ResponseEntity<List<Cirurgia>> get(){
-		List<Cirurgia> optionalCirurgia = service.encontrar();
-		if(!optionalCirurgia.isEmpty()) {
-			return ResponseEntity.ok(optionalCirurgia);
+	public ResponseEntity<List<Cirurgia>> getCirurgias() throws TimeoutException, NullPointerException, BadHttpRequest{
+		verificaListaCirurgia();
+		verificaTempoResposta();
+		Optional<List<Cirurgia>> optionalCirurgias = cirurgiaService.encontrar();
+		if (optionalCirurgias.isPresent()) {
+			return ResponseEntity.ok(optionalCirurgias.get());
 		}
-		return ResponseEntity.notFound().build();
+		throw new BadHttpRequest();
 	}
 	
 	@GetMapping("/{id}")
-	public ResponseEntity<Cirurgia> getCirurgia(@PathVariable CirurgiaId id) {
-		Optional<Cirurgia> optionalCirurgia = service.encontrar(id);
+	public ResponseEntity<Cirurgia> getCirurgiaPorId(@PathVariable CirurgiaId id)
+			throws TimeoutException, NullPointerException, BadHttpRequest {
+		verificaCirurgiaExistente(id);
+		verificaTempoResposta();
+		Optional<Cirurgia> optionalCirurgia = cirurgiaService.encontrar(id);
 		if (optionalCirurgia.isPresent()) {
 			return ResponseEntity.ok(optionalCirurgia.get());
 		}
-		return ResponseEntity.notFound().build();
+		throw new BadHttpRequest();
 	}
-	
+
 	@DeleteMapping("/{id}")
-	public ResponseEntity<CirurgiaId> deletarCirurgia(@PathVariable CirurgiaId id) throws SQLException {
-		Optional<Cirurgia> optionalCirurgia = service.encontrar(id);
-		if (optionalCirurgia.isPresent()) {
-			service.deletar(id);
-			return ResponseEntity.accepted().build();
+	public ResponseEntity<String> deletarCirurgia(@PathVariable CirurgiaId id) throws TimeoutException, NullPointerException,  BadHttpRequest {
+		verificaCirurgiaExistente(id);
+		verificaTempoResposta();
+		Optional<String> optionalCirurgia = cirurgiaService.deletar(id);
+		if (!optionalCirurgia.isPresent()) {
+			return ResponseEntity.ok(optionalCirurgia.get());
 		}
-		return ResponseEntity.badRequest().build();
+		throw new BadHttpRequest();
 	}
 
 	@PostMapping
-	public ResponseEntity<CirurgiaId> postCirurgia(@RequestBody CriarCirurgia comando) throws SQLException {
-		Optional<CirurgiaId> optionalCirurgiaId = service.executar(comando);
+	public ResponseEntity<String> postCirurgia(@RequestBody CriarCirurgia comando)
+			throws TimeoutException, NullPointerException, BadHttpRequest {
+		verificaTempoResposta();
+		Optional<CirurgiaId> optionalCirurgiaId = cirurgiaService.executar(comando);
+		verificaCirurgiaExistente(optionalCirurgiaId.get());
 		if (optionalCirurgiaId.isPresent()) {
-			URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(optionalCirurgiaId.get()).toUri();
+			URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
+					.buildAndExpand(optionalCirurgiaId.get()).toUri();
 			return ResponseEntity.created(location).build();
 		}
-		return ResponseEntity.badRequest().build();
+		throw new BadHttpRequest();
 	}
-	
-	@PutMapping("/{id}")
-	public ResponseEntity<CirurgiaId> putCirurgia(@RequestBody Cirurgia comando) throws SQLException {
-		Optional<CirurgiaId> optionalCirurgiaId = service.alterar(comando);
+
+	@PutMapping()
+	public ResponseEntity<String> putCirurgia(@RequestBody Cirurgia comando) throws TimeoutException, NullPointerException, BadHttpRequest {
+		verificaCirurgiaExistente(comando.getIdCirurgia());
+		verificaTempoResposta();
+		Optional<CirurgiaId> optionalCirurgiaId = cirurgiaService.alterar(comando);
 		if (optionalCirurgiaId.isPresent()) {
-			URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(optionalCirurgiaId.get()).toUri();
+			URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
+					.buildAndExpand(optionalCirurgiaId.get()).toUri();
 			return ResponseEntity.created(location).build();
 		}
-		return ResponseEntity.badRequest().build();
+		throw new BadHttpRequest();
+	}
+	private void verificaTempoResposta() throws TimeoutException {
+		if (System.currentTimeMillis() == 10) {
+			throw new TimeoutException("Servidor sem resposta");
+		}
+	}
+
+	private void verificaCirurgiaExistente(CirurgiaId id) throws NullPointerException {
+		if (!cirurgiaService.encontrar(id).isPresent()) {
+			throw new NullPointerException("Cirurgia não encontrada");
+		}
+	}
+
+	private void verificaListaCirurgia() throws NullPointerException {
+		if (!cirurgiaService.encontrar().isPresent()) {
+			throw new NullPointerException("Nenhuma cirurgia cadastrada");
+		}
 	}
 }
