@@ -1,9 +1,10 @@
 package br.hela.alergia;
 
 import java.net.URI;
-import java.sql.SQLException;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.TimeoutException;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -25,9 +26,9 @@ public class AlergiaController {
 	private AlergiaService alergiaService;
 
 	@GetMapping
-	public ResponseEntity<List<Alergia>> getAlergias() throws SQLException, NullPointerException, BadHttpRequest{
+	public ResponseEntity<List<Alergia>> getAlergias() throws TimeoutException, NullPointerException, BadHttpRequest{
 		verificaListaAlergia();
-		verificaRetornoSQL();
+		verificaTempoResposta();
 		Optional<List<Alergia>> optionalAlergias = alergiaService.encontrar();
 		if (optionalAlergias.isPresent()) {
 			return ResponseEntity.ok(optionalAlergias.get());
@@ -37,9 +38,9 @@ public class AlergiaController {
 	
 	@GetMapping("/{id}")
 	public ResponseEntity<Alergia> getAlergiaPorId(@PathVariable AlergiaId id)
-			throws SQLException, NullPointerException, BadHttpRequest {
+			throws TimeoutException, NullPointerException, BadHttpRequest {
 		verificaAlergiaExistente(id);
-		verificaRetornoSQL();
+		verificaTempoResposta();
 		Optional<Alergia> optionalAlergia = alergiaService.encontrar(id);
 		if (optionalAlergia.isPresent()) {
 			return ResponseEntity.ok(optionalAlergia.get());
@@ -48,9 +49,9 @@ public class AlergiaController {
 	}
 
 	@DeleteMapping("/{id}")
-	public ResponseEntity<String> deletarAlergia(@PathVariable AlergiaId id) throws SQLException, NullPointerException,  BadHttpRequest {
+	public ResponseEntity<String> deletarAlergia(@PathVariable AlergiaId id) throws TimeoutException, NullPointerException,  BadHttpRequest {
 		verificaAlergiaExistente(id);
-		verificaRetornoSQL();
+		verificaTempoResposta();
 		Optional<String> optionalAlergia = alergiaService.deletar(id);
 		if (!optionalAlergia.isPresent()) {
 			return ResponseEntity.ok(optionalAlergia.get());
@@ -60,8 +61,8 @@ public class AlergiaController {
 
 	@PostMapping
 	public ResponseEntity<String> postAlergia(@RequestBody CriarAlergia comando)
-			throws SQLException, NullPointerException, BadHttpRequest {
-		verificaRetornoSQL();
+			throws TimeoutException, NullPointerException, BadHttpRequest {
+		verificaTempoResposta();
 		Optional<AlergiaId> optionalAlergiaId = alergiaService.executar(comando);
 		verificaAlergiaExistente(optionalAlergiaId.get());
 		if (optionalAlergiaId.isPresent()) {
@@ -73,9 +74,9 @@ public class AlergiaController {
 	}
 
 	@PutMapping()
-	public ResponseEntity<String> putAlergia(@RequestBody Alergia comando) throws SQLException, NullPointerException, BadHttpRequest {
+	public ResponseEntity<String> putAlergia(@RequestBody Alergia comando) throws TimeoutException, NullPointerException, BadHttpRequest {
 		verificaAlergiaExistente(comando.getIdAlergia());
-		verificaRetornoSQL();
+		verificaTempoResposta();
 		Optional<AlergiaId> optionalAlergiaId = alergiaService.alterar(comando);
 		if (optionalAlergiaId.isPresent()) {
 			URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
@@ -84,9 +85,9 @@ public class AlergiaController {
 		}
 		throw new BadHttpRequest();
 	}
-	private void verificaRetornoSQL() throws SQLException {
+	private void verificaTempoResposta() throws TimeoutException {
 		if (System.currentTimeMillis() == 10) {
-			throw new SQLException("Servidor SQL sem resposta");
+			throw new TimeoutException("Servidor sem resposta");
 		}
 	}
 
@@ -98,7 +99,7 @@ public class AlergiaController {
 
 	private void verificaListaAlergia() throws NullPointerException {
 		if (!alergiaService.encontrar().isPresent()) {
-			throw new NullPointerException("Alergia não encontrada");
+			throw new NullPointerException("Nenhuma alergia cadastrada");
 		}
 	}
 }
