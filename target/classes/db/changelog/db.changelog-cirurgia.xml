@@ -7,18 +7,19 @@
 
 	<changeSet id="5" author="camila.morais">
 		<createTable tableName="cirurgia">
-			<column name="id_cirugia" type="${TYPE_ID}">
-				<constraints nullable="false" primaryKey="true" primaryKeyName="PK_CIRURGIA"/>
+		<column name="id_cirurgia" type="${TYPE_ID}">
+				<constraints nullable="false" primaryKey="true"
+					primaryKeyName="PK_CIRURGIA" />
 			</column>
 			<column name="tipo_cirurgia" type="${TYPE_TEXTO}">
 				<constraints nullable="false" />
-			</column>	
+			</column>
 			<column name="data_cirurgia" type="${TYPE_DATA}">
 				<constraints nullable="false" />
 			</column>
 			<column name="clinica_responsavel" type="${TYPE_TEXTO}">
 				<constraints nullable="false" />
-			</column>	
+			</column>
 			<column name="medico_responsavel" type="${TYPE_TEXTO}">
 				<constraints nullable="false" />
 			</column>

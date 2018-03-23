@@ -31,7 +31,7 @@ public class DoencaService {
 	
 	public Optional<String> deletar(DoencaId id) {
 			doencaRepo.deleteById(id);
-			return Optional.of("Doença -> " + id + ": deletado com sucesso");
+			return Optional.of("Doença -> " + id + " deletado com sucesso");
 	}
 	
 	public Optional<DoencaId> alterar(Doenca comando) {

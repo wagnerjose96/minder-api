@@ -49,5 +49,8 @@ public class RestExceptionHandler{
         errorDetail.setDeveloperMessage(message.getClass().getName());
 		return new ResponseEntity<>(errorDetail, HttpStatus.BAD_REQUEST);
 	}
+	
+	
+
 
 }

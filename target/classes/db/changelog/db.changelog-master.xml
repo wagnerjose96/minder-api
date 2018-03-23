@@ -23,11 +23,12 @@
   <property name="TYPE_IMAGEM" value="varchar(255)" />
   <property name="TYPE_SANGUE" value="varchar(255)" />
    
+  <include file="db/changelog/db.changelog-cirurgia.xml"/>
   <include file="db/changelog/db.changelog-usuario.xml"/>
   <include file="db/changelog/db.changelog-doenca.xml"/>
   <include file="db/changelog/db.changelog-medicamento.xml"/>
   <include file="db/changelog/db.changelog-alergia.xml"/>
-  <include file="db/changelog/db.changelog-cirurgia.xml"/>
+  
   
   
 </databaseChangeLog>

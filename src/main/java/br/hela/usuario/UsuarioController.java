@@ -55,7 +55,7 @@ public class UsuarioController {
 	}
 
 	@DeleteMapping("/{id}")
-	public ResponseEntity<String> deleteUsuario(@PathVariable UsuarioId id)
+	public ResponseEntity<Optional<String>> deleteUsuario(@PathVariable UsuarioId id)
 			throws SQLException, NullPointerException, BadHttpRequest {
 
 		verificaUsuarioExitente(id);
@@ -63,7 +63,7 @@ public class UsuarioController {
 
 		Optional<String> resultado = service.deletar(id);
 		if (!resultado.isPresent()) {
-			return ResponseEntity.ok(resultado.get());
+			return ResponseEntity.ok(resultado);
 		}
 		throw new BadHttpRequest();
 	}

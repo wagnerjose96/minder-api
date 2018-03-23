@@ -56,7 +56,7 @@ public class DoencaController {
 	
 	
 	@DeleteMapping("/{id}")
-	public ResponseEntity<String> deletarDoenca (@PathVariable DoencaId id) 
+	public ResponseEntity<Optional<String>> deletarDoenca (@PathVariable DoencaId id) 
 			throws SQLException, NullPointerException, BadHttpRequest {
 		
 		verificaDoencaExistente(id);
@@ -64,8 +64,7 @@ public class DoencaController {
 		
 		Optional<String> optionalDoenca = doencaService.deletar(id);
 		if(optionalDoenca.isPresent()) {
-			doencaService.deletar(id);
-			return ResponseEntity.ok(optionalDoenca.get());
+			return ResponseEntity.ok(optionalDoenca);
 		}
 		throw new BadHttpRequest();
 	}
@@ -102,19 +101,19 @@ public class DoencaController {
 	
 	private void verificaRetornoSQL() throws SQLException {
 		if(System.currentTimeMillis() == 10) {
-			throw new SQLException();
+			throw new SQLException("Servidor SQL sem resposta");
 		}		
 	}
 	
 	private void verificaDoencaExistente(DoencaId id) throws NullPointerException {
 		if (!doencaService.encontrar(id).isPresent()) {
-			throw new NullPointerException();
+			throw new NullPointerException("Doença não encontrada");
 		}
 	}
 	
 	private void verificaListaDoenca() throws NullPointerException {
 		if (!doencaService.encontrar().isPresent()) {
-			throw new NullPointerException();
+			throw new NullPointerException("Nenhuma doença cadastrada");
 		}
 	}
 }
