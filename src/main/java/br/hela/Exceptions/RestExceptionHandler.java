@@ -55,7 +55,7 @@ public class RestExceptionHandler{
 	
 	@ResponseStatus(code=HttpStatus.NOT_FOUND)
 	@ExceptionHandler({ NullPointerException.class })
-	public @ResponseBody ResponseEntity<?> NullPointerException(NullPointerException message) {
+	public @ResponseBody ResponseEntity<?> handleNullPointerException(NullPointerException message) {
 
 		ErrorDetail errorDetail = new ErrorDetail();
         errorDetail.setHttpStatus(HttpStatus.NOT_FOUND.value());
@@ -72,7 +72,7 @@ public class RestExceptionHandler{
 		ErrorDetail errorDetail = new ErrorDetail();
 		errorDetail.setHttpStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
 		errorDetail.setType("Erro ao executar comando interno");
-        errorDetail.setError(message.getMessage());
+		errorDetail.setError(message.getMessage());
         errorDetail.setDeveloperMessage(message.getClass().getName());
 		return new ResponseEntity<>(errorDetail, HttpStatus.INTERNAL_SERVER_ERROR);
 	}
@@ -84,9 +84,12 @@ public class RestExceptionHandler{
 		ErrorDetail errorDetail = new ErrorDetail();
 		errorDetail.setHttpStatus(HttpStatus.BAD_REQUEST.value());
 		errorDetail.setType("Erro ao realizar a requisição");
-        errorDetail.setError(message.getMessage());
+		errorDetail.setError(message.getMessage());
         errorDetail.setDeveloperMessage(message.getClass().getName());
 		return new ResponseEntity<>(errorDetail, HttpStatus.BAD_REQUEST);
 	}
+	
+	
+
 
 }
