@@ -25,17 +25,18 @@ public class DoencaService {
 		return doencaRepo.findById(id);
 	}
 
-	public List<Doenca> encontrar() {
-		return doencaRepo.findAll();
+	public Optional<List<Doenca>> encontrar() {
+			return Optional.of(doencaRepo.findAll());
 	}
-
-	public void deletar(DoencaId id) {
-		doencaRepo.deleteById(id);
+	
+	public Optional<String> deletar(DoencaId id) {
+			doencaRepo.deleteById(id);
+			return Optional.of("Doença -> " + id + " deletado com sucesso");
 	}
 	
 	public Optional<DoencaId> alterar(Doenca comando) {
-		doencaRepo.save(comando);
-		return Optional.of(comando.getIdDoenca());
+			doencaRepo.save(comando);
+			return Optional.of(comando.getIdDoenca());
 	}
 
 }
