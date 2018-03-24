@@ -14,14 +14,11 @@ public class Cirurgia {
 	@EmbeddedId
 	@AttributeOverride(name="value", column=@Column(name="id"))
 	private CirurgiaId idCirurgia;
-	@Column
 	private String tipoCirurgia;
-	@Column
 	private Date dataCirurgia;
-	@Column
 	private String clinicaResponsavel;
-	@Column
 	private String medicoResponsavel;
+	private String medicamentoConsumido;
 
 	public Cirurgia() {
 	}
@@ -32,6 +29,7 @@ public class Cirurgia {
 		this.dataCirurgia = comando.getDataCirurgia();
 		this.clinicaResponsavel = comando.getClinicaResponsavel();
 		this.medicoResponsavel = comando.getMedicoResponsavel();
+		this.medicamentoConsumido = comando.getMedicamentoConsumido();
 	}
 
 	public CirurgiaId getIdCirurgia() {
@@ -68,6 +66,14 @@ public class Cirurgia {
 
 	public void setMedicoResponsavel(String medicoResponsavel) {
 		this.medicoResponsavel = medicoResponsavel;
+	}
+	
+	public String getMedicamentoConsumido() {
+		return medicamentoConsumido;
+	}
+
+	public void setMedicamentoConsumido(String medicamentoConsumido) {
+		this.medicamentoConsumido = medicamentoConsumido;
 	}
 	
 	@Override
