@@ -52,7 +52,7 @@ public class CirurgiaController {
 		verificaCirurgiaExistente(id);
 		verificaTempoResposta();
 		Optional<String> optionalCirurgia = cirurgiaService.deletar(id);
-		if (!optionalCirurgia.isPresent()) {
+		if (optionalCirurgia.isPresent()) {
 			return ResponseEntity.ok(optionalCirurgia.get());
 		}
 		throw new BadHttpRequest();
