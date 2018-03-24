@@ -7,18 +7,18 @@ import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 
+import org.hibernate.envers.Audited;
+
 import br.hela.doenca.comandos.CriarDoenca;
 
 @Entity
+@Audited
 public class Doenca {
 	@EmbeddedId
 	@AttributeOverride(name="value", column=@Column(name="idDoenca"))
 	private DoencaId idDoenca;
-	@Column
 	private String nomeDoenca;
-	@Column
 	private Date dataDescoberta;
-	@Column
 	private String medicamento;
 	
 	public Doenca() {
