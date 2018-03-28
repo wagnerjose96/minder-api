@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd
+        http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
+
+	<changeSet id="create_table_usuario" author="wagner.junior">
+		<createTable tableName="usuario">
+			<column name="id" type="${TYPE_ID}">
+				<constraints nullable="false" unique="true" primaryKey="true"
+					primaryKeyName="PK_USUARIO" />
+			</column>
+			<column name="nome_completo" type="${TYPE_NOME}">
+				<constraints nullable="false" />
+			</column>
+			<column name="nome_usuario" type="${TYPE_NOME}">
+				<constraints nullable="false" unique="true" />
+			</column>
+			<column name="email" type="${TYPE_EMAIL}">
+				<constraints nullable="false" unique="true" />
+			</column>
+			<column name="senha" type="${TYPE_SENHA}">
+				<constraints nullable="false" />
+			</column>
+			<column name="tipo_sangue" type="${TYPE_SANGUE}">
+				<constraints nullable="false" />
+			</column>
+			<column name="endereco" type="${TYPE_ENDERECO}">
+				<constraints nullable="true" />
+			</column>
+			<column name="telefone" type="${TYPE_TELEFONE}">
+				<constraints nullable="false" />
+			</column>
+			<column name="data_nascimento" type="${TYPE_DATA}">
+				<constraints nullable="false" />
+			</column>
+			<column name="sexo" type="${TYPE_SEXO}">
+				<constraints nullable="false" />
+			</column>
+			<column name="imagem_usuario" type="${TYPE_IMAGEM}">
+				<constraints nullable="false" />
+			</column>
+		</createTable>
+	</changeSet>
+	
+	<changeSet id="create_table_usuario_aud" author="wagner.junior">
+		<createTable tableName="usuario_aud">
+			<column name="id" type="${TYPE_ID}">
+				<constraints nullable="false" />
+			</column>
+			<column name="nome_completo" type="${TYPE_NOME}">
+				<constraints nullable="false" />
+			</column>
+			<column name="nome_usuario" type="${TYPE_NOME}">
+				<constraints nullable="false" unique="true" />
+			</column>
+			<column name="email" type="${TYPE_EMAIL}">
+				<constraints nullable="false" unique="true" />
+			</column>
+			<column name="senha" type="${TYPE_SENHA}">
+				<constraints nullable="false" />
+			</column>
+			<column name="tipo_sangue" type="${TYPE_SANGUE}">
+				<constraints nullable="false" />
+			</column>
+			<column name="endereco" type="${TYPE_ENDERECO}">
+				<constraints nullable="true" />
+			</column>
+			<column name="telefone" type="${TYPE_TELEFONE}">
+				<constraints nullable="false" />
+			</column>
+			<column name="data_nascimento" type="${TYPE_DATA}">
+				<constraints nullable="false" />
+			</column>
+			<column name="sexo" type="${TYPE_SEXO}">
+				<constraints nullable="false" />
+			</column>
+			<column name="imagem_usuario" type="${TYPE_IMAGEM}">
+				<constraints nullable="false" />
+			</column>
+			<column name="rev" type="${TYPE_INTEGER}">
+				<constraints nullable="false" referencedTableName="revinfo"
+					referencedColumnNames="rev" foreignKeyName="FK_USUARIO_REVINFO" />
+			</column>
+			<column name="revtype" type="${TYPE_INTEGER}">
+				<constraints nullable="false" />
+			</column>
+		</createTable>
+		<addPrimaryKey constraintName="PK_USUARIO_AUD"
+			tableName="usuario_aud" columnNames="id, rev" />
+	</changeSet>
+	
+</databaseChangeLog>

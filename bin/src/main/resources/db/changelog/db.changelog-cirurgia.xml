@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd
+        http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
+
+	<changeSet id="create_table_cirurgia" author="camila.morais">
+		<createTable tableName="cirurgia">
+			<column name="id" type="${TYPE_ID}">
+				<constraints nullable="false" primaryKey="true"
+					primaryKeyName="PK_CIRURGIA" />
+			</column>
+			<column name="tipo_cirurgia" type="${TYPE_TEXTO}">
+				<constraints nullable="false" />
+			</column>
+			<column name="data_cirurgia" type="${TYPE_DATA}">
+				<constraints nullable="false" />
+			</column>
+			<column name="clinica_responsavel" type="${TYPE_TEXTO}">
+				<constraints nullable="false" />
+			</column>
+			<column name="medico_responsavel" type="${TYPE_TEXTO}">
+				<constraints nullable="false" />
+			</column>
+			<column name="medicamento_consumido" type="${TYPE_TEXTO}">
+				<constraints nullable="false" />
+			</column>
+		</createTable>
+	</changeSet>
+
+	<changeSet id="create_table_cirurgia_aud" author="camila.morais">
+		<createTable tableName="cirurgia_aud">
+			<column name="id" type="${TYPE_ID}">
+				<constraints nullable="true" />
+			</column>
+			<column name="tipo_cirurgia" type="${TYPE_TEXTO}">
+				<constraints nullable="true" />
+			</column>
+			<column name="data_cirurgia" type="${TYPE_DATA}">
+				<constraints nullable="true" />
+			</column>
+			<column name="clinica_responsavel" type="${TYPE_TEXTO}">
+				<constraints nullable="true" />
+			</column>
+			<column name="medico_responsavel" type="${TYPE_TEXTO}">
+				<constraints nullable="true" />
+			</column>
+			<column name="medicamento_consumido" type="${TYPE_TEXTO}">
+				<constraints nullable="true" />
+			</column>
+			<column name="rev" type="${TYPE_INTEGER}">
+				<constraints nullable="true" referencedTableName="revinfo"
+					referencedColumnNames="rev" foreignKeyName="cirurgia_revinfo_fk" />
+			</column>
+			<column name="revtype" type="${TYPE_INTEGER}">
+				<constraints nullable="true" />
+			</column>
+		</createTable>
+		<addPrimaryKey constraintName="cirurgia_aud_pkey"
+			tableName="cirurgia_aud" columnNames="id, rev" />
+	</changeSet>
+
+</databaseChangeLog>
