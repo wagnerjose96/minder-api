@@ -51,5 +51,6 @@ public class CriarCirurgia {
 	public void setMedicamentoConsumido(String medicamentoConsumido) {
 		this.medicamentoConsumido = medicamentoConsumido;
 	}
+
 }
 
