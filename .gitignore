@@ -1,0 +1,5 @@
+# Para arquivos Java compilados
+*.class
+
+# Para os arquivos ".properties"
+*.properties
