@@ -1,6 +1,20 @@
+# Para arquivos Java compilados
+*.class
+*.log
+*.ctxt
+.mtj.tmp/
+*.jar
+*.war
+*.ear
+*.zip
+*.tar.gz
+*.rar
+
+# Para os arquivos ".properties"
+*.properties
+
 # Eclipse
 .classpath
-*.class
 .project
 .settings/
  
