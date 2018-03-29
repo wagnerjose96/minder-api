@@ -10,6 +10,7 @@ import javax.persistence.Entity;
 import org.hibernate.envers.Audited;
 
 import br.hela.doenca.comandos.CriarDoenca;
+import br.hela.medicamento.MedicamentoId;
 
 @Entity
 @Audited
@@ -19,7 +20,7 @@ public class Doenca {
 	private DoencaId idDoenca;
 	private String nomeDoenca;
 	private Date dataDescoberta;
-	private String medicamento;
+	private MedicamentoId medicamento;
 	
 	public Doenca() {
 		
@@ -44,7 +45,7 @@ public class Doenca {
 		return dataDescoberta;
 	}
 
-	public String getMedicamento() {
+	public MedicamentoId getMedicamento() {
 		return medicamento;
 	}
 	

@@ -1,11 +1,14 @@
 package br.hela.doenca.comandos;
 
 import java.util.Date;
+import java.util.List;
+
+import br.hela.medicamento.MedicamentoId;
 
 public class CriarDoenca {
 	private String nomeDoenca;
 	private Date dataDescoberta;
-	private String medicamento;
+	private MedicamentoId medicamento;
 	
 	public CriarDoenca() {
 	}
@@ -26,11 +29,11 @@ public class CriarDoenca {
 		this.dataDescoberta = dataDescoberta;
 	}
 
-	public String getMedicamento() {
+	public MedicamentoId getMedicamento() {
 		return medicamento;
 	}
 
-	public void setMedicamento(String medicamento) {
+	public void setMedicamento(MedicamentoId medicamento) {
 		this.medicamento = medicamento;
 	}
 

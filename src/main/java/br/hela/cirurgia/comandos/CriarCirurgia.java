@@ -2,12 +2,14 @@ package br.hela.cirurgia.comandos;
 
 import java.util.Date;
 
+import br.hela.medicamento.MedicamentoId;
+
 public class CriarCirurgia {
 	private String tipoCirurgia;
 	private Date dataCirurgia;
 	private String clinicaResponsavel;
 	private String medicoResponsavel;
-	private String medicamentoConsumido;
+	private MedicamentoId medicamentoConsumido;
 	
 	public CriarCirurgia() {
 	}
@@ -44,11 +46,11 @@ public class CriarCirurgia {
 		this.medicoResponsavel = medicoResponsavel;
 	}
 	
-	public String getMedicamentoConsumido() {
+	public MedicamentoId getMedicamentoConsumido() {
 		return medicamentoConsumido;
 	}
 
-	public void setMedicamentoConsumido(String medicamentoConsumido) {
+	public void setMedicamentoConsumido(MedicamentoId medicamentoConsumido) {
 		this.medicamentoConsumido = medicamentoConsumido;
 	}
 

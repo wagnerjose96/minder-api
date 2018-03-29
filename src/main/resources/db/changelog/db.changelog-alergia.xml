@@ -19,8 +19,9 @@
 			<column name="data_descoberta" type="${TYPE_DATA}">
 				<constraints nullable="false" />
 			</column>
-			<column name="medicamento" type="${TYPE_DESCRICAO}">
-				<constraints nullable="false" />
+			<column name="medicamento" type="${TYPE_ID}">
+				<constraints nullable="false" referencedTableName="medicamento"
+					referencedColumnNames="id_medicamento" foreignKeyName="FK_ALERGIA_MEDICAMENTO" />
 			</column>
 			<column name="local_afetado" type="${TYPE_DESCRICAO}">
 				<constraints nullable="false" />

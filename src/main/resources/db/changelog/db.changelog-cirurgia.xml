@@ -23,8 +23,9 @@
 			<column name="medico_responsavel" type="${TYPE_TEXTO}">
 				<constraints nullable="false" />
 			</column>
-			<column name="medicamento_consumido" type="${TYPE_TEXTO}">
-				<constraints nullable="false" />
+			<column name="medicamento" type="${TYPE_ID}">
+				<constraints nullable="false" referencedTableName="medicamento"
+					referencedColumnNames="id_medicamento" foreignKeyName="FK_CIRURGIA_MEDICAMENTO" />
 			</column>
 		</createTable>
 	</changeSet>

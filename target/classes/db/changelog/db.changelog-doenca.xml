@@ -16,10 +16,15 @@
 			<column name="data_descoberta" type="${TYPE_DATA}">
 				<constraints nullable="false" />
 			</column>
-			<column name="medicamento" type="${TYPE_DESCRICAO}">
-				<constraints nullable="true" />
-			</column>			
+			<column name="medicamento" type="${TYPE_ID}">
+				<constraints nullable="false" />
+			</column>
 		</createTable>
+		<addForeignKeyConstraint baseColumnNames="medicamento"
+	                             baseTableName="doenca"
+	                             constraintName="FK_DOENCA_MEDICAMENTO"
+	                             referencedColumnNames="id_medicamento"
+	                             referencedTableName="medicamento"/>
 	</changeSet>
 	
 	<changeSet id="create_table_doenca_aud" author="douglas.mendonca">
@@ -34,7 +39,7 @@
 				<constraints nullable="true" />
 			</column>
 			<column name="medicamento" type="${TYPE_DESCRICAO}">
-				<constraints nullable="true" />
+				<constraints nullable="true" foreignKeyName="FK_DOENCA_MEDICAMENTO" references="medicamento(id_medicamento)"/>
 			</column>
 			<column name="rev" type="${TYPE_INTEGER}">
 				<constraints nullable="false" referencedTableName="revinfo"

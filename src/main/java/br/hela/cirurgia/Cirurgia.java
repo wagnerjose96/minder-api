@@ -6,6 +6,8 @@ import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import br.hela.cirurgia.comandos.CriarCirurgia;
+import br.hela.medicamento.MedicamentoId;
+
 import org.hibernate.envers.Audited;
 
 @Entity
@@ -18,7 +20,7 @@ public class Cirurgia {
 	private Date dataCirurgia;
 	private String clinicaResponsavel;
 	private String medicoResponsavel;
-	private String medicamentoConsumido;
+	private MedicamentoId medicamento;
 
 	public Cirurgia() {
 	}
@@ -29,7 +31,7 @@ public class Cirurgia {
 		this.dataCirurgia = comando.getDataCirurgia();
 		this.clinicaResponsavel = comando.getClinicaResponsavel();
 		this.medicoResponsavel = comando.getMedicoResponsavel();
-		this.medicamentoConsumido = comando.getMedicamentoConsumido();
+		this.medicamento = comando.getMedicamentoConsumido();
 	}
 
 	public CirurgiaId getIdCirurgia() {
@@ -68,12 +70,12 @@ public class Cirurgia {
 		this.medicoResponsavel = medicoResponsavel;
 	}
 	
-	public String getMedicamentoConsumido() {
-		return medicamentoConsumido;
+	public MedicamentoId getMedicamentoConsumido() {
+		return medicamento;
 	}
 
-	public void setMedicamentoConsumido(String medicamentoConsumido) {
-		this.medicamentoConsumido = medicamentoConsumido;
+	public void setMedicamentoConsumido(MedicamentoId medicamentoConsumido) {
+		this.medicamento = medicamentoConsumido;
 	}
 	
 	@Override

@@ -9,6 +9,7 @@ import javax.persistence.Entity;
 
 import org.hibernate.envers.Audited;
 
+import br.hela.medicamento.MedicamentoId;
 import br.hela.medicamentoContinuo.comandos.CriarMedicamentoContinuo;
 
 
@@ -19,7 +20,7 @@ public class MedicamentoContinuo {
 	@EmbeddedId
 	@AttributeOverride(name="value", column=@Column(name="idMedicamentoContinuo"))
 	private MedicamentoContinuoId idMedicamentoContinuo; 
-	private int idMedicamento; //Será trocado pelo ID da classe medicamento
+	private MedicamentoId idMedicamento;
 	private String tipoMedicamento;
 	private int quantidadeDeConsumo; 
 	private int intervaloDeConsumo;
@@ -44,11 +45,11 @@ public class MedicamentoContinuo {
 		return idMedicamentoContinuo;
 	}
 
-	public int getIdMedicamento() {
+	public MedicamentoId getIdMedicamento() {
 		return idMedicamento;
 	}
 
-	public void setIdMedicamento(int idMedicamento) {
+	public void setIdMedicamento(MedicamentoId idMedicamento) {
 		this.idMedicamento = idMedicamento;
 	}
 

@@ -10,6 +10,7 @@ import org.hibernate.envers.Audited;
 
 import br.hela.alergia.comandos.CriarAlergia;
 import br.hela.alergia.comandos.EditarAlergia;
+import br.hela.medicamento.MedicamentoId;
 
 @Entity
 @Audited
@@ -21,7 +22,7 @@ public class Alergia {
 	private String localAfetado;
 	private Date dataDescoberta;
 	private String efeitos;
-	private String medicamento;
+	private MedicamentoId medicamento;
 	
 	public Alergia() {
 		
@@ -65,7 +66,7 @@ public class Alergia {
 		return efeitos;
 	}
 
-	public String getMedicamento() {
+	public MedicamentoId getMedicamento() {
 		return medicamento;
 	}
 	
