@@ -17,9 +17,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import com.wordnik.swagger.annotations.Api;
+import com.wordnik.swagger.annotations.ApiOperation;
+
 import br.hela.medicamentoContinuo.comandos.CriarMedicamentoContinuo;
 import javassist.tools.web.BadHttpRequest;
 
+@Api(value = "medicamentoContínuo", description = "Documentação dos métodos da classe MedicamentoContinuoController")
 @RestController
 @RequestMapping("/medicamentoContinuo")
 public class MedicamentoContinuoController {
@@ -27,6 +31,7 @@ public class MedicamentoContinuoController {
 	@Autowired
 	private MedicamentoContinuoService service;
 	
+	@ApiOperation(value = "Busque todos os medicamentos contínuos")
 	@GetMapping
 	public ResponseEntity<List<MedicamentoContinuo>> getMedicamentoContinuo()
 			throws SQLException, NullPointerException, BadHttpRequest {
@@ -40,6 +45,7 @@ public class MedicamentoContinuoController {
 			throw new BadHttpRequest();
 	}
 	
+	@ApiOperation(value = "Busque um medicamento contínuo pelo ID")
 	@GetMapping("/{id}")
 	public ResponseEntity<MedicamentoContinuo> getMedicamentoContinuo(@PathVariable MedicamentoContinuoId id)
 			throws SQLException, NullPointerException, BadHttpRequest {
@@ -52,7 +58,8 @@ public class MedicamentoContinuoController {
 		}	
 			throw new BadHttpRequest();
 	}
-
+	
+	@ApiOperation(value = "Delete um medicamento contínuo pelo ID")
 	@DeleteMapping("/{id}")
 	public ResponseEntity<Optional<String>> deletarMedicamentoContinuo(@PathVariable MedicamentoContinuoId id) 
 			throws SQLException, NullPointerException, BadHttpRequest { 
@@ -67,6 +74,7 @@ public class MedicamentoContinuoController {
 		throw new BadHttpRequest();
 	}
 	
+	@ApiOperation(value = "Cadastre um novo medicamento contínuo")
 	@PostMapping
 	public ResponseEntity<MedicamentoContinuoId> postMedicamentoContinuo(@RequestBody CriarMedicamentoContinuo comando)
 		throws SQLException, NullPointerException, BadHttpRequest {
@@ -83,6 +91,7 @@ public class MedicamentoContinuoController {
 		throw new BadHttpRequest();
 	}
 	
+	@ApiOperation(value = "Altere um medicamento contínuo")
 	@PutMapping
 	public ResponseEntity<MedicamentoContinuoId> putMedicamentoContinuo(@RequestBody MedicamentoContinuo comando)
 		throws SQLException, NullPointerException, BadHttpRequest{

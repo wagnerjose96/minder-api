@@ -18,16 +18,21 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import com.wordnik.swagger.annotations.Api;
+import com.wordnik.swagger.annotations.ApiOperation;
+
 import br.hela.usuario.comandos.CriarUsuario;
 import br.hela.usuario.comandos.EditarUsuario;
 import javassist.tools.web.BadHttpRequest;
 
+@Api(value = "usuário", description = "Documentação dos métodos da classe UsuarioController")
 @RestController
 @RequestMapping("/usuarios")
 public class UsuarioController {
 	@Autowired
 	private UsuarioService service;
 
+	@ApiOperation(value = "Busque todos os usuários")
 	@GetMapping
 	public ResponseEntity<List<Usuario>> getUsuarios() 
 			throws TimeoutException, NullPointerException, BadHttpRequest {
@@ -41,6 +46,7 @@ public class UsuarioController {
 		throw new BadHttpRequest();
 	}
 
+	@ApiOperation(value = "Busque u usuário pelo ID")
 	@GetMapping("/{id}")
 	public ResponseEntity<Usuario> getUsuarioId(@PathVariable UsuarioId id)
 			throws TimeoutException, NullPointerException, BadHttpRequest {
@@ -53,7 +59,8 @@ public class UsuarioController {
 		}
 		throw new BadHttpRequest();
 	}
-
+	
+	@ApiOperation(value = "Delete um usuário pelo ID")
 	@DeleteMapping("/{id}")
 	public ResponseEntity<Optional<String>> deleteUsuario(@PathVariable UsuarioId id)
 			throws TimeoutException, NullPointerException, BadHttpRequest {
@@ -67,6 +74,7 @@ public class UsuarioController {
 		throw new BadHttpRequest();
 	}
 
+	@ApiOperation(value = "Cadastre um novo usuário")
 	@PostMapping
 	public ResponseEntity<UsuarioId> postUsuario(@RequestBody CriarUsuario comando)
 			throws TimeoutException, NullPointerException, BadHttpRequest {
@@ -81,7 +89,8 @@ public class UsuarioController {
 		}
 		throw new BadHttpRequest();
 	}
-
+	
+	@ApiOperation(value = "Altere um usuário")
 	@PutMapping
 	public ResponseEntity<UsuarioId> putUsuario(@RequestBody EditarUsuario comando)
 			throws TimeoutException, NullPointerException, BadHttpRequest {

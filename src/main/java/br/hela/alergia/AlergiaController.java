@@ -15,16 +15,20 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+import com.wordnik.swagger.annotations.Api;
+import com.wordnik.swagger.annotations.ApiOperation;
 import br.hela.alergia.comandos.CriarAlergia;
 import br.hela.alergia.comandos.EditarAlergia;
 import javassist.tools.web.BadHttpRequest;
 
+@Api(value = "alergia", description = "Documentação dos métodos da classe AlergiaController")
 @RestController
 @RequestMapping("/alergias")
 public class AlergiaController {
 	@Autowired
 	private AlergiaService alergiaService;
-
+	
+	@ApiOperation(value = "Busque todas as alergias")
 	@GetMapping
 	public ResponseEntity<List<Alergia>> getAlergias() throws TimeoutException, NullPointerException, BadHttpRequest{
 		verificaListaAlergia();
@@ -36,6 +40,7 @@ public class AlergiaController {
 		throw new BadHttpRequest();
 	}
 	
+	@ApiOperation(value = "Busque uma alergia pelo ID")
 	@GetMapping("/{id}")
 	public ResponseEntity<Alergia> getAlergiaPorId(@PathVariable AlergiaId id)
 			throws TimeoutException, NullPointerException, BadHttpRequest {
@@ -47,7 +52,8 @@ public class AlergiaController {
 		}
 		throw new BadHttpRequest();
 	}
-
+	
+	@ApiOperation(value = "Delete uma alergia pelo ID")
 	@DeleteMapping("/{id}")
 	public ResponseEntity<String> deletarAlergia(@PathVariable AlergiaId id) throws TimeoutException, NullPointerException,  BadHttpRequest {
 		verificaAlergiaExistente(id);
@@ -59,6 +65,7 @@ public class AlergiaController {
 		throw new BadHttpRequest();
 	}
 
+	@ApiOperation(value = "Cadastre uma nova alergia")
 	@PostMapping
 	public ResponseEntity<String> postAlergia(@RequestBody CriarAlergia comando)
 			throws TimeoutException, NullPointerException, BadHttpRequest {
@@ -73,7 +80,8 @@ public class AlergiaController {
 		throw new BadHttpRequest();
 	}
 
-	@PutMapping()
+	@ApiOperation(value = "Altere uma alergia")
+	@PutMapping
 	public ResponseEntity<String> putAlergia(@RequestBody EditarAlergia comando) throws TimeoutException, NullPointerException, BadHttpRequest {
 		verificaAlergiaExistente(comando.getIdAlergia());
 		verificaTempoResposta();
@@ -85,6 +93,7 @@ public class AlergiaController {
 		}
 		throw new BadHttpRequest();
 	}
+	
 	private void verificaTempoResposta() throws TimeoutException {
 		if (System.currentTimeMillis() == 10) {
 			throw new TimeoutException("Servidor sem resposta");

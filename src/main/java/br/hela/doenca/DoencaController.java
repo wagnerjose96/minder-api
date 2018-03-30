@@ -17,15 +17,20 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import com.wordnik.swagger.annotations.Api;
+import com.wordnik.swagger.annotations.ApiOperation;
+
 import br.hela.doenca.comandos.CriarDoenca;
 import javassist.tools.web.BadHttpRequest;
 
+@Api(value = "doença", description = "Documentação dos métodos da classe DoencaController")
 @RestController
 @RequestMapping("/doencas")
 public class DoencaController {
 	@Autowired
 	private DoencaService doencaService;
 	
+	@ApiOperation(value = "Busque todas as doenças")
 	@GetMapping
 	public ResponseEntity<List<Doenca>> getDoencas() 
 			throws SQLException, NullPointerException, BadHttpRequest {	
@@ -40,6 +45,7 @@ public class DoencaController {
 		throw new BadHttpRequest();
 	}
 	
+	@ApiOperation(value = "Busque uma doença pelo ID")
 	@GetMapping("/{id}")
 	public ResponseEntity<Doenca> getDoencaPorId(@PathVariable DoencaId id) 
 			throws SQLException, NullPointerException, BadHttpRequest {
@@ -54,7 +60,7 @@ public class DoencaController {
 		throw new BadHttpRequest();
 	}
 	
-	
+	@ApiOperation(value = "Delete uma doença pelo ID")
 	@DeleteMapping("/{id}")
 	public ResponseEntity<Optional<String>> deletarDoenca (@PathVariable DoencaId id) 
 			throws SQLException, NullPointerException, BadHttpRequest {
@@ -69,6 +75,7 @@ public class DoencaController {
 		throw new BadHttpRequest();
 	}
 	
+	@ApiOperation(value = "Cadastre uma nova doença")
 	@PostMapping
 	public ResponseEntity<DoencaId> postDoenca(@RequestBody CriarDoenca comando) 
 			throws SQLException, NullPointerException, BadHttpRequest {
@@ -84,6 +91,7 @@ public class DoencaController {
 		throw new BadHttpRequest();
 	}
 	
+	@ApiOperation(value = "Altere uma doença")
 	@PutMapping("/{id}")
 	public ResponseEntity<String> putDoenca(@RequestBody Doenca comando) 
 			throws SQLException, NullPointerException, BadHttpRequest {
