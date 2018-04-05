@@ -9,7 +9,7 @@ public class CriarAlergia {
 	private String localAfetado;
 	private Date dataDescoberta;
 	private String efeitos;
-	private MedicamentoId medicamento;
+	private MedicamentoId idMedicamento;
 	
 	public CriarAlergia() {
 	}
@@ -46,12 +46,12 @@ public class CriarAlergia {
 		this.efeitos = efeitos;
 	}
 
-	public MedicamentoId getMedicamento() {
-		return medicamento;
+	public MedicamentoId getIdMedicamento() {
+		return idMedicamento;
 	}
 
-	public void setMedicamento(MedicamentoId medicamento) {
-		this.medicamento = medicamento;
+	public void setIdMedicamento(MedicamentoId medicamento) {
+		this.idMedicamento = medicamento;
 	}
 
 	

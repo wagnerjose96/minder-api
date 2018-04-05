@@ -10,17 +10,20 @@ import javax.persistence.Entity;
 import org.hibernate.envers.Audited;
 
 import br.hela.doenca.comandos.CriarDoenca;
+import br.hela.doenca_medicamento.Doenca_Medicamento;
+import br.hela.doenca_medicamento.Doenca_Medicamento_Id;
 import br.hela.medicamento.MedicamentoId;
 
 @Entity
 @Audited
 public class Doenca {
 	@EmbeddedId
-	@AttributeOverride(name="value", column=@Column(name="idDoenca"))
+	@AttributeOverride(name="value", column=@Column(name="id_doenca"))
 	private DoencaId idDoenca;
 	private String nomeDoenca;
 	private Date dataDescoberta;
-	private MedicamentoId medicamento;
+	@AttributeOverride(name="value", column=@Column(name="id_medicamento"))
+	private MedicamentoId idMedicamento;
 	
 	public Doenca() {
 		
@@ -30,7 +33,7 @@ public class Doenca {
 		this.idDoenca = new DoencaId();
 		this.nomeDoenca = comandos.getNomeDoenca();
 		this.dataDescoberta = comandos.getDataDescoberta();
-		this.medicamento = comandos.getMedicamento();
+		this.idMedicamento = comandos.getIdMedicamento();
 	}
 
 	public DoencaId getIdDoenca() {
@@ -46,7 +49,7 @@ public class Doenca {
 	}
 
 	public MedicamentoId getMedicamento() {
-		return medicamento;
+		return idMedicamento;
 	}
 	
 	@Override

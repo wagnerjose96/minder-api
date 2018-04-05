@@ -1,0 +1,34 @@
+# Para arquivos Java compilados
+*.class
+*.log
+*.ctxt
+.mtj.tmp/
+*.jar
+*.war
+*.ear
+*.zip
+*.tar.gz
+*.rar
+
+# Para os arquivos ".properties"
+*.properties
+
+# Eclipse
+.classpath
+.project
+.settings/
+ 
+# Maven
+*target/
+pom.xml.tag
+pom.xml.releaseBackup
+pom.xml.versionsBackup
+pom.xml.next
+target/classes/META-INF/maven/br.hela/escoladeti2018/pom.properties
+release.properties
+dependency-reduced-pom.xml
+buildNumber.properties
+.mvn/timing.properties
+
+# Avoid ignoring Maven wrapper jar file (.jar files are usually ignored)
+!/.mvn/wrapper/maven-wrapper.jar

@@ -16,15 +16,11 @@
 			<column name="data_descoberta" type="${TYPE_DATA}">
 				<constraints nullable="false" />
 			</column>
-			<column name="medicamento" type="${TYPE_ID}">
-				<constraints nullable="false" />
+			<column name="id_medicamento" type="${TYPE_ID}">
+				<constraints nullable="false" foreignKeyName="FK_MEDICAMENTO" references="medicamento(id_medicamento)"/>
 			</column>
 		</createTable>
-		<addForeignKeyConstraint baseColumnNames="medicamento"
-	                             baseTableName="doenca"
-	                             constraintName="FK_DOENCA_MEDICAMENTO"
-	                             referencedColumnNames="id_medicamento"
-	                             referencedTableName="medicamento"/>
+		
 	</changeSet>
 	
 	<changeSet id="create_table_doenca_aud" author="douglas.mendonca">
@@ -38,7 +34,7 @@
 			<column name="data_descoberta" type="${TYPE_DATA}">
 				<constraints nullable="true" />
 			</column>
-			<column name="medicamento" type="${TYPE_DESCRICAO}">
+			<column name="id_medicamento" type="${TYPE_ID}">
 				<constraints nullable="true" foreignKeyName="FK_DOENCA_MEDICAMENTO" references="medicamento(id_medicamento)"/>
 			</column>
 			<column name="rev" type="${TYPE_INTEGER}">
@@ -52,6 +48,17 @@
 			<addPrimaryKey constraintName="PK_DOENCA_AUD"
 				tableName="doenca_aud" columnNames="id_doenca, rev" />	
 		
-	</changeSet>
+	</changeSet>	
+	
+	<changeSet id="relation_doenca_medicamento" author="douglas.mendonca">
+		 <addForeignKeyConstraint 	baseColumnNames="id_doenca"
+	                            	baseTableName="doenca_medicamento"
+	                            	deferrable="true"
+					            	initiallyDeferred="true"
+						            onDelete="CASCADE"
+		                            constraintName="FK_DOENCA"
+		                            referencedColumnNames="id_doenca"
+		                            referencedTableName="doenca"/>
+	</changeSet>                         
 	
 </databaseChangeLog>

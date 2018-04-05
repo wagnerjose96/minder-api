@@ -14,13 +14,14 @@ import org.hibernate.envers.Audited;
 @Audited
 public class Cirurgia {
 	@EmbeddedId
-	@AttributeOverride(name="value", column=@Column(name="id"))
+	@AttributeOverride(name="value", column=@Column(name="id_cirurgia"))
 	private CirurgiaId idCirurgia;
 	private String tipoCirurgia;
 	private Date dataCirurgia;
 	private String clinicaResponsavel;
 	private String medicoResponsavel;
-	private MedicamentoId medicamento;
+	@AttributeOverride(name="value", column=@Column(name="id_medicamento"))
+	private MedicamentoId idMedicamento;
 
 	public Cirurgia() {
 	}
@@ -31,7 +32,7 @@ public class Cirurgia {
 		this.dataCirurgia = comando.getDataCirurgia();
 		this.clinicaResponsavel = comando.getClinicaResponsavel();
 		this.medicoResponsavel = comando.getMedicoResponsavel();
-		this.medicamento = comando.getMedicamentoConsumido();
+		this.idMedicamento = comando.getIdMedicamento();
 	}
 
 	public CirurgiaId getIdCirurgia() {
@@ -71,11 +72,11 @@ public class Cirurgia {
 	}
 	
 	public MedicamentoId getMedicamentoConsumido() {
-		return medicamento;
+		return idMedicamento;
 	}
 
 	public void setMedicamentoConsumido(MedicamentoId medicamentoConsumido) {
-		this.medicamento = medicamentoConsumido;
+		this.idMedicamento = medicamentoConsumido;
 	}
 	
 	@Override

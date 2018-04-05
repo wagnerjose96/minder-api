@@ -9,7 +9,7 @@ public class CriarCirurgia {
 	private Date dataCirurgia;
 	private String clinicaResponsavel;
 	private String medicoResponsavel;
-	private MedicamentoId medicamentoConsumido;
+	private MedicamentoId idMedicamento;
 	
 	public CriarCirurgia() {
 	}
@@ -46,12 +46,12 @@ public class CriarCirurgia {
 		this.medicoResponsavel = medicoResponsavel;
 	}
 	
-	public MedicamentoId getMedicamentoConsumido() {
-		return medicamentoConsumido;
+	public MedicamentoId getIdMedicamento() {
+		return idMedicamento;
 	}
 
-	public void setMedicamentoConsumido(MedicamentoId medicamentoConsumido) {
-		this.medicamentoConsumido = medicamentoConsumido;
+	public void setIdMedicamentoConsumido(MedicamentoId medicamento) {
+		this.idMedicamento = medicamento;
 	}
 
 }

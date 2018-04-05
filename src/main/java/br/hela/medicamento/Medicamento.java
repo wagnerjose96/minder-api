@@ -15,7 +15,7 @@ import br.hela.medicamentoContinuo.MedicamentoContinuo;
 public class Medicamento {
 	
 	@EmbeddedId
-	@AttributeOverride(name="value", column=@Column(name="idMedicamento"))
+	@AttributeOverride(name="value", column=@Column(name="id_medicamento"))
 	private MedicamentoId idMedicamento;
 	private String nomeMedicamento;
 	private String composicao;

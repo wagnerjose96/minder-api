@@ -5,15 +5,18 @@
 	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd
         http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
 
-	<changeSet id="1" author="arthur.zavadski">
-		<createTable tableName="cor">
+<changeSet id="create_relation_doenca_medicamento" author="douglas.mendonca">
+		<createTable tableName="doenca_medicamento">
 			<column name="id" type="${TYPE_ID}">
-				<constraints nullable="false" primaryKey="true" primaryKeyName="PK_COR"/>
+				<constraints nullable="false" primaryKey="true" primaryKeyName="PK_DOENCA_MEDICAMENTO"/>
 			</column>
-			<column name="nome" type="${TYPE_DESCRICAO}">
-				<constraints nullable="false" />
-			</column>						
+			<column name="id_doenca" type="${TYPE_ID}">
+				<constraints nullable="false"/>
+			</column>
+			<column name="id_medicamento" type="${TYPE_ID}">
+				<constraints nullable="false" foreignKeyName="FK_MEDICAMENTO" references="medicamento(id_medicamento)"/>
+			</column>
 		</createTable>
+	                                                 
 	</changeSet>
-	
 </databaseChangeLog>
