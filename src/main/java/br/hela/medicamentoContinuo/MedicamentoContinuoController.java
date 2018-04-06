@@ -21,9 +21,10 @@ import com.wordnik.swagger.annotations.Api;
 import com.wordnik.swagger.annotations.ApiOperation;
 
 import br.hela.medicamentoContinuo.comandos.CriarMedicamentoContinuo;
+import br.hela.medicamentoContinuo.comandos.EditarMedicamentoContinuo;
 import javassist.tools.web.BadHttpRequest;
 
-@Api(value = "medicamentoContínuo", description = "Documentação dos métodos da classe MedicamentoContinuoController")
+@Api(value = "medcontínuo", description = " ")
 @RestController
 @RequestMapping("/medicamentoContinuo")
 public class MedicamentoContinuoController {
@@ -93,7 +94,7 @@ public class MedicamentoContinuoController {
 	
 	@ApiOperation(value = "Altere um medicamento contínuo")
 	@PutMapping
-	public ResponseEntity<MedicamentoContinuoId> putMedicamentoContinuo(@RequestBody MedicamentoContinuo comando)
+	public ResponseEntity<MedicamentoContinuoId> putMedicamentoContinuo(@RequestBody EditarMedicamentoContinuo comando)
 		throws SQLException, NullPointerException, BadHttpRequest{
 		
 		verificaMedicamentoContinuoExistente(comando.getIdMedicamentoContinuo());

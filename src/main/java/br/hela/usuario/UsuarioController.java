@@ -25,7 +25,7 @@ import br.hela.usuario.comandos.CriarUsuario;
 import br.hela.usuario.comandos.EditarUsuario;
 import javassist.tools.web.BadHttpRequest;
 
-@Api(value = "usuário", description = "Documentação dos métodos da classe UsuarioController")
+@Api(value = "usuário", description = " ")
 @RestController
 @RequestMapping("/usuarios")
 public class UsuarioController {

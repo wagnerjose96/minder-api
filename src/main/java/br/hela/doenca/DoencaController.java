@@ -21,9 +21,10 @@ import com.wordnik.swagger.annotations.Api;
 import com.wordnik.swagger.annotations.ApiOperation;
 
 import br.hela.doenca.comandos.CriarDoenca;
+import br.hela.doenca.comandos.EditarDoenca;
 import javassist.tools.web.BadHttpRequest;
 
-@Api(value = "doença", description = "Documentação dos métodos da classe DoencaController")
+@Api(value = "doença", description = " ")
 @RestController
 @RequestMapping("/doencas")
 public class DoencaController {
@@ -93,7 +94,7 @@ public class DoencaController {
 	
 	@ApiOperation(value = "Altere uma doença")
 	@PutMapping("/{id}")
-	public ResponseEntity<String> putDoenca(@RequestBody Doenca comando) 
+	public ResponseEntity<String> putDoenca(@RequestBody EditarDoenca comando) 
 			throws SQLException, NullPointerException, BadHttpRequest {
 		
 		verificaDoencaExistente(comando.getIdDoenca());

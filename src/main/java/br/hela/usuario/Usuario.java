@@ -9,6 +9,8 @@ import javax.persistence.Entity;
 
 import org.hibernate.envers.Audited;
 
+import com.wordnik.swagger.annotations.ApiModelProperty;
+
 import br.hela.usuario.comandos.CriarUsuario;
 import br.hela.usuario.comandos.EditarUsuario;
 
@@ -18,16 +20,27 @@ import br.hela.usuario.comandos.EditarUsuario;
 public class Usuario {
 	@EmbeddedId
 	@AttributeOverride(name = "value", column = @Column(name = "id"))
+	@ApiModelProperty(required=true)
 	private UsuarioId id;
+	@ApiModelProperty(required=true)
 	private String nome_completo;
+	@ApiModelProperty(required=true)
 	private String nome_usuario;
+	@ApiModelProperty(required=true)
 	private String email;
+	@ApiModelProperty(required=true)
 	private String senha;
+	@ApiModelProperty(required=true)
 	private String tipo_sangue;
+	@ApiModelProperty(required=true)
 	private String endereco;
+	@ApiModelProperty(required=true)
 	private int telefone;
+	@ApiModelProperty(required=true)
 	private Date data_nascimento;
+	@ApiModelProperty(required=true)
 	private String sexo;
+	@ApiModelProperty(required=true)
 	private String imagem_usuario;
 
 	public Usuario() {

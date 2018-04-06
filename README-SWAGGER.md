@@ -11,7 +11,7 @@ Exemplo: "/doencas.*?"
 ## 2. Na classe Controller é onde deverá ser adcionado as anotações que o Swagger irá mapear para realizar a documentação.
 
 ## 2.1 Antes da anotação @RestContoller é necessário acdicionar a anotação:
-    * @Api(value = "alergia", description = "Documentação dos métodos do AlergiaController")
+    * @Api(value = "alergia", description = " ")
         value é o nome do seu pacote. Ex: alergia, cirurgia, usuário...
         description é a descrição que é definida para a sua documentação
 
@@ -26,6 +26,9 @@ Exemplo: "/doencas.*?"
     * Para não documentar um método é necessário a anotação:
         @ApiIgnore: 
         OBS: métodos privados o Swagger por padrão não documenta.
+
+       * Essa notação deve ser adcicionada a cada atributo para que no Swagger não seja apresentado como opcional: 
+            @ApiModelProperty(required=true.
 
 * PARA VER A DOCUMENTAÇÃO: http://localhost:9090/sdoc.jsp 
 

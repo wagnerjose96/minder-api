@@ -1,51 +1,74 @@
 package br.hela.alergia.comandos;
 
 import java.util.Date;
+
+import com.wordnik.swagger.annotations.ApiModelProperty;
+
 import br.hela.alergia.AlergiaId;
 
 public class EditarAlergia {
-	private AlergiaId idAlergia;
-	private String tipoAlergia;
-	private String localAfetado;
-	private Date dataDescoberta;
-	private String efeitos;
+	@ApiModelProperty(required = true)
+	private AlergiaId id;
+	@ApiModelProperty(required = true)
+	private String tipo_alergia;
+	@ApiModelProperty(required = true)
+	private Date data_descoberta;
+	@ApiModelProperty(required = true)
 	private String medicamento;
-	
-	public AlergiaId getIdAlergia() {
-		return idAlergia;
+	@ApiModelProperty(required = true)
+	private String local_afetado;
+	@ApiModelProperty(required = true)
+	private String efeitos;
+
+	public EditarAlergia() {
 	}
-	public void setIdAlergia(AlergiaId idAlergia) {
-		this.idAlergia = idAlergia;
+
+	public AlergiaId getId() {
+		return id;
 	}
-	public String getTipoAlergia() {
-		return tipoAlergia;
+
+	public void setId(AlergiaId id) {
+		this.id = id;
 	}
-	public void setTipoAlergia(String tipoAlergia) {
-		this.tipoAlergia = tipoAlergia;
+
+	public String getTipo_alergia() {
+		return tipo_alergia;
 	}
-	public String getLocalAfetado() {
-		return localAfetado;
+
+	public void setTipo_alergia(String tipo_alergia) {
+		this.tipo_alergia = tipo_alergia;
 	}
-	public void setLocalAfetado(String localAfetado) {
-		this.localAfetado = localAfetado;
+
+	public Date getData_descoberta() {
+		return data_descoberta;
 	}
-	public Date getDataDescoberta() {
-		return dataDescoberta;
+
+	public void setData_descoberta(Date data_descoberta) {
+		this.data_descoberta = data_descoberta;
 	}
-	public void setDataDescoberta(Date dataDescoberta) {
-		this.dataDescoberta = dataDescoberta;
-	}
-	public String getEfeitos() {
-		return efeitos;
-	}
-	public void setEfeitos(String efeitos) {
-		this.efeitos = efeitos;
-	}
+
 	public String getMedicamento() {
 		return medicamento;
 	}
+
 	public void setMedicamento(String medicamento) {
 		this.medicamento = medicamento;
+	}
+
+	public String getLocal_afetado() {
+		return local_afetado;
+	}
+
+	public void setLocal_afetado(String local_afetado) {
+		this.local_afetado = local_afetado;
+	}
+
+	public String getEfeitos() {
+		return efeitos;
+	}
+
+	public void setEfeitos(String efeitos) {
+		this.efeitos = efeitos;
 	}
 
 }

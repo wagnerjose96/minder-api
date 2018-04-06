@@ -9,7 +9,10 @@ import javax.persistence.Entity;
 
 import org.hibernate.envers.Audited;
 
+import com.wordnik.swagger.annotations.ApiModelProperty;
+
 import br.hela.medicamentoContinuo.comandos.CriarMedicamentoContinuo;
+import br.hela.medicamentoContinuo.comandos.EditarMedicamentoContinuo;
 
 
 @Entity
@@ -18,11 +21,17 @@ public class MedicamentoContinuo {
 
 	@EmbeddedId
 	@AttributeOverride(name="value", column=@Column(name="idMedicamentoContinuo"))
+	@ApiModelProperty(required=true)
 	private MedicamentoContinuoId idMedicamentoContinuo; 
+	@ApiModelProperty(required=true)
 	private int idMedicamento; //Será trocado pelo ID da classe medicamento
+	@ApiModelProperty(required=true)
 	private String tipoMedicamento;
-	private int quantidadeDeConsumo; 
+	@ApiModelProperty(required=true)
+	private int quantidadeDeConsumo;
+	@ApiModelProperty(required=true)
 	private int intervaloDeConsumo;
+	@ApiModelProperty(required=true)
 	private Date dataConsumo;
 	
 	
@@ -37,8 +46,14 @@ public class MedicamentoContinuo {
 		this.intervaloDeConsumo = comando.getIntervaloDeConsumo();
 		this.dataConsumo = comando.getDataConsumo();
 	}
-
 	
+	public void apply(EditarMedicamentoContinuo comando) {
+		this.idMedicamento = comando.getIdMedicamento();
+		this.tipoMedicamento = comando.getTipoMedicamento();
+		this.quantidadeDeConsumo = comando.getQuantidadeDeConsumo();
+		this.intervaloDeConsumo = comando.getIntervaloDeConsumo();
+		this.dataConsumo = comando.getDataConsumo();
+	}
 
 	public MedicamentoContinuoId getIdMedicamentoContinuo() {
 		return idMedicamentoContinuo;

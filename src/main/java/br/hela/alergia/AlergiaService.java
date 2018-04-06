@@ -2,9 +2,14 @@ package br.hela.alergia;
 
 import java.util.List;
 import java.util.Optional;
+
+import javax.transaction.Transactional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
+
+import br.hela.alergia.Alergia;
+import br.hela.alergia.AlergiaId;
 import br.hela.alergia.comandos.CriarAlergia;
 import br.hela.alergia.comandos.EditarAlergia;
 
@@ -12,35 +17,34 @@ import br.hela.alergia.comandos.EditarAlergia;
 @Transactional
 public class AlergiaService {
 	@Autowired
-	private AlergiaRepository alergiaRepo;
-	
+	private AlergiaRepository repo;
+
 	public Optional<AlergiaId> salvar(CriarAlergia comando) {
-		Alergia nova = alergiaRepo.save(new Alergia(comando));
-		return Optional.of(nova.getIdAlergia());
+		Alergia novo = repo.save(new Alergia(comando));
+		return Optional.of(novo.getId());
 	}
-	
+
 	public Optional<Alergia> encontrar(AlergiaId id) {
-		return alergiaRepo.findById(id);
+		return repo.findById(id);
 	}
 
 	public Optional<List<Alergia>> encontrar() {
-		return Optional.of(alergiaRepo.findAll());
+		return Optional.of(repo.findAll());
 	}
 
 	public Optional<String> deletar(AlergiaId id) {
-		alergiaRepo.deleteById(id);
+		repo.deleteById(id);
 		return Optional.of("Alergia -> " + id + ": deletada com sucesso");
 	}
-	
+
 	public Optional<AlergiaId> alterar(EditarAlergia comando) {
-		Optional<Alergia> optional = alergiaRepo.findById(comando.getIdAlergia());
+		Optional<Alergia> optional = repo.findById(comando.getId());
 		if (optional.isPresent()) {
 			Alergia alergia = optional.get();
 			alergia.apply(comando);
-			alergiaRepo.save(alergia);
-			return Optional.of(comando.getIdAlergia());
+			repo.save(alergia);
+			return Optional.of(comando.getId());
 		}
 		return Optional.empty();
 	}
-
 }

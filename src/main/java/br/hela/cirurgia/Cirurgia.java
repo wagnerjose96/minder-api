@@ -6,18 +6,28 @@ import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import br.hela.cirurgia.comandos.CriarCirurgia;
+import br.hela.cirurgia.comandos.EditarCirurgia;
+
 import org.hibernate.envers.Audited;
+
+import com.wordnik.swagger.annotations.ApiModelProperty;
 
 @Entity
 @Audited
 public class Cirurgia {
 	@EmbeddedId
 	@AttributeOverride(name="value", column=@Column(name="id"))
+	@ApiModelProperty(required=true)
 	private CirurgiaId idCirurgia;
+	@ApiModelProperty(required=true)
 	private String tipoCirurgia;
+	@ApiModelProperty(required=true)
 	private Date dataCirurgia;
+	@ApiModelProperty(required=true)
 	private String clinicaResponsavel;
+	@ApiModelProperty(required=true)
 	private String medicoResponsavel;
+	@ApiModelProperty(required=true)
 	private String medicamentoConsumido;
 
 	public Cirurgia() {
@@ -25,7 +35,15 @@ public class Cirurgia {
 
 	public Cirurgia(CriarCirurgia comando) {
 		this.idCirurgia = new CirurgiaId();
-		this.setTipoCirurgia(comando.getTipoCirurgia());
+		this.tipoCirurgia = comando.getTipoCirurgia();
+		this.dataCirurgia = comando.getDataCirurgia();
+		this.clinicaResponsavel = comando.getClinicaResponsavel();
+		this.medicoResponsavel = comando.getMedicoResponsavel();
+		this.medicamentoConsumido = comando.getMedicamentoConsumido();
+	}
+	
+	public void apply(EditarCirurgia comando) {
+		this.tipoCirurgia = comando.getTipoCirurgia();
 		this.dataCirurgia = comando.getDataCirurgia();
 		this.clinicaResponsavel = comando.getClinicaResponsavel();
 		this.medicoResponsavel = comando.getMedicoResponsavel();
