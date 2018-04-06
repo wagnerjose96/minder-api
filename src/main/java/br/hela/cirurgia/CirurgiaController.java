@@ -16,14 +16,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-
 import br.hela.cirurgia.comandos.CriarCirurgia;
 import br.hela.cirurgia.comandos.EditarCirurgia;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import javassist.tools.web.BadHttpRequest;
 
-@Api(value = "cirurgia", description = "Basic Cirurgia Controller")
+@Api(description = "Basic Cirurgia Controller")
 @RestController
 @RequestMapping("/cirurgias")
 public class CirurgiaController {
@@ -32,7 +31,7 @@ public class CirurgiaController {
 
 	@ApiOperation(value = "Busque todas as cirurgias")
 	@GetMapping
-	public ResponseEntity<List<Cirurgia>> getCirurgias() throws TimeoutException, NullPointerException, BadHttpRequest{
+	public ResponseEntity<List<Cirurgia>> getCirurgias() throws TimeoutException, NullPointerException, BadHttpRequest {
 		verificaListaCirurgia();
 		verificaTempoResposta();
 		Optional<List<Cirurgia>> optionalCirurgias = cirurgiaService.encontrar();
@@ -41,7 +40,7 @@ public class CirurgiaController {
 		}
 		throw new BadHttpRequest();
 	}
-	
+
 	@ApiOperation(value = "Busque uma cirurgia pelo ID")
 	@GetMapping("/{id}")
 	public ResponseEntity<Cirurgia> getCirurgiaPorId(@PathVariable CirurgiaId id)
@@ -57,7 +56,8 @@ public class CirurgiaController {
 
 	@ApiOperation(value = "Delete uma cirurgia pelo ID")
 	@DeleteMapping("/{id}")
-	public ResponseEntity<Optional<String>> deletarCirurgia(@PathVariable CirurgiaId id) throws TimeoutException, NullPointerException,  BadHttpRequest {
+	public ResponseEntity<Optional<String>> deletarCirurgia(@PathVariable CirurgiaId id)
+			throws TimeoutException, NullPointerException, BadHttpRequest {
 		verificaCirurgiaExistente(id);
 		verificaTempoResposta();
 		Optional<String> optionalCirurgia = cirurgiaService.deletar(id);
@@ -66,7 +66,7 @@ public class CirurgiaController {
 		}
 		throw new BadHttpRequest();
 	}
-	
+
 	@ApiOperation(value = "Cadastre uma nova cirurgia")
 	@PostMapping
 	public ResponseEntity<CirurgiaId> postCirurgia(@RequestBody CriarCirurgia comando)
@@ -84,7 +84,8 @@ public class CirurgiaController {
 
 	@ApiOperation(value = "Altere uma cirurgia")
 	@PutMapping
-	public ResponseEntity<String> putCirurgia(@RequestBody EditarCirurgia comando) throws TimeoutException, NullPointerException, BadHttpRequest {
+	public ResponseEntity<String> putCirurgia(@RequestBody EditarCirurgia comando)
+			throws TimeoutException, NullPointerException, BadHttpRequest {
 		verificaCirurgiaExistente(comando.getIdCirurgia());
 		verificaTempoResposta();
 		Optional<CirurgiaId> optionalCirurgiaId = cirurgiaService.alterar(comando);
@@ -95,6 +96,7 @@ public class CirurgiaController {
 		}
 		throw new BadHttpRequest();
 	}
+
 	private void verificaTempoResposta() throws TimeoutException {
 		if (System.currentTimeMillis() == 10) {
 			throw new TimeoutException("Servidor sem resposta");

@@ -2,18 +2,12 @@ package br.hela.doenca.comandos;
 
 import java.util.Date;
 
-
 import br.hela.doenca.DoencaId;
-import io.swagger.annotations.ApiModelProperty;
 
 public class EditarDoenca {
-	@ApiModelProperty(required = true)
 	private DoencaId idDoenca;
-	@ApiModelProperty(required = true)
 	private String nomeDoenca;
-	@ApiModelProperty(required = true)
 	private Date dataDescoberta;
-	@ApiModelProperty(required = true)
 	private String medicamento;
 
 	public EditarDoenca() {

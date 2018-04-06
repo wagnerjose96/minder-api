@@ -24,7 +24,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import javassist.tools.web.BadHttpRequest;
 
-@Api(value = "usuário", description = "Basic Usuário Controller")
+@Api(description = "Basic Usuário Controller")
 @RestController
 @RequestMapping("/usuarios")
 public class UsuarioController {
@@ -33,8 +33,7 @@ public class UsuarioController {
 
 	@ApiOperation(value = "Busque todos os usuários")
 	@GetMapping
-	public ResponseEntity<List<Usuario>> getUsuarios() 
-			throws TimeoutException, NullPointerException, BadHttpRequest {
+	public ResponseEntity<List<Usuario>> getUsuarios() throws TimeoutException, NullPointerException, BadHttpRequest {
 
 		verificaListaUsuario();
 		verificaTempoResposta();
@@ -58,7 +57,7 @@ public class UsuarioController {
 		}
 		throw new BadHttpRequest();
 	}
-	
+
 	@ApiOperation(value = "Delete um usuário pelo ID")
 	@DeleteMapping("/{id}")
 	public ResponseEntity<Optional<String>> deleteUsuario(@PathVariable UsuarioId id)
@@ -88,7 +87,7 @@ public class UsuarioController {
 		}
 		throw new BadHttpRequest();
 	}
-	
+
 	@ApiOperation(value = "Altere um usuário")
 	@PutMapping
 	public ResponseEntity<UsuarioId> putUsuario(@RequestBody EditarUsuario comando)

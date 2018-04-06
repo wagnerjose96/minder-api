@@ -30,7 +30,7 @@ Exemplo: "/doencas.*?"
        * Essa notação deve ser adcicionada a cada atributo para que no Swagger não seja apresentado como opcional: 
             @ApiModelProperty(required=true.
 
-* PARA VER A DOCUMENTAÇÃO: http://localhost:9090/sdoc.jsp 
+* PARA VER A DOCUMENTAÇÃO: http://localhost:9090/swagger-ui.html
 
 
    

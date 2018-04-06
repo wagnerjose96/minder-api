@@ -9,32 +9,22 @@ import javax.persistence.Entity;
 
 import org.hibernate.envers.Audited;
 
-
 import br.hela.medicamentoContinuo.comandos.CriarMedicamentoContinuo;
 import br.hela.medicamentoContinuo.comandos.EditarMedicamentoContinuo;
-import io.swagger.annotations.ApiModelProperty;
-
 
 @Entity
 @Audited
 public class MedicamentoContinuo {
 
 	@EmbeddedId
-	@AttributeOverride(name="value", column=@Column(name="idMedicamentoContinuo"))
-	@ApiModelProperty(required=true)
-	private MedicamentoContinuoId idMedicamentoContinuo; 
-	@ApiModelProperty(required=true)
-	private int idMedicamento; //Será trocado pelo ID da classe medicamento
-	@ApiModelProperty(required=true)
+	@AttributeOverride(name = "value", column = @Column(name = "idMedicamentoContinuo"))
+	private MedicamentoContinuoId idMedicamentoContinuo;
+	private int idMedicamento; // Será trocado pelo ID da classe medicamento
 	private String tipoMedicamento;
-	@ApiModelProperty(required=true)
 	private int quantidadeDeConsumo;
-	@ApiModelProperty(required=true)
 	private int intervaloDeConsumo;
-	@ApiModelProperty(required=true)
 	private Date dataConsumo;
-	
-	
+
 	public MedicamentoContinuo() {
 	}
 
@@ -46,7 +36,7 @@ public class MedicamentoContinuo {
 		this.intervaloDeConsumo = comando.getIntervaloDeConsumo();
 		this.dataConsumo = comando.getDataConsumo();
 	}
-	
+
 	public void apply(EditarMedicamentoContinuo comando) {
 		this.idMedicamento = comando.getIdMedicamento();
 		this.tipoMedicamento = comando.getTipoMedicamento();
@@ -116,12 +106,12 @@ public class MedicamentoContinuo {
 		if (getClass() != obj.getClass())
 			return false;
 		MedicamentoContinuo other = (MedicamentoContinuo) obj;
-		if ( idMedicamentoContinuo == null) {
+		if (idMedicamentoContinuo == null) {
 			if (other.idMedicamentoContinuo != null)
 				return false;
 		} else if (!idMedicamentoContinuo.equals(other.idMedicamentoContinuo))
 			return false;
 		return true;
 	}
-	
+
 }

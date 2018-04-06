@@ -32,22 +32,20 @@ public class SwaggerConfig extends WebMvcConfigurationSupport {
 
 		registry.addResourceHandler("/webjars/**").addResourceLocations("classpath:/META-INF/resources/webjars/");
 	}
-	
+
 	@Override
 	public void addViewControllers(ViewControllerRegistry registry) {
-	    registry.addRedirectViewController("/docApi/v2/api-docs", "/v2/api-docs");
-	    registry.addRedirectViewController("/docApi/swagger-resources/configuration/ui", "/swagger-resources/configuration/ui");
-	    registry.addRedirectViewController("/docApi/swagger-resources/configuration/security", "/swagger-resources/configuration/security");
-	    registry.addRedirectViewController("/docApi/swagger-resources", "/swagger-resources");
+		registry.addRedirectViewController("/docApi/v2/api-docs", "/v2/api-docs");
+		registry.addRedirectViewController("/docApi/swagger-resources/configuration/ui",
+				"/swagger-resources/configuration/ui");
+		registry.addRedirectViewController("/docApi/swagger-resources/configuration/security",
+				"/swagger-resources/configuration/security");
+		registry.addRedirectViewController("/docApi/swagger-resources", "/swagger-resources");
 	}
-	
+
 	private ApiInfo apiInfo() {
-	     return new ApiInfo(
-	       "Documentação Api-Hela", 
-	       "Descrição da API", 
-	       "Rotas disponíveis", 
-	       "Licença Aberta",
-	       new Contact("Hela-Company", "www.hela.com.br", "hela@gmail.com"), 
-	       "License of API", "API license URL", Collections.emptyList());
+		return new ApiInfo("Documentação Api-Hela", "Descrição da API", "Rotas disponíveis", "Licença Aberta",
+				new Contact("Hela-Company", "www.hela.com.br", "hela@gmail.com"), "License of API", "API license URL",
+				Collections.emptyList());
 	}
 }

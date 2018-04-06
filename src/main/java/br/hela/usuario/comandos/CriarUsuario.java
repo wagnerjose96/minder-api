@@ -2,29 +2,16 @@ package br.hela.usuario.comandos;
 
 import java.util.Date;
 
-import io.swagger.annotations.ApiModelProperty;
-
-
 public class CriarUsuario {
-	@ApiModelProperty(required=true)
 	private String nome_usuario;
-	@ApiModelProperty(required=true)
 	private String email;
-	@ApiModelProperty(required=true)
 	private String senha;
-	@ApiModelProperty(required=true)
 	private String nome_completo;
-	@ApiModelProperty(required=true)
 	private String tipo_sangue;
-	@ApiModelProperty(required=true)
 	private String endereco;
-	@ApiModelProperty(required=true)
 	private int telefone;
-	@ApiModelProperty(required=true)
 	private Date data_nascimento;
-	@ApiModelProperty(required=true)
 	private String sexo;
-	@ApiModelProperty(required=true)
 	private String imagem_usuario;
 
 	public CriarUsuario() {

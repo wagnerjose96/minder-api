@@ -2,22 +2,14 @@ package br.hela.cirurgia.comandos;
 
 import java.util.Date;
 
-
 import br.hela.cirurgia.CirurgiaId;
-import io.swagger.annotations.ApiModelProperty;
 
 public class EditarCirurgia {
-	@ApiModelProperty(required = true)
 	private CirurgiaId idCirurgia;
-	@ApiModelProperty(required = true)
 	private String tipoCirurgia;
-	@ApiModelProperty(required = true)
 	private Date dataCirurgia;
-	@ApiModelProperty(required = true)
 	private String clinicaResponsavel;
-	@ApiModelProperty(required = true)
 	private String medicoResponsavel;
-	@ApiModelProperty(required = true)
 	private String medicamentoConsumido;
 
 	public EditarCirurgia() {

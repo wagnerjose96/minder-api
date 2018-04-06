@@ -2,22 +2,14 @@ package br.hela.medicamentoContinuo.comandos;
 
 import java.util.Date;
 
-
 import br.hela.medicamentoContinuo.MedicamentoContinuoId;
-import io.swagger.annotations.ApiModelProperty;
 
 public class EditarMedicamentoContinuo {
-	@ApiModelProperty(required = true)
 	private MedicamentoContinuoId idMedicamentoContinuo;
-	@ApiModelProperty(required = true)
 	private int idMedicamento; // Será trocado pelo ID da classe medicamento
-	@ApiModelProperty(required = true)
 	private String tipoMedicamento;
-	@ApiModelProperty(required = true)
 	private int quantidadeDeConsumo;
-	@ApiModelProperty(required = true)
 	private int intervaloDeConsumo;
-	@ApiModelProperty(required = true)
 	private Date dataConsumo;
 
 	public EditarMedicamentoContinuo() {

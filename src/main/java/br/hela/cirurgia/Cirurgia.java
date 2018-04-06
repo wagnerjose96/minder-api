@@ -7,27 +7,19 @@ import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import br.hela.cirurgia.comandos.CriarCirurgia;
 import br.hela.cirurgia.comandos.EditarCirurgia;
-import io.swagger.annotations.ApiModelProperty;
 
 import org.hibernate.envers.Audited;
-
 
 @Entity
 @Audited
 public class Cirurgia {
 	@EmbeddedId
-	@AttributeOverride(name="value", column=@Column(name="id"))
-	@ApiModelProperty(required=true)
+	@AttributeOverride(name = "value", column = @Column(name = "id"))
 	private CirurgiaId idCirurgia;
-	@ApiModelProperty(required=true)
 	private String tipoCirurgia;
-	@ApiModelProperty(required=true)
 	private Date dataCirurgia;
-	@ApiModelProperty(required=true)
 	private String clinicaResponsavel;
-	@ApiModelProperty(required=true)
 	private String medicoResponsavel;
-	@ApiModelProperty(required=true)
 	private String medicamentoConsumido;
 
 	public Cirurgia() {
@@ -41,7 +33,7 @@ public class Cirurgia {
 		this.medicoResponsavel = comando.getMedicoResponsavel();
 		this.medicamentoConsumido = comando.getMedicamentoConsumido();
 	}
-	
+
 	public void apply(EditarCirurgia comando) {
 		this.tipoCirurgia = comando.getTipoCirurgia();
 		this.dataCirurgia = comando.getDataCirurgia();
@@ -61,7 +53,7 @@ public class Cirurgia {
 	public void setTipoCirurgia(String tipoCirurgia) {
 		this.tipoCirurgia = tipoCirurgia;
 	}
-	
+
 	public Date getDataCirurgia() {
 		return dataCirurgia;
 	}
@@ -69,7 +61,7 @@ public class Cirurgia {
 	public void setDataCirurgia(Date dataCirurgia) {
 		this.dataCirurgia = dataCirurgia;
 	}
-	
+
 	public String getClinicaResponsavel() {
 		return clinicaResponsavel;
 	}
@@ -77,7 +69,7 @@ public class Cirurgia {
 	public void setClinicaResponsavel(String clinicaResponsavel) {
 		this.clinicaResponsavel = clinicaResponsavel;
 	}
-	
+
 	public String getMedicoResponsavel() {
 		return medicoResponsavel;
 	}
@@ -85,7 +77,7 @@ public class Cirurgia {
 	public void setMedicoResponsavel(String medicoResponsavel) {
 		this.medicoResponsavel = medicoResponsavel;
 	}
-	
+
 	public String getMedicamentoConsumido() {
 		return medicamentoConsumido;
 	}
@@ -93,7 +85,7 @@ public class Cirurgia {
 	public void setMedicamentoConsumido(String medicamentoConsumido) {
 		this.medicamentoConsumido = medicamentoConsumido;
 	}
-	
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;

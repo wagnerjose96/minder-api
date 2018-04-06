@@ -10,24 +10,17 @@ import org.hibernate.envers.Audited;
 
 import br.hela.alergia.comandos.CriarAlergia;
 import br.hela.alergia.comandos.EditarAlergia;
-import io.swagger.annotations.ApiModelProperty;
 
 @Entity
 @Audited
 public class Alergia {
 	@EmbeddedId
 	@AttributeOverride(name = "value", column = @Column(name = "id"))
-	@ApiModelProperty(required = true)
 	private AlergiaId id;
-	@ApiModelProperty(required = true)
 	private String tipo_alergia;
-	@ApiModelProperty(required = true)
 	private Date data_descoberta;
-	@ApiModelProperty(required = true)
 	private String medicamento;
-	@ApiModelProperty(required = true)
 	private String local_afetado;
-	@ApiModelProperty(required = true)
 	private String efeitos;
 	
 	public Alergia() {

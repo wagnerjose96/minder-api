@@ -23,7 +23,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import javassist.tools.web.BadHttpRequest;
 
-@Api(value = "doença", description = "Basic Doença Controller")
+@Api(description = "Basic Doença Controller")
 @RestController
 @RequestMapping("/doencas")
 public class DoencaController {

@@ -2,18 +2,11 @@ package br.hela.alergia.comandos;
 
 import java.util.Date;
 
-import io.swagger.annotations.ApiModelProperty;
-
 public class CriarAlergia {
-	@ApiModelProperty(required = true)
 	private String tipo_alergia;
-	@ApiModelProperty(required = true)
 	private Date data_descoberta;
-	@ApiModelProperty(required = true)
 	private String medicamento;
-	@ApiModelProperty(required = true)
 	private String local_afetado;
-	@ApiModelProperty(required = true)
 	private String efeitos;
 
 	public CriarAlergia() {

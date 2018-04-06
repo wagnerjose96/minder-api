@@ -9,35 +9,29 @@ import javax.persistence.Entity;
 
 import org.hibernate.envers.Audited;
 
-
 import br.hela.doenca.comandos.CriarDoenca;
 import br.hela.doenca.comandos.EditarDoenca;
-import io.swagger.annotations.ApiModelProperty;
 
 @Entity
 @Audited
 public class Doenca {
 	@EmbeddedId
-	@AttributeOverride(name="value", column=@Column(name="idDoenca"))
-	@ApiModelProperty(required = true)
+	@AttributeOverride(name = "value", column = @Column(name = "idDoenca"))
 	private DoencaId idDoenca;
-	@ApiModelProperty(required = true)
 	private String nomeDoenca;
-	@ApiModelProperty(required = true)
 	private Date dataDescoberta;
-	@ApiModelProperty(required = true)
 	private String medicamento;
-	
+
 	public Doenca() {
 	}
 
-	public Doenca (CriarDoenca comandos) {
+	public Doenca(CriarDoenca comandos) {
 		this.idDoenca = new DoencaId();
 		this.nomeDoenca = comandos.getNomeDoenca();
 		this.dataDescoberta = comandos.getDataDescoberta();
 		this.medicamento = comandos.getMedicamento();
 	}
-	
+
 	public void apply(EditarDoenca comandos) {
 		this.nomeDoenca = comandos.getNomeDoenca();
 		this.dataDescoberta = comandos.getDataDescoberta();
@@ -59,7 +53,7 @@ public class Doenca {
 	public String getMedicamento() {
 		return medicamento;
 	}
-	
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
