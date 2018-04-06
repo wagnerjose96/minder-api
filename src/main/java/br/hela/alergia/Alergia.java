@@ -7,10 +7,10 @@ import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import org.hibernate.envers.Audited;
-import com.wordnik.swagger.annotations.ApiModelProperty;
 
 import br.hela.alergia.comandos.CriarAlergia;
 import br.hela.alergia.comandos.EditarAlergia;
+import io.swagger.annotations.ApiModelProperty;
 
 @Entity
 @Audited

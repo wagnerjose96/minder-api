@@ -1,7 +1,8 @@
 package br.hela.alergia.comandos;
 
 import java.util.Date;
-import com.wordnik.swagger.annotations.ApiModelProperty;
+
+import io.swagger.annotations.ApiModelProperty;
 
 public class CriarAlergia {
 	@ApiModelProperty(required = true)

@@ -9,10 +9,10 @@ import javax.persistence.Entity;
 
 import org.hibernate.envers.Audited;
 
-import com.wordnik.swagger.annotations.ApiModelProperty;
 
 import br.hela.doenca.comandos.CriarDoenca;
 import br.hela.doenca.comandos.EditarDoenca;
+import io.swagger.annotations.ApiModelProperty;
 
 @Entity
 @Audited

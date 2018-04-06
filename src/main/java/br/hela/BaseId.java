@@ -5,7 +5,8 @@ import java.util.UUID;
 
 import javax.persistence.MappedSuperclass;
 
-import com.wordnik.swagger.annotations.ApiModelProperty;
+import io.swagger.annotations.ApiModelProperty;
+
 
 @MappedSuperclass
 public abstract class BaseId implements Serializable{

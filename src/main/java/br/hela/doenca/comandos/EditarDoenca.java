@@ -2,9 +2,9 @@ package br.hela.doenca.comandos;
 
 import java.util.Date;
 
-import com.wordnik.swagger.annotations.ApiModelProperty;
 
 import br.hela.doenca.DoencaId;
+import io.swagger.annotations.ApiModelProperty;
 
 public class EditarDoenca {
 	@ApiModelProperty(required = true)

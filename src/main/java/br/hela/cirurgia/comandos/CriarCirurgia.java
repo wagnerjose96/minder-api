@@ -2,7 +2,8 @@ package br.hela.cirurgia.comandos;
 
 import java.util.Date;
 
-import com.wordnik.swagger.annotations.ApiModelProperty;
+import io.swagger.annotations.ApiModelProperty;
+
 
 public class CriarCirurgia {
 	@ApiModelProperty(required=true)

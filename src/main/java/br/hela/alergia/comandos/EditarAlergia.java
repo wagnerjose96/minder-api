@@ -2,9 +2,9 @@ package br.hela.alergia.comandos;
 
 import java.util.Date;
 
-import com.wordnik.swagger.annotations.ApiModelProperty;
 
 import br.hela.alergia.AlergiaId;
+import io.swagger.annotations.ApiModelProperty;
 
 public class EditarAlergia {
 	@ApiModelProperty(required = true)
