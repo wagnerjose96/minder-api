@@ -9,10 +9,10 @@ import javax.persistence.Entity;
 
 import org.hibernate.envers.Audited;
 
-import com.wordnik.swagger.annotations.ApiModelProperty;
 
 import br.hela.medicamentoContinuo.comandos.CriarMedicamentoContinuo;
 import br.hela.medicamentoContinuo.comandos.EditarMedicamentoContinuo;
+import io.swagger.annotations.ApiModelProperty;
 
 
 @Entity

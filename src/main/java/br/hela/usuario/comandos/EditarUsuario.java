@@ -2,28 +2,27 @@ package br.hela.usuario.comandos;
 
 import java.util.Date;
 
-import com.wordnik.swagger.annotations.ApiModelProperty;
-
 import br.hela.usuario.UsuarioId;
+import io.swagger.annotations.ApiModelProperty;
 
 public class EditarUsuario {
-	@ApiModelProperty(required=true)
+	@ApiModelProperty(required = true)
 	private UsuarioId id;
-	@ApiModelProperty(required=true)
+	@ApiModelProperty(required = true)
 	private String nome_completo;
-	@ApiModelProperty(required=true)
+	@ApiModelProperty(required = true)
 	private String senha;
-	@ApiModelProperty(required=true)
+	@ApiModelProperty(required = true)
 	private String tipo_sangue;
-	@ApiModelProperty(required=true)
+	@ApiModelProperty(required = true)
 	private String endereco;
-	@ApiModelProperty(required=true)
+	@ApiModelProperty(required = true)
 	private int telefone;
-	@ApiModelProperty(required=true)
+	@ApiModelProperty(required = true)
 	private Date data_nascimento;
-	@ApiModelProperty(required=true)
+	@ApiModelProperty(required = true)
 	private String sexo;
-	@ApiModelProperty(required=true)
+	@ApiModelProperty(required = true)
 	private String imagem_usuario;
 
 	public EditarUsuario() {

@@ -17,14 +17,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import com.wordnik.swagger.annotations.Api;
-import com.wordnik.swagger.annotations.ApiOperation;
-
 import br.hela.medicamentoContinuo.comandos.CriarMedicamentoContinuo;
 import br.hela.medicamentoContinuo.comandos.EditarMedicamentoContinuo;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import javassist.tools.web.BadHttpRequest;
 
-@Api(value = "medcontínuo", description = " ")
+@Api(value = "medcontínuo", description = "Basic Medicamento Contínuo Controller")
 @RestController
 @RequestMapping("/medicamentoContinuo")
 public class MedicamentoContinuoController {

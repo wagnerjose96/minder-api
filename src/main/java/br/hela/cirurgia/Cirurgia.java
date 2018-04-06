@@ -7,10 +7,10 @@ import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import br.hela.cirurgia.comandos.CriarCirurgia;
 import br.hela.cirurgia.comandos.EditarCirurgia;
+import io.swagger.annotations.ApiModelProperty;
 
 import org.hibernate.envers.Audited;
 
-import com.wordnik.swagger.annotations.ApiModelProperty;
 
 @Entity
 @Audited

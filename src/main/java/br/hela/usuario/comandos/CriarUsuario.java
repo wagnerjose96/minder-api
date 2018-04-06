@@ -2,7 +2,8 @@ package br.hela.usuario.comandos;
 
 import java.util.Date;
 
-import com.wordnik.swagger.annotations.ApiModelProperty;
+import io.swagger.annotations.ApiModelProperty;
+
 
 public class CriarUsuario {
 	@ApiModelProperty(required=true)

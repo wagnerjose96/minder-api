@@ -2,9 +2,9 @@ package br.hela.medicamentoContinuo.comandos;
 
 import java.util.Date;
 
-import com.wordnik.swagger.annotations.ApiModelProperty;
 
 import br.hela.medicamentoContinuo.MedicamentoContinuoId;
+import io.swagger.annotations.ApiModelProperty;
 
 public class EditarMedicamentoContinuo {
 	@ApiModelProperty(required = true)
