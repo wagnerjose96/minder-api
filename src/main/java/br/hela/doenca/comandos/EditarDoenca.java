@@ -4,15 +4,27 @@ import java.util.Date;
 
 import com.wordnik.swagger.annotations.ApiModelProperty;
 
-public class CriarDoenca {
-	@ApiModelProperty(required=true)
+import br.hela.doenca.DoencaId;
+
+public class EditarDoenca {
+	@ApiModelProperty(required = true)
+	private DoencaId idDoenca;
+	@ApiModelProperty(required = true)
 	private String nomeDoenca;
-	@ApiModelProperty(required=true)
+	@ApiModelProperty(required = true)
 	private Date dataDescoberta;
-	@ApiModelProperty(required=true)
+	@ApiModelProperty(required = true)
 	private String medicamento;
-	
-	public CriarDoenca() {
+
+	public EditarDoenca() {
+	}
+
+	public DoencaId getIdDoenca() {
+		return idDoenca;
+	}
+
+	public void setIdDoenca(DoencaId idDoenca) {
+		this.idDoenca = idDoenca;
 	}
 
 	public String getNomeDoenca() {
@@ -39,5 +51,4 @@ public class CriarDoenca {
 		this.medicamento = medicamento;
 	}
 
-	
 }

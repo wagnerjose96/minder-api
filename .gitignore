@@ -1,18 +1,35 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 # Para arquivos Java compilados
 *.class
 
 # Para os arquivos ".properties"
 *.properties
 =======
+=======
+# Para arquivos Java compilados
+*.class
+*.log
+*.ctxt
+.mtj.tmp/
+*.jar
+*.war
+*.ear
+*.zip
+*.tar.gz
+*.rar
+
+# Para os arquivos ".properties"
+*.properties
+
+>>>>>>> ae5d51159896912d48b975780bf1f23978cc1834
 # Eclipse
 .classpath
-*.class
 .project
 .settings/
  
 # Maven
-target/
+*target/
 pom.xml.tag
 pom.xml.releaseBackup
 pom.xml.versionsBackup

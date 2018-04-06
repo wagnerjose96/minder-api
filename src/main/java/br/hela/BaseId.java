@@ -5,9 +5,12 @@ import java.util.UUID;
 
 import javax.persistence.MappedSuperclass;
 
+import com.wordnik.swagger.annotations.ApiModelProperty;
+
 @MappedSuperclass
 public abstract class BaseId implements Serializable{
 	private static final long serialVersionUID = 1L;
+	@ApiModelProperty(required=true)
 	private String value;
 	
 	public BaseId() {
