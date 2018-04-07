@@ -1,34 +1,24 @@
 ## Passos para gerar corretamente a documentação do seu código.
+	* Obs: a documentação da API só será vista 
 
-## 1. Na classe Escoladeti2018Application é configurado o Swagger. No método public SwaggerSpringMvcPlugin groupOnePlugin() na linha 31 é necessário colocar o nome dos seus pacotes para que a documentação contemple eles.
-
-* linha: 
-.includePatterns("/alergias.*?") 
-
-* Para adicionar os pacotes é necessário escrever nos paramêtros "/ <nomedopacote depois do br.hela.>.*?"
-Exemplo: "/doencas.*?"
-
-## 2. Na classe Controller é onde deverá ser adcionado as anotações que o Swagger irá mapear para realizar a documentação.
+## 1. Na classe Controller é onde o Swagger irá mapear os métodos para realizar a documentação.
 
 ## 2.1 Antes da anotação @RestContoller é necessário acdicionar a anotação:
-    * @Api(value = "alergia", description = " ")
-        value é o nome do seu pacote. Ex: alergia, cirurgia, usuário...
-        description é a descrição que é definida para a sua documentação
+    * @Api(" aqui voce pode dar uma decriçao do seu controller")
+        
+	* Exemplo:
+		@Api("Basic Alergia Controller")
 
     * Segundo a anotação descrita no documento ficaria assim:
-        alergia: Documentação dos métodos do AlergiaController
+        alergia-controller: Basic Alergia Controller
 
-## 2.2 Antes de cada método da API é necessário adicionar anotações para o Swagger mapear se deve ou não documentá-lo:
-     
-    * Para o Swagger documentá-lo é necessário:
+## 2.2 Antes de cada método da API é necessário adicionar anotações para o Swagger mapear como documentá-lo:
+    * Para o adicionar uma descrição antes do @"metodo http" (@PostMapping...) coloque:
         @ApiOperation(value = "Busque todas as alergias" ): Define que esse método será documentado com a descrição determinada pelo value.
   
     * Para não documentar um método é necessário a anotação:
         @ApiIgnore: 
-        OBS: métodos privados o Swagger por padrão não documenta.
-
-       * Essa notação deve ser adcicionada a cada atributo para que no Swagger não seja apresentado como opcional: 
-            @ApiModelProperty(required=true.
+        OBS: o Swagger documenta apenas os métodos com a anotação de um método http (@PostMapping...).
 
 * PARA VER A DOCUMENTAÇÃO: http://localhost:9090/swagger-ui.html
 

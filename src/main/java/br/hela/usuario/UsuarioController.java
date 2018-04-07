@@ -24,7 +24,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import javassist.tools.web.BadHttpRequest;
 
-@Api(description = "Basic Usuário Controller")
+@Api("Basic Usuário Controller")
 @RestController
 @RequestMapping("/usuarios")
 public class UsuarioController {
