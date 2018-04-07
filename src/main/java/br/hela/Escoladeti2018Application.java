@@ -1,15 +1,13 @@
 package br.hela;
 
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
-import org.springframework.boot.builder.SpringApplicationBuilder;
-import org.springframework.context.annotation.ComponentScan;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
 
-@EnableAutoConfiguration
-@ComponentScan(basePackages = { "br.hela" })
+@SpringBootApplication
 public class Escoladeti2018Application {
 
 	public static void main(String[] args) {
-		new SpringApplicationBuilder(Escoladeti2018Application.class).run(args);
+		SpringApplication.run(Escoladeti2018Application.class, args);
 	}
 
 }

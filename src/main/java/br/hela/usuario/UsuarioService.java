@@ -44,5 +44,9 @@ public class UsuarioService {
 		}
 		return Optional.empty();
 	}
+	
+	public void deletarTodos() {
+		repo.deleteAll();
+	}
 
 }
