@@ -6,6 +6,8 @@ import br.hela.usuario.UsuarioId;
 
 public class EditarUsuario {
 	private UsuarioId id;
+	private String email;
+	private String nome_usuario;
 	private String nome_completo;
 	private String senha;
 	private String tipo_sangue;
@@ -24,6 +26,22 @@ public class EditarUsuario {
 
 	public void setId(UsuarioId id) {
 		this.id = id;
+	}
+
+	public String getEmail() {
+		return email;
+	}
+
+	public void setEmail(String email) {
+		this.email = email;
+	}
+
+	public String getNome_usuario() {
+		return nome_usuario;
+	}
+
+	public void setNome_usuario(String nome_usuario) {
+		this.nome_usuario = nome_usuario;
 	}
 
 	public String getNome_completo() {
