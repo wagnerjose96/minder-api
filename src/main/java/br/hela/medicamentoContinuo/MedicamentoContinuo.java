@@ -11,7 +11,6 @@ import org.hibernate.envers.Audited;
 
 import br.hela.medicamentoContinuo.comandos.CriarMedicamentoContinuo;
 
-
 @Entity
 @Audited
 public class MedicamentoContinuo {

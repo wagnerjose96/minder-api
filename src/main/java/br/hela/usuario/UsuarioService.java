@@ -28,12 +28,13 @@ public class UsuarioService {
 	public Optional<List<Usuario>> encontrar() {
 		return Optional.of(repo.findAll());
 	}
+	
 
 	public Optional<String> deletar(UsuarioId id) {
 		repo.deleteById(id);
 		return Optional.of("Usuário -> " + id + ": deletado com sucesso");
 	}
-
+	
 	public Optional<UsuarioId> alterar(EditarUsuario comando) {
 		Optional<Usuario> optional = repo.findById(comando.getId());
 		if (optional.isPresent()) {

@@ -3,8 +3,9 @@ package br.hela.usuario;
 import java.net.URI;
 import java.util.List;
 import java.util.Optional;
-import java.util.concurrent.TimeoutException;
 
+
+//import org.hibernate.cfg.NotYetImplementedException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 
@@ -20,98 +21,79 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import br.hela.usuario.comandos.CriarUsuario;
 import br.hela.usuario.comandos.EditarUsuario;
-import javassist.tools.web.BadHttpRequest;
 
 @RestController
 @RequestMapping("/usuarios")
 public class UsuarioController {
+	
 	@Autowired
 	private UsuarioService service;
 
 	@GetMapping
-	public ResponseEntity<List<Usuario>> getUsuarios() 
-			throws TimeoutException, NullPointerException, BadHttpRequest {
-
-		verificaListaUsuario();
-		verificaTempoResposta();
+	public ResponseEntity<List<Usuario>> getUsuarios() {
+		
 		Optional<List<Usuario>> optionalUsuario = service.encontrar();
-		if (optionalUsuario.isPresent()) {
-			return ResponseEntity.ok(optionalUsuario.get());
-		}
-		throw new BadHttpRequest();
+		return ResponseEntity.ok(optionalUsuario.get());
 	}
 
 	@GetMapping("/{id}")
-	public ResponseEntity<Usuario> getUsuarioId(@PathVariable UsuarioId id)
-			throws TimeoutException, NullPointerException, BadHttpRequest {
-
-		verificaUsuarioExitente(id);
-		verificaTempoResposta();
-		Optional<Usuario> optionalUsuario = service.encontrar(id);
-		if (optionalUsuario.isPresent()) {
-			return ResponseEntity.ok(optionalUsuario.get());
-		}
-		throw new BadHttpRequest();
+	public ResponseEntity<Usuario> getUsuarioId(@PathVariable UsuarioId id) 
+	throws NullPointerException {
+			
+			if (verificaUsuarioExistente(id)) {
+				Optional<Usuario> optionalUsuario = service.encontrar(id);
+				return ResponseEntity.ok(optionalUsuario.get());
+			}
+			throw new NullPointerException("O usuário procurado não existe no banco de dados");			
 	}
 
 	@DeleteMapping("/{id}")
-	public ResponseEntity<Optional<String>> deleteUsuario(@PathVariable UsuarioId id)
-			throws TimeoutException, NullPointerException, BadHttpRequest {
+	public ResponseEntity<Optional<String>> deleteUsuario(@PathVariable UsuarioId id) throws NullPointerException {
 
-		verificaUsuarioExitente(id);
-		verificaTempoResposta();
-		Optional<String> resultado = service.deletar(id);
-		if (resultado.isPresent()) {
+		if(verificaUsuarioExistente(id)) {
+			Optional<String> resultado = service.deletar(id);
 			return ResponseEntity.ok(resultado);
 		}
-		throw new BadHttpRequest();
+		throw new NullPointerException("O usuário a deletar não existe no banco de dados");
 	}
+	
 
 	@PostMapping
-	public ResponseEntity<UsuarioId> postUsuario(@RequestBody CriarUsuario comando)
-			throws TimeoutException, NullPointerException, BadHttpRequest {
+	public ResponseEntity<String> postUsuario(@RequestBody CriarUsuario comando) throws Exception{
 
-		verificaTempoResposta();
-		Optional<UsuarioId> optionalUsuarioId = service.salvar(comando);
-		verificaUsuarioExitente(optionalUsuarioId.get());
-		if (optionalUsuarioId.isPresent()) {
+			Optional<UsuarioId> optionalUsuarioId = service.salvar(comando);		
+			if (optionalUsuarioId.isPresent()) {
 			URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
 					.buildAndExpand(optionalUsuarioId.get()).toUri();
-			return ResponseEntity.created(location).build();
-		}
-		throw new BadHttpRequest();
+				return ResponseEntity.created(location).body("Usuário criado com sucesso");
+			}
+			throw new Exception("O Usuário não foi salvo devido a um erro interno");
 	}
 
 	@PutMapping
-	public ResponseEntity<UsuarioId> putUsuario(@RequestBody EditarUsuario comando)
-			throws TimeoutException, NullPointerException, BadHttpRequest {
+	public ResponseEntity<UsuarioId> putUsuario(@RequestBody EditarUsuario comando) throws NullPointerException, InternalError{
 
-		verificaUsuarioExitente(comando.getId());
-		verificaTempoResposta();
+		if(!verificaUsuarioExistente(comando.getId())) {
+			throw new NullPointerException("O usuário a ser alterado não existe no banco de dados");
+		}
 		Optional<UsuarioId> optionalUsuarioId = service.alterar(comando);
 		if (optionalUsuarioId.isPresent()) {
 			URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
 					.buildAndExpand(optionalUsuarioId.get()).toUri();
 			return ResponseEntity.created(location).build();
 		}
-		throw new BadHttpRequest();
-	}
-
-	private void verificaTempoResposta() throws TimeoutException {
-		if (System.currentTimeMillis() == 10) {
-			throw new TimeoutException("Servidor sem resposta");
+		else {
+			throw new InternalError("Erro interno durante a alteração do usuário");
 		}
+		
 	}
 
-	private void verificaUsuarioExitente(UsuarioId id) throws NullPointerException {
+	private boolean verificaUsuarioExistente(UsuarioId id){
 		if (!service.encontrar(id).isPresent()) {
-			throw new NullPointerException("Usuário não encontrado");
+			return false;
 		}
-	}
-
-	private void verificaListaUsuario() throws NullPointerException {
-		if (!service.encontrar().isPresent()) {
-			throw new NullPointerException("Nenhum usuário cadastrado");
+		else {
+			return true;
 		}
 	}
 

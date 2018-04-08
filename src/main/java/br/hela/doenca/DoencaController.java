@@ -18,7 +18,6 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import br.hela.doenca.comandos.CriarDoenca;
-import javassist.tools.web.BadHttpRequest;
 
 @RestController
 @RequestMapping("/doencas")
@@ -27,93 +26,76 @@ public class DoencaController {
 	private DoencaService doencaService;
 	
 	@GetMapping
-	public ResponseEntity<List<Doenca>> getDoencas() 
-			throws SQLException, NullPointerException, BadHttpRequest {	
-		
-		verificaListaDoenca();
-		verificaRetornoSQL();
+	public ResponseEntity<List<Doenca>> getDoencas() {	
 		
 		Optional<List<Doenca>> optionalDoencas = doencaService.encontrar();
-		if(optionalDoencas.isPresent()) {
-			return ResponseEntity.ok(optionalDoencas.get());
-		}
-		throw new BadHttpRequest();
+		return ResponseEntity.ok(optionalDoencas.get());
 	}
 	
 	@GetMapping("/{id}")
 	public ResponseEntity<Doenca> getDoencaPorId(@PathVariable DoencaId id) 
-			throws SQLException, NullPointerException, BadHttpRequest {
-		
-		verificaDoencaExistente(id);
-		verificaRetornoSQL();
+			throws NullPointerException{
 		
 		Optional<Doenca> optionalDoenca = doencaService.encontrar(id);
-		if(optionalDoenca.isPresent()) {
+		if(verificaDoencaExistente(id)) {
 			return ResponseEntity.ok(optionalDoenca.get());
 		}
-		throw new BadHttpRequest();
+		throw new NullPointerException("A doença procurada não existe no banco de dados");
 	}
-	
 	
 	@DeleteMapping("/{id}")
 	public ResponseEntity<Optional<String>> deletarDoenca (@PathVariable DoencaId id) 
-			throws SQLException, NullPointerException, BadHttpRequest {
-		
-		verificaDoencaExistente(id);
-		verificaRetornoSQL();
-		
-		Optional<String> optionalDoenca = doencaService.deletar(id);
-		if(optionalDoenca.isPresent()) {
+			throws NullPointerException {
+				
+		if(verificaDoencaExistente(id)) {
+			Optional<String> optionalDoenca = doencaService.deletar(id);
 			return ResponseEntity.ok(optionalDoenca);
 		}
-		throw new BadHttpRequest();
+		throw new NullPointerException("A doença a deletar não existe no banco de dados");
 	}
 	
 	@PostMapping
-	public ResponseEntity<DoencaId> postDoenca(@RequestBody CriarDoenca comando) 
-			throws SQLException, NullPointerException, BadHttpRequest {
+	public ResponseEntity<String> postDoenca(@RequestBody CriarDoenca comando) 
+			throws Exception {
 		
-		verificaRetornoSQL();
+		
 		Optional<DoencaId> optionalDoencaId = doencaService.executar(comando);
-		verificaDoencaExistente(optionalDoencaId.get());
-		
 		if(optionalDoencaId.isPresent()) {
 			URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(optionalDoencaId.get()).toUri();
-			return ResponseEntity.created(location).build();
+			return ResponseEntity.created(location).body("Doença criada com sucesso");
 		}
-		throw new BadHttpRequest();
+		throw new Exception("A doença não foi salva devido a um erro interno");
+		
 	}
 	
 	@PutMapping("/{id}")
 	public ResponseEntity<String> putDoenca(@RequestBody Doenca comando) 
-			throws SQLException, NullPointerException, BadHttpRequest {
+			throws NullPointerException, Exception {
 		
-		verificaDoencaExistente(comando.getIdDoenca());
-		verificaRetornoSQL();
-		
+		if(!verificaDoencaExistente(comando.getIdDoenca())) {
+			throw new NullPointerException("A doença a ser alterada não existe no banco de dados");
+		}
 		Optional<DoencaId> optionalDoencaId = doencaService.alterar(comando);
 		if(optionalDoencaId.isPresent()) {
-			URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(optionalDoencaId.get()).toUri();
-			return ResponseEntity.created(location).build();
+			URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
+					.buildAndExpand(optionalDoencaId.get()).toUri();
+			return ResponseEntity.created(location).body("Doença alterada com sucesso");
 		}
-		throw new BadHttpRequest();
+		else {
+			throw new SQLException("Erro interno durante a alteração da doença");
+		}
+		
 	}
 	
-	private void verificaRetornoSQL() throws SQLException {
-		if(System.currentTimeMillis() == 10) {
-			throw new SQLException("Servidor SQL sem resposta");
-		}		
-	}
 	
-	private void verificaDoencaExistente(DoencaId id) throws NullPointerException {
+	private boolean verificaDoencaExistente(DoencaId id) {
 		if (!doencaService.encontrar(id).isPresent()) {
-			throw new NullPointerException("Doença não encontrada");
+			return false;
+		}
+		else {
+			return true;
 		}
 	}
 	
-	private void verificaListaDoenca() throws NullPointerException {
-		if (!doencaService.encontrar().isPresent()) {
-			throw new NullPointerException("Nenhuma doença cadastrada");
-		}
-	}
+
 }

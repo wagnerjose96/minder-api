@@ -1,7 +1,6 @@
 package br.hela.medicamentoContinuo;
 
 import java.net.URI;
-import java.sql.SQLException;
 import java.util.List;
 import java.util.Optional;
 
@@ -18,7 +17,6 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import br.hela.medicamentoContinuo.comandos.CriarMedicamentoContinuo;
-import javassist.tools.web.BadHttpRequest;
 
 @RestController
 @RequestMapping("/medicamentoContinuo")
@@ -28,93 +26,74 @@ public class MedicamentoContinuoController {
 	private MedicamentoContinuoService service;
 	
 	@GetMapping
-	public ResponseEntity<List<MedicamentoContinuo>> getMedicamentoContinuo()
-			throws SQLException, NullPointerException, BadHttpRequest {
+	public ResponseEntity<List<MedicamentoContinuo>> getMedicamentoContinuo(){
 		
-		verificaListaDeMedicamentosContinuos();
-		verificaRetornoSQL();
-		Optional<List<MedicamentoContinuo>> optionalMedicamentosContinuos = service.encontrar();
-		if(optionalMedicamentosContinuos.isPresent()) {
-			return ResponseEntity.ok(optionalMedicamentosContinuos.get());
-		}	
-			throw new BadHttpRequest();
+		Optional<List<MedicamentoContinuo>> optionalMedicamentosContinuos = service.encontrar();	
+		return ResponseEntity.ok(optionalMedicamentosContinuos.get());
+	
 	}
 	
 	@GetMapping("/{id}")
-	public ResponseEntity<MedicamentoContinuo> getMedicamentoContinuo(@PathVariable MedicamentoContinuoId id)
-			throws SQLException, NullPointerException, BadHttpRequest {
-		
-		verificaMedicamentoContinuoExistente(id);
-		
+	public ResponseEntity<MedicamentoContinuo> getMedicamentoContinuo(@PathVariable MedicamentoContinuoId id) throws NullPointerException{
+				
 		Optional<MedicamentoContinuo> optionalMedicamentoContinuo = service.encontrar(id);
-		if(optionalMedicamentoContinuo.isPresent()) {
+		if(verificaMedicamentoContinuoExistente(id)) {
 			return ResponseEntity.ok(optionalMedicamentoContinuo.get());
 		}	
-			throw new BadHttpRequest();
+		throw new NullPointerException("O alarme procurado não existe no banco de dados");
 	}
 
 	@DeleteMapping("/{id}")
-	public ResponseEntity<Optional<String>> deletarMedicamentoContinuo(@PathVariable MedicamentoContinuoId id) 
-			throws SQLException, NullPointerException, BadHttpRequest { 
-		
-		verificaListaDeMedicamentosContinuos();
-		verificaRetornoSQL();
-		
-		Optional<String> optionalMedicamentoContinuo = service.deletar(id);
-		if (optionalMedicamentoContinuo.isPresent()) {
-			return ResponseEntity.ok(optionalMedicamentoContinuo);
+	public ResponseEntity<Optional<String>> deletarMedicamentoContinuo(@PathVariable MedicamentoContinuoId id) throws NullPointerException{ 
+				
+		if(verificaMedicamentoContinuoExistente(id)) {
+		Optional<String> resultado = service.deletar(id);
+			return ResponseEntity.ok(resultado);
 		}	
-		throw new BadHttpRequest();
+		throw new NullPointerException("O alarme continuo a deletar não existe no banco de dados");
 	}
 	
 	@PostMapping
-	public ResponseEntity<MedicamentoContinuoId> postMedicamentoContinuo(@RequestBody CriarMedicamentoContinuo comando)
-		throws SQLException, NullPointerException, BadHttpRequest {
+	public ResponseEntity<String> postMedicamentoContinuo(@RequestBody CriarMedicamentoContinuo comando)throws Exception{
 		
-		verificaRetornoSQL();
-		Optional<MedicamentoContinuoId> optionalMedicamentoContinuoId = service.salvar(comando);
-		verificaMedicamentoContinuoExistente(optionalMedicamentoContinuoId.get());
-		
-		
+		Optional<MedicamentoContinuoId> optionalMedicamentoContinuoId = service.salvar(comando);		
 		if (optionalMedicamentoContinuoId.isPresent()) {
-			URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(optionalMedicamentoContinuoId.get()).toUri();
-			return ResponseEntity.created(location).build();
+			URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
+					.buildAndExpand(optionalMedicamentoContinuoId.get()).toUri();
+			return ResponseEntity.created(location).body("Alarme criado com sucesso");
 		}
-		throw new BadHttpRequest();
+		throw new Exception("O alarme não foi salvo devido a algum erro interno");
 	}
 	
 	@PutMapping
-	public ResponseEntity<MedicamentoContinuoId> putMedicamentoContinuo(@RequestBody MedicamentoContinuo comando)
-		throws SQLException, NullPointerException, BadHttpRequest{
+	public ResponseEntity<String> putMedicamentoContinuo(@RequestBody MedicamentoContinuo comando) throws NullPointerException, InternalError
+	{
 		
-		verificaMedicamentoContinuoExistente(comando.getIdMedicamentoContinuo());
-		verificaRetornoSQL();
-		
+		if(!verificaMedicamentoContinuoExistente(comando.getIdMedicamentoContinuo())){
+			throw new NullPointerException("O alarme a ser alterado não existe");
+		}
 		Optional<MedicamentoContinuoId> optionalMedicamentoContinuoId = service.alterar(comando);
 		if (optionalMedicamentoContinuoId.isPresent()) {
-			URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(optionalMedicamentoContinuoId.get()).toUri();
-			return ResponseEntity.created(location).build();
+			URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
+					.buildAndExpand(optionalMedicamentoContinuoId.get()).toUri();
+			return ResponseEntity.created(location).body("Alarme alterado com sucesso");
 		}
-		throw new BadHttpRequest();
+		else {
+			throw new InternalError("Erro interno durante a alteração do alarme");
+		}
+		
 	}
 	
-	private void verificaRetornoSQL() throws SQLException{
-		if (System.currentTimeMillis() == 10) {
-			throw new SQLException("Servidor SQL sem resposta!");
-		}
-	}
 	
-	private void verificaMedicamentoContinuoExistente(MedicamentoContinuoId id) throws NullPointerException{
+	private boolean verificaMedicamentoContinuoExistente(MedicamentoContinuoId id) throws NullPointerException{
 		if (!service.encontrar(id).isPresent()) {
-			throw new NullPointerException("Medicamento continuo não encontrado!");
+			return false;
+		}
+		else {
+			return true;
 		}
 	}
-	
-	private void verificaListaDeMedicamentosContinuos() throws NullPointerException {
-		if (!service.encontrar().isPresent()) {
-			throw new NullPointerException("Nenhum medicamento continuo cadastrado!");
-		}
-	}
+
 }	
 
 	

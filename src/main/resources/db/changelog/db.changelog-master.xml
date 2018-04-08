@@ -9,7 +9,7 @@
 
 	<property name="TYPE_ID" value="varchar(36)" />
 	<property name="TYPE_DESCRICAO" value="varchar(25)" />
-	<property name="TYPE_TEXTO" value="varchar(50)" />
+	<property name="TYPE_TEXTO" value="varchar(255)" />
 	<property name="TYPE_DATA" value="date" />
 	<property name="TYPE_NUMBER" value="integer" />
 	<property name="TYPE_TIME" value="timestamp" />
@@ -30,5 +30,6 @@
 	<include file="db/changelog/db.changelog-doenca.xml" />
 	<include file="db/changelog/db.changelog-medicamento.xml" />
 	<include file="db/changelog/db.changelog-alergia.xml" />
+	<include file="db/changelog/db.changelog-error.xml" />
 
 </databaseChangeLog>

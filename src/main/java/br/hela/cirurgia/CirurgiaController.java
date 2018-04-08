@@ -1,6 +1,7 @@
 package br.hela.cirurgia;
 
 import java.net.URI;
+import java.sql.SQLException;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.TimeoutException;
@@ -21,84 +22,78 @@ import javassist.tools.web.BadHttpRequest;
 @RestController
 @RequestMapping("/cirurgias")
 public class CirurgiaController {
+	
 	@Autowired
 	private CirurgiaService cirurgiaService;
 
 	@GetMapping
-	public ResponseEntity<List<Cirurgia>> getCirurgias() throws TimeoutException, NullPointerException, BadHttpRequest{
-		verificaListaCirurgia();
-		verificaTempoResposta();
+	public ResponseEntity<List<Cirurgia>> getCirurgias() {
+		
 		Optional<List<Cirurgia>> optionalCirurgias = cirurgiaService.encontrar();
-		if (optionalCirurgias.isPresent()) {
-			return ResponseEntity.ok(optionalCirurgias.get());
-		}
-		throw new BadHttpRequest();
+		return ResponseEntity.ok(optionalCirurgias.get());
+		
 	}
 	
 	@GetMapping("/{id}")
 	public ResponseEntity<Cirurgia> getCirurgiaPorId(@PathVariable CirurgiaId id)
-			throws TimeoutException, NullPointerException, BadHttpRequest {
-		verificaCirurgiaExistente(id);
-		verificaTempoResposta();
+			throws NullPointerException {
+		
 		Optional<Cirurgia> optionalCirurgia = cirurgiaService.encontrar(id);
-		if (optionalCirurgia.isPresent()) {
+		if (verificaCirurgiaExistente(id)) {
 			return ResponseEntity.ok(optionalCirurgia.get());
 		}
-		throw new BadHttpRequest();
+		throw new NullPointerException("A cirurgia procurada não existe no banco de dados");			
 	}
 
 	@DeleteMapping("/{id}")
 	public ResponseEntity<String> deletarCirurgia(@PathVariable CirurgiaId id) throws TimeoutException, NullPointerException,  BadHttpRequest {
-		verificaCirurgiaExistente(id);
-		verificaTempoResposta();
-		Optional<String> optionalCirurgia = cirurgiaService.deletar(id);
-		if (optionalCirurgia.isPresent()) {
+		
+		
+		if (verificaCirurgiaExistente(id)) {
+			Optional<String> optionalCirurgia = cirurgiaService.deletar(id);
 			return ResponseEntity.ok(optionalCirurgia.get());
 		}
-		throw new BadHttpRequest();
+		throw new NullPointerException("O usuário a deletar não existe no banco de dados");
 	}
 
 	@PostMapping
 	public ResponseEntity<String> postCirurgia(@RequestBody CriarCirurgia comando)
-			throws TimeoutException, NullPointerException, BadHttpRequest {
-		verificaTempoResposta();
+			throws Exception {
+		
 		Optional<CirurgiaId> optionalCirurgiaId = cirurgiaService.executar(comando);
-		verificaCirurgiaExistente(optionalCirurgiaId.get());
 		if (optionalCirurgiaId.isPresent()) {
 			URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
 					.buildAndExpand(optionalCirurgiaId.get()).toUri();
-			return ResponseEntity.created(location).build();
+			return ResponseEntity.created(location).body("Usuário criado com sucesso");
 		}
-		throw new BadHttpRequest();
+		throw new Exception("A cirurgia não foi salva devido a um erro interno");
 	}
 
-	@PutMapping()
-	public ResponseEntity<String> putCirurgia(@RequestBody Cirurgia comando) throws TimeoutException, NullPointerException, BadHttpRequest {
-		verificaCirurgiaExistente(comando.getIdCirurgia());
-		verificaTempoResposta();
+	@PutMapping
+	public ResponseEntity<String> putCirurgia(@RequestBody Cirurgia comando) throws NullPointerException, SQLException {
+		
+		if(!verificaCirurgiaExistente(comando.getIdCirurgia())) {
+			throw new NullPointerException("O usuário a ser alterado não existe no banco de dados");
+		}		
 		Optional<CirurgiaId> optionalCirurgiaId = cirurgiaService.alterar(comando);
 		if (optionalCirurgiaId.isPresent()) {
 			URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
 					.buildAndExpand(optionalCirurgiaId.get()).toUri();
-			return ResponseEntity.created(location).build();
+			return ResponseEntity.created(location).body("Cirurgia alterada com sucesso");
 		}
-		throw new BadHttpRequest();
-	}
-	private void verificaTempoResposta() throws TimeoutException {
-		if (System.currentTimeMillis() == 10) {
-			throw new TimeoutException("Servidor sem resposta");
+		else {
+			throw new SQLException("Erro interno durante a alteração do cirurgia");
 		}
+		
 	}
 
-	private void verificaCirurgiaExistente(CirurgiaId id) throws NullPointerException {
+	private boolean verificaCirurgiaExistente(CirurgiaId id) throws NullPointerException {
 		if (!cirurgiaService.encontrar(id).isPresent()) {
-			throw new NullPointerException("Cirurgia não encontrada");
+			return false;
+		}
+		else {
+			return true;
 		}
 	}
 
-	private void verificaListaCirurgia() throws NullPointerException {
-		if (!cirurgiaService.encontrar().isPresent()) {
-			throw new NullPointerException("Nenhuma cirurgia cadastrada");
-		}
-	}
 }

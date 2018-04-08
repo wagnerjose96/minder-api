@@ -1,13 +1,13 @@
-package br.hela.Exceptions;
+package br.hela.exceptions.comandos;
 
-public class ErrorDetail {
-
+public class CriarErrorDetail {
+	
 	private String type;
 	private String error;
 	private String developerMessage;
-	private int HttpStatus;
-
-	public ErrorDetail() {
+	private int httpStatus;
+	
+	public CriarErrorDetail() {	
 	}
 
 	public String getType() {
@@ -35,11 +35,15 @@ public class ErrorDetail {
 	}
 
 	public int getHttpStatus() {
-		return HttpStatus;
+		return httpStatus;
 	}
 
 	public void setHttpStatus(int httpStatus) {
-		HttpStatus = httpStatus;
+		this.httpStatus = httpStatus;
 	}
+	
+	
+	
+	
 
 }
