@@ -8,7 +8,6 @@ import javax.persistence.Entity;
 import org.hibernate.envers.Audited;
 
 import br.hela.medicamento.comandos.CriarMedicamento;
-import br.hela.medicamentoContinuo.MedicamentoContinuo;
 
 @Entity
 @Audited

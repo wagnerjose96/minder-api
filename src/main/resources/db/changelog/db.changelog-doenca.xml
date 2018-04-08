@@ -17,10 +17,21 @@
 				<constraints nullable="false" />
 			</column>
 			<column name="id_medicamento" type="${TYPE_ID}">
-				<constraints nullable="false" foreignKeyName="FK_MEDICAMENTO" references="medicamento(id_medicamento)"/>
+				<constraints nullable="false" />
 			</column>
 		</createTable>
 		
+	</changeSet>
+	
+	<changeSet id="relation_doenca_id_medicamento" author="douglas.mendonca">
+		 <addForeignKeyConstraint 	baseColumnNames="id_medicamento"
+	                            	baseTableName="doenca"
+	                            	deferrable="true"
+					            	initiallyDeferred="true"
+						            onDelete="CASCADE"
+		                            constraintName="FK_MEDICAMENTO"
+		                            referencedColumnNames="id_medicamento"
+		                            referencedTableName="medicamento"/>
 	</changeSet>
 	
 	<changeSet id="create_table_doenca_aud" author="douglas.mendonca">

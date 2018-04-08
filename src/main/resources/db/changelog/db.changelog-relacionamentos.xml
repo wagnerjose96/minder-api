@@ -11,12 +11,23 @@
 				<constraints nullable="false" primaryKey="true" primaryKeyName="PK_DOENCA_MEDICAMENTO"/>
 			</column>
 			<column name="id_doenca" type="${TYPE_ID}">
-				<constraints nullable="false"/>
+				<constraints nullable="false" />
 			</column>
 			<column name="id_medicamento" type="${TYPE_ID}">
-				<constraints nullable="false" foreignKeyName="FK_MEDICAMENTO" references="medicamento(id_medicamento)"/>
+				<constraints nullable="false" />
 			</column>
 		</createTable>
 	                                                 
 	</changeSet>
+	<changeSet id="relation_medicamento" author="douglas.mendonca">
+		 <addForeignKeyConstraint 	baseColumnNames="id_medicamento"
+	                            	baseTableName="doenca_medicamento"
+	                            	deferrable="true"
+					            	initiallyDeferred="true"
+						            onDelete="CASCADE"
+		                            constraintName="FK_MEDICAMENTO"
+		                            referencedColumnNames="id_medicamento"
+		                            referencedTableName="medicamento"/>
+	</changeSet> 
+	
 </databaseChangeLog>

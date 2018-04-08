@@ -1,17 +1,19 @@
 package br.hela.doenca;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import javax.persistence.AttributeOverride;
 import javax.persistence.Column;
+import javax.persistence.ElementCollection;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 
 import org.hibernate.envers.Audited;
 
 import br.hela.doenca.comandos.CriarDoenca;
-import br.hela.doenca_medicamento.Doenca_Medicamento;
-import br.hela.doenca_medicamento.Doenca_Medicamento_Id;
 import br.hela.medicamento.MedicamentoId;
 
 @Entity
@@ -22,8 +24,9 @@ public class Doenca {
 	private DoencaId idDoenca;
 	private String nomeDoenca;
 	private Date dataDescoberta;
+	@ElementCollection(fetch=FetchType.EAGER)
 	@AttributeOverride(name="value", column=@Column(name="id_medicamento"))
-	private MedicamentoId idMedicamento;
+	private List<MedicamentoId> idMedicamento = new ArrayList<>();
 	
 	public Doenca() {
 		
@@ -48,7 +51,7 @@ public class Doenca {
 		return dataDescoberta;
 	}
 
-	public MedicamentoId getMedicamento() {
+	public List<MedicamentoId> getMedicamento() {
 		return idMedicamento;
 	}
 	

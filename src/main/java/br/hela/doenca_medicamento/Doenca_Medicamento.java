@@ -1,26 +1,30 @@
 package br.hela.doenca_medicamento;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.persistence.AttributeOverride;
 import javax.persistence.Column;
+import javax.persistence.ElementCollection;
 import javax.persistence.EmbeddedId;
+import javax.persistence.FetchType;
 
 import org.hibernate.envers.Audited;
 
-import br.hela.BaseId;
 import br.hela.doenca.DoencaId;
 import br.hela.medicamento.MedicamentoId;
+
 
 @Audited
 public class Doenca_Medicamento {
 	@EmbeddedId
 	@AttributeOverride(name="value", column=@Column(name="id"))
 	private Doenca_Medicamento_Id id;
-	@EmbeddedId
 	@AttributeOverride(name="value", column=@Column(name="id_doenca"))
 	private DoencaId idDoenca;
-	@EmbeddedId
 	@AttributeOverride(name="value", column=@Column(name="id_medicamento"))
-	private Doenca_Medicamento_Id idMedicamento;
+	@ElementCollection(fetch=FetchType.EAGER)
+	private List<MedicamentoId> idMedicamento = new ArrayList<MedicamentoId>();
 	
 	public Doenca_Medicamento() {
 		super();
@@ -42,11 +46,11 @@ public class Doenca_Medicamento {
 		this.idDoenca = idDoenca;
 	}
 
-	public Doenca_Medicamento_Id getIdMedicamento() {
+	public List<MedicamentoId> getIdMedicamento() {
 		return idMedicamento;
 	}
 
-	public void setIdMedicamento(Doenca_Medicamento_Id idMedicamento) {
+	public void setIdMedicamento(List<MedicamentoId> idMedicamento) {
 		this.idMedicamento = idMedicamento;
 	}
 		

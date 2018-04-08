@@ -1,16 +1,15 @@
 package br.hela.doenca.comandos;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import br.hela.doenca_medicamento.Doenca_Medicamento;
-import br.hela.doenca_medicamento.Doenca_Medicamento_Id;
 import br.hela.medicamento.MedicamentoId;
 
 public class CriarDoenca {
 	private String nomeDoenca;
 	private Date dataDescoberta;
-	private MedicamentoId idMedicamento;
+	private List<MedicamentoId> idMedicamento = new ArrayList<>();
 	
 	public CriarDoenca() {
 	}
@@ -31,12 +30,12 @@ public class CriarDoenca {
 		this.dataDescoberta = dataDescoberta;
 	}
 
-	public MedicamentoId getIdMedicamento() {
-		return idMedicamento;
+	public List<MedicamentoId> getIdMedicamento() {
+		return this.idMedicamento;
 	}
 
-	public void setIdMedicamento(MedicamentoId idMedicamento) {
-		this.idMedicamento = idMedicamento;
+	public void setIdMedicamento(List<MedicamentoId> idMedicamento) {
+		this.idMedicamento.addAll(idMedicamento);
 	}
 
 	
