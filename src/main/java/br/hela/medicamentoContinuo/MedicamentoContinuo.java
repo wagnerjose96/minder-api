@@ -1,14 +1,11 @@
 package br.hela.medicamentoContinuo;
 
 import java.util.Date;
-
 import javax.persistence.AttributeOverride;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
-
 import org.hibernate.envers.Audited;
-
 import br.hela.medicamento.MedicamentoId;
 import br.hela.medicamentoContinuo.comandos.CriarMedicamentoContinuo;
 import br.hela.medicamentoContinuo.comandos.EditarMedicamentoContinuo;

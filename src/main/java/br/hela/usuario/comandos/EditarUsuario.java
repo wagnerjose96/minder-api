@@ -1,7 +1,6 @@
 package br.hela.usuario.comandos;
 
 import java.util.Date;
-
 import br.hela.usuario.UsuarioId;
 
 public class EditarUsuario {

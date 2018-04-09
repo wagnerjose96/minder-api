@@ -16,14 +16,13 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
-
 import br.hela.cirurgia.comandos.CriarCirurgia;
 import br.hela.cirurgia.comandos.EditarCirurgia;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import javassist.tools.web.BadHttpRequest;
 
-@Api("Basic Cirurgia Controller")
+@Api(description = "Basic Cirurgia Controller")
 @RestController
 @RequestMapping("/cirurgias")
 public class CirurgiaController {
@@ -59,7 +58,7 @@ public class CirurgiaController {
 			Optional<String> optionalCirurgia = cirurgiaService.deletar(id);
 			return ResponseEntity.ok(optionalCirurgia.get());
 		}
-		throw new NullPointerException("O usuário a deletar não existe no banco de dados");
+		throw new NullPointerException("A cirugia a deletar não existe no banco de dados");
 	}
 
 	@ApiOperation(value = "Cadastre uma nova cirurgia")
@@ -70,7 +69,7 @@ public class CirurgiaController {
 		if (optionalCirurgiaId.isPresent()) {
 			URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
 					.buildAndExpand(optionalCirurgiaId.get()).toUri();
-			return ResponseEntity.created(location).body("Usuário criado com sucesso");
+			return ResponseEntity.created(location).body("Alergia criada com sucesso");
 		}
 		throw new Exception("A cirurgia não foi salva devido a um erro interno");
 	}
@@ -80,7 +79,7 @@ public class CirurgiaController {
 	public ResponseEntity<String> putCirurgia(@RequestBody EditarCirurgia comando) throws NullPointerException, SQLException {
 
 		if (!verificaCirurgiaExistente(comando.getIdCirurgia())) {
-			throw new NullPointerException("O usuário a ser alterado não existe no banco de dados");
+			throw new NullPointerException("A cirurgia a ser alterada não existe no banco de dados");
 		}
 		Optional<CirurgiaId> optionalCirurgiaId = cirurgiaService.alterar(comando);
 		if (optionalCirurgiaId.isPresent()) {

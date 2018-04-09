@@ -1,7 +1,6 @@
 package br.hela.exceptions;
 
 import javax.persistence.Embeddable;
-
 import br.hela.BaseId;
 
 @Embeddable

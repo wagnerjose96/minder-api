@@ -8,7 +8,6 @@ import javax.persistence.Entity;
 import br.hela.cirurgia.comandos.CriarCirurgia;
 import br.hela.cirurgia.comandos.EditarCirurgia;
 import br.hela.medicamento.MedicamentoId;
-
 import org.hibernate.envers.Audited;
 
 @Entity

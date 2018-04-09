@@ -1,13 +1,12 @@
 package br.hela;
 
 import java.util.Collections;
-
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurationSupport;
-
+import com.google.common.base.Predicates;
 import springfox.documentation.builders.PathSelectors;
 import springfox.documentation.builders.RequestHandlerSelectors;
 import springfox.documentation.service.ApiInfo;
@@ -21,18 +20,17 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 public class SwaggerConfig extends WebMvcConfigurationSupport {
 	@Bean
 	public Docket productApi() {
-		return new Docket(DocumentationType.SWAGGER_2).select().apis(RequestHandlerSelectors.any())
+		return new Docket(DocumentationType.SWAGGER_2).select()
+				.apis(Predicates.not(RequestHandlerSelectors.basePackage("org.springframework.boot")))
 				.paths(PathSelectors.any()).build().apiInfo(apiInfo());
 
 	}
-
 	@Override
 	protected void addResourceHandlers(ResourceHandlerRegistry registry) {
 		registry.addResourceHandler("swagger-ui.html").addResourceLocations("classpath:/META-INF/resources/");
 
 		registry.addResourceHandler("/webjars/**").addResourceLocations("classpath:/META-INF/resources/webjars/");
 	}
-
 	@Override
 	public void addViewControllers(ViewControllerRegistry registry) {
 		registry.addRedirectViewController("/docApi/v2/api-docs", "/v2/api-docs");
@@ -42,7 +40,6 @@ public class SwaggerConfig extends WebMvcConfigurationSupport {
 				"/swagger-resources/configuration/security");
 		registry.addRedirectViewController("/docApi/swagger-resources", "/swagger-resources");
 	}
-
 	private ApiInfo apiInfo() {
 		return new ApiInfo("Documentação Api-Hela", "Descrição da API", "Rotas disponíveis", "Licença Aberta",
 				new Contact("Hela-Company", "www.hela.com.br", "hela@gmail.com"), "License of API", "API license URL",

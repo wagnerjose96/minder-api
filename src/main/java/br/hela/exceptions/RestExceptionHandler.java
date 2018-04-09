@@ -3,7 +3,6 @@ package br.hela.exceptions;
 import java.nio.file.AccessDeniedException;
 import java.sql.SQLException;
 import java.util.concurrent.TimeoutException;
-
 import org.hibernate.cfg.NotYetImplementedException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -14,7 +13,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.server.MethodNotAllowedException;
 import org.springframework.web.server.UnsupportedMediaTypeStatusException;
-
 import br.hela.exceptions.comandos.CriarErrorDetail;
 import javassist.tools.web.BadHttpRequest;
 
@@ -102,7 +100,7 @@ public class RestExceptionHandler {
 	public @ResponseBody ResponseEntity<?> handleSQLException(InternalError message) {
 
 		CriarErrorDetail errorDetail = new CriarErrorDetail();
-		errorDetail.setType("Internal Server Errorrrrrrrrrr");
+		errorDetail.setType("Internal Server Error");
 		errorDetail.setHttpStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
 		errorDetail.setError(message.getMessage());
 		errorDetail.setDeveloperMessage(message.getClass().getName());

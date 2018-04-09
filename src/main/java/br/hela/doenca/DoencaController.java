@@ -4,7 +4,6 @@ import java.net.URI;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Optional;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -16,13 +15,12 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
-
 import br.hela.doenca.comandos.CriarDoenca;
 import br.hela.doenca.comandos.EditarDoenca;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 
-@Api("Basic Doença Controller")
+@Api(description = "Basic Doença Controller")
 @RestController
 @RequestMapping("/doencas")
 public class DoencaController {
@@ -74,7 +72,7 @@ public class DoencaController {
 	}
 
 	@ApiOperation(value = "Altere uma doença")
-	@PutMapping("/{id}")
+	@PutMapping
 	public ResponseEntity<String> putDoenca(@RequestBody EditarDoenca comando) throws NullPointerException, Exception {
 		if (!verificaDoencaExistente(comando.getIdDoenca())) {
 			throw new NullPointerException("A doença a ser alterada não existe no banco de dados");

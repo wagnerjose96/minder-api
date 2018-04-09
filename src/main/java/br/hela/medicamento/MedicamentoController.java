@@ -3,7 +3,6 @@ package br.hela.medicamento;
 import java.net.URI;
 import java.util.List;
 import java.util.Optional;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -15,13 +14,12 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
-
 import br.hela.medicamento.comandos.CriarMedicamento;
 import br.hela.medicamento.comandos.EditarMedicamento;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 
-@Api("Basic Medicamento Controller")
+@Api(description = "Basic Medicamento Controller")
 @RestController
 @RequestMapping("/medicamentos")
 public class MedicamentoController {
@@ -61,21 +59,21 @@ public class MedicamentoController {
 
 	@ApiOperation(value = "Cadastre um novo medicamento")
 	@PostMapping
-	public ResponseEntity<MedicamentoId> postMedicamento(@RequestBody CriarMedicamento comando)
+	public ResponseEntity<String> postMedicamento(@RequestBody CriarMedicamento comando)
 			throws Exception {
 
 		Optional<MedicamentoId> optionalMedicamentoId = service.salvar(comando);
 		if (optionalMedicamentoId.isPresent()) {
 			URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
 					.buildAndExpand(optionalMedicamentoId.get()).toUri();
-			return ResponseEntity.created(location).build();
+			return ResponseEntity.created(location).body("O medicamento foi criado com sucesso");
 		}
 		throw new Exception("O medicamento não foi salvo devido a um erro interno");
 	}
 
 	@ApiOperation(value = "Altere um medicamento")
 	@PutMapping
-	public ResponseEntity<MedicamentoId> putMedicamentoContinuo(@RequestBody EditarMedicamento comando)
+	public ResponseEntity<String> putMedicamentoContinuo(@RequestBody EditarMedicamento comando)
 			throws NullPointerException, InternalError {
 
 		if(!verificaMedicamentoExistente(comando.getIdMedicamento())) {
@@ -85,7 +83,7 @@ public class MedicamentoController {
 		if (optionalMedicamentoId.isPresent()) {
 			URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
 					.buildAndExpand(optionalMedicamentoId.get()).toUri();
-			return ResponseEntity.created(location).build();
+			return ResponseEntity.created(location).body("Medicamento alterado com sucesso");
 		} else {
 			throw new InternalError("Erro interno durante a alteração do usuário");
 		}
