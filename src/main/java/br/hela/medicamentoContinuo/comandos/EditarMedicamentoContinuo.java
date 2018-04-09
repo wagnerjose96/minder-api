@@ -2,11 +2,12 @@ package br.hela.medicamentoContinuo.comandos;
 
 import java.util.Date;
 
+import br.hela.medicamento.MedicamentoId;
 import br.hela.medicamentoContinuo.MedicamentoContinuoId;
 
 public class EditarMedicamentoContinuo {
 	private MedicamentoContinuoId idMedicamentoContinuo;
-	private int idMedicamento; // Será trocado pelo ID da classe medicamento
+	private MedicamentoId idMedicamento;
 	private String tipoMedicamento;
 	private int quantidadeDeConsumo;
 	private int intervaloDeConsumo;
@@ -23,11 +24,11 @@ public class EditarMedicamentoContinuo {
 		this.idMedicamentoContinuo = idMedicamentoContinuo;
 	}
 
-	public int getIdMedicamento() {
+	public MedicamentoId getIdMedicamento() {
 		return idMedicamento;
 	}
 
-	public void setIdMedicamento(int idMedicamento) {
+	public void setIdMedicamento(MedicamentoId idMedicamento) {
 		this.idMedicamento = idMedicamento;
 	}
 

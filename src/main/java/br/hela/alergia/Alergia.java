@@ -10,88 +10,95 @@ import org.hibernate.envers.Audited;
 
 import br.hela.alergia.comandos.CriarAlergia;
 import br.hela.alergia.comandos.EditarAlergia;
+import br.hela.medicamento.MedicamentoId;
 
 @Entity
 @Audited
 public class Alergia {
 	@EmbeddedId
 	@AttributeOverride(name = "value", column = @Column(name = "id"))
-	private AlergiaId id;
-	private String tipo_alergia;
-	private Date data_descoberta;
-	private String medicamento;
-	private String local_afetado;
+	private AlergiaId idAlergia;
+	private String tipoAlergia;
+	private String localAfetado;
+	private Date dataDescoberta;
 	private String efeitos;
-	
+	@AttributeOverride(name = "value", column = @Column(name = "id_medicamento"))
+	private MedicamentoId idMedicamento;
+
 	public Alergia() {
 	}
-	
-	public Alergia(CriarAlergia comando){
-		this.id = new AlergiaId();
-		this.tipo_alergia = comando.getTipo_alergia();
-		this.data_descoberta = comando.getData_descoberta();
-		this.medicamento = comando.getMedicamento();
-		this.local_afetado = comando.getLocal_afetado();
-		this.efeitos = comando.getEfeitos();
+
+	public Alergia(CriarAlergia comandos) {
+		this.idAlergia = new AlergiaId();
+		this.tipoAlergia = comandos.getTipoAlergia();
+		this.localAfetado = comandos.getLocalAfetado();
+		this.dataDescoberta = comandos.getDataDescoberta();
+		this.efeitos = comandos.getEfeitos();
+		this.idMedicamento = comandos.getIdMedicamento();
 	}
-	
+
 	public void apply(EditarAlergia comando) {
-		this.tipo_alergia = comando.getTipo_alergia();
-		this.data_descoberta = comando.getData_descoberta();
-		this.medicamento = comando.getMedicamento();
-		this.local_afetado = comando.getLocal_afetado();
+		this.idAlergia = comando.getIdAlergia();
+		this.tipoAlergia = comando.getTipoAlergia();
+		this.localAfetado = comando.getLocalAfetado();
+		this.dataDescoberta = comando.getDataDescoberta();
 		this.efeitos = comando.getEfeitos();
+		this.idMedicamento = comando.getMedicamento();
 	}
 
-	public String getTipo_alergia() {
-		return tipo_alergia;
+	public String getTipoAlergia() {
+		return tipoAlergia;
 	}
 
-	public void setTipo_alergia(String tipo_alergia) {
-		this.tipo_alergia = tipo_alergia;
+	public void setTipoAlergia(String tipoAlergia) {
+		this.tipoAlergia = tipoAlergia;
 	}
 
-	public Date getData_descoberta() {
-		return data_descoberta;
+	public String getLocalAfetado() {
+		return localAfetado;
 	}
 
-	public void setData_descoberta(Date data_descoberta) {
-		this.data_descoberta = data_descoberta;
+	public void setLocalAfetado(String localAfetado) {
+		this.localAfetado = localAfetado;
 	}
 
-	public String getMedicamento() {
-		return medicamento;
+	public Date getDataDescoberta() {
+		return dataDescoberta;
 	}
 
-	public void setMedicamento(String medicamento) {
-		this.medicamento = medicamento;
+	public void setDataDescoberta(Date dataDescoberta) {
+		this.dataDescoberta = dataDescoberta;
 	}
 
-	public String getLocal_afetado() {
-		return local_afetado;
+	public MedicamentoId getIdMedicamento() {
+		return idMedicamento;
 	}
 
-	public void setLocal_afetado(String local_afetado) {
-		this.local_afetado = local_afetado;
+	public void setIdMedicamento(MedicamentoId idMedicamento) {
+		this.idMedicamento = idMedicamento;
 	}
 
-	public String getEfeitos() {
-		return efeitos;
+	public AlergiaId getIdAlergia() {
+		return idAlergia;
 	}
 
 	public void setEfeitos(String efeitos) {
 		this.efeitos = efeitos;
 	}
 
-	public AlergiaId getId() {
-		return id;
+	public String getEfeitos() {
+		return efeitos;
+	}
+
+	public MedicamentoId getMedicamento() {
+		return idMedicamento;
 	}
 
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + ((id == null) ? 0 : id.hashCode());
+		result = prime * result + ((idAlergia == null) ? 0 : idAlergia.hashCode());
 		return result;
 	}
 
@@ -104,10 +111,10 @@ public class Alergia {
 		if (getClass() != obj.getClass())
 			return false;
 		Alergia other = (Alergia) obj;
-		if (id == null) {
-			if (other.id != null)
+		if (idAlergia == null) {
+			if (other.idAlergia != null)
 				return false;
-		} else if (!id.equals(other.id))
+		} else if (!idAlergia.equals(other.idAlergia))
 			return false;
 		return true;
 	}

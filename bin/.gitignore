@@ -1,5 +1,6 @@
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 # Para arquivos Java compilados
 *.class
 
@@ -11,11 +12,34 @@
 # Eclipse
 .classpath
 *.class
+=======
+# Para arquivos Java compilados
+*.class
+*.log
+*.ctxt
+.mtj.tmp/
+*.jar
+*.war
+*.ear
+*.zip
+*.tar.gz
+*.rar
+
+# Para os arquivos ".properties"
+*.properties
+
+# Eclipse
+.classpath
+>>>>>>> a8d2ced7d0fef93f249f76c865e7ddc0239f6561
 .project
 .settings/
  
 # Maven
+<<<<<<< HEAD
 target/
+=======
+*target/
+>>>>>>> a8d2ced7d0fef93f249f76c865e7ddc0239f6561
 pom.xml.tag
 pom.xml.releaseBackup
 pom.xml.versionsBackup
@@ -29,6 +53,9 @@ buildNumber.properties
 # Avoid ignoring Maven wrapper jar file (.jar files are usually ignored)
 !/.mvn/wrapper/maven-wrapper.jar
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> b0eaffd8a7c4f2d685ab6b36a038518a6e96f5f7
 =======
 >>>>>>> 834a73401e5502c3cf11b233e4a14f33649cca99
+=======
+>>>>>>> a8d2ced7d0fef93f249f76c865e7ddc0239f6561

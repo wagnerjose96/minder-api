@@ -3,56 +3,46 @@ package br.hela.alergia.comandos;
 import java.util.Date;
 
 import br.hela.alergia.AlergiaId;
+import br.hela.medicamento.MedicamentoId;
 
 public class EditarAlergia {
-	private AlergiaId id;
-	private String tipo_alergia;
-	private Date data_descoberta;
-	private String medicamento;
-	private String local_afetado;
+	private AlergiaId idAlergia;
+	private String tipoAlergia;
+	private String localAfetado;
+	private Date dataDescoberta;
 	private String efeitos;
+	private MedicamentoId medicamento;
 
-	public EditarAlergia() {
+	public AlergiaId getIdAlergia() {
+		return idAlergia;
 	}
 
-	public AlergiaId getId() {
-		return id;
+	public String getTipoAlergia() {
+		return tipoAlergia;
 	}
 
-	public void setId(AlergiaId id) {
-		this.id = id;
+	public void setIdAlergia(AlergiaId idAlergia) {
+		this.idAlergia = idAlergia;
 	}
 
-	public String getTipo_alergia() {
-		return tipo_alergia;
+	public void setTipoAlergia(String tipoAlergia) {
+		this.tipoAlergia = tipoAlergia;
 	}
 
-	public void setTipo_alergia(String tipo_alergia) {
-		this.tipo_alergia = tipo_alergia;
+	public String getLocalAfetado() {
+		return localAfetado;
 	}
 
-	public Date getData_descoberta() {
-		return data_descoberta;
+	public void setLocalAfetado(String localAfetado) {
+		this.localAfetado = localAfetado;
 	}
 
-	public void setData_descoberta(Date data_descoberta) {
-		this.data_descoberta = data_descoberta;
+	public Date getDataDescoberta() {
+		return dataDescoberta;
 	}
 
-	public String getMedicamento() {
-		return medicamento;
-	}
-
-	public void setMedicamento(String medicamento) {
-		this.medicamento = medicamento;
-	}
-
-	public String getLocal_afetado() {
-		return local_afetado;
-	}
-
-	public void setLocal_afetado(String local_afetado) {
-		this.local_afetado = local_afetado;
+	public void setDataDescoberta(Date dataDescoberta) {
+		this.dataDescoberta = dataDescoberta;
 	}
 
 	public String getEfeitos() {
@@ -61,6 +51,14 @@ public class EditarAlergia {
 
 	public void setEfeitos(String efeitos) {
 		this.efeitos = efeitos;
+	}
+
+	public MedicamentoId getMedicamento() {
+		return medicamento;
+	}
+
+	public void setMedicamento(MedicamentoId medicamento) {
+		this.medicamento = medicamento;
 	}
 
 }

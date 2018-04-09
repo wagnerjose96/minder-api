@@ -21,7 +21,7 @@ public class AlergiaService {
 
 	public Optional<AlergiaId> salvar(CriarAlergia comando) {
 		Alergia novo = repo.save(new Alergia(comando));
-		return Optional.of(novo.getId());
+		return Optional.of(novo.getIdAlergia());
 	}
 
 	public Optional<Alergia> encontrar(AlergiaId id) {
@@ -38,12 +38,12 @@ public class AlergiaService {
 	}
 
 	public Optional<AlergiaId> alterar(EditarAlergia comando) {
-		Optional<Alergia> optional = repo.findById(comando.getId());
+		Optional<Alergia> optional = repo.findById(comando.getIdAlergia());
 		if (optional.isPresent()) {
 			Alergia alergia = optional.get();
 			alergia.apply(comando);
 			repo.save(alergia);
-			return Optional.of(comando.getId());
+			return Optional.of(comando.getIdAlergia());
 		}
 		return Optional.empty();
 	}

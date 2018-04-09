@@ -77,7 +77,7 @@ public class AlergiaController {
 	public ResponseEntity<String> putAlergia(@RequestBody EditarAlergia comando)
 			throws SQLException, NullPointerException {
 
-		if (!verificaAlergiaExistente(comando.getId())) {
+		if (!verificaAlergiaExistente(comando.getIdAlergia())) {
 			throw new NullPointerException("A alergia a ser alterada não existe no banco de dados");
 		}
 
