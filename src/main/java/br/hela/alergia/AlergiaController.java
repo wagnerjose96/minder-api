@@ -1,9 +1,9 @@
 package br.hela.alergia;
 
 import java.net.URI;
+import java.sql.SQLException;
 import java.util.List;
 import java.util.Optional;
-import java.util.concurrent.TimeoutException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -22,104 +22,81 @@ import br.hela.alergia.comandos.CriarAlergia;
 import br.hela.alergia.comandos.EditarAlergia;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import javassist.tools.web.BadHttpRequest;
 
 @Api("Basic Alergia Controller")
 @RestController
 @RequestMapping("/alergias")
 public class AlergiaController {
 	@Autowired
-	private AlergiaService service;
+	private AlergiaService alergiaService;
 
 	@ApiOperation(value = "Busque todas as alergias")
 	@GetMapping
-	public ResponseEntity<List<Alergia>> getAlergias() 
-			throws TimeoutException, NullPointerException, BadHttpRequest {
-
-		verificaListaAlergia();
-		verificaTempoResposta();
-		Optional<List<Alergia>> optionalAlergia = service.encontrar();
-		if (optionalAlergia.isPresent()) {
-			return ResponseEntity.ok(optionalAlergia.get());
-		}
-		throw new BadHttpRequest();
+	public ResponseEntity<List<Alergia>> getAlergias() {
+		Optional<List<Alergia>> optionalAlergias = alergiaService.encontrar();
+		return ResponseEntity.ok(optionalAlergias.get());
 	}
 
 	@ApiOperation(value = "Busque a alergia pelo ID")
 	@GetMapping("/{id}")
-	public ResponseEntity<Alergia> getAlergiaId(@PathVariable AlergiaId id)
-			throws TimeoutException, NullPointerException, BadHttpRequest {
+	public ResponseEntity<Alergia> getAlergiaPorId(@PathVariable AlergiaId id) throws NullPointerException {
 
-		verificaAlergiaExitente(id);
-		verificaTempoResposta();
-		Optional<Alergia> optionalAlergia = service.encontrar(id);
-		if (optionalAlergia.isPresent()) {
+		Optional<Alergia> optionalAlergia = alergiaService.encontrar(id);
+		if (verificaAlergiaExistente(id)) {
 			return ResponseEntity.ok(optionalAlergia.get());
 		}
-		throw new BadHttpRequest();
+		throw new NullPointerException("A alergia procurada não existe no banco de dados");
 	}
-	
+
 	@ApiOperation(value = "Delete uma alergia pelo ID")
 	@DeleteMapping("/{id}")
-	public ResponseEntity<Optional<String>> deleteAlergia(@PathVariable AlergiaId id)
-			throws TimeoutException, NullPointerException, BadHttpRequest {
+	public ResponseEntity<Optional<String>> deletarAlergia(@PathVariable AlergiaId id) throws NullPointerException {
 
-		verificaAlergiaExitente(id);
-		verificaTempoResposta();
-		Optional<String> resultado = service.deletar(id);
-		if (resultado.isPresent()) {
+		if (verificaAlergiaExistente(id)) {
+			Optional<String> resultado = alergiaService.deletar(id);
 			return ResponseEntity.ok(resultado);
 		}
-		throw new BadHttpRequest();
+		throw new NullPointerException("A alergia a deletar não existe no banco de dados");
 	}
 
 	@ApiOperation(value = "Cadastre uma nova alergia")
 	@PostMapping
-	public ResponseEntity<AlergiaId> postAlergia(@RequestBody CriarAlergia comando)
-			throws TimeoutException, NullPointerException, BadHttpRequest {
+	public ResponseEntity<String> postAlergia(@RequestBody CriarAlergia comando) throws Exception {
 
-		verificaTempoResposta();
-		Optional<AlergiaId> optionalAlergiaId = service.salvar(comando);
-		verificaAlergiaExitente(optionalAlergiaId.get());
+		Optional<AlergiaId> optionalAlergiaId = alergiaService.salvar(comando);
 		if (optionalAlergiaId.isPresent()) {
 			URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
 					.buildAndExpand(optionalAlergiaId.get()).toUri();
-			return ResponseEntity.created(location).build();
+			return ResponseEntity.created(location).body("Alergia cadastrada com sucesso");
 		}
-		throw new BadHttpRequest();
+		throw new Exception("A alergia não foi salva devido a um erro interno");
 	}
-	
+
 	@ApiOperation(value = "Altere uma alergia")
 	@PutMapping
-	public ResponseEntity<AlergiaId> putAlergia(@RequestBody EditarAlergia comando)
-			throws TimeoutException, NullPointerException, BadHttpRequest {
+	public ResponseEntity<String> putAlergia(@RequestBody EditarAlergia comando)
+			throws SQLException, NullPointerException {
 
-		verificaAlergiaExitente(comando.getId());
-		verificaTempoResposta();
-		Optional<AlergiaId> optionalAlergiaId = service.alterar(comando);
+		if (!verificaAlergiaExistente(comando.getId())) {
+			throw new NullPointerException("A alergia a ser alterada não existe no banco de dados");
+		}
+
+		Optional<AlergiaId> optionalAlergiaId = alergiaService.alterar(comando);
 		if (optionalAlergiaId.isPresent()) {
 			URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
 					.buildAndExpand(optionalAlergiaId.get()).toUri();
 			return ResponseEntity.created(location).build();
+		} else {
+			throw new SQLException("Erro interno durante a alteração do alergia");
 		}
-		throw new BadHttpRequest();
+
 	}
 
-	private void verificaTempoResposta() throws TimeoutException {
-		if (System.currentTimeMillis() == 10) {
-			throw new TimeoutException("Servidor sem resposta");
-		}
-	}
-
-	private void verificaAlergiaExitente(AlergiaId id) throws NullPointerException {
-		if (!service.encontrar(id).isPresent()) {
-			throw new NullPointerException("Alergia não encontrada");
-		}
-	}
-
-	private void verificaListaAlergia() throws NullPointerException {
-		if (!service.encontrar().isPresent()) {
-			throw new NullPointerException("Nenhuma alergia cadastrada");
+	private boolean verificaAlergiaExistente(AlergiaId id) {
+		if (!alergiaService.encontrar(id).isPresent()) {
+			return false;
+		} else {
+			return true;
 		}
 	}
 

@@ -3,6 +3,7 @@ package br.hela.doenca.comandos;
 import java.util.Date;
 
 public class CriarDoenca {
+	
 	private String nomeDoenca;
 	private Date dataDescoberta;
 	private String medicamento;

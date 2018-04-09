@@ -1,10 +1,13 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 # Para arquivos Java compilados
 *.class
 
 # Para os arquivos ".properties"
 *.properties
 =======
+=======
+>>>>>>> 834a73401e5502c3cf11b233e4a14f33649cca99
 # Eclipse
 .classpath
 *.class
@@ -25,4 +28,7 @@ buildNumber.properties
 
 # Avoid ignoring Maven wrapper jar file (.jar files are usually ignored)
 !/.mvn/wrapper/maven-wrapper.jar
+<<<<<<< HEAD
 >>>>>>> b0eaffd8a7c4f2d685ab6b36a038518a6e96f5f7
+=======
+>>>>>>> 834a73401e5502c3cf11b233e4a14f33649cca99

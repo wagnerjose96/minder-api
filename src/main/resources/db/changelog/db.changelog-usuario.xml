@@ -15,10 +15,10 @@
 				<constraints nullable="false" />
 			</column>
 			<column name="nome_usuario" type="${TYPE_NOME}">
-				<constraints nullable="false" unique="true" />
+				<constraints nullable="false" />
 			</column>
 			<column name="email" type="${TYPE_EMAIL}">
-				<constraints nullable="false" unique="true" />
+				<constraints nullable="false" />
 			</column>
 			<column name="senha" type="${TYPE_SENHA}">
 				<constraints nullable="false" />
@@ -43,7 +43,7 @@
 			</column>
 		</createTable>
 	</changeSet>
-	
+
 	<changeSet id="create_table_usuario_aud" author="wagner.junior">
 		<createTable tableName="usuario_aud">
 			<column name="id" type="${TYPE_ID}">
@@ -90,5 +90,5 @@
 		<addPrimaryKey constraintName="PK_USUARIO_AUD"
 			tableName="usuario_aud" columnNames="id, rev" />
 	</changeSet>
-	
+
 </databaseChangeLog>
