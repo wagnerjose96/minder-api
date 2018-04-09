@@ -18,12 +18,13 @@ public class Alergia {
 	@EmbeddedId
 	@AttributeOverride(name = "value", column = @Column(name = "id"))
 	private AlergiaId idAlergia;
+	@AttributeOverride(name = "value", column = @Column(name = "id_medicamento"))
+	private MedicamentoId idMedicamento;
 	private String tipoAlergia;
 	private String localAfetado;
 	private Date dataDescoberta;
 	private String efeitos;
-	@AttributeOverride(name = "value", column = @Column(name = "id_medicamento"))
-	private MedicamentoId idMedicamento;
+	
 
 	public Alergia() {
 	}
@@ -43,7 +44,7 @@ public class Alergia {
 		this.localAfetado = comando.getLocalAfetado();
 		this.dataDescoberta = comando.getDataDescoberta();
 		this.efeitos = comando.getEfeitos();
-		this.idMedicamento = comando.getMedicamento();
+		this.idMedicamento = comando.getIdMedicamento();
 	}
 
 	public String getTipoAlergia() {

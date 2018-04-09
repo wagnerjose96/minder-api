@@ -53,7 +53,7 @@ public class EditarAlergia {
 		this.efeitos = efeitos;
 	}
 
-	public MedicamentoId getMedicamento() {
+	public MedicamentoId getIdMedicamento() {
 		return medicamento;
 	}
 

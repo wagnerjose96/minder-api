@@ -1,6 +1,5 @@
 package br.hela.exceptions;
 
-
 import java.util.List;
 import java.util.Optional;
 
@@ -16,23 +15,23 @@ public class ErrorDetailService {
 
 	@Autowired
 	private ErrorDetailRepository repo;
-	
+
 	public Optional<ErrorDetailId> salvar(CriarErrorDetail comando) {
 		ErrorDetail novoError = repo.save(new ErrorDetail(comando));
 		return Optional.of(novoError.getIdErrorDetail());
 	}
-	
+
 	public Optional<List<ErrorDetail>> encontrar() {
 		return Optional.of(repo.findAll());
 	}
-	
-	public Optional<ErrorDetail> encontrar(ErrorDetailId id){
+
+	public Optional<ErrorDetail> encontrar(ErrorDetailId id) {
 		return repo.findById(id);
 	}
-	
+
 	public String deletarTodos() {
 		repo.deleteAll();
 		return "Todas as exceções foram deletadas com sucesso! ";
 	}
-	
+
 }

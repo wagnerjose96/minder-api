@@ -1,8 +1,10 @@
 package br.hela.test;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 
 import java.util.Date;
+import java.util.List;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -13,8 +15,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.web.client.RestTemplate;
 
+import br.hela.usuario.Usuario;
 import br.hela.usuario.UsuarioService;
 import br.hela.usuario.comandos.CriarUsuario;
+import br.hela.usuario.comandos.EditarUsuario;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -26,8 +30,7 @@ public class TestUsuario {
 	private RestTemplate template = new RestTemplate();
 
 	@Test
-	public void testPostUsuario() {
-
+	public void testPost() {
 		CriarUsuario user = criarNovoUsuario();
 		String url = "http://localhost:9090/usuarios";
 		ResponseEntity<String> response = template.postForEntity(url, user, String.class);
@@ -36,7 +39,7 @@ public class TestUsuario {
 	}
 
 	@Test
-	public void testGetAllUsuario() {
+	public void testGetAll() {
 		CriarUsuario user = criarNovoUsuario();
 		String url = "http://localhost:9090/usuarios";
 		ResponseEntity<String> response = template.postForEntity(url, user, String.class);
@@ -47,7 +50,7 @@ public class TestUsuario {
 	}
 
 	@Test
-	public void testGetOneUsuario() {
+	public void testGetOne() {
 		CriarUsuario user = criarNovoUsuario();
 		String url = "http://localhost:9090/usuarios";
 		ResponseEntity<String> response = template.postForEntity(url, user, String.class);
@@ -57,6 +60,35 @@ public class TestUsuario {
 		ResponseEntity<String> responseGetOne = template.getForEntity(url, String.class);
 		assertEquals(HttpStatus.OK, responseGetOne.getStatusCode());
 		service.deletarTodos();
+	}
+
+	@Test
+	public void testPut() {
+		CriarUsuario user = criarNovoUsuario();
+		String url = "http://localhost:9090/usuarios";
+		ResponseEntity<String> response = template.postForEntity(url, user, String.class);
+		assertEquals(HttpStatus.CREATED, response.getStatusCode());
+		Usuario userSave = service.encontrar().get().get(0);
+		EditarUsuario userAlter = alterarUsuario(userSave);
+		template.put(url, userAlter);
+		List<Usuario> userList = service.encontrar().get();
+		assertEquals(1, userList.size());
+		assertFalse(userList.contains(userSave));
+		service.deletarTodos();
+	}
+
+	@Test
+	public void testDelete() {
+		CriarUsuario user = criarNovoUsuario();
+		String url = "http://localhost:9090/usuarios";
+		ResponseEntity<String> response = template.postForEntity(url, user, String.class);
+		assertEquals(HttpStatus.CREATED, response.getStatusCode());
+		Usuario userSave = service.encontrar().get().get(0);
+		url = "http://localhost:9090/usuarios/" + userSave.getId().toString();
+		template.delete(url);
+		List<Usuario> userList = service.encontrar().get();
+		assertEquals(0, service.encontrar().get().size());
+		assertFalse(userList.contains(userSave));
 	}
 
 	private CriarUsuario criarNovoUsuario() {
@@ -71,6 +103,20 @@ public class TestUsuario {
 		user.setTelefone(11223344);
 		user.setTipo_sangue("tipo_sangue");
 		user.setSexo("sexo");
+		return user;
+	}
+
+	private EditarUsuario alterarUsuario(Usuario comando) {
+		EditarUsuario user = new EditarUsuario();
+		user.setId(comando.getId());
+		user.setData_nascimento(comando.getData_nascimento());
+		user.setEndereco("endereco alterado");
+		user.setImagem_usuario("imagem_usuario alterado");
+		user.setNome_completo(comando.getNome_completo());
+		user.setSenha(comando.getSenha());
+		user.setTelefone(55667788);
+		user.setTipo_sangue(comando.getTipo_sangue());
+		user.setSexo(comando.getSexo());
 		return user;
 	}
 }

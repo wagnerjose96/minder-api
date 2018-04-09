@@ -38,7 +38,7 @@ public class UsuarioController {
 		return ResponseEntity.ok(optionalUsuario.get());
 	}
 
-	@ApiOperation(value = "Busque u usuário pelo ID")
+	@ApiOperation(value = "Busque um usuário pelo ID")
 	@GetMapping("/{id}")
 	public ResponseEntity<Usuario> getUsuarioId(@PathVariable UsuarioId id) throws NullPointerException {
 

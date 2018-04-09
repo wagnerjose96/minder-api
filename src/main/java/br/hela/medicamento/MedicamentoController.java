@@ -1,7 +1,6 @@
 package br.hela.medicamento;
 
 import java.net.URI;
-import java.sql.SQLException;
 import java.util.List;
 import java.util.Optional;
 
@@ -19,102 +18,84 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import br.hela.medicamento.comandos.CriarMedicamento;
 import br.hela.medicamento.comandos.EditarMedicamento;
-import javassist.tools.web.BadHttpRequest;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 
-
+@Api("Basic Medicamento Controller")
 @RestController
 @RequestMapping("/medicamentos")
 public class MedicamentoController {
-	
+
 	@Autowired
 	private MedicamentoService service;
-	
+
+	@ApiOperation(value = "Busque todos os medicamentos")
 	@GetMapping
-	public ResponseEntity<List<Medicamento>> getMedicamento()
-			throws SQLException, NullPointerException, BadHttpRequest {
-		
-		verificaListaDeMedicamentos();
-		verificaRetornoSQL();
+	public ResponseEntity<List<Medicamento>> getMedicamento() {
 		Optional<List<Medicamento>> optionalMedicamentos = service.encontrar();
-		if(optionalMedicamentos.isPresent()) {
-			return ResponseEntity.ok(optionalMedicamentos.get());
-		}	
-			throw new BadHttpRequest();
-	}
-	
-	@GetMapping("/{id}")
-	public ResponseEntity<Medicamento> getMedicamentoPorId(@PathVariable MedicamentoId id)
-			throws SQLException, NullPointerException, BadHttpRequest {
-		
-		verificaMedicamentoExistente(id);
-		
-		Optional<Medicamento> optionalMedicamento = service.encontrar(id);
-		if(optionalMedicamento.isPresent()) {
-			return ResponseEntity.ok(optionalMedicamento.get());
-		}	
-			throw new BadHttpRequest();
+		return ResponseEntity.ok(optionalMedicamentos.get());
 	}
 
-	@DeleteMapping("/{id}")
-	public ResponseEntity<Optional<String>> deletarMedicamento(@PathVariable MedicamentoId id) 
-			throws SQLException, NullPointerException, BadHttpRequest { 
-		
-		verificaListaDeMedicamentos();
-		verificaRetornoSQL();
-		
-		Optional<String> optionalMedicamento = service.deletar(id);
-		if (optionalMedicamento.isPresent()) {
-			return ResponseEntity.ok(optionalMedicamento);
-		}	
-		throw new BadHttpRequest();
+	@ApiOperation(value = "Busque um medicamento pelo id")
+	@GetMapping("/{id}")
+	public ResponseEntity<Medicamento> getMedicamentoPorId(@PathVariable MedicamentoId id) throws NullPointerException {
+
+		if (verificaMedicamentoExistente(id)) {
+			Optional<Medicamento> optionalMedicamento = service.encontrar(id);
+			return ResponseEntity.ok(optionalMedicamento.get());
+		}
+		throw new NullPointerException("O medicamento procurado não existe no banco de dados");
 	}
-	
+
+	@ApiOperation(value = "Delete um medicamento pelo id")
+	@DeleteMapping("/{id}")
+	public ResponseEntity<Optional<String>> deletarMedicamento(@PathVariable MedicamentoId id)
+			throws NullPointerException {
+
+		if(verificaMedicamentoExistente(id)) {
+			Optional<String> optionalMedicamento = service.deletar(id);
+			return ResponseEntity.ok(optionalMedicamento);
+		}
+		throw new NullPointerException("O medicamento a deletar não existe no banco de dados");
+	}
+
+	@ApiOperation(value = "Cadastre um novo medicamento")
 	@PostMapping
 	public ResponseEntity<MedicamentoId> postMedicamento(@RequestBody CriarMedicamento comando)
-		throws SQLException, NullPointerException, BadHttpRequest {
-		
-		verificaRetornoSQL();
+			throws Exception {
+
 		Optional<MedicamentoId> optionalMedicamentoId = service.salvar(comando);
-		verificaMedicamentoExistente(optionalMedicamentoId.get());
-		
-		
 		if (optionalMedicamentoId.isPresent()) {
-			URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(optionalMedicamentoId.get()).toUri();
+			URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
+					.buildAndExpand(optionalMedicamentoId.get()).toUri();
 			return ResponseEntity.created(location).build();
 		}
-		throw new BadHttpRequest();
+		throw new Exception("O medicamento não foi salvo devido a um erro interno");
 	}
-	
+
+	@ApiOperation(value = "Altere um medicamento")
 	@PutMapping
 	public ResponseEntity<MedicamentoId> putMedicamentoContinuo(@RequestBody EditarMedicamento comando)
-		throws SQLException, NullPointerException, BadHttpRequest{
-		
-		verificaMedicamentoExistente(comando.getIdMedicamento());
-		verificaRetornoSQL();
-		
+			throws NullPointerException, InternalError {
+
+		if(!verificaMedicamentoExistente(comando.getIdMedicamento())) {
+			throw new NullPointerException("O medicamento a ser alterado não existe no banco de dados");
+		}
 		Optional<MedicamentoId> optionalMedicamentoId = service.alterar(comando);
 		if (optionalMedicamentoId.isPresent()) {
-			URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(optionalMedicamentoId.get()).toUri();
+			URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
+					.buildAndExpand(optionalMedicamentoId.get()).toUri();
 			return ResponseEntity.created(location).build();
-		}
-		throw new BadHttpRequest();
-	}
-	
-	private void verificaRetornoSQL() throws SQLException{
-		if (System.currentTimeMillis() == 10) {
-			throw new SQLException("Servidor SQL sem resposta!");
+		} else {
+			throw new InternalError("Erro interno durante a alteração do usuário");
 		}
 	}
-	
-	private void verificaMedicamentoExistente(MedicamentoId id) throws NullPointerException{
+
+	private boolean verificaMedicamentoExistente(MedicamentoId id) {
 		if (!service.encontrar(id).isPresent()) {
-			throw new NullPointerException("Medicamento não encontrado!");
-		}
-	}
-	
-	private void verificaListaDeMedicamentos() throws NullPointerException {
-		if (!service.encontrar().isPresent()) {
-			throw new NullPointerException("Nenhum medicamento cadastrado!");
+			return false;
+		} else {
+			return true;
 		}
 	}
 

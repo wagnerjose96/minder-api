@@ -3,7 +3,7 @@
 
 ## 1. Na classe Controller é onde o Swagger irá mapear os métodos para realizar a documentação.
 
-## 2.1 Antes da anotação @RestContoller é necessário acdicionar a anotação:
+## 2.1 Antes da anotação @RestContoller é necessário adicionar a anotação:
     * @Api(" aqui voce pode dar uma decriçao do seu controller")
         
 	* Exemplo:

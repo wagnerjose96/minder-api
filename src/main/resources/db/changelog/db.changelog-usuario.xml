@@ -15,10 +15,10 @@
 				<constraints nullable="false" />
 			</column>
 			<column name="nome_usuario" type="${TYPE_NOME}">
-				<constraints nullable="false" />
+				<constraints nullable="false" unique="true" />
 			</column>
 			<column name="email" type="${TYPE_EMAIL}">
-				<constraints nullable="false" />
+				<constraints nullable="false" unique="true" />
 			</column>
 			<column name="senha" type="${TYPE_SENHA}">
 				<constraints nullable="false" />
