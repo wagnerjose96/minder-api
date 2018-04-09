@@ -4,10 +4,8 @@ import java.net.URI;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Optional;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -17,13 +15,12 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
-
 import br.hela.alergia.comandos.CriarAlergia;
 import br.hela.alergia.comandos.EditarAlergia;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 
-@Api("Basic Alergia Controller")
+@Api(description = "Basic Alergia Controller")
 @RestController
 @RequestMapping("/alergias")
 public class AlergiaController {
@@ -85,7 +82,7 @@ public class AlergiaController {
 		if (optionalAlergiaId.isPresent()) {
 			URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
 					.buildAndExpand(optionalAlergiaId.get()).toUri();
-			return ResponseEntity.created(location).build();
+			return ResponseEntity.created(location).body("Alergia alterada com sucesso");
 		} else {
 			throw new SQLException("Erro interno durante a alteração do alergia");
 		}

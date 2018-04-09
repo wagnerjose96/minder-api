@@ -1,7 +1,6 @@
 package br.hela.doenca;
 
 import javax.persistence.Embeddable;
-
 import br.hela.BaseId;
 
 @Embeddable

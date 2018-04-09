@@ -2,12 +2,9 @@ package br.hela.alergia;
 
 import java.util.List;
 import java.util.Optional;
-
 import javax.transaction.Transactional;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import br.hela.alergia.Alergia;
 import br.hela.alergia.AlergiaId;
 import br.hela.alergia.comandos.CriarAlergia;

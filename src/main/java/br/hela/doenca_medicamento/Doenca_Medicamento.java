@@ -2,16 +2,13 @@ package br.hela.doenca_medicamento;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import javax.persistence.AttributeOverride;
 import javax.persistence.Column;
 import javax.persistence.ElementCollection;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
-
 import org.hibernate.envers.Audited;
-
 import br.hela.doenca.DoencaId;
 import br.hela.medicamento.MedicamentoId;
 

@@ -1,7 +1,6 @@
 package br.hela.medicamento;
 
 import javax.persistence.Embeddable;
-
 import br.hela.BaseId;
 
 @Embeddable

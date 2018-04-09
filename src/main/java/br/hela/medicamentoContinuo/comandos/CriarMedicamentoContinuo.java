@@ -1,7 +1,6 @@
 package br.hela.medicamentoContinuo.comandos;
 
 import java.util.Date;
-
 import br.hela.medicamento.MedicamentoId;
 
 public class CriarMedicamentoContinuo {

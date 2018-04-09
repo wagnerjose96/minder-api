@@ -1,7 +1,6 @@
 package br.hela.alergia.comandos;
 
 import java.util.Date;
-
 import br.hela.alergia.AlergiaId;
 import br.hela.medicamento.MedicamentoId;
 

@@ -1,7 +1,6 @@
 package br.hela.cirurgia.comandos;
 
 import java.util.Date;
-
 import br.hela.cirurgia.CirurgiaId;
 import br.hela.medicamento.MedicamentoId;
 

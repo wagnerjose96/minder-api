@@ -3,7 +3,6 @@ package br.hela.doenca.comandos;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-
 import br.hela.medicamento.MedicamentoId;
 
 public class CriarDoenca {
