@@ -1,5 +1,5 @@
 ## Passos para gerar corretamente a documentação do seu código.
-	* Obs: a documentação da API só será vista 
+	* Obs: a documentação da API só será vista para os controllers e os métodos http
 
 ## 1. Na classe Controller é onde o Swagger irá mapear os métodos para realizar a documentação.
 
