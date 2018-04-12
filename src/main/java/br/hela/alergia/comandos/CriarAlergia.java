@@ -1,14 +1,16 @@
 package br.hela.alergia.comandos;
 
 import java.util.Date;
+import br.hela.medicamento.MedicamentoId;
 
 public class CriarAlergia {
+
 	private String tipoAlergia;
 	private String localAfetado;
 	private Date dataDescoberta;
 	private String efeitos;
-	private String medicamento;
-	
+	private MedicamentoId idMedicamento;
+
 	public CriarAlergia() {
 	}
 
@@ -19,7 +21,7 @@ public class CriarAlergia {
 	public void setTipoAlergia(String tipoAlergia) {
 		this.tipoAlergia = tipoAlergia;
 	}
-	
+
 	public String getLocalAfetado() {
 		return localAfetado;
 	}
@@ -35,22 +37,21 @@ public class CriarAlergia {
 	public void setDataDescoberta(Date dataDescoberta) {
 		this.dataDescoberta = dataDescoberta;
 	}
-	
+
 	public String getEfeitos() {
 		return efeitos;
 	}
 
-	public void setEfeito(String efeitos) {
+	public void setEfeitos(String efeitos) {
 		this.efeitos = efeitos;
 	}
 
-	public String getMedicamento() {
-		return medicamento;
+	public MedicamentoId getIdMedicamento() {
+		return idMedicamento;
 	}
 
-	public void setMedicamento(String medicamento) {
-		this.medicamento = medicamento;
+	public void setIdMedicamento(MedicamentoId medicamento) {
+		this.idMedicamento = medicamento;
 	}
 
-	
 }

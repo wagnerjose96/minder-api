@@ -9,4 +9,5 @@ public class Escoladeti2018Application {
 	public static void main(String[] args) {
 		SpringApplication.run(Escoladeti2018Application.class, args);
 	}
+
 }

@@ -1,8 +1,25 @@
-# Para arquivos Java compilados
+### Code-Java ###
+# Language Support for Java(TM) by Red Hat extension for Visual Studio Code - https://marketplace.visualstudio.com/items?itemName=redhat.java 
+
+.project
+.classpath
+.settings/
+factoryConfiguration.json
+
+### Java ###
+# Compiled class file
 *.class
+
+# Log file
 *.log
+
+# BlueJ files
 *.ctxt
+
+# Mobile Tools for Java (J2ME)
 .mtj.tmp/
+
+# Package Files #
 *.jar
 *.war
 *.ear
@@ -10,16 +27,15 @@
 *.tar.gz
 *.rar
 
-# Para os arquivos ".properties"
-*.properties
+# virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
+hs_err_pid*
 
-# Eclipse
-.classpath
-.project
-.settings/
- 
-# Maven
-*target/
+### Java-Web ###
+## ignoring target file
+target/
+
+# Avoid ignoring Maven wrapper jar file (.jar files are usually ignored)
+!/.mvn/wrapper/maven-wrapper.jar
 pom.xml.tag
 pom.xml.releaseBackup
 pom.xml.versionsBackup
@@ -29,6 +45,9 @@ release.properties
 dependency-reduced-pom.xml
 buildNumber.properties
 .mvn/timing.properties
+.springBeans
 
-# Avoid ignoring Maven wrapper jar file (.jar files are usually ignored)
-!/.mvn/wrapper/maven-wrapper.jar
+
+
+
+

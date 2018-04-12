@@ -1,17 +1,13 @@
 package br.hela.usuario;
 
 import java.util.Date;
-
 import javax.persistence.AttributeOverride;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
-
 import org.hibernate.envers.Audited;
-
 import br.hela.usuario.comandos.CriarUsuario;
 import br.hela.usuario.comandos.EditarUsuario;
-
 
 @Entity
 @Audited
@@ -46,8 +42,9 @@ public class Usuario {
 		this.sexo = comando.getSexo();
 		this.imagem_usuario = comando.getImagem_usuario();
 	}
-	
+
 	public void apply(EditarUsuario comando) {
+		this.id = comando.getId();
 		this.nome_completo = comando.getNome_completo();
 		this.senha = comando.getSenha();
 		this.tipo_sangue = comando.getTipo_sangue();

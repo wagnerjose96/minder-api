@@ -5,70 +5,94 @@ import javax.persistence.AttributeOverride;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
-
 import org.hibernate.envers.Audited;
-
 import br.hela.alergia.comandos.CriarAlergia;
 import br.hela.alergia.comandos.EditarAlergia;
+import br.hela.medicamento.MedicamentoId;
 
 @Entity
 @Audited
 public class Alergia {
 	@EmbeddedId
-	@AttributeOverride(name="value", column=@Column(name="id"))
+	@AttributeOverride(name = "value", column = @Column(name = "id"))
 	private AlergiaId idAlergia;
+	@AttributeOverride(name = "value", column = @Column(name = "id_medicamento"))
+	private MedicamentoId idMedicamento;
 	private String tipoAlergia;
 	private String localAfetado;
 	private Date dataDescoberta;
 	private String efeitos;
-	private String medicamento;
 	
+
 	public Alergia() {
-		
 	}
 
-	public Alergia (CriarAlergia comandos) {
+	public Alergia(CriarAlergia comandos) {
 		this.idAlergia = new AlergiaId();
 		this.tipoAlergia = comandos.getTipoAlergia();
 		this.localAfetado = comandos.getLocalAfetado();
 		this.dataDescoberta = comandos.getDataDescoberta();
 		this.efeitos = comandos.getEfeitos();
-		this.medicamento = comandos.getMedicamento();
+		this.idMedicamento = comandos.getIdMedicamento();
 	}
-	
+
 	public void apply(EditarAlergia comando) {
 		this.idAlergia = comando.getIdAlergia();
 		this.tipoAlergia = comando.getTipoAlergia();
 		this.localAfetado = comando.getLocalAfetado();
 		this.dataDescoberta = comando.getDataDescoberta();
 		this.efeitos = comando.getEfeitos();
-		this.medicamento = comando.getMedicamento();
+		this.idMedicamento = comando.getIdMedicamento();
+	}
+
+	public String getTipoAlergia() {
+		return tipoAlergia;
+	}
+
+	public void setTipoAlergia(String tipoAlergia) {
+		this.tipoAlergia = tipoAlergia;
+	}
+
+	public String getLocalAfetado() {
+		return localAfetado;
+	}
+
+	public void setLocalAfetado(String localAfetado) {
+		this.localAfetado = localAfetado;
+	}
+
+	public Date getDataDescoberta() {
+		return dataDescoberta;
+	}
+
+	public void setDataDescoberta(Date dataDescoberta) {
+		this.dataDescoberta = dataDescoberta;
+	}
+
+	public MedicamentoId getIdMedicamento() {
+		return idMedicamento;
+	}
+
+	public void setIdMedicamento(MedicamentoId idMedicamento) {
+		this.idMedicamento = idMedicamento;
 	}
 
 	public AlergiaId getIdAlergia() {
 		return idAlergia;
 	}
 
-	public String getTipoAlergia() {
-		return tipoAlergia;
-	}
-	
-	public String getLocalAfetado() {
-		return localAfetado;
+	public void setEfeitos(String efeitos) {
+		this.efeitos = efeitos;
 	}
 
-	public Date getDataDescoberta() {
-		return dataDescoberta;
-	}
-	
 	public String getEfeitos() {
 		return efeitos;
 	}
 
-	public String getMedicamento() {
-		return medicamento;
+	public MedicamentoId getMedicamento() {
+		return idMedicamento;
 	}
-	
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;

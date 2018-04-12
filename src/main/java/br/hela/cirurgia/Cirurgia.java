@@ -6,30 +6,44 @@ import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import br.hela.cirurgia.comandos.CriarCirurgia;
+import br.hela.cirurgia.comandos.EditarCirurgia;
+import br.hela.medicamento.MedicamentoId;
 import org.hibernate.envers.Audited;
 
 @Entity
 @Audited
 public class Cirurgia {
 	@EmbeddedId
-	@AttributeOverride(name="value", column=@Column(name="id"))
+	@AttributeOverride(name="value", column=@Column(name="id_cirurgia"))
 	private CirurgiaId idCirurgia;
+	@AttributeOverride(name="value", column=@Column(name="id_medicamento"))
+	private MedicamentoId idMedicamento;
 	private String tipoCirurgia;
 	private Date dataCirurgia;
 	private String clinicaResponsavel;
 	private String medicoResponsavel;
-	private String medicamentoConsumido;
+	
 
 	public Cirurgia() {
 	}
 
 	public Cirurgia(CriarCirurgia comando) {
 		this.idCirurgia = new CirurgiaId();
-		this.setTipoCirurgia(comando.getTipoCirurgia());
+		this.idMedicamento = new MedicamentoId();
+		this.tipoCirurgia = comando.getTipoCirurgia();
 		this.dataCirurgia = comando.getDataCirurgia();
 		this.clinicaResponsavel = comando.getClinicaResponsavel();
 		this.medicoResponsavel = comando.getMedicoResponsavel();
-		this.medicamentoConsumido = comando.getMedicamentoConsumido();
+
+	}
+
+	public void apply(EditarCirurgia comando) {
+		this.idCirurgia = comando.getIdCirurgia();
+		this.tipoCirurgia = comando.getTipoCirurgia();
+		this.dataCirurgia = comando.getDataCirurgia();
+		this.clinicaResponsavel = comando.getClinicaResponsavel();
+		this.medicoResponsavel = comando.getMedicoResponsavel();
+		this.idMedicamento = comando.getIdMedicamento();
 	}
 
 	public CirurgiaId getIdCirurgia() {
@@ -43,7 +57,7 @@ public class Cirurgia {
 	public void setTipoCirurgia(String tipoCirurgia) {
 		this.tipoCirurgia = tipoCirurgia;
 	}
-	
+
 	public Date getDataCirurgia() {
 		return dataCirurgia;
 	}
@@ -51,7 +65,7 @@ public class Cirurgia {
 	public void setDataCirurgia(Date dataCirurgia) {
 		this.dataCirurgia = dataCirurgia;
 	}
-	
+
 	public String getClinicaResponsavel() {
 		return clinicaResponsavel;
 	}
@@ -59,7 +73,7 @@ public class Cirurgia {
 	public void setClinicaResponsavel(String clinicaResponsavel) {
 		this.clinicaResponsavel = clinicaResponsavel;
 	}
-	
+
 	public String getMedicoResponsavel() {
 		return medicoResponsavel;
 	}
@@ -68,14 +82,14 @@ public class Cirurgia {
 		this.medicoResponsavel = medicoResponsavel;
 	}
 	
-	public String getMedicamentoConsumido() {
-		return medicamentoConsumido;
+	public MedicamentoId getMedicamentoConsumido() {
+		return idMedicamento;
 	}
 
-	public void setMedicamentoConsumido(String medicamentoConsumido) {
-		this.medicamentoConsumido = medicamentoConsumido;
+	public void setMedicamentoConsumido(MedicamentoId medicamentoConsumido) {
+		this.idMedicamento = medicamentoConsumido;
 	}
-	
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;

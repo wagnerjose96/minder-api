@@ -1,31 +1,28 @@
 package br.hela.medicamentoContinuo;
 
 import java.util.Date;
-
 import javax.persistence.AttributeOverride;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
-
 import org.hibernate.envers.Audited;
-
+import br.hela.medicamento.MedicamentoId;
 import br.hela.medicamentoContinuo.comandos.CriarMedicamentoContinuo;
-
+import br.hela.medicamentoContinuo.comandos.EditarMedicamentoContinuo;
 
 @Entity
 @Audited
 public class MedicamentoContinuo {
 
 	@EmbeddedId
-	@AttributeOverride(name="value", column=@Column(name="idMedicamentoContinuo"))
-	private MedicamentoContinuoId idMedicamentoContinuo; 
-	private int idMedicamento; //Será trocado pelo ID da classe medicamento
+	@AttributeOverride(name = "value", column = @Column(name = "idMedicamentoContinuo"))
+	private MedicamentoContinuoId idMedicamentoContinuo;
+	private MedicamentoId idMedicamento;
 	private String tipoMedicamento;
-	private int quantidadeDeConsumo; 
+	private int quantidadeDeConsumo;
 	private int intervaloDeConsumo;
 	private Date dataConsumo;
-	
-	
+
 	public MedicamentoContinuo() {
 	}
 
@@ -38,17 +35,24 @@ public class MedicamentoContinuo {
 		this.dataConsumo = comando.getDataConsumo();
 	}
 
-	
+	public void apply(EditarMedicamentoContinuo comando) {
+		this.idMedicamentoContinuo = comando.getIdMedicamentoContinuo();
+		this.idMedicamento = comando.getIdMedicamento();
+		this.tipoMedicamento = comando.getTipoMedicamento();
+		this.quantidadeDeConsumo = comando.getQuantidadeDeConsumo();
+		this.intervaloDeConsumo = comando.getIntervaloDeConsumo();
+		this.dataConsumo = comando.getDataConsumo();
+	}
 
 	public MedicamentoContinuoId getIdMedicamentoContinuo() {
 		return idMedicamentoContinuo;
 	}
 
-	public int getIdMedicamento() {
+	public MedicamentoId getIdMedicamento() {
 		return idMedicamento;
 	}
 
-	public void setIdMedicamento(int idMedicamento) {
+	public void setIdMedicamento(MedicamentoId idMedicamento) {
 		this.idMedicamento = idMedicamento;
 	}
 
@@ -101,12 +105,12 @@ public class MedicamentoContinuo {
 		if (getClass() != obj.getClass())
 			return false;
 		MedicamentoContinuo other = (MedicamentoContinuo) obj;
-		if ( idMedicamentoContinuo == null) {
+		if (idMedicamentoContinuo == null) {
 			if (other.idMedicamentoContinuo != null)
 				return false;
 		} else if (!idMedicamentoContinuo.equals(other.idMedicamentoContinuo))
 			return false;
 		return true;
 	}
-	
+
 }

@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd
+        http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
+
+<<<<<<< HEAD
+	<changeSet id="4" author="alan.secundo">
+		<createTable tableName="medicamento_continuo">
+			<column name="id_medicamento_continuo" type="${TYPE_ID}">
+				<constraints nullable="false" primaryKey="true" primaryKeyName="PK_MEDICAMENTOCONTINUO"/>
+			</column>
+			<column name="id_medicamento" type="${TYPE_DESCRICAO}">
+				<constraints nullable="false" />
+			</column>
+			<column name="tipo_medicamento" type="${TYPE_DESCRICAO}">
+				<constraints nullable="false" />
+			</column>
+			<column name="quantidade_de_consumo" type="${TYPE_NUMBER}">
+				<constraints nullable="false" />
+			</column>	
+			<column name="intervalo_de_consumo" type="${TYPE_NUMBER}">
+				<constraints nullable="false" />
+			</column>	
+			<column name="data_consumo" type="${TYPE_DATA}">
+				<constraints nullable="false" />
+			</column>							
+		</createTable>
+	</changeSet>
+	
+	<changeSet id="create_table_medicamento_continuo_aud" author="alan.secundo">
+		<createTable tableName="medicamento_continuo_aud">
+			<column name="id_medicamento_continuo" type="${TYPE_ID}">
+				<constraints nullable="false"/>
+			</column>
+			<column name="id_medicamento" type="${TYPE_DESCRICAO}">
+				<constraints nullable="true" />
+			</column>
+			<column name="tipo_medicamento" type="${TYPE_DESCRICAO}">
+				<constraints nullable="true" />
+			</column>
+			<column name="quantidade_de_consumo" type="${TYPE_NUMBER}">
+				<constraints nullable="true" />
+			</column>	
+			<column name="intervalo_de_consumo" type="${TYPE_NUMBER}">
+				<constraints nullable="true" />
+			</column>	
+			<column name="data_consumo" type="${TYPE_DATA}">
+=======
+	<changeSet id="create_table_medicamento" author="douglas.mendonca">
+		<createTable tableName="medicamento">
+			<column name="id_medicamento" type="${TYPE_ID}">
+				<constraints nullable="false" primaryKey="true" primaryKeyName="PK_MEDICAMENTO"/>
+			</column>
+			<column name="nome_medicamento" type="${TYPE_DESCRICAO}">
+				<constraints nullable="false" />
+			</column>
+			<column name="composicao" type="${TYPE_DESCRICAO}">
+				<constraints nullable="false" />
+			</column>
+										
+		</createTable>
+	</changeSet>
+	
+	<changeSet id="create_table_medicamento_aud" author="douglas.mendonca">
+		<createTable tableName="medicamento_aud">
+			<column name="id_medicamento" type="${TYPE_ID}">
+				<constraints nullable="false"/>
+			</column>
+			<column name="nome_medicamento" type="${TYPE_DESCRICAO}">
+				<constraints nullable="true" />
+			</column>
+			<column name="composicao" type="${TYPE_DESCRICAO}">
+>>>>>>> a8d2ced7d0fef93f249f76c865e7ddc0239f6561
+				<constraints nullable="true" />
+			</column>							
+			<column name="rev" type="${TYPE_INTEGER}">
+				<constraints nullable="false" referencedTableName="revinfo"
+<<<<<<< HEAD
+					referencedColumnNames="rev" foreignKeyName="cirurgia_revinfo_fk" />
+=======
+					referencedColumnNames="rev" foreignKeyName="medicamento_revinfo_fk" />
+>>>>>>> a8d2ced7d0fef93f249f76c865e7ddc0239f6561
+			</column>
+			<column name="revtype" type="${TYPE_INTEGER}">
+				<constraints nullable="false" />
+			</column>
+		</createTable>
+<<<<<<< HEAD
+		<addPrimaryKey constraintName="medicamento_continuo_aud_pkey"
+			tableName="medicamento_continuo_aud" columnNames="id_medicamento_continuo, rev" />
+=======
+		<addPrimaryKey constraintName="medicamento_aud_pkey"
+			tableName="medicamento_aud" columnNames="id_medicamento, rev" />
+>>>>>>> a8d2ced7d0fef93f249f76c865e7ddc0239f6561
+	</changeSet>
+	
+</databaseChangeLog>
