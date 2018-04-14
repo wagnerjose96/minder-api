@@ -8,7 +8,6 @@ import javax.persistence.Entity;
 import org.hibernate.envers.Audited;
 import br.hela.alergia.comandos.CriarAlergia;
 import br.hela.alergia.comandos.EditarAlergia;
-import br.hela.medicamento.MedicamentoId;
 
 @Entity
 @Audited
@@ -16,13 +15,12 @@ public class Alergia {
 	@EmbeddedId
 	@AttributeOverride(name = "value", column = @Column(name = "id"))
 	private AlergiaId idAlergia;
-	@AttributeOverride(name = "value", column = @Column(name = "id_medicamento"))
-	private MedicamentoId idMedicamento;
+	/*@AttributeOverride(name = "value", column = @Column(name = "medicamentos"))
+	private Alergia_Medicamento_Id alergia_Medicamento_Id;*/
 	private String tipoAlergia;
 	private String localAfetado;
 	private Date dataDescoberta;
 	private String efeitos;
-	
 
 	public Alergia() {
 	}
@@ -33,7 +31,6 @@ public class Alergia {
 		this.localAfetado = comandos.getLocalAfetado();
 		this.dataDescoberta = comandos.getDataDescoberta();
 		this.efeitos = comandos.getEfeitos();
-		this.idMedicamento = comandos.getIdMedicamento();
 	}
 
 	public void apply(EditarAlergia comando) {
@@ -42,8 +39,15 @@ public class Alergia {
 		this.localAfetado = comando.getLocalAfetado();
 		this.dataDescoberta = comando.getDataDescoberta();
 		this.efeitos = comando.getEfeitos();
-		this.idMedicamento = comando.getIdMedicamento();
 	}
+
+	/*public Alergia_Medicamento_Id getAlergia_Medicamento_Id() {
+		return alergia_Medicamento_Id;
+	}
+
+	public void setAlergia_Medicamento_Id(Alergia_Medicamento_Id alergia_Medicamento_Id) {
+		this.alergia_Medicamento_Id = alergia_Medicamento_Id;
+	}*/
 
 	public String getTipoAlergia() {
 		return tipoAlergia;
@@ -69,14 +73,6 @@ public class Alergia {
 		this.dataDescoberta = dataDescoberta;
 	}
 
-	public MedicamentoId getIdMedicamento() {
-		return idMedicamento;
-	}
-
-	public void setIdMedicamento(MedicamentoId idMedicamento) {
-		this.idMedicamento = idMedicamento;
-	}
-
 	public AlergiaId getIdAlergia() {
 		return idAlergia;
 	}
@@ -87,10 +83,6 @@ public class Alergia {
 
 	public String getEfeitos() {
 		return efeitos;
-	}
-
-	public MedicamentoId getMedicamento() {
-		return idMedicamento;
 	}
 
 	@Override
