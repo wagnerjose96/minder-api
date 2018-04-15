@@ -29,7 +29,7 @@ public class AlergiaController {
 
 	@ApiOperation(value = "Busque todas as alergias")
 	@GetMapping
-	public ResponseEntity<List<Alergia>> getAlergias() {
+	public ResponseEntity<List<Alergia>> getAlergias() throws Exception {
 		Optional<List<Alergia>> optionalAlergias = alergiaService.encontrar();
 		return ResponseEntity.ok(optionalAlergias.get());
 	}

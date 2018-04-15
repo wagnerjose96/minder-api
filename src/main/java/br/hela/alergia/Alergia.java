@@ -1,6 +1,7 @@
 package br.hela.alergia;
 
 import java.util.Date;
+
 import javax.persistence.AttributeOverride;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
@@ -15,8 +16,6 @@ public class Alergia {
 	@EmbeddedId
 	@AttributeOverride(name = "value", column = @Column(name = "id"))
 	private AlergiaId idAlergia;
-	/*@AttributeOverride(name = "value", column = @Column(name = "medicamentos"))
-	private Alergia_Medicamento_Id alergia_Medicamento_Id;*/
 	private String tipoAlergia;
 	private String localAfetado;
 	private Date dataDescoberta;
@@ -40,14 +39,6 @@ public class Alergia {
 		this.dataDescoberta = comando.getDataDescoberta();
 		this.efeitos = comando.getEfeitos();
 	}
-
-	/*public Alergia_Medicamento_Id getAlergia_Medicamento_Id() {
-		return alergia_Medicamento_Id;
-	}
-
-	public void setAlergia_Medicamento_Id(Alergia_Medicamento_Id alergia_Medicamento_Id) {
-		this.alergia_Medicamento_Id = alergia_Medicamento_Id;
-	}*/
 
 	public String getTipoAlergia() {
 		return tipoAlergia;
