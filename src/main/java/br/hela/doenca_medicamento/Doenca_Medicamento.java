@@ -8,12 +8,10 @@ import javax.persistence.ElementCollection;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
-import org.hibernate.envers.Audited;
 import br.hela.doenca.DoencaId;
 import br.hela.medicamento.MedicamentoId;
 
 @Entity
-@Audited
 public class Doenca_Medicamento {
 	@EmbeddedId
 	@AttributeOverride(name="value", column=@Column(name="id"))
@@ -30,10 +28,6 @@ public class Doenca_Medicamento {
 
 	public Doenca_Medicamento_Id getId() {
 		return id;
-	}
-
-	public void setId(Doenca_Medicamento_Id id) {
-		this.id = id;
 	}
 
 	public DoencaId getIdDoenca() {

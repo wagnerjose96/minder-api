@@ -1,21 +1,22 @@
 package br.hela.alergia.comandos;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import br.hela.medicamento.MedicamentoId;
 
 public class CriarAlergia {
-
 	private String tipoAlergia;
 	private String localAfetado;
 	private Date dataDescoberta;
 	private String efeitos;
-	private MedicamentoId idMedicamento;
+	private List<MedicamentoId> id_medicamentos = new ArrayList<MedicamentoId>();
 
 	public CriarAlergia() {
 	}
 
 	public String getTipoAlergia() {
-		return tipoAlergia;
+		return this.tipoAlergia;
 	}
 
 	public void setTipoAlergia(String tipoAlergia) {
@@ -23,7 +24,7 @@ public class CriarAlergia {
 	}
 
 	public String getLocalAfetado() {
-		return localAfetado;
+		return this.localAfetado;
 	}
 
 	public void setLocalAfetado(String localAfetado) {
@@ -31,7 +32,7 @@ public class CriarAlergia {
 	}
 
 	public Date getDataDescoberta() {
-		return dataDescoberta;
+		return this.dataDescoberta;
 	}
 
 	public void setDataDescoberta(Date dataDescoberta) {
@@ -39,19 +40,19 @@ public class CriarAlergia {
 	}
 
 	public String getEfeitos() {
-		return efeitos;
+		return this.efeitos;
 	}
 
 	public void setEfeitos(String efeitos) {
 		this.efeitos = efeitos;
 	}
 
-	public MedicamentoId getIdMedicamento() {
-		return idMedicamento;
+	public List<MedicamentoId> getId_medicamentos() {
+		return this.id_medicamentos;
 	}
 
-	public void setIdMedicamento(MedicamentoId medicamento) {
-		this.idMedicamento = medicamento;
+	public void setId_medicamentos(List<MedicamentoId> id_medicamentos) {
+		this.id_medicamentos.addAll(id_medicamentos);
 	}
 
 }

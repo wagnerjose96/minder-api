@@ -1,8 +1,10 @@
 package br.hela.alergia.comandos;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import br.hela.alergia.AlergiaId;
-import br.hela.medicamento.MedicamentoId;
+import br.hela.alergia.alergia_medicamento.Alergia_Medicamento;
 
 public class EditarAlergia {
 	private AlergiaId idAlergia;
@@ -10,7 +12,7 @@ public class EditarAlergia {
 	private String localAfetado;
 	private Date dataDescoberta;
 	private String efeitos;
-	private MedicamentoId medicamento;
+	private List<Alergia_Medicamento> medicamentos = new ArrayList<>();
 
 	public AlergiaId getIdAlergia() {
 		return idAlergia;
@@ -52,12 +54,12 @@ public class EditarAlergia {
 		this.efeitos = efeitos;
 	}
 
-	public MedicamentoId getIdMedicamento() {
-		return medicamento;
+	public List<Alergia_Medicamento> getMedicamentos() {
+		return medicamentos;
 	}
 
-	public void setMedicamento(MedicamentoId medicamento) {
-		this.medicamento = medicamento;
+	public void setMedicamentos(List<Alergia_Medicamento> medicamentos) {
+		this.medicamentos = medicamentos;
 	}
 
 }
