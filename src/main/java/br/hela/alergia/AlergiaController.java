@@ -15,6 +15,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+
+import com.google.gson.JsonObject;
+
 import br.hela.alergia.comandos.CriarAlergia;
 import br.hela.alergia.comandos.EditarAlergia;
 import io.swagger.annotations.Api;
@@ -29,8 +32,8 @@ public class AlergiaController {
 
 	@ApiOperation(value = "Busque todas as alergias")
 	@GetMapping
-	public ResponseEntity<List<Alergia>> getAlergias() throws Exception {
-		Optional<List<Alergia>> optionalAlergias = alergiaService.encontrar();
+	public ResponseEntity<JsonObject> getAlergias() throws Exception {
+		Optional<JsonObject> optionalAlergias = alergiaService.encontrar();
 		return ResponseEntity.ok(optionalAlergias.get());
 	}
 

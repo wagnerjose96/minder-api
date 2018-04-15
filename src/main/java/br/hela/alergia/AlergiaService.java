@@ -9,7 +9,9 @@ import java.util.Optional;
 import javax.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonPrimitive;
 import br.hela.alergia.Alergia;
 import br.hela.alergia.AlergiaId;
 import br.hela.alergia.alergia_medicamento.Alergia_Medicamento;
@@ -66,20 +68,32 @@ public class AlergiaService {
 		return repo.findById(id);
 	}
 
-	public Optional<List<Alergia>> encontrar() throws Exception {
+	public Optional<JsonObject> encontrar() throws Exception {
+		JsonObject jsonResponse = new JsonObject();
+		JsonArray resultado = new JsonArray();
 		Class.forName(driver);
 		Connection con = DriverManager.getConnection(url, user, senha);
 		Statement stmt = con.createStatement();
-		String query = "select a.nome_medicamento, a.composicao from medicamento a inner join alergia_medicamento b on a.id_medicamento = b.id_medicamento inner join alergia c on b.id_alergia = c.id";
+		String query = "select c.tipo_alergia, c.local_afetado, c.data_descoberta, "
+				+ "c.efeitos, a.nome_medicamento, a.composicao from medicamento a "
+				+ "inner join alergia_medicamento b on a.id_medicamento = b.id_medicamento "
+				+ "inner join alergia c on b.id_alergia = c.id "
+				+ "group by c.id, a.id_medicamento order by c.tipo_alergia";
 		ResultSet rs = stmt.executeQuery(query);
 		
 		while (rs.next()) {
-			String nome = rs.getString("nome_medicamento");
-			String comp = rs.getString("composicao");
-			System.out.println(nome + "  " + comp + "   ");
+			JsonArray row = new JsonArray();
+			row.add(new JsonPrimitive(rs.getString("tipo_alergia")));
+			row.add(new JsonPrimitive(rs.getString("local_afetado")));
+			row.add(new JsonPrimitive(rs.getString("data_descoberta")));
+			row.add(new JsonPrimitive(rs.getString("efeitos")));
+			row.add(new JsonPrimitive(rs.getString("nome_medicamento")));
+			row.add(new JsonPrimitive(rs.getString("composicao")));
+			//System.out.println(alergia + "  " + local + "   " + data + "   " + efeitos + "   " + nome + "   " + comp + "   ");
+		resultado.add(row);
 		}
-
-		return Optional.of(repo.findAll());
+		jsonResponse.add("", resultado);
+		return Optional.of(jsonResponse);
 	}
 
 	public Optional<String> deletar(AlergiaId id) {
