@@ -90,7 +90,7 @@ public class AlergiaService {
 			row.add(new JsonPrimitive(rs.getString("nome_medicamento")));
 			row.add(new JsonPrimitive(rs.getString("composicao")));
 			//System.out.println(alergia + "  " + local + "   " + data + "   " + efeitos + "   " + nome + "   " + comp + "   ");
-		resultado.add(row);
+			resultado.add(row);
 		}
 		jsonResponse.add("", resultado);
 		return Optional.of(jsonResponse);
