@@ -24,11 +24,6 @@ import br.hela.medicamento.MedicamentoService;
 @Service
 @Transactional
 public class AlergiaService {
-	private static String query = "select c.id, a.nome_medicamento, "
-			+ "a.composicao, a.id_medicamento from medicamento a "
-			+ "inner join alergia_medicamento b on a.id_medicamento = b.id_medicamento "
-			+ "inner join alergia c on b.id_alergia = c.id "
-			+ "group by c.id, a.id_medicamento order by c.tipo_alergia";
 
 	@Autowired
 	private AlergiaRepository repo;
@@ -43,7 +38,7 @@ public class AlergiaService {
 		Alergia novo = repo.save(new Alergia(comando));
 		for (MedicamentoId id_medicamento : comando.getId_medicamentos()) {
 			do {
-				if(verificaMedicamentoExistente(id_medicamento)) {
+				if (verificaMedicamentoExistente(id_medicamento)) {
 					Alergia_Medicamento alergiaMedicamento = new Alergia_Medicamento();
 					alergiaMedicamento.setIdAlergia(novo.getIdAlergia());
 					alergiaMedicamento.setIdMedicamento(id_medicamento);
@@ -56,6 +51,11 @@ public class AlergiaService {
 
 	public Optional<BuscarAlergia> encontrar(AlergiaId alergiaId) throws Exception {
 		Statement stmt = connect();
+		String query = "select c.id, a.nome_medicamento, "
+				+ "a.composicao, a.id_medicamento, a.ativo from medicamento a "
+				+ "inner join alergia_medicamento b on a.id_medicamento = b.id_medicamento "
+				+ "inner join alergia c on b.id_alergia = c.id " + "group by c.id, a.id_medicamento having c.id = '"
+				+ alergiaId.toString() + "' " + "order by c.tipo_alergia";
 		ResultSet rs = stmt.executeQuery(query);
 		BuscarAlergia alergia = new BuscarAlergia(repo.findById(alergiaId).get());
 		String id = alergiaId.toString();
@@ -65,6 +65,11 @@ public class AlergiaService {
 
 	public Optional<List<BuscarAlergia>> encontrar() throws Exception {
 		Statement stmt = connect();
+		String query = "select c.id, a.nome_medicamento, "
+				+ "a.composicao, a.id_medicamento, a.ativo from medicamento a "
+				+ "inner join alergia_medicamento b on a.id_medicamento = b.id_medicamento "
+				+ "inner join alergia c on b.id_alergia = c.id "
+				+ "group by c.id, a.id_medicamento order by c.tipo_alergia";
 		List<Alergia> alergias = repo.findAll();
 		List<BuscarAlergia> rsAlergias = new ArrayList<>();
 		for (Alergia alergia : alergias) {
@@ -113,6 +118,7 @@ public class AlergiaService {
 				med.setIdMedicamento(new MedicamentoId(rs.getString("id_medicamento")));
 				med.setNomeMedicamento(rs.getString("nome_medicamento"));
 				med.setComposicao(rs.getString("composicao"));
+				med.setAtivo(rs.getInt("ativo"));
 				meds.add(med);
 			}
 		}
@@ -126,13 +132,12 @@ public class AlergiaService {
 		Statement stmt = con.createStatement();
 		return stmt;
 	}
-	
+
 	private boolean verificarMedicamentoÚnico(MedicamentoId id_medicamento, List<MedicamentoId> list) {
-		for (MedicamentoId medicamentoId: list) {
-			if(medicamentoId.equals(id_medicamento))
-			{
+		for (MedicamentoId medicamentoId : list) {
+			if (medicamentoId.equals(id_medicamento)) {
 				return false;
-			} 
+			}
 		}
 		return true;
 	}

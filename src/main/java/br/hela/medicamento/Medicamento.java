@@ -20,7 +20,6 @@ public class Medicamento {
 	private int ativo;
 
 	public Medicamento() {
-
 	}
 
 	public Medicamento(CriarMedicamento comando) {

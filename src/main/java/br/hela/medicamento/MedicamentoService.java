@@ -22,20 +22,18 @@ public class MedicamentoService {
 	}
 
 	public Optional<Medicamento> encontrar(MedicamentoId id) {
-		Optional<Medicamento> optional = medicamentoRepo.findById(id);
-		Medicamento medicamento = optional.get();
-		if(medicamento.getAtivo() == 1) {
+		Medicamento medicamento = medicamentoRepo.findById(id).get();
+		if (medicamento.getAtivo() == 1) {
 			return Optional.of(medicamento);
 		}
-		return null;
+		return Optional.empty();
 	}
 
 	public Optional<List<Medicamento>> encontrar() {
 		List<Medicamento> resultados = new ArrayList<>();
 		List<Medicamento> medicamentos = medicamentoRepo.findAll();
 		for (Medicamento medicamento : medicamentos) {
-			if(medicamento.getAtivo() == 1)
-			{
+			if (medicamento.getAtivo() == 1) {
 				resultados.add(medicamento);
 			}
 		}
@@ -43,8 +41,7 @@ public class MedicamentoService {
 	}
 
 	public Optional<String> deletar(MedicamentoId id) {
-		Optional<Medicamento> optional = medicamentoRepo.findById(id);
-		Medicamento medicamento = optional.get();
+		Medicamento medicamento = medicamentoRepo.findById(id).get();
 		medicamento.setAtivo(0);
 		medicamentoRepo.save(medicamento);
 		return Optional.of("Usuário -> " + id + ": deletado com sucesso");

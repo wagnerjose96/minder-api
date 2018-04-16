@@ -1,6 +1,5 @@
 package br.hela.alergia.alergia_medicamento;
 
-import java.util.List;
 import javax.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -14,9 +13,5 @@ public class Alergia_Medicamento_Service {
 
 	public void salvar(Alergia_Medicamento novoAlergiaMedicamento) {
 		repo.save(novoAlergiaMedicamento);
-	}
-	
-	public List<Alergia_Medicamento> encontrar() {
-		return repo.findAll();
 	}
 }
