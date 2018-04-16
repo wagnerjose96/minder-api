@@ -1,5 +1,6 @@
 package br.hela.alergia;
 
+
 import java.util.Date;
 
 import javax.persistence.AttributeOverride;
@@ -20,7 +21,7 @@ public class Alergia {
 	private String localAfetado;
 	private Date dataDescoberta;
 	private String efeitos;
-
+	
 	public Alergia() {
 	}
 

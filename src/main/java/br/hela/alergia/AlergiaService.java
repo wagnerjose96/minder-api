@@ -4,20 +4,20 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import javax.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonPrimitive;
 import br.hela.alergia.Alergia;
 import br.hela.alergia.AlergiaId;
 import br.hela.alergia.alergia_medicamento.Alergia_Medicamento;
 import br.hela.alergia.alergia_medicamento.Alergia_Medicamento_Service;
+import br.hela.alergia.comandos.BuscarAlergia;
 import br.hela.alergia.comandos.CriarAlergia;
 import br.hela.alergia.comandos.EditarAlergia;
+import br.hela.medicamento.Medicamento;
 import br.hela.medicamento.MedicamentoId;
 import br.hela.medicamento.MedicamentoService;
 
@@ -41,59 +41,53 @@ public class AlergiaService {
 	public Optional<AlergiaId> salvar(CriarAlergia comando) throws NullPointerException {
 		Alergia novo = repo.save(new Alergia(comando));
 		for (MedicamentoId id_medicamento : comando.getId_medicamentos()) {
-			if (verificaMedicamentoExistente(id_medicamento)) {
-				Alergia_Medicamento alergiaMedicamento = new Alergia_Medicamento();
-				alergiaMedicamento.setIdAlergia(novo.getIdAlergia());
-				alergiaMedicamento.setIdMedicamento(id_medicamento);
-				service.salvar(alergiaMedicamento);
-			}
+			do {
+				if(verificaMedicamentoExistente(id_medicamento)) {
+					Alergia_Medicamento alergiaMedicamento = new Alergia_Medicamento();
+					alergiaMedicamento.setIdAlergia(novo.getIdAlergia());
+					alergiaMedicamento.setIdMedicamento(id_medicamento);
+					service.salvar(alergiaMedicamento);
+				}
+			} while (verificarMedicamentoÚnico(id_medicamento, comando.getId_medicamentos()));
 		}
 		return Optional.of(novo.getIdAlergia());
 	}
 
 	public Optional<Alergia> encontrar(AlergiaId id) {
-		// try {
-		// ConnectionFactory con = new ConnectionFactory();
-		// String sql = "SELECT * FROM ALERGIA INNER JOIN ALERGIA_MEDICAMENTO"
-		// + "ON ALERGIA.ID = ALERGIA_MEDICAMENTO.ID_ALERGIA";
-		//
-		// PreparedStatement ps = ((Connection) con).prepareStatement(sql);
-		// ResultSet rs = ps.executeQuery();
-		// rs.toString();
-		// System.out.println(rs);
-		// } catch (SQLException e) {
-		// System.err.print(e.getMessage());
-		// }
-
 		return repo.findById(id);
 	}
 
-	public Optional<JsonObject> encontrar() throws Exception {
-		JsonObject jsonResponse = new JsonObject();
-		JsonArray resultado = new JsonArray();
+	public Optional<List<BuscarAlergia>> encontrar() throws Exception {
 		Class.forName(driver);
 		Connection con = DriverManager.getConnection(url, user, senha);
 		Statement stmt = con.createStatement();
-		String query = "select c.tipo_alergia, c.local_afetado, c.data_descoberta, "
-				+ "c.efeitos, a.nome_medicamento, a.composicao from medicamento a "
+		String query = "select c.id, c.tipo_alergia, c.local_afetado, c.data_descoberta, "
+				+ "c.efeitos, a.nome_medicamento, a.composicao, a.id_medicamento from medicamento a "
 				+ "inner join alergia_medicamento b on a.id_medicamento = b.id_medicamento "
 				+ "inner join alergia c on b.id_alergia = c.id "
 				+ "group by c.id, a.id_medicamento order by c.tipo_alergia";
-		ResultSet rs = stmt.executeQuery(query);
-		
-		while (rs.next()) {
-			JsonArray row = new JsonArray();
-			row.add(new JsonPrimitive(rs.getString("tipo_alergia")));
-			row.add(new JsonPrimitive(rs.getString("local_afetado")));
-			row.add(new JsonPrimitive(rs.getString("data_descoberta")));
-			row.add(new JsonPrimitive(rs.getString("efeitos")));
-			row.add(new JsonPrimitive(rs.getString("nome_medicamento")));
-			row.add(new JsonPrimitive(rs.getString("composicao")));
-			//System.out.println(alergia + "  " + local + "   " + data + "   " + efeitos + "   " + nome + "   " + comp + "   ");
-			resultado.add(row);
+
+		List<Alergia> alergias = repo.findAll();
+		List<BuscarAlergia> rsAlergias = new ArrayList<>();
+		for (Alergia alergia : alergias) {
+			ResultSet rs = stmt.executeQuery(query);
+			BuscarAlergia nova = new BuscarAlergia(alergia);
+			List<Medicamento> meds = new ArrayList<>();
+			String idAlergia = alergia.getIdAlergia().toString();
+			while (rs.next()) {
+				String id = rs.getString("id");
+				if(id.equals(idAlergia)) {
+					Medicamento med = new Medicamento();
+					med.setIdMedicamento(new MedicamentoId(rs.getString("id_medicamento")));
+					med.setNomeMedicamento(rs.getString("nome_medicamento"));
+					med.setComposicao(rs.getString("composicao"));
+					meds.add(med);
+				}	
+			}
+			nova.setMedicamentos(meds);
+			rsAlergias.add(nova);
 		}
-		jsonResponse.add("", resultado);
-		return Optional.of(jsonResponse);
+		return Optional.of(rsAlergias);
 	}
 
 	public Optional<String> deletar(AlergiaId id) {
@@ -119,4 +113,15 @@ public class AlergiaService {
 			return true;
 		}
 	}
+	
+	private boolean verificarMedicamentoÚnico(MedicamentoId id_medicamento, List<MedicamentoId> list) {
+		for (MedicamentoId medicamentoId: list) {
+			if(medicamentoId == id_medicamento)
+			{
+				return false;
+			} 
+		}
+		return true;
+	}
+
 }
