@@ -10,7 +10,6 @@ import java.util.Optional;
 import javax.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import br.hela.alergia.Alergia;
 import br.hela.alergia.AlergiaId;
 import br.hela.alergia.alergia_medicamento.Alergia_Medicamento;
@@ -43,12 +42,14 @@ public class AlergiaService {
 	public Optional<AlergiaId> salvar(CriarAlergia comando) throws NullPointerException {
 		Alergia novo = repo.save(new Alergia(comando));
 		for (MedicamentoId id_medicamento : comando.getId_medicamentos()) {
-			if (verificaMedicamentoExistente(id_medicamento)) {
-				Alergia_Medicamento alergiaMedicamento = new Alergia_Medicamento();
-				alergiaMedicamento.setIdAlergia(novo.getIdAlergia());
-				alergiaMedicamento.setIdMedicamento(id_medicamento);
-				service.salvar(alergiaMedicamento);
-			}
+			do {
+				if(verificaMedicamentoExistente(id_medicamento)) {
+					Alergia_Medicamento alergiaMedicamento = new Alergia_Medicamento();
+					alergiaMedicamento.setIdAlergia(novo.getIdAlergia());
+					alergiaMedicamento.setIdMedicamento(id_medicamento);
+					service.salvar(alergiaMedicamento);
+				}
+			} while (verificarMedicamentoÚnico(id_medicamento, comando.getId_medicamentos()));
 		}
 		return Optional.of(novo.getIdAlergia());
 	}
@@ -124,6 +125,16 @@ public class AlergiaService {
 				"11223344");
 		Statement stmt = con.createStatement();
 		return stmt;
+	}
+	
+	private boolean verificarMedicamentoÚnico(MedicamentoId id_medicamento, List<MedicamentoId> list) {
+		for (MedicamentoId medicamentoId: list) {
+			if(medicamentoId.equals(id_medicamento))
+			{
+				return false;
+			} 
+		}
+		return true;
 	}
 
 }
