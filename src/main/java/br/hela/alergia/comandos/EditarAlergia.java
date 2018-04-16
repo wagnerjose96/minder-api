@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import br.hela.alergia.AlergiaId;
-import br.hela.alergia.alergia_medicamento.Alergia_Medicamento;
+import br.hela.medicamento.MedicamentoId;
 
 public class EditarAlergia {
 	private AlergiaId idAlergia;
@@ -12,7 +12,7 @@ public class EditarAlergia {
 	private String localAfetado;
 	private Date dataDescoberta;
 	private String efeitos;
-	private List<Alergia_Medicamento> medicamentos = new ArrayList<>();
+	private List<MedicamentoId> id_medicamentos = new ArrayList<MedicamentoId>();
 
 	public AlergiaId getIdAlergia() {
 		return idAlergia;
@@ -54,12 +54,12 @@ public class EditarAlergia {
 		this.efeitos = efeitos;
 	}
 
-	public List<Alergia_Medicamento> getMedicamentos() {
-		return medicamentos;
+	public List<MedicamentoId> getId_medicamentos() {
+		return id_medicamentos;
 	}
 
-	public void setMedicamentos(List<Alergia_Medicamento> medicamentos) {
-		this.medicamentos = medicamentos;
+	public void setId_medicamentos(List<MedicamentoId> id_medicamentos) {
+		this.id_medicamentos = id_medicamentos;
 	}
 
 }

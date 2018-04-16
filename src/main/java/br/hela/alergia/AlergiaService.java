@@ -25,10 +25,11 @@ import br.hela.medicamento.MedicamentoService;
 @Service
 @Transactional
 public class AlergiaService {
-	private static String driver = "org.postgresql.Driver";
-	private static String user = "postgres";
-	private static String senha = "11223344";
-	private static String url = "jdbc:postgresql://localhost:5432/escoladeti2018";
+	private static String query = "select c.id, a.nome_medicamento, "
+			+ "a.composicao, a.id_medicamento from medicamento a "
+			+ "inner join alergia_medicamento b on a.id_medicamento = b.id_medicamento "
+			+ "inner join alergia c on b.id_alergia = c.id "
+			+ "group by c.id, a.id_medicamento order by c.tipo_alergia";
 
 	@Autowired
 	private AlergiaRepository repo;
@@ -52,46 +53,27 @@ public class AlergiaService {
 		return Optional.of(novo.getIdAlergia());
 	}
 
-	public Optional<Alergia> encontrar(AlergiaId id) {
-		return repo.findById(id);
+	public Optional<BuscarAlergia> encontrar(AlergiaId alergiaId) throws Exception {
+		Statement stmt = connect();
+		ResultSet rs = stmt.executeQuery(query);
+		BuscarAlergia alergia = new BuscarAlergia(repo.findById(alergiaId).get());
+		String id = alergiaId.toString();
+		alergia.setMedicamentos(medicamentos(rs, id));
+		return Optional.of(alergia);
 	}
 
 	public Optional<List<BuscarAlergia>> encontrar() throws Exception {
-		Class.forName(driver);
-		Connection con = DriverManager.getConnection(url, user, senha);
-		Statement stmt = con.createStatement();
-		String query = "select c.id, c.tipo_alergia, c.local_afetado, c.data_descoberta, "
-				+ "c.efeitos, a.nome_medicamento, a.composicao, a.id_medicamento from medicamento a "
-				+ "inner join alergia_medicamento b on a.id_medicamento = b.id_medicamento "
-				+ "inner join alergia c on b.id_alergia = c.id "
-				+ "group by c.id, a.id_medicamento order by c.tipo_alergia";
-
+		Statement stmt = connect();
 		List<Alergia> alergias = repo.findAll();
 		List<BuscarAlergia> rsAlergias = new ArrayList<>();
 		for (Alergia alergia : alergias) {
 			ResultSet rs = stmt.executeQuery(query);
 			BuscarAlergia nova = new BuscarAlergia(alergia);
-			List<Medicamento> meds = new ArrayList<>();
-			String idAlergia = alergia.getIdAlergia().toString();
-			while (rs.next()) {
-				String id = rs.getString("id");
-				if(id.equals(idAlergia)) {
-					Medicamento med = new Medicamento();
-					med.setIdMedicamento(new MedicamentoId(rs.getString("id_medicamento")));
-					med.setNomeMedicamento(rs.getString("nome_medicamento"));
-					med.setComposicao(rs.getString("composicao"));
-					meds.add(med);
-				}	
-			}
-			nova.setMedicamentos(meds);
+			String id = alergia.getIdAlergia().toString();
+			nova.setMedicamentos(medicamentos(rs, id));
 			rsAlergias.add(nova);
 		}
 		return Optional.of(rsAlergias);
-	}
-
-	public Optional<String> deletar(AlergiaId id) {
-		repo.deleteById(id);
-		return Optional.of("Alergia -> " + id + ": deletada com sucesso");
 	}
 
 	public Optional<AlergiaId> alterar(EditarAlergia comando) {
@@ -100,6 +82,14 @@ public class AlergiaService {
 			Alergia alergia = optional.get();
 			alergia.apply(comando);
 			repo.save(alergia);
+			for (MedicamentoId id_medicamento : comando.getId_medicamentos()) {
+				if (verificaMedicamentoExistente(id_medicamento)) {
+					Alergia_Medicamento alergiaMedicamento = new Alergia_Medicamento();
+					alergiaMedicamento.setIdAlergia(comando.getIdAlergia());
+					alergiaMedicamento.setIdMedicamento(id_medicamento);
+					service.salvar(alergiaMedicamento);
+				}
+			}
 			return Optional.of(comando.getIdAlergia());
 		}
 		return Optional.empty();
@@ -112,4 +102,28 @@ public class AlergiaService {
 			return true;
 		}
 	}
+
+	private List<Medicamento> medicamentos(ResultSet rs, String id) throws Exception {
+		List<Medicamento> meds = new ArrayList<>();
+		while (rs.next()) {
+			String idAlergia = rs.getString("id");
+			if (id.equals(idAlergia)) {
+				Medicamento med = new Medicamento();
+				med.setIdMedicamento(new MedicamentoId(rs.getString("id_medicamento")));
+				med.setNomeMedicamento(rs.getString("nome_medicamento"));
+				med.setComposicao(rs.getString("composicao"));
+				meds.add(med);
+			}
+		}
+		return meds;
+	}
+
+	private Statement connect() throws Exception {
+		Class.forName("org.postgresql.Driver");
+		Connection con = DriverManager.getConnection("jdbc:postgresql://localhost:5432/escoladeti2018", "postgres",
+				"11223344");
+		Statement stmt = con.createStatement();
+		return stmt;
+	}
+
 }
