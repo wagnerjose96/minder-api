@@ -16,7 +16,9 @@
 			<column name="composicao" type="${TYPE_DESCRICAO}">
 				<constraints nullable="false" />
 			</column>
-										
+			<column name="ativo" type="${TYPE_BOOLEAN}">
+				<constraints nullable="true" />
+			</column>						
 		</createTable>
 	</changeSet>
 	
@@ -29,6 +31,9 @@
 				<constraints nullable="true" />
 			</column>
 			<column name="composicao" type="${TYPE_DESCRICAO}">
+				<constraints nullable="true" />
+			</column>	
+			<column name="ativo" type="${TYPE_BOOLEAN}">
 				<constraints nullable="true" />
 			</column>							
 			<column name="rev" type="${TYPE_INTEGER}">

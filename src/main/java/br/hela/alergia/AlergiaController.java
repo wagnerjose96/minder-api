@@ -45,18 +45,7 @@ public class AlergiaController {
 		}
 		throw new NullPointerException("A alergia procurada não existe no banco de dados");
 	}
-
-	@ApiOperation(value = "Delete uma alergia pelo ID")
-	@DeleteMapping("/{id}")
-	public ResponseEntity<Optional<String>> deletarAlergia(@PathVariable AlergiaId id) throws NullPointerException {
-
-		if (verificaAlergiaExistente(id)) {
-			Optional<String> resultado = alergiaService.deletar(id);
-			return ResponseEntity.ok(resultado);
-		}
-		throw new NullPointerException("A alergia a deletar não existe no banco de dados");
-	}
-
+	
 	@ApiOperation(value = "Cadastre uma nova alergia")
 	@PostMapping
 	public ResponseEntity<String> postAlergia(@RequestBody CriarAlergia comando) throws Exception {

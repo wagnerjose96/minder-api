@@ -90,11 +90,6 @@ public class AlergiaService {
 		return Optional.of(rsAlergias);
 	}
 
-	public Optional<String> deletar(AlergiaId id) {
-		repo.deleteById(id);
-		return Optional.of("Alergia -> " + id + ": deletada com sucesso");
-	}
-
 	public Optional<AlergiaId> alterar(EditarAlergia comando) {
 		Optional<Alergia> optional = repo.findById(comando.getIdAlergia());
 		if (optional.isPresent()) {
@@ -116,7 +111,7 @@ public class AlergiaService {
 	
 	private boolean verificarMedicamentoÚnico(MedicamentoId id_medicamento, List<MedicamentoId> list) {
 		for (MedicamentoId medicamentoId: list) {
-			if(medicamentoId == id_medicamento)
+			if(medicamentoId.equals(id_medicamento))
 			{
 				return false;
 			} 

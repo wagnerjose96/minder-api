@@ -14,6 +14,7 @@
 	<property name="TYPE_DATA" value="date" />
 	<property name="TYPE_NUMBER" value="integer" />
 	<property name="TYPE_TIME" value="timestamp" />
+	<property name="TYPE_BOOLEAN" value="integer" />
 	
 			<!-- remover tipos com duplicidade -->
 		<property name="TYPE_TELEFONE" value="integer" />
