@@ -9,7 +9,7 @@ public class CriarDoenca {
 
 	private String nomeDoenca;
 	private Date dataDescoberta;
-	private List<MedicamentoId> idMedicamento = new ArrayList<>();
+	private List<MedicamentoId> id_medicamentos = new ArrayList<MedicamentoId>();
 
 	public CriarDoenca() {
 	}
@@ -30,12 +30,12 @@ public class CriarDoenca {
 		this.dataDescoberta = dataDescoberta;
 	}
 
-	public List<MedicamentoId> getIdMedicamento() {
-		return this.idMedicamento;
+	public List<MedicamentoId> getId_medicamentos() {
+		return id_medicamentos;
 	}
 
-	public void setIdMedicamento(List<MedicamentoId> idMedicamento) {
-		this.idMedicamento.addAll(idMedicamento);
+	public void setId_medicamentos(List<MedicamentoId> id_medicamentos) {
+		this.id_medicamentos = id_medicamentos;
 	}
 
 }
