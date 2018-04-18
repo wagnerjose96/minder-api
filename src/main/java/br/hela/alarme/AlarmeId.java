@@ -1,17 +1,18 @@
-package br.hela.medicamentoContinuo;
+package br.hela.alarme;
 
 import javax.persistence.Embeddable;
+
 import br.hela.BaseId;
 
 @Embeddable
-public class MedicamentoContinuoId extends BaseId {
+public class AlarmeId extends BaseId {
 	private static final long serialVersionUID = 8965550305250511524L;
-	
-	public MedicamentoContinuoId(){
+
+	public AlarmeId() {
 		super();
 	}
-	public MedicamentoContinuoId(String value) {
+
+	public AlarmeId(String value) {
 		super(value);
 	}
-
 }

@@ -36,11 +36,11 @@
 			<column name="ativo" type="${TYPE_BOOLEAN}">
 				<constraints nullable="true" />
 			</column>							
-			<column name="rev" type="${TYPE_INTEGER}">
+			<column name="rev" type="${TYPE_NUMBER}">
 				<constraints nullable="false" referencedTableName="revinfo"
 					referencedColumnNames="rev" foreignKeyName="medicamento_revinfo_fk" />
 			</column>
-			<column name="revtype" type="${TYPE_INTEGER}">
+			<column name="revtype" type="${TYPE_NUMBER}">
 				<constraints nullable="false" />
 			</column>
 		</createTable>

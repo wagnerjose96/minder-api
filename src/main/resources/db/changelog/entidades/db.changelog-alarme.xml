@@ -5,56 +5,62 @@
 	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd
         http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
 	
-	<changeSet id="create_table_error" author="alan.secundo">
-		<createTable tableName="error_detail">
-		
-			<column name="id_error_detail" type="${TYPE_ID}">
-				<constraints nullable="false" primaryKey="true"
-					primaryKeyName="PK_ERROR_DETAIL" />	
-			</column>
-			<column name="type" type="${TYPE_DESCRICAO}">
-				<constraints nullable="false" />
-			</column>
-			<column name="error" type="${TYPE_DESCRICAO}">
-				<constraints nullable="false" />
-			</column>
-			<column name="developer_message" type="${TYPE_DESCRICAO}">
-				<constraints nullable="false" />
-			</column>
-			<column name="http_status" type="${TYPE_NUMBER}">
-				<constraints nullable="false" />
-			</column>
+	<changeSet id="create_table_alarme" author="wagner.junior">
+		<createTable tableName="alarme">
 			
+			<column name="id" type="${TYPE_ID}">
+				<constraints nullable="false" primaryKey="true"
+					primaryKeyName="PK_ALARME" />	
+			</column>
+			<column name="data_inicio" type="${TYPE_DATA}">
+				<constraints nullable="false" />
+			</column>
+			<column name="data_fim" type="${TYPE_DATA}">
+				<constraints nullable="false" />
+			</column>
+			<column name="quantidade" type="${TYPE_DESCRICAO}">
+				<constraints nullable="true" />
+			</column>
+			<column name="descricao" type="${TYPE_DESCRICAO}">
+				<constraints nullable="false" />
+			</column>
+			<column name="periodicidade" type="${TYPE_NUMBER}">
+				<constraints nullable="false" />
+			</column>
 		</createTable>
 	</changeSet>
 	
-	<changeSet id="create_table_error_aud" author="alan.secundo">
-		<createTable tableName="error_detail_aud">
-			<column name="id_error_detail" type="${TYPE_ID}">
-				<constraints nullable="false"/>	
+	<changeSet id="create_table_alarme_aud" author="wagner.junior">
+		<createTable tableName="alarme_aud">
+			
+			<column name="id" type="${TYPE_ID}">
+				<constraints nullable="false" />	
 			</column>
-			<column name="type" type="${TYPE_DESCRICAO}">
+			<column name="data_inicio" type="${TYPE_DATA}">
 				<constraints nullable="false" />
 			</column>
-			<column name="error" type="${TYPE_DESCRICAO}">
+			<column name="data_fim" type="${TYPE_DATA}">
 				<constraints nullable="false" />
 			</column>
-			<column name="developer_message" type="${TYPE_DESCRICAO}">
+			<column name="quantidade" type="${TYPE_DESCRICAO}">
+				<constraints nullable="true" />
+			</column>
+			<column name="descricao" type="${TYPE_DESCRICAO}">
 				<constraints nullable="false" />
 			</column>
-			<column name="http_status" type="${TYPE_NUMBER}">
+			<column name="periodicidade" type="${TYPE_NUMBER}">
 				<constraints nullable="false" />
 			</column>
 			<column name="rev" type="${TYPE_NUMBER}">
 				<constraints nullable="false" referencedTableName="revinfo"
-					referencedColumnNames="rev" foreignKeyName="FK_ERROR_REVINFO" />
+					referencedColumnNames="rev" foreignKeyName="FK_ALARME_REVINFO" />
 			</column>
 			<column name="revtype" type="${TYPE_NUMBER}">
 				<constraints nullable="false" />
 			</column>
 		</createTable>
-		<addPrimaryKey constraintName="PK_ERROR_AUD"
-			tableName="error_detail_aud" columnNames="id_error_detail, rev" />
+		<addPrimaryKey constraintName="PK_ALARME_AUD"
+			tableName="alarme_aud" columnNames="id, rev" />
 	</changeSet>
 	
 </databaseChangeLog>

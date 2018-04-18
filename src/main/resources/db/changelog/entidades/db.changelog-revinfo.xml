@@ -12,7 +12,7 @@
 
 	<changeSet id="create_table_revinfo" author="wagner.junior">
 		<createTable tableName="revinfo">
-			<column name="rev" type="${TYPE_INTEGER}">
+			<column name="rev" type="${TYPE_NUMBER}">
 				<constraints nullable="false" primaryKey="true"
 					primaryKeyName="PK_REVINFO" />
 			</column>

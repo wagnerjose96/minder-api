@@ -17,31 +17,24 @@
 	<property name="TYPE_BOOLEAN" value="integer" />
 	
 			<!-- remover tipos com duplicidade -->
-		<property name="TYPE_TELEFONE" value="integer" />
 		<property name="TYPE_INTEGER" value="integer" />
 		<property name="TYPE_TEXTO" value="varchar(255)" />
-		<property name="TYPE_NOME" value="varchar(255)" />
-		<property name="TYPE_SENHA" value="varchar(255)" />
-		<property name="TYPE_EMAIL" value="varchar(255)" />
-		<property name="TYPE_ENDERECO" value="varchar(255)" />
-		<property name="TYPE_SEXO" value="varchar(255)" />
-		<property name="TYPE_IMAGEM" value="varchar(255)" />
+		
 	
 		<!-- Carregando entidades no banco de dados -->
 	<include file="db/changelog/entidades/db.changelog-revinfo.xml" />	
 	<include file="db/changelog/entidades/db.changelog-medicamento.xml" />
 	<include file="db/changelog/entidades/db.changelog-alergia.xml" />
-	
-	<!-- 
+	<include file="db/changelog/entidades/db.changelog-doenca.xml" />
 	<include file="db/changelog/entidades/db.changelog-cirurgia.xml" />
 	<include file="db/changelog/entidades/db.changelog-usuario.xml" />
-	<include file="db/changelog/entidades/db.changelog-doenca.xml" />
-	<include file="db/changelog/entidades/db.changelog-medicamentoContinuo.xml" />
 	<include file="db/changelog/entidades/db.changelog-error.xml" />
-	 -->
+	<include file="db/changelog/entidades/db.changelog-alarme.xml" />
+	
 	 	
 		<!-- Carregando associações no banco de dados -->
 	<include file="db/changelog/associações/db.changelog-alergia_medicamento.xml" />
+	<include file="db/changelog/associações/db.changelog-doenca_medicamento.xml" />
+	<include file="db/changelog/associações/db.changelog-alarme_medicamento.xml" />
 	
-
 </databaseChangeLog>
