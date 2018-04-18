@@ -1,7 +1,7 @@
-//package br.hela.emergencia;
-//
-//import org.springframework.data.jpa.repository.JpaRepository;
-//
-//public interface EmergenciaRepository extends JpaRepository<Emergencia, EmergenciaId>{
-//
-//}
+package br.hela.emergencia;
+
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface EmergenciaRepository extends JpaRepository<Emergencia, EmergenciaId>{
+
+}

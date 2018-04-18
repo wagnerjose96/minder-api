@@ -2,11 +2,29 @@ package br.hela.emergencia.comandos;
 
 public class CriarEmergencia {
 	private String planoDeSaude;
+	private String contatoEmergencia;
+	private String endereco;
 	private Boolean doadorDeOrgaos;
 	private Boolean ataqueConvucivos;
 	private String problemasCardiacos;
 
 	public CriarEmergencia() {
+	}
+
+	public String getContatoEmergencia() {
+		return contatoEmergencia;
+	}
+
+	public String getEndereco() {
+		return endereco;
+	}
+
+	public void setEndereco(String endereco) {
+		this.endereco = endereco;
+	}
+
+	public void setContatoEmergencia(String contatoEmergencia) {
+		this.contatoEmergencia = contatoEmergencia;
 	}
 
 	public String getPlanoDeSaude() {
