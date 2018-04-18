@@ -3,27 +3,37 @@ package br.hela.alergia.comandos;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import br.hela.alergia.AlergiaId;
-import br.hela.medicamento.MedicamentoId;
 
-public class EditarAlergia {
+import br.hela.alergia.Alergia;
+import br.hela.alergia.AlergiaId;
+import br.hela.medicamento.Medicamento;
+
+public class BuscarAlergia {
 	private AlergiaId idAlergia;
 	private String tipoAlergia;
 	private String localAfetado;
 	private Date dataDescoberta;
 	private String efeitos;
-	private List<MedicamentoId> id_medicamentos = new ArrayList<MedicamentoId>();
+	private List<Medicamento> medicamentos = new ArrayList<>();
+
+	public BuscarAlergia(Alergia comando) {
+		this.idAlergia = comando.getIdAlergia();
+		this.tipoAlergia = comando.getTipoAlergia();
+		this.localAfetado = comando.getLocalAfetado();
+		this.dataDescoberta = comando.getDataDescoberta();
+		this.efeitos = comando.getEfeitos();
+	}
 
 	public AlergiaId getIdAlergia() {
 		return idAlergia;
 	}
 
-	public String getTipoAlergia() {
-		return tipoAlergia;
-	}
-
 	public void setIdAlergia(AlergiaId idAlergia) {
 		this.idAlergia = idAlergia;
+	}
+
+	public String getTipoAlergia() {
+		return tipoAlergia;
 	}
 
 	public void setTipoAlergia(String tipoAlergia) {
@@ -54,12 +64,12 @@ public class EditarAlergia {
 		this.efeitos = efeitos;
 	}
 
-	public List<MedicamentoId> getId_medicamentos() {
-		return id_medicamentos;
+	public List<Medicamento> getMedicamentos() {
+		return medicamentos;
 	}
 
-	public void setId_medicamentos(List<MedicamentoId> id_medicamentos) {
-		this.id_medicamentos = id_medicamentos;
+	public void setMedicamentos(List<Medicamento> medicamentos) {
+		this.medicamentos = medicamentos;
 	}
 
 }

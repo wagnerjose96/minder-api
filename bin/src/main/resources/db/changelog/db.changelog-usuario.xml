@@ -43,52 +43,52 @@
 			</column>
 		</createTable>
 	</changeSet>
-	
+
 	<changeSet id="create_table_usuario_aud" author="wagner.junior">
 		<createTable tableName="usuario_aud">
 			<column name="id" type="${TYPE_ID}">
 				<constraints nullable="false" />
 			</column>
 			<column name="nome_completo" type="${TYPE_NOME}">
-				<constraints nullable="false" />
+				<constraints nullable="true" />
 			</column>
 			<column name="nome_usuario" type="${TYPE_NOME}">
-				<constraints nullable="false" unique="true" />
+				<constraints nullable="true" />
 			</column>
 			<column name="email" type="${TYPE_EMAIL}">
-				<constraints nullable="false" unique="true" />
+				<constraints nullable="true" />
 			</column>
 			<column name="senha" type="${TYPE_SENHA}">
-				<constraints nullable="false" />
+				<constraints nullable="true" />
 			</column>
 			<column name="tipo_sangue" type="${TYPE_SANGUE}">
-				<constraints nullable="false" />
+				<constraints nullable="true" />
 			</column>
 			<column name="endereco" type="${TYPE_ENDERECO}">
 				<constraints nullable="true" />
 			</column>
 			<column name="telefone" type="${TYPE_TELEFONE}">
-				<constraints nullable="false" />
+				<constraints nullable="true" />
 			</column>
 			<column name="data_nascimento" type="${TYPE_DATA}">
-				<constraints nullable="false" />
+				<constraints nullable="true" />
 			</column>
 			<column name="sexo" type="${TYPE_SEXO}">
-				<constraints nullable="false" />
+				<constraints nullable="true" />
 			</column>
 			<column name="imagem_usuario" type="${TYPE_IMAGEM}">
-				<constraints nullable="false" />
+				<constraints nullable="true" />
 			</column>
 			<column name="rev" type="${TYPE_INTEGER}">
-				<constraints nullable="false" referencedTableName="revinfo"
+				<constraints nullable="true" referencedTableName="revinfo"
 					referencedColumnNames="rev" foreignKeyName="FK_USUARIO_REVINFO" />
 			</column>
 			<column name="revtype" type="${TYPE_INTEGER}">
-				<constraints nullable="false" />
+				<constraints nullable="true" />
 			</column>
 		</createTable>
 		<addPrimaryKey constraintName="PK_USUARIO_AUD"
 			tableName="usuario_aud" columnNames="id, rev" />
 	</changeSet>
-	
+
 </databaseChangeLog>

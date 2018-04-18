@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 <?xml version="1.0" encoding="UTF-8"?>
 
 <databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
@@ -17,67 +16,22 @@
 			<column name="data_descoberta" type="${TYPE_DATA}">
 				<constraints nullable="false" />
 			</column>
-			<column name="medicamento" type="${TYPE_DESCRICAO}">
-				<constraints nullable="true" />
-			</column>			
+			<column name="id_medicamento" type="${TYPE_ID}">
+				<constraints nullable="false" />
+			</column>
 		</createTable>
-	</changeSet>
-	
-	<changeSet id="create_table_doenca_aud" author="douglas.mendonca">
-		<createTable tableName="doenca_aud">
-			<column name="id_doenca" type="${TYPE_ID}">
-				<constraints nullable="false" />
-			</column>
-			<column name="nome_doenca" type="${TYPE_NOME}">
-				<constraints nullable="true" />
-			</column>	
-			<column name="data_descoberta" type="${TYPE_DATA}">
-				<constraints nullable="true" />
-			</column>
-			<column name="medicamento" type="${TYPE_DESCRICAO}">
-				<constraints nullable="true" />
-			</column>
-			<column name="rev" type="${TYPE_INTEGER}">
-				<constraints nullable="false" referencedTableName="revinfo"
-					referencedColumnNames="rev" foreignKeyName="FK_DOENCA_REVINFO" />
-			</column>
-			<column name="revtype" type="${TYPE_INTEGER}">
-				<constraints nullable="false" />
-			</column>
-			</createTable>
-			<addPrimaryKey constraintName="PK_DOENCA_AUD"
-				tableName="doenca_aud" columnNames="id_doenca, rev" />	
 		
 	</changeSet>
 	
-=======
-<?xml version="1.0" encoding="UTF-8"?>
-
-<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
-	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd
-        http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
-
-	<changeSet id="3" author="douglas.mendonca">
-		<createTable tableName="doenca">
-			<column name="id_doenca" type="${TYPE_ID}">
-				<constraints nullable="false" primaryKey="true" primaryKeyName="PK_DOENCA"/>
-			</column>
-			<column name="nome_doenca" type="${TYPE_NOME}">
-				<constraints nullable="false" />
-			</column>	
-			<column name="data_descoberta" type="${TYPE_DATA}">
-				<constraints nullable="false" />
-			</column>
-			<column name="medicamento" type="${TYPE_ID}">
-				<constraints nullable="false" />
-			</column>
-		</createTable>
-		<addForeignKeyConstraint baseColumnNames="medicamento"
-	                             baseTableName="doenca"
-	                             constraintName="FK_DOENCA_MEDICAMENTO"
-	                             referencedColumnNames="id_medicamento"
-	                             referencedTableName="medicamento"/>
+	<changeSet id="relation_doenca_id_medicamento" author="douglas.mendonca">
+		 <addForeignKeyConstraint 	baseColumnNames="id_medicamento"
+	                            	baseTableName="doenca"
+	                            	deferrable="true"
+					            	initiallyDeferred="true"
+						            onDelete="CASCADE"
+		                            constraintName="FK_MEDICAMENTO"
+		                            referencedColumnNames="id_medicamento"
+		                            referencedTableName="medicamento"/>
 	</changeSet>
 	
 	<changeSet id="create_table_doenca_aud" author="douglas.mendonca">
@@ -91,7 +45,7 @@
 			<column name="data_descoberta" type="${TYPE_DATA}">
 				<constraints nullable="true" />
 			</column>
-			<column name="medicamento" type="${TYPE_DESCRICAO}">
+			<column name="id_medicamento" type="${TYPE_ID}">
 				<constraints nullable="true" foreignKeyName="FK_DOENCA_MEDICAMENTO" references="medicamento(id_medicamento)"/>
 			</column>
 			<column name="rev" type="${TYPE_INTEGER}">
@@ -105,7 +59,17 @@
 			<addPrimaryKey constraintName="PK_DOENCA_AUD"
 				tableName="doenca_aud" columnNames="id_doenca, rev" />	
 		
-	</changeSet>
+	</changeSet>	
 	
->>>>>>> a8d2ced7d0fef93f249f76c865e7ddc0239f6561
+	<changeSet id="relation_doenca_medicamento" author="douglas.mendonca">
+		 <addForeignKeyConstraint 	baseColumnNames="id_doenca"
+	                            	baseTableName="doenca_medicamento"
+	                            	deferrable="true"
+					            	initiallyDeferred="true"
+						            onDelete="CASCADE"
+		                            constraintName="FK_DOENCA"
+		                            referencedColumnNames="id_doenca"
+		                            referencedTableName="doenca"/>
+	</changeSet>                         
+	
 </databaseChangeLog>

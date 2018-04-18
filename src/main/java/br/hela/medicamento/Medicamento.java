@@ -17,21 +17,31 @@ public class Medicamento {
 	private MedicamentoId idMedicamento;
 	private String nomeMedicamento;
 	private String composicao;
+	private int ativo;
 
 	public Medicamento() {
-
 	}
 
 	public Medicamento(CriarMedicamento comando) {
 		this.idMedicamento = new MedicamentoId();
 		this.nomeMedicamento = comando.getNomeMedicamento();
 		this.composicao = comando.getComposicao();
+		this.ativo = comando.getAtivo();
 	}
 
 	public void apply(EditarMedicamento comando) {
 		this.idMedicamento = comando.getIdMedicamento();
 		this.nomeMedicamento = comando.getNomeMedicamento();
 		this.composicao = comando.getComposicao();
+		this.ativo = comando.getAtivo();
+	}
+
+	public int getAtivo() {
+		return ativo;
+	}
+
+	public void setAtivo(int ativo) {
+		this.ativo = ativo;
 	}
 
 	public MedicamentoId getIdMedicamento() {

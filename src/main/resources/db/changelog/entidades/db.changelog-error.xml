@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd
+        http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
+	
+	<changeSet id="create_table_error" author="alan.secundo">
+		<createTable tableName="error_detail">
+		
+			<column name="id_error_detail" type="${TYPE_ID}">
+				<constraints nullable="false" primaryKey="true"
+					primaryKeyName="PK_ERROR_DETAIL" />	
+			</column>
+			<column name="type" type="${TYPE_TEXTO}">
+				<constraints nullable="false" />
+			</column>
+			<column name="error" type="${TYPE_TEXTO}">
+				<constraints nullable="false" />
+			</column>
+			<column name="developer_message" type="${TYPE_TEXTO}">
+				<constraints nullable="false" />
+			</column>
+			<column name="http_status" type="${TYPE_INTEGER}">
+				<constraints nullable="false" />
+			</column>
+			
+		</createTable>
+	</changeSet>
+	
+	<changeSet id="create_table_error_aud" author="alan.secundo">
+		<createTable tableName="error_detail_aud">
+			<column name="id_error_detail" type="${TYPE_ID}">
+				<constraints nullable="false"/>	
+			</column>
+			<column name="type" type="${TYPE_TEXTO}">
+				<constraints nullable="false" />
+			</column>
+			<column name="error" type="${TYPE_TEXTO}">
+				<constraints nullable="false" />
+			</column>
+			<column name="developer_message" type="${TYPE_TEXTO}">
+				<constraints nullable="false" />
+			</column>
+			<column name="http_status" type="${TYPE_INTEGER}">
+				<constraints nullable="false" />
+			</column>
+			<column name="rev" type="${TYPE_INTEGER}">
+				<constraints nullable="false" referencedTableName="revinfo"
+					referencedColumnNames="rev" foreignKeyName="FK_ERROR_REVINFO" />
+			</column>
+			<column name="revtype" type="${TYPE_INTEGER}">
+				<constraints nullable="false" />
+			</column>
+		</createTable>
+		<addPrimaryKey constraintName="PK_ERROR_AUD"
+			tableName="error_detail_aud" columnNames="id_error_detail, rev" />
+	</changeSet>
+	
+</databaseChangeLog>
