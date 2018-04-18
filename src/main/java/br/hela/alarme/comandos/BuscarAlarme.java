@@ -10,7 +10,7 @@ public class BuscarAlarme {
 	private AlarmeId id;
 	private Date dataInicio;
 	private Date dataFim;
-	private int quantidade;
+	private String quantidade;
 	private String descricao;
 	private int periodicidade;
 	private Medicamento medicamento;
@@ -48,11 +48,11 @@ public class BuscarAlarme {
 		this.dataFim = dataFim;
 	}
 
-	public int getQuantidade() {
+	public String getQuantidade() {
 		return quantidade;
 	}
 
-	public void setQuantidade(int quantidade) {
+	public void setQuantidade(String quantidade) {
 		this.quantidade = quantidade;
 	}
 

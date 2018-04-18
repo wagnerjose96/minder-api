@@ -18,8 +18,8 @@
 			<column name="data_fim" type="${TYPE_DATA}">
 				<constraints nullable="false" />
 			</column>
-			<column name="quantidade" type="${TYPE_NUMBER}">
-				<constraints nullable="false" />
+			<column name="quantidade" type="${TYPE_DESCRICAO}">
+				<constraints nullable="true" />
 			</column>
 			<column name="descricao" type="${TYPE_DESCRICAO}">
 				<constraints nullable="false" />
@@ -34,8 +34,7 @@
 		<createTable tableName="alarme_aud">
 			
 			<column name="id" type="${TYPE_ID}">
-				<constraints nullable="false" primaryKey="true"
-					primaryKeyName="PK_ALARME" />	
+				<constraints nullable="false" />	
 			</column>
 			<column name="data_inicio" type="${TYPE_DATA}">
 				<constraints nullable="false" />
@@ -43,8 +42,8 @@
 			<column name="data_fim" type="${TYPE_DATA}">
 				<constraints nullable="false" />
 			</column>
-			<column name="quantidade" type="${TYPE_NUMBER}">
-				<constraints nullable="false" />
+			<column name="quantidade" type="${TYPE_DESCRICAO}">
+				<constraints nullable="true" />
 			</column>
 			<column name="descricao" type="${TYPE_DESCRICAO}">
 				<constraints nullable="false" />

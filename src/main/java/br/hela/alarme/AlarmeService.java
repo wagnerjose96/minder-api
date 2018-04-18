@@ -34,45 +34,37 @@ public class AlarmeService {
 	@Autowired
 	private MedicamentoService medicamentoService;
 
-	public Optional<AlarmeId> salvar(CriarAlarme comando) throws NullPointerException {
+	public Optional<AlarmeId> salvar(CriarAlarme comando) {
 		Alarme novo = repo.save(new Alarme(comando));
 		if (verificaMedicamentoExistente(comando.getIdMedicamento())) {
-			Alarme_Medicamento alarmeMedicamento = new Alarme_Medicamento();
-			alarmeMedicamento.setIdAlarme(novo.getId());
-			alarmeMedicamento.setIdMedicamento(comando.getIdMedicamento());
-			service.salvar(alarmeMedicamento);
+			Alarme_Medicamento alarme_medicamento = new Alarme_Medicamento();
+			alarme_medicamento.setIdAlarme(novo.getId());
+			alarme_medicamento.setIdMedicamento(comando.getIdMedicamento());
+			service.salvar(alarme_medicamento);
 		}
 		return Optional.of(novo.getId());
 	}
 
 	public Optional<BuscarAlarme> encontrar(AlarmeId alarmeId) throws Exception {
-		Statement stmt = connect();
-		String query = "select c.id, a.nome_medicamento, "
-				+ "a.composicao, a.id_medicamento, a.ativo from medicamento a "
-				+ "inner join alarme_medicamento b on a.id_medicamento = b.id_medicamento "
-				+ "inner join alarme c on b.id_alarme = c.id " + "group by c.id, a.id_medicamento having c.id = '"
-				+ alarmeId.toString() + "'";
-		ResultSet rs = stmt.executeQuery(query);
 		BuscarAlarme alarme = new BuscarAlarme(repo.findById(alarmeId).get());
-		String id = alarmeId.toString();
-		alarme.setMedicamento(medicamento(rs, id));
+		ResultSet rs = executeQuery(alarmeId.toString());
+		Medicamento med = medicamento(rs, alarmeId.toString());
+		if (med.getAtivo() != 0) {
+			alarme.setMedicamento(med);
+		}
 		return Optional.of(alarme);
 	}
 
 	public Optional<List<BuscarAlarme>> encontrar() throws Exception {
-		Statement stmt = connect();
-		String query = "select c.id, a.nome_medicamento, "
-				+ "a.composicao, a.id_medicamento, a.ativo from medicamento a "
-				+ "inner join alarme_medicamento b on a.id_medicamento = b.id_medicamento "
-				+ "inner join alarme c on b.id_alarme = c.id "
-				+ "group by c.id, a.id_medicamento";
-		List<Alarme> alarmes = repo.findAll();
 		List<BuscarAlarme> rsAlarmes = new ArrayList<>();
+		List<Alarme> alarmes = repo.findAll();
 		for (Alarme alarme : alarmes) {
-			ResultSet rs = stmt.executeQuery(query);
+			ResultSet rs = executeQuery(alarme.getId().toString());
 			BuscarAlarme nova = new BuscarAlarme(alarme);
-			String id = alarme.getId().toString();
-			nova.setMedicamento(medicamento(rs, id));
+			Medicamento med = medicamento(rs, alarme.getId().toString());
+			if (med.getAtivo() != 0) {
+				nova.setMedicamento(med);
+			}
 			rsAlarmes.add(nova);
 		}
 		return Optional.of(rsAlarmes);
@@ -84,24 +76,24 @@ public class AlarmeService {
 			Alarme alarme = optional.get();
 			alarme.apply(comando);
 			repo.save(alarme);
-				if (verificaMedicamentoExistente(comando.getIdMedicamento())) {
-					Alarme_Medicamento alarmeMedicamento = new Alarme_Medicamento();
-					alarmeMedicamento.setIdAlarme(comando.getId());
-					alarmeMedicamento.setIdMedicamento(comando.getIdMedicamento());
-					service.salvar(alarmeMedicamento);
-				}
-			
+			if (verificaMedicamentoExistente(comando.getIdMedicamento())) {
+				Alarme_Medicamento alarmeMedicamento = new Alarme_Medicamento();
+				alarmeMedicamento.setIdAlarme(comando.getId());
+				alarmeMedicamento.setIdMedicamento(comando.getIdMedicamento());
+				service.salvar(alarmeMedicamento);
+			}
 			return Optional.of(comando.getId());
 		}
 		return Optional.empty();
 	}
 
 	private boolean verificaMedicamentoExistente(MedicamentoId id) {
-		if (!medicamentoService.encontrar(id).isPresent()) {
+		if (id == null) {
 			return false;
-		} else {
+		}else if (medicamentoService.encontrar(id).isPresent()) {
 			return true;
 		}
+		return false;
 	}
 
 	private Medicamento medicamento(ResultSet rs, String id) throws Exception {
@@ -124,6 +116,17 @@ public class AlarmeService {
 				"11223344");
 		Statement stmt = con.createStatement();
 		return stmt;
+	}
+
+	private ResultSet executeQuery(String id) throws Exception {
+		Statement stmt = connect();
+		String query = "select c.id, a.nome_medicamento, "
+				+ "a.composicao, a.id_medicamento, a.ativo from medicamento a "
+				+ "inner join alarme_medicamento b on a.id_medicamento = b.id_medicamento "
+				+ "inner join alarme c on b.id_alarme = c.id " + "group by c.id, a.id_medicamento having c.id = '" + id
+				+ "'";
+		ResultSet rs = stmt.executeQuery(query);
+		return rs;
 	}
 
 }

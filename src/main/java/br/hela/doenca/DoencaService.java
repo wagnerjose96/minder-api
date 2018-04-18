@@ -51,13 +51,7 @@ public class DoencaService {
 	}
 
 	public Optional<BuscarDoenca> encontrar(DoencaId doencaId) throws Exception {
-		Statement stmt = connect();
-		String query = "select c.id_doenca, a.nome_medicamento, "
-				+ "a.composicao, a.id_medicamento, a.ativo from medicamento a "
-				+ "inner join doenca_medicamento b on a.id_medicamento = b.id_medicamento "
-				+ "inner join doenca c on b.id_doenca = c.id_doenca " + "group by c.id_doenca, a.id_medicamento having c.id_doenca = '"
-				+ doencaId.toString() + "'";
-		ResultSet rs = stmt.executeQuery(query);
+		ResultSet rs = executeQuery(doencaId.toString());
 		BuscarDoenca doenca = new BuscarDoenca(doencaRepo.findById(doencaId).get());
 		String id = doencaId.toString();
 		doenca.setMedicamentos(medicamentos(rs, id));
@@ -65,19 +59,12 @@ public class DoencaService {
 	}
 
 	public Optional<List<BuscarDoenca>> encontrar() throws Exception {
-		Statement stmt = connect();
-		String query = "select c.id_doenca, a.nome_medicamento, "
-				+ "a.composicao, a.id_medicamento, a.ativo from medicamento a "
-				+ "inner join doenca_medicamento b on a.id_medicamento = b.id_medicamento "
-				+ "inner join doenca c on b.id_doenca = c.id_doenca "
-				+ "group by c.id_doenca, a.id_medicamento";
 		List<Doenca> doencas = doencaRepo.findAll();
 		List<BuscarDoenca> rsDoencas = new ArrayList<>();
 		for (Doenca doenca : doencas) {
-			ResultSet rs = stmt.executeQuery(query);
+			ResultSet rs = executeQuery(doenca.getIdDoenca().toString());
 			BuscarDoenca nova = new BuscarDoenca(doenca);
-			String id = doenca.getIdDoenca().toString();
-			nova.setMedicamentos(medicamentos(rs, id));
+			nova.setMedicamentos(medicamentos(rs, doenca.getIdDoenca().toString()));
 			rsDoencas.add(nova);
 		}
 		return Optional.of(rsDoencas);
@@ -141,6 +128,17 @@ public class DoencaService {
 			}
 		}
 		return true;
+	}
+
+	private ResultSet executeQuery(String id) throws Exception {
+		Statement stmt = connect();
+		String query = "select c.id_doenca, a.nome_medicamento, "
+				+ "a.composicao, a.id_medicamento, a.ativo from medicamento a "
+				+ "inner join doenca_medicamento b on a.id_medicamento = b.id_medicamento "
+				+ "inner join doenca c on b.id_doenca = c.id_doenca "
+				+ "group by c.id_doenca, a.id_medicamento having c.id_doenca = '" + id + "'";
+		ResultSet rs = stmt.executeQuery(query);
+		return rs;
 	}
 
 }

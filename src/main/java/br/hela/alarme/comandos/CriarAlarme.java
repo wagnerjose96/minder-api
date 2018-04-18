@@ -7,7 +7,7 @@ import br.hela.medicamento.MedicamentoId;
 public class CriarAlarme {
 	private Date dataInicio;
 	private Date dataFim;
-	private int quantidade;
+	private String quantidade;
 	private String descricao;
 	private int periodicidade;
 	private MedicamentoId idMedicamento;
@@ -16,7 +16,7 @@ public class CriarAlarme {
 	}
 
 	public Date getDataInicio() {
-		return dataInicio;
+		return this.dataInicio;
 	}
 
 	public void setDataInicio(Date dataInicio) {
@@ -24,23 +24,23 @@ public class CriarAlarme {
 	}
 
 	public Date getDataFim() {
-		return dataFim;
+		return this.dataFim;
 	}
 
 	public void setDataFim(Date dataFim) {
 		this.dataFim = dataFim;
 	}
 
-	public int getQuantidade() {
-		return quantidade;
+	public String getQuantidade() {
+		return this.quantidade;
 	}
 
-	public void setQuantidade(int quantidade) {
+	public void setQuantidade(String quantidade) {
 		this.quantidade = quantidade;
 	}
 
 	public String getDescricao() {
-		return descricao;
+		return this.descricao;
 	}
 
 	public void setDescricao(String descricao) {
@@ -48,7 +48,7 @@ public class CriarAlarme {
 	}
 
 	public int getPeriodicidade() {
-		return periodicidade;
+		return this.periodicidade;
 	}
 
 	public void setPeriodicidade(int periodicidade) {
@@ -56,7 +56,7 @@ public class CriarAlarme {
 	}
 
 	public MedicamentoId getIdMedicamento() {
-		return idMedicamento;
+		return this.idMedicamento;
 	}
 
 	public void setIdMedicamento(MedicamentoId idMedicamento) {
