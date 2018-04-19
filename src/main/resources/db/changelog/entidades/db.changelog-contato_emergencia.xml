@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd
+        http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
+
+	<changeSet id="create_table_contato_emergencia" author="camila.morais">
+		<createTable tableName="contato_emergencia">
+			<column name="id_contato_emergencia" type="${TYPE_ID}">
+				<constraints nullable="false" primaryKey="true"
+					primaryKeyName="PK_CONTATO" />
+			</column>
+			<column name="nome_contato" type="${TYPE_DESCRICAO}">
+				<constraints nullable="false" />
+			</column>
+			<column name="contato_principal" type="${TYPE_NUMBER}">
+				<constraints nullable="false" />
+			</column>
+		</createTable>
+	</changeSet>
+
+	<changeSet id="create_table_contato_emergencia_aud" author="camila.morais">
+		<createTable tableName="contato_emergencia_aud">
+			<column name="id" type="${TYPE_ID}">
+				<constraints nullable="true" />
+			</column>
+			<column name="nome_contato" type="${TYPE_DESCRICAO}">
+				<constraints nullable="true" />
+			</column>
+			<column name="contato_principal" type="${TYPE_NUMBER}">
+				<constraints nullable="true" />
+			</column>
+			<column name="rev" type="${TYPE_NUMBER}">
+				<constraints nullable="false" referencedTableName="revinfo"
+					referencedColumnNames="rev" foreignKeyName="contato_emergencia_revinfo_fk" />
+			</column>
+			<column name="revtype" type="${TYPE_NUMBER}">
+				<constraints nullable="false" />
+			</column>
+		</createTable>
+		<addPrimaryKey constraintName="PK_CONTATO_AUD"
+			tableName="contato_emergencia_aud" columnNames="id_contato_emergencia, rev" />
+	</changeSet>
+
+</databaseChangeLog>
