@@ -4,26 +4,30 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import br.hela.cirurgia.Cirurgia;
 import br.hela.cirurgia.CirurgiaId;
-import br.hela.medicamento.MedicamentoId;
+import br.hela.medicamento.Medicamento;
 
-public class EditarCirurgia {
+public class BuscarCirurgia {
 	private CirurgiaId idCirurgia;
 	private String tipoCirurgia;
 	private Date dataCirurgia;
 	private String clinicaResponsavel;
 	private String medicoResponsavel;
-	private List<MedicamentoId> id_medicamentos = new ArrayList<MedicamentoId>();
-
-	public EditarCirurgia() {
+	private List<Medicamento> medicamentos = new ArrayList<>();
+	
+	public BuscarCirurgia(Cirurgia comando) {
+		this.idCirurgia = comando.getIdCirurgia();
+		this.tipoCirurgia = comando.getTipoCirurgia();
+		this.dataCirurgia = comando.getDataCirurgia();
+		this.clinicaResponsavel = comando.getClinicaResponsavel();
+		this.medicoResponsavel = comando.getMedicoResponsavel();
 	}
 
+	
+	
 	public CirurgiaId getIdCirurgia() {
 		return idCirurgia;
-	}
-
-	public void setIdCirurgia(CirurgiaId idCirurgia) {
-		this.idCirurgia = idCirurgia;
 	}
 
 	public String getTipoCirurgia() {
@@ -57,13 +61,13 @@ public class EditarCirurgia {
 	public void setMedicoResponsavel(String medicoResponsavel) {
 		this.medicoResponsavel = medicoResponsavel;
 	}
-
-	public List<MedicamentoId> getId_medicamentos() {
-		return id_medicamentos;
+	
+	public List<Medicamento> getMedicamentos() {
+		return medicamentos;
 	}
 
-	public void setId_medicamentos(List<MedicamentoId> id_medicamentos) {
-		this.id_medicamentos = id_medicamentos;
+	public void setMedicamentos(List<Medicamento> medicamentos) {
+		this.medicamentos = medicamentos;
 	}
 
 }

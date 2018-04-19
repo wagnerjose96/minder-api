@@ -7,7 +7,6 @@ import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import br.hela.cirurgia.comandos.CriarCirurgia;
 import br.hela.cirurgia.comandos.EditarCirurgia;
-import br.hela.medicamento.MedicamentoId;
 import org.hibernate.envers.Audited;
 
 @Entity
@@ -16,8 +15,6 @@ public class Cirurgia {
 	@EmbeddedId
 	@AttributeOverride(name="value", column=@Column(name="id_cirurgia"))
 	private CirurgiaId idCirurgia;
-	@AttributeOverride(name="value", column=@Column(name="id_medicamento"))
-	private MedicamentoId idMedicamento;
 	private String tipoCirurgia;
 	private Date dataCirurgia;
 	private String clinicaResponsavel;
@@ -29,7 +26,6 @@ public class Cirurgia {
 
 	public Cirurgia(CriarCirurgia comando) {
 		this.idCirurgia = new CirurgiaId();
-		this.idMedicamento = new MedicamentoId();
 		this.tipoCirurgia = comando.getTipoCirurgia();
 		this.dataCirurgia = comando.getDataCirurgia();
 		this.clinicaResponsavel = comando.getClinicaResponsavel();
@@ -43,7 +39,6 @@ public class Cirurgia {
 		this.dataCirurgia = comando.getDataCirurgia();
 		this.clinicaResponsavel = comando.getClinicaResponsavel();
 		this.medicoResponsavel = comando.getMedicoResponsavel();
-		this.idMedicamento = comando.getIdMedicamento();
 	}
 
 	public CirurgiaId getIdCirurgia() {
@@ -80,14 +75,6 @@ public class Cirurgia {
 
 	public void setMedicoResponsavel(String medicoResponsavel) {
 		this.medicoResponsavel = medicoResponsavel;
-	}
-	
-	public MedicamentoId getMedicamentoConsumido() {
-		return idMedicamento;
-	}
-
-	public void setMedicamentoConsumido(MedicamentoId medicamentoConsumido) {
-		this.idMedicamento = medicamentoConsumido;
 	}
 
 	@Override
