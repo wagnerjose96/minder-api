@@ -10,13 +10,10 @@
 			<column name="id_doenca" type="${TYPE_ID}">
 				<constraints nullable="false" primaryKey="true" primaryKeyName="PK_DOENCA"/>
 			</column>
-			<column name="nome_doenca" type="${TYPE_NOME}">
+			<column name="nome_doenca" type="${TYPE_DESCRICAO}">
 				<constraints nullable="false" />
 			</column>	
 			<column name="data_descoberta" type="${TYPE_DATA}">
-				<constraints nullable="false" />
-			</column>
-			<column name="id_doenca_medicamento" type="${TYPE_ID}">
 				<constraints nullable="false" />
 			</column>
 		</createTable>
@@ -28,20 +25,17 @@
 			<column name="id_doenca" type="${TYPE_ID}">
 				<constraints nullable="false" />
 			</column>
-			<column name="nome_doenca" type="${TYPE_NOME}">
+			<column name="nome_doenca" type="${TYPE_DESCRICAO}">
 				<constraints nullable="true" />
 			</column>	
 			<column name="data_descoberta" type="${TYPE_DATA}">
 				<constraints nullable="true" />
 			</column>
-			<column name="id_medicamento" type="${TYPE_ID}">
-				<constraints nullable="true" foreignKeyName="FK_DOENCA_MEDICAMENTO" references="medicamento(id_medicamento)"/>
-			</column>
-			<column name="rev" type="${TYPE_INTEGER}">
+			<column name="rev" type="${TYPE_NUMBER}">
 				<constraints nullable="false" referencedTableName="revinfo"
 					referencedColumnNames="rev" foreignKeyName="FK_DOENCA_REVINFO" />
 			</column>
-			<column name="revtype" type="${TYPE_INTEGER}">
+			<column name="revtype" type="${TYPE_NUMBER}">
 				<constraints nullable="false" />
 			</column>
 			</createTable>
