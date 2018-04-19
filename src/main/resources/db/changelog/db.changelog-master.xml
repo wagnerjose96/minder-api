@@ -31,6 +31,8 @@
 	<include file="db/changelog/entidades/db.changelog-revinfo.xml" />	
 	<include file="db/changelog/entidades/db.changelog-medicamento.xml" />
 	<include file="db/changelog/entidades/db.changelog-alergia.xml" />
+	<include file="db/changelog/entidades/db.changelog-telefone.xml" />
+	
 	
 	<!-- 
 	<include file="db/changelog/entidades/db.changelog-cirurgia.xml" />
