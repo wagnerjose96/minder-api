@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+
 import br.hela.doenca.comandos.BuscarDoenca;
 import br.hela.doenca.comandos.CriarDoenca;
 import br.hela.doenca.comandos.EditarDoenca;
@@ -45,7 +46,6 @@ public class DoencaController {
 		}
 		throw new NullPointerException("A doença procurada não existe no banco de dados");
 	}
-
 
 	@ApiOperation(value = "Cadastre uma nova doença")
 	@PostMapping
@@ -87,4 +87,3 @@ public class DoencaController {
 	}
 
 }
-
