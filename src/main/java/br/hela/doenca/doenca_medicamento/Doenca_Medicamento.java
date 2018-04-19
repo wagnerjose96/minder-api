@@ -41,3 +41,4 @@ public class Doenca_Medicamento {
 		this.idMedicamento = idMedicamento;
 	}
 }
+

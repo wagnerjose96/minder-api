@@ -13,36 +13,44 @@ import br.hela.telefone.comandos.EditarTelefone;
 public class Telefone {
 	@EmbeddedId
 	@AttributeOverride(name = "value", column = @Column(name = "id"))
-	private String telefoneId;
+	private TelefoneId telefoneId;
 	private int ddd;
 	private int numero;
-	
+
 	public Telefone() {
-	
+
 	}
-	
+
 	public Telefone(CriarTelefone comandos) {
-		
+		this.telefoneId = new TelefoneId();
+		this.ddd = comandos.getDdd();
+		this.numero = comandos.getNumero();
 	}
-	
+
 	public void aplly(EditarTelefone comandos) {
-		
+		this.telefoneId = comandos.getTelefoneId();
+		this.ddd = comandos.getDdd();
+		this.numero = comandos.getNumero();
 	}
-	
+
+	public TelefoneId getTelefoneId() {
+		return telefoneId;
+	}
+
 	public int getDdd() {
 		return ddd;
 	}
-	
+
 	public void setDdd(int ddd) {
 		this.ddd = ddd;
 	}
-	
+
 	public int getNumero() {
 		return numero;
 	}
-	
+
 	public void setNumero(int numero) {
 		this.numero = numero;
 	}
-	
+
 }

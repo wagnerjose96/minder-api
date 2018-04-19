@@ -15,3 +15,4 @@ public class Doenca_Medicamento_Id extends BaseId {
 		super(value);
 	}
 }
+

@@ -15,3 +15,4 @@ private static final long serialVersionUID = 8965550305250511524L;
 	}
 
 }
+

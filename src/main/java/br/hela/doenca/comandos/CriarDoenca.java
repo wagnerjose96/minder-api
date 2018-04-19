@@ -37,5 +37,4 @@ public class CriarDoenca {
 	public void setId_medicamentos(List<MedicamentoId> id_medicamentos) {
 		this.id_medicamentos = id_medicamentos;
 	}
-
 }
