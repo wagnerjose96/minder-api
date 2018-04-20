@@ -19,14 +19,8 @@
 			<column name="data_descoberta" type="${TYPE_DATA}">
 				<constraints nullable="false" />
 			</column>
-<<<<<<< HEAD
-			<column name="medicamento" type="${TYPE_DESCRICAO}">
+			<column name="id_medicamento" type="${TYPE_ID}">
 				<constraints nullable="false" />
-=======
-			<column name="medicamento" type="${TYPE_ID}">
-				<constraints nullable="false" referencedTableName="medicamento"
-					referencedColumnNames="id_medicamento" foreignKeyName="FK_ALERGIA_MEDICAMENTO" />
->>>>>>> a8d2ced7d0fef93f249f76c865e7ddc0239f6561
 			</column>
 			<column name="local_afetado" type="${TYPE_DESCRICAO}">
 				<constraints nullable="false" />
@@ -34,8 +28,12 @@
 			<column name="efeitos" type="${TYPE_DESCRICAO}">
 				<constraints nullable="false" />
 			</column>
-			
 		</createTable>
+		<addForeignKeyConstraint baseColumnNames="id_medicamento"
+	                             baseTableName="alergia"
+	                             constraintName="FK_ALERGIA_MEDICAMENTO"
+	                             referencedColumnNames="id_medicamento"
+	                             referencedTableName="medicamento"/>
 	</changeSet>
 	
 	<changeSet id="create_table_alergia_aud" author="larissa.andrade">
@@ -50,8 +48,8 @@
 			<column name="data_descoberta" type="${TYPE_DATA}">
 				<constraints nullable="false" />
 			</column>
-			<column name="medicamento" type="${TYPE_DESCRICAO}">
-				<constraints nullable="false" />
+			<column name="id_medicamento" type="${TYPE_DESCRICAO}">
+				<constraints nullable="true" foreignKeyName="FK_ALERGIA_MEDICAMENTO" references="medicamento(id_medicamento)"/>
 			</column>
 			<column name="local_afetado" type="${TYPE_DESCRICAO}">
 				<constraints nullable="false" />

@@ -7,7 +7,7 @@
 
 	<changeSet id="create_table_cirurgia" author="camila.morais">
 		<createTable tableName="cirurgia">
-			<column name="id" type="${TYPE_ID}">
+			<column name="id_cirurgia" type="${TYPE_ID}">
 				<constraints nullable="false" primaryKey="true"
 					primaryKeyName="PK_CIRURGIA" />
 			</column>
@@ -23,21 +23,20 @@
 			<column name="medico_responsavel" type="${TYPE_TEXTO}">
 				<constraints nullable="false" />
 			</column>
-<<<<<<< HEAD
-			<column name="medicamento_consumido" type="${TYPE_TEXTO}">
+			<column name="id_medicamento" type="${TYPE_ID}">
 				<constraints nullable="false" />
-=======
-			<column name="medicamento" type="${TYPE_ID}">
-				<constraints nullable="false" referencedTableName="medicamento"
-					referencedColumnNames="id_medicamento" foreignKeyName="FK_CIRURGIA_MEDICAMENTO" />
->>>>>>> a8d2ced7d0fef93f249f76c865e7ddc0239f6561
 			</column>
 		</createTable>
+		<addForeignKeyConstraint baseColumnNames="id_medicamento"
+	                             baseTableName="cirurgia"
+	                             constraintName="FK_CIRURGIA_MEDICAMENTO"
+	                             referencedColumnNames="id_medicamento"
+	                             referencedTableName="medicamento"/>
 	</changeSet>
 
 	<changeSet id="create_table_cirurgia_aud" author="camila.morais">
 		<createTable tableName="cirurgia_aud">
-			<column name="id" type="${TYPE_ID}">
+			<column name="id_cirurgia" type="${TYPE_ID}">
 				<constraints nullable="true" />
 			</column>
 			<column name="tipo_cirurgia" type="${TYPE_TEXTO}">
@@ -52,8 +51,8 @@
 			<column name="medico_responsavel" type="${TYPE_TEXTO}">
 				<constraints nullable="true" />
 			</column>
-			<column name="medicamento_consumido" type="${TYPE_TEXTO}">
-				<constraints nullable="true" />
+			<column name="id_medicamento" type="${TYPE_ID}">
+				<constraints nullable="true" foreignKeyName="FK_CIRURGIA_MEDICAMENTO" references="medicamento(id_medicamento)"/>
 			</column>
 			<column name="rev" type="${TYPE_INTEGER}">
 				<constraints nullable="true" referencedTableName="revinfo"
@@ -64,7 +63,7 @@
 			</column>
 		</createTable>
 		<addPrimaryKey constraintName="cirurgia_aud_pkey"
-			tableName="cirurgia_aud" columnNames="id, rev" />
+			tableName="cirurgia_aud" columnNames="id_cirurgia, rev" />
 	</changeSet>
 
 </databaseChangeLog>

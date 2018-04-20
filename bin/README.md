@@ -27,7 +27,7 @@
     - Entrar na pasta do repositório pelo terminal - "Ctrl + Alt + T"
     - Digitar o comando "git branch" e verificar em qual branch você está - Referenciada por "*"
     - Caso "NÃO" esteja na branch "dev", executar o comando - "git checkout dev"
-    - Agora você está na branch dev, para criar uma nova branch, executar o comando - "git checkout -b id#'task'" 
+    - Agora você está na branch dev, para criar uma nova branch, executar o comando - "git checkout -b Seunome-id#'task'" 
     - Para que sua branch seja enviada para o repositório, execute o comando - "git --set-upstream origin id#'task'"
     - Para baixar o código que esta na dev para sua branch, de o comando - "git pull"
     - Comece a trabalhar no seu código.
@@ -36,7 +36,7 @@
 * Realizando o push após "terminar" sua tarefa
 
     - Verifique em que branch você está - "git branch"
-    - Entre na sua branch caso não esteja nela, utilizando o comando - "git checkout id#'task'"
+    - Entre na sua branch caso não esteja nela, utilizando o comando - "git checkout Seunome-id#'task'"
     - De o comando "git pull" para baixar as atualizações dos outros membros do time 
     - Caso de conflito, resolver o conflito na sua branch e depois subir o código
     - Depois de resolver o conflito, se houver, realize a sequência de comando padrão para subir o código 
