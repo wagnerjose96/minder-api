@@ -13,7 +13,7 @@ import org.hibernate.envers.Audited;
 @Audited
 public class Cirurgia {
 	@EmbeddedId
-	@AttributeOverride(name="value", column=@Column(name="id_cirurgia"))
+	@AttributeOverride(name="value", column=@Column(name="id"))
 	private CirurgiaId idCirurgia;
 	private String tipoCirurgia;
 	private Date dataCirurgia;

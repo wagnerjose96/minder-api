@@ -2,11 +2,12 @@ package br.hela.contatoEmergencia.comandos;
 
 import java.util.ArrayList;
 import java.util.List;
+import br.hela.telefone.TelefoneId;
 
 public class CriarContatoEmergencia {
 	private String nomeContato;
 	private Boolean contatoPrincipal;
-	private List<String> telefones = new ArrayList<>();
+	private List<TelefoneId> id_telefones = new ArrayList<TelefoneId>();
 
 	public CriarContatoEmergencia() {
 	}
@@ -27,11 +28,11 @@ public class CriarContatoEmergencia {
 		this.contatoPrincipal = contatoPrincipal;
 	}
 	
-	public List<String> getMedicamentos() {
-		return telefones;
+	public List<TelefoneId> getId_telefones() {
+		return this.id_telefones;
 	}
 
-	public void setMedicamentos(List<String> telefones) {
-		this.telefones = telefones;
+	public void setId_telefones(List<TelefoneId> id_telefones) {
+		this.id_telefones.addAll(id_telefones);
 	}
 }

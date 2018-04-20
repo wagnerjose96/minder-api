@@ -13,7 +13,7 @@ import br.hela.contatoEmergencia.comandos.EditarContatoEmergencia;
 @Audited
 public class ContatoEmergencia {
 	@EmbeddedId
-	@AttributeOverride(name="value", column=@Column(name="id_contato_emergencia"))
+	@AttributeOverride(name="value", column=@Column(name="id"))
 	private ContatoEmergenciaId idContatoEmergencia;
 	private String nomeContato;
 	private Boolean contatoPrincipal;

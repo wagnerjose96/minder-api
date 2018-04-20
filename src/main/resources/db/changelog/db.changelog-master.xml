@@ -14,6 +14,7 @@
 	<property name="TYPE_DATA" value="date" />
 	<property name="TYPE_NUMBER" value="integer" />
 	<property name="TYPE_TIME" value="timestamp" />
+	<property name="TYPE_BOO" value="boolean" />
 	
 			<!-- remover tipos com duplicidade -->
 		<property name="TYPE_INTEGER" value="integer" />
@@ -29,6 +30,7 @@
 	<include file="db/changelog/entidades/db.changelog-usuario.xml" />
 	<include file="db/changelog/entidades/db.changelog-error.xml" />
 	<include file="db/changelog/entidades/db.changelog-alarme.xml" />
+	<include file="db/changelog/entidades/db.changelog-telefone.xml" />
 	<include file="db/changelog/entidades/db.changelog-contato_emergencia.xml" />
 	
 	 	
@@ -37,5 +39,6 @@
 	<include file="db/changelog/associações/db.changelog-doenca_medicamento.xml" />
 	<include file="db/changelog/associações/db.changelog-alarme_medicamento.xml" />
 	<include file="db/changelog/associações/db.changelog-cirurgia_medicamento.xml" />
+	<include file="db/changelog/associações/db.changelog-contato_emergencia_telefone.xml" />
 	
 </databaseChangeLog>

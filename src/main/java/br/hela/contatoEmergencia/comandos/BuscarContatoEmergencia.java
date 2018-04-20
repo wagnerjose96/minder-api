@@ -5,12 +5,13 @@ import java.util.List;
 
 import br.hela.contatoEmergencia.ContatoEmergencia;
 import br.hela.contatoEmergencia.ContatoEmergenciaId;
+import br.hela.telefone.Telefone;
 
 public class BuscarContatoEmergencia {
 	private ContatoEmergenciaId idContatoEmergencia;
 	private String nomeContato;
 	private Boolean contatoPrincipal;
-	private List<String> telefones = new ArrayList<>();
+	private List<Telefone> telefones = new ArrayList<>();
 	
 	public BuscarContatoEmergencia(ContatoEmergencia comando) {
 		this.idContatoEmergencia = comando.getIdContatoEmergencia();
@@ -38,11 +39,11 @@ public class BuscarContatoEmergencia {
 		this.contatoPrincipal = contatoPrincipal;
 	}
 	
-	public List<String> getMedicamentos() {
+	public List<Telefone> getTelefones() {
 		return telefones;
 	}
 
-	public void setMedicamentos(List<String> telefones) {
+	public void setTelefones(List<Telefone> telefones) {
 		this.telefones = telefones;
 	}
 
