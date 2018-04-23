@@ -30,11 +30,15 @@
 	<include file="db/changelog/entidades/db.changelog-usuario.xml" />
 	<include file="db/changelog/entidades/db.changelog-error.xml" />
 	<include file="db/changelog/entidades/db.changelog-alarme.xml" />
+	<include file="db/changelog/entidades/db.changelog-telefone.xml" />
+	<include file="db/changelog/entidades/db.changelog-plano_de_saude.xml" />
+	<include file="db/changelog/entidades/db.changelog-convenio.xml" />
 	
 	 	
 		<!-- Carregando associações no banco de dados -->
 	<include file="db/changelog/associações/db.changelog-alergia_medicamento.xml" />
 	<include file="db/changelog/associações/db.changelog-doenca_medicamento.xml" />
 	<include file="db/changelog/associações/db.changelog-alarme_medicamento.xml" />
+	<include file="db/changelog/associações/db.changelog-plano_de_saude_convenio.xml" />
 	
 </databaseChangeLog>

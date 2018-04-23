@@ -1,17 +1,17 @@
-package br.hela.alarme.alarme_medicamento;
+package br.hela.convenio;
 
 import javax.persistence.Embeddable;
 import br.hela.BaseId;
 
 @Embeddable
-public class Alarme_Medicamento_Id extends BaseId {
+public class ConvenioId extends BaseId{
 	private static final long serialVersionUID = 8965550305250511524L;
-
-	public Alarme_Medicamento_Id() {
+	
+	public ConvenioId() {
 		super();
 	}
-
-	public Alarme_Medicamento_Id(String value) {
+	
+	public ConvenioId(String value) {
 		super(value);
 	}
 }

@@ -5,7 +5,7 @@ import br.hela.BaseId;
 
 @Embeddable
 public class Cirurgia_Medicamento_Id extends BaseId {
-	private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 8965550305250511524L;
 
 	public Cirurgia_Medicamento_Id() {
 		super();
