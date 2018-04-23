@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
-
 import br.hela.contatoEmergencia.comandos.BuscarContatoEmergencia;
 import br.hela.contatoEmergencia.comandos.CriarContatoEmergencia;
 import br.hela.contatoEmergencia.comandos.EditarContatoEmergencia;
@@ -25,62 +24,62 @@ import io.swagger.annotations.ApiOperation;
 @RestController
 @RequestMapping("/contatos")
 public class ContatoEmergenciaController {
-
 	@Autowired
 	private ContatoEmergenciaService contatoEmergenciaService;
 
-	@ApiOperation(value = "Busque todas os contatos de emergência")
+	@ApiOperation(value = "Busque todos os contatos de emergência")
 	@GetMapping
-	public ResponseEntity<List<ContatoEmergencia>> getContatoEmergencias() throws Exception {
-		Optional<List<ContatoEmergencia>> optionalContatoEmergencias = contatoEmergenciaService.encontrar();
+	public ResponseEntity<List<BuscarContatoEmergencia>> getContatoEmergencias() throws Exception {
+		Optional<List<BuscarContatoEmergencia>> optionalContatoEmergencias = contatoEmergenciaService.encontrar();
 		return ResponseEntity.ok(optionalContatoEmergencias.get());
 	}
 
-	@ApiOperation(value = "Busque um contato de emergência pelo ID")
+	@ApiOperation(value = "Busque o contato de emergência pelo ID")
 	@GetMapping("/{id}")
-	public ResponseEntity<BuscarContatoEmergencia> getContatoEmergenciaPorId(@PathVariable ContatoEmergenciaId id) throws NullPointerException, Exception {
+	public ResponseEntity<BuscarContatoEmergencia> getContatoEmergenciaPorId(@PathVariable ContatoEmergenciaId id) 
+			throws NullPointerException, Exception {
 
 		Optional<BuscarContatoEmergencia> optionalContatoEmergencia = contatoEmergenciaService.encontrar(id);
 		if (verificaContatoEmergenciaExistente(id)) {
 			return ResponseEntity.ok(optionalContatoEmergencia.get());
 		}
-		throw new NullPointerException("O contato emergência procurado não existe no banco de dados");
+		throw new NullPointerException("O contato de emergência procurado não existe no banco de dados");
 	}
 
-	@ApiOperation(value = "Cadastre um novo contato emergência")
+	@ApiOperation(value = "Cadastre um novo contato de emergência")
 	@PostMapping
 	public ResponseEntity<String> postContatoEmergencia(@RequestBody CriarContatoEmergencia comando) throws Exception {
 
-		Optional<ContatoEmergenciaId> optionalContatoEmergenciaId = contatoEmergenciaService.executar(comando);
+		Optional<ContatoEmergenciaId> optionalContatoEmergenciaId = contatoEmergenciaService.salvar(comando);
 		if (optionalContatoEmergenciaId.isPresent()) {
 			URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
 					.buildAndExpand(optionalContatoEmergenciaId.get()).toUri();
-			return ResponseEntity.created(location).body("Contato de emergência criado com sucesso");
+			return ResponseEntity.created(location).body("Contato de emergência cadastrado com sucesso");
 		}
 		throw new Exception("O contato de emergência não foi salvo devido a um erro interno");
 	}
 
 	@ApiOperation(value = "Altere um contato de emergência")
 	@PutMapping
-	public ResponseEntity<String> putContatoEmergencia(@RequestBody EditarContatoEmergencia comando) throws SQLException, NullPointerException, Exception {
+	public ResponseEntity<String> putContatoEmergencia(@RequestBody EditarContatoEmergencia comando)
+			throws SQLException, NullPointerException, Exception {
 
 		if (!verificaContatoEmergenciaExistente(comando.getIdContatoEmergencia())) {
 			throw new NullPointerException("O contato de emergência a ser alterado não existe no banco de dados");
 		}
+
 		Optional<ContatoEmergenciaId> optionalContatoEmergenciaId = contatoEmergenciaService.alterar(comando);
 		if (optionalContatoEmergenciaId.isPresent()) {
 			URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
 					.buildAndExpand(optionalContatoEmergenciaId.get()).toUri();
 			return ResponseEntity.created(location).body("Contato de emergência alterado com sucesso");
-		}
-
-		else {
+		} else {
 			throw new SQLException("Erro interno durante a alteração do contato de emergência");
 		}
 
 	}
 
-	private boolean verificaContatoEmergenciaExistente(ContatoEmergenciaId id) throws Exception {
+	private boolean verificaContatoEmergenciaExistente(ContatoEmergenciaId id) throws Exception{
 		if (!contatoEmergenciaService.encontrar(id).isPresent()) {
 			return false;
 		} else {

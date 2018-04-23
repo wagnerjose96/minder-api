@@ -13,23 +13,21 @@ import br.hela.contatoEmergencia.comandos.EditarContatoEmergencia;
 @Audited
 public class ContatoEmergencia {
 	@EmbeddedId
-	@AttributeOverride(name="value", column=@Column(name="id_contato_emergencia"))
+	@AttributeOverride(name="value", column=@Column(name="id"))
 	private ContatoEmergenciaId idContatoEmergencia;
 	private String nomeContato;
-	private Boolean contatoPrincipal;
-
+	
 	public ContatoEmergencia() {
 	}
 
 	public ContatoEmergencia(CriarContatoEmergencia comando) {
 		this.idContatoEmergencia = new ContatoEmergenciaId();
 		this.nomeContato = comando.getNomeContato();
-		this.contatoPrincipal = comando.getContatoPrincipal();
 	}
 
 	public void apply(EditarContatoEmergencia comando) {
+		this.idContatoEmergencia = comando.getIdContatoEmergencia();
 		this.nomeContato = comando.getNomeContato();
-		this.contatoPrincipal = comando.getContatoPrincipal();
 	}
 
 	public ContatoEmergenciaId getIdContatoEmergencia() {
@@ -42,14 +40,6 @@ public class ContatoEmergencia {
 
 	public void setNomeContato(String nomeContato) {
 		this.nomeContato = nomeContato;
-	}
-
-	public Boolean getContatoPrincipal() {
-		return contatoPrincipal;
-	}
-
-	public void setContatoPrincipal(Boolean contatoPrincipal) {
-		this.contatoPrincipal = contatoPrincipal;
 	}
 
 	@Override

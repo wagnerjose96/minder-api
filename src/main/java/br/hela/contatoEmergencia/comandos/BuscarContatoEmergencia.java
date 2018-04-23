@@ -1,23 +1,19 @@
 package br.hela.contatoEmergencia.comandos;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import br.hela.contatoEmergencia.ContatoEmergencia;
 import br.hela.contatoEmergencia.ContatoEmergenciaId;
+import br.hela.telefone.Telefone;
 
 public class BuscarContatoEmergencia {
 	private ContatoEmergenciaId idContatoEmergencia;
 	private String nomeContato;
-	private Boolean contatoPrincipal;
-	private List<String> telefones = new ArrayList<>();
-	
+	private Telefone telefone;
+
 	public BuscarContatoEmergencia(ContatoEmergencia comando) {
 		this.idContatoEmergencia = comando.getIdContatoEmergencia();
 		this.nomeContato = comando.getNomeContato();
-		this.contatoPrincipal = comando.getContatoPrincipal();
 	}
-	
+
 	public ContatoEmergenciaId getIdContatoEmergencia() {
 		return idContatoEmergencia;
 	}
@@ -30,20 +26,12 @@ public class BuscarContatoEmergencia {
 		this.nomeContato = nomeContato;
 	}
 
-	public Boolean getContatoPrincipal() {
-		return contatoPrincipal;
+	public Telefone getTelefone() {
+		return telefone;
 	}
 
-	public void setContatoPrincipal(Boolean contatoPrincipal) {
-		this.contatoPrincipal = contatoPrincipal;
-	}
-	
-	public List<String> getMedicamentos() {
-		return telefones;
-	}
-
-	public void setMedicamentos(List<String> telefones) {
-		this.telefones = telefones;
+	public void setTelefone(Telefone telefone) {
+		this.telefone = telefone;
 	}
 
 }

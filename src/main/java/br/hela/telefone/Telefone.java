@@ -5,6 +5,7 @@ import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import org.hibernate.envers.Audited;
+
 import br.hela.telefone.comandos.CriarTelefone;
 import br.hela.telefone.comandos.EditarTelefone;
 
@@ -35,6 +36,10 @@ public class Telefone {
 
 	public TelefoneId getTelefoneId() {
 		return telefoneId;
+	}
+
+	public void setTelefoneId(TelefoneId telefoneId) {
+		this.telefoneId = telefoneId;
 	}
 
 	public int getDdd() {

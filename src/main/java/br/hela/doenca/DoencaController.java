@@ -47,7 +47,6 @@ public class DoencaController {
 		throw new NullPointerException("A doença procurada não existe no banco de dados");
 	}
 
-
 	@ApiOperation(value = "Cadastre uma nova doença")
 	@PostMapping
 	public ResponseEntity<String> postDoenca(@RequestBody CriarDoenca comando) throws Exception {

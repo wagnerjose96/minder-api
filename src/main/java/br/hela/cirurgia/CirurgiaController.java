@@ -51,7 +51,7 @@ public class CirurgiaController {
 	@PostMapping
 	public ResponseEntity<String> postCirurgia(@RequestBody CriarCirurgia comando) throws Exception {
 
-		Optional<CirurgiaId> optionalCirurgiaId = cirurgiaService.executar(comando);
+		Optional<CirurgiaId> optionalCirurgiaId = cirurgiaService.salvar(comando);
 		if (optionalCirurgiaId.isPresent()) {
 			URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
 					.buildAndExpand(optionalCirurgiaId.get()).toUri();

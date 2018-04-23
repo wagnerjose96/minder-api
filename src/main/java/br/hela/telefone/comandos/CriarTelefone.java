@@ -1,5 +1,7 @@
 package br.hela.telefone.comandos;
 
+import br.hela.telefone.Telefone;
+
 public class CriarTelefone {
 	private int ddd;
 	private int numero;
@@ -8,6 +10,11 @@ public class CriarTelefone {
 	
 	}
 	
+	public CriarTelefone(Telefone telefone) {
+		this.ddd = telefone.getDdd();
+		this.numero = telefone.getNumero();
+	}
+
 	public int getDdd() {
 		return ddd;
 	}
