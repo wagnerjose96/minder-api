@@ -31,7 +31,6 @@
 	<include file="db/changelog/entidades/db.changelog-error.xml" />
 	<include file="db/changelog/entidades/db.changelog-alarme.xml" />
 	<include file="db/changelog/entidades/db.changelog-telefone.xml" />
-	<include file="db/changelog/entidades/db.changelog-contato_emergencia.xml" />
 	
 	 	
 		<!-- Carregando associações no banco de dados -->
@@ -39,6 +38,5 @@
 	<include file="db/changelog/associações/db.changelog-doenca_medicamento.xml" />
 	<include file="db/changelog/associações/db.changelog-alarme_medicamento.xml" />
 	<include file="db/changelog/associações/db.changelog-cirurgia_medicamento.xml" />
-	<include file="db/changelog/associações/db.changelog-contato_emergencia_telefone.xml" />
 	
 </databaseChangeLog>
