@@ -74,7 +74,7 @@ public class AlergiaController {
 					.buildAndExpand(optionalAlergiaId.get()).toUri();
 			return ResponseEntity.created(location).body("Alergia alterada com sucesso");
 		} else {
-			throw new SQLException("Erro interno durante a alteração do alergia");
+			throw new SQLException("Erro interno durante a alteração da alergia");
 		}
 
 	}
