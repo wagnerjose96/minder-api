@@ -6,13 +6,12 @@ import br.hela.BaseId;
 @Embeddable
 public class ErrorDetailId extends BaseId {
 	private static final long serialVersionUID = 8965550305250511524L;
-	
-	public ErrorDetailId(){
+
+	public ErrorDetailId() {
 		super();
 	}
+
 	public ErrorDetailId(String value) {
 		super(value);
 	}
-
 }
-

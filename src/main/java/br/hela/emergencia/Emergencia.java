@@ -23,6 +23,9 @@ public class Emergencia {
 	private Boolean ataqueConvucivos;
 	private String problemasCardiacos;
 
+	public Emergencia() {
+	}
+	
 	public Emergencia(CriarEmergencia comandos) {
 		this.id = new EmergenciaId();
 		this.planoDeSaude = comandos.getPlanoDeSaude();

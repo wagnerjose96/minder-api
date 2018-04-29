@@ -15,7 +15,10 @@ public class BuscarCirurgia {
 	private String clinicaResponsavel;
 	private String medicoResponsavel;
 	private List<Medicamento> medicamentos = new ArrayList<>();
-	
+
+	public BuscarCirurgia() {
+	}
+
 	public BuscarCirurgia(Cirurgia comando) {
 		this.idCirurgia = comando.getIdCirurgia();
 		this.tipoCirurgia = comando.getTipoCirurgia();
@@ -24,8 +27,6 @@ public class BuscarCirurgia {
 		this.medicoResponsavel = comando.getMedicoResponsavel();
 	}
 
-	
-	
 	public CirurgiaId getIdCirurgia() {
 		return idCirurgia;
 	}
@@ -61,7 +62,7 @@ public class BuscarCirurgia {
 	public void setMedicoResponsavel(String medicoResponsavel) {
 		this.medicoResponsavel = medicoResponsavel;
 	}
-	
+
 	public List<Medicamento> getMedicamentos() {
 		return medicamentos;
 	}

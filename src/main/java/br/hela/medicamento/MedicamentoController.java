@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -23,7 +22,6 @@ import io.swagger.annotations.ApiOperation;
 @RestController
 @RequestMapping("/medicamentos")
 public class MedicamentoController {
-
 	@Autowired
 	private MedicamentoService service;
 
@@ -37,7 +35,6 @@ public class MedicamentoController {
 	@ApiOperation(value = "Busque um medicamento pelo id")
 	@GetMapping("/{id}")
 	public ResponseEntity<Medicamento> getMedicamentoPorId(@PathVariable MedicamentoId id) throws NullPointerException {
-
 		if (verificaMedicamentoExistente(id)) {
 			Optional<Medicamento> optionalMedicamento = service.encontrar(id);
 			return ResponseEntity.ok(optionalMedicamento.get());
@@ -45,23 +42,9 @@ public class MedicamentoController {
 		throw new NullPointerException("O medicamento procurado não existe no banco de dados");
 	}
 
-	@ApiOperation(value = "Delete um medicamento pelo id")
-	@DeleteMapping("/{id}")
-	public ResponseEntity<Optional<String>> deletarMedicamento(@PathVariable MedicamentoId id)
-			throws NullPointerException {
-
-		if(verificaMedicamentoExistente(id)) {
-			Optional<String> optionalMedicamento = service.deletar(id);
-			return ResponseEntity.ok(optionalMedicamento);
-		}
-		throw new NullPointerException("O medicamento a deletar não existe no banco de dados");
-	}
-
 	@ApiOperation(value = "Cadastre um novo medicamento")
 	@PostMapping
-	public ResponseEntity<String> postMedicamento(@RequestBody CriarMedicamento comando)
-			throws Exception {
-
+	public ResponseEntity<String> postMedicamento(@RequestBody CriarMedicamento comando) throws Exception {
 		Optional<MedicamentoId> optionalMedicamentoId = service.salvar(comando);
 		if (optionalMedicamentoId.isPresent()) {
 			URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
@@ -76,7 +59,7 @@ public class MedicamentoController {
 	public ResponseEntity<String> putMedicamentoContinuo(@RequestBody EditarMedicamento comando)
 			throws NullPointerException, InternalError {
 
-		if(!verificaMedicamentoExistente(comando.getIdMedicamento())) {
+		if (!verificaMedicamentoExistente(comando.getIdMedicamento())) {
 			throw new NullPointerException("O medicamento a ser alterado não existe no banco de dados");
 		}
 		Optional<MedicamentoId> optionalMedicamentoId = service.alterar(comando);
@@ -96,5 +79,4 @@ public class MedicamentoController {
 			return true;
 		}
 	}
-
 }

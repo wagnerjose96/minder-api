@@ -50,41 +50,41 @@
 				<constraints nullable="false" />
 			</column>
 			<column name="nome_completo" type="${TYPE_DESCRICAO}">
-				<constraints nullable="true" />
+				<constraints nullable="false" />
 			</column>
 			<column name="nome_usuario" type="${TYPE_DESCRICAO}">
-				<constraints nullable="true" />
+				<constraints nullable="false" />
 			</column>
 			<column name="email" type="${TYPE_DESCRICAO}">
-				<constraints nullable="true" />
+				<constraints nullable="false" />
 			</column>
 			<column name="senha" type="${TYPE_DESCRICAO}">
-				<constraints nullable="true" />
+				<constraints nullable="false" />
 			</column>
 			<column name="tipo_sangue" type="${TYPE_SANGUE}">
-				<constraints nullable="true" />
+				<constraints nullable="false" />
 			</column>
 			<column name="endereco" type="${TYPE_DESCRICAO}">
-				<constraints nullable="true" />
+				<constraints nullable="false" />
 			</column>
 			<column name="telefone" type="${TYPE_NUMBER}">
-				<constraints nullable="true" />
+				<constraints nullable="false" />
 			</column>
 			<column name="data_nascimento" type="${TYPE_DATA}">
-				<constraints nullable="true" />
+				<constraints nullable="false" />
 			</column>
 			<column name="sexo" type="${TYPE_DESCRICAO}">
-				<constraints nullable="true" />
+				<constraints nullable="false" />
 			</column>
 			<column name="imagem_usuario" type="${TYPE_DESCRICAO}">
-				<constraints nullable="true" />
+				<constraints nullable="false" />
 			</column>
 			<column name="rev" type="${TYPE_NUMBER}">
-				<constraints nullable="true" referencedTableName="revinfo"
+				<constraints nullable="false" referencedTableName="revinfo"
 					referencedColumnNames="rev" foreignKeyName="FK_USUARIO_REVINFO" />
 			</column>
 			<column name="revtype" type="${TYPE_NUMBER}">
-				<constraints nullable="true" />
+				<constraints nullable="false" />
 			</column>
 		</createTable>
 		<addPrimaryKey constraintName="PK_USUARIO_AUD"

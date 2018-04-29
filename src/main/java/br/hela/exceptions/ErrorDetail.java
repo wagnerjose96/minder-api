@@ -10,7 +10,6 @@ import br.hela.exceptions.comandos.CriarErrorDetail;
 @Entity
 @Audited
 public class ErrorDetail {
-
 	@EmbeddedId
 	@AttributeOverride(name = "value", column = @Column(name = "id_error_detail"))
 	private ErrorDetailId idErrorDetail;

@@ -15,6 +15,9 @@ public class BuscarAlarme {
 	private int periodicidade;
 	private Medicamento medicamento;
 
+	public BuscarAlarme() {
+	}
+
 	public BuscarAlarme(Alarme comandos) {
 		this.id = comandos.getId();
 		this.dataInicio = comandos.getDataInicio();

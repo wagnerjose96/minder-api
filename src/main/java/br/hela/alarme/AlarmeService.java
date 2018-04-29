@@ -24,7 +24,6 @@ import br.hela.medicamento.MedicamentoService;
 @Service
 @Transactional
 public class AlarmeService {
-
 	@Autowired
 	private AlarmeRepository repo;
 
@@ -86,11 +85,19 @@ public class AlarmeService {
 		}
 		return Optional.empty();
 	}
+	
+	public Optional<String> deletar(AlarmeId id){
+		if(repo.findById(id).isPresent()) {
+			repo.deleteById(id);
+			return Optional.of("Alarme" + id + " deletado com sucesso");
+		}
+		return Optional.empty();
+	}
 
 	private boolean verificaMedicamentoExistente(MedicamentoId id) {
 		if (id == null) {
 			return false;
-		}else if (medicamentoService.encontrar(id).isPresent()) {
+		} else if (medicamentoService.encontrar(id).isPresent()) {
 			return true;
 		}
 		return false;
@@ -112,8 +119,8 @@ public class AlarmeService {
 
 	private Statement connect() throws Exception {
 		Class.forName("org.postgresql.Driver");
-		Connection con = DriverManager.getConnection("jdbc:postgresql://localhost:5432/escoladeti2018", "postgres",
-				"11223344");
+		Connection con = DriverManager
+				.getConnection("jdbc:postgresql://localhost:5432/escoladeti2018", "postgres", "11223344");
 		Statement stmt = con.createStatement();
 		return stmt;
 	}
@@ -123,10 +130,9 @@ public class AlarmeService {
 		String query = "select c.id, a.nome_medicamento, "
 				+ "a.composicao, a.id_medicamento, a.ativo from medicamento a "
 				+ "inner join alarme_medicamento b on a.id_medicamento = b.id_medicamento "
-				+ "inner join alarme c on b.id_alarme = c.id " + "group by c.id, a.id_medicamento having c.id = '" + id
-				+ "'";
+				+ "inner join alarme c on b.id_alarme = c.id " 
+				+ "group by c.id, a.id_medicamento having c.id = '" + id + "'";
 		ResultSet rs = stmt.executeQuery(query);
 		return rs;
 	}
-
 }

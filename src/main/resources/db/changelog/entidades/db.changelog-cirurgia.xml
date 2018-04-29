@@ -29,19 +29,19 @@
 	<changeSet id="create_table_cirurgia_aud" author="camila.morais">
 		<createTable tableName="cirurgia_aud">
 			<column name="id" type="${TYPE_ID}">
-				<constraints nullable="true" />
+				<constraints nullable="false" />
 			</column>
 			<column name="tipo_cirurgia" type="${TYPE_DESCRICAO}">
-				<constraints nullable="true" />
+				<constraints nullable="false" />
 			</column>
 			<column name="data_cirurgia" type="${TYPE_DATA}">
-				<constraints nullable="true" />
+				<constraints nullable="false" />
 			</column>
 			<column name="clinica_responsavel" type="${TYPE_DESCRICAO}">
-				<constraints nullable="true" />
+				<constraints nullable="false" />
 			</column>
 			<column name="medico_responsavel" type="${TYPE_DESCRICAO}">
-				<constraints nullable="true" />
+				<constraints nullable="false" />
 			</column>
 			<column name="rev" type="${TYPE_NUMBER}">
 				<constraints nullable="false" referencedTableName="revinfo"

@@ -115,8 +115,8 @@ public class DoencaService {
 
 	private Statement connect() throws Exception {
 		Class.forName("org.postgresql.Driver");
-		Connection con = DriverManager.getConnection("jdbc:postgresql://localhost:5432/escoladeti2018", "postgres",
-				"11223344");
+		Connection con = DriverManager
+				.getConnection("jdbc:postgresql://localhost:5432/escoladeti2018", "postgres", "11223344");
 		Statement stmt = con.createStatement();
 		return stmt;
 	}
@@ -140,5 +140,4 @@ public class DoencaService {
 		ResultSet rs = stmt.executeQuery(query);
 		return rs;
 	}
-
 }

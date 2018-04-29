@@ -13,13 +13,12 @@ import org.hibernate.envers.Audited;
 @Audited
 public class Cirurgia {
 	@EmbeddedId
-	@AttributeOverride(name="value", column=@Column(name="id"))
+	@AttributeOverride(name = "value", column = @Column(name = "id"))
 	private CirurgiaId idCirurgia;
 	private String tipoCirurgia;
 	private Date dataCirurgia;
 	private String clinicaResponsavel;
 	private String medicoResponsavel;
-	
 
 	public Cirurgia() {
 	}
@@ -30,7 +29,6 @@ public class Cirurgia {
 		this.dataCirurgia = comando.getDataCirurgia();
 		this.clinicaResponsavel = comando.getClinicaResponsavel();
 		this.medicoResponsavel = comando.getMedicoResponsavel();
-
 	}
 
 	public void apply(EditarCirurgia comando) {

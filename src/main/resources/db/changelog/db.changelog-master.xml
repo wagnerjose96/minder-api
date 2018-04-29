@@ -9,17 +9,13 @@
 		<!-- Tipos de dados utilizados -->
 	<property name="TYPE_ID" value="varchar(36)" />
 	<property name="TYPE_DESCRICAO" value="varchar(255)" />
+	<property name="TYPE_TEXT" value="text" />
 	<property name="TYPE_SANGUE" value="varchar(3)" />
 	<property name="TYPE_BIG_INTEGER" value="bigint" />
 	<property name="TYPE_DATA" value="date" />
 	<property name="TYPE_NUMBER" value="integer" />
 	<property name="TYPE_TIME" value="timestamp" />
 	<property name="TYPE_BOO" value="boolean" />
-	
-			<!-- remover tipos com duplicidade -->
-		<property name="TYPE_INTEGER" value="integer" />
-		<property name="TYPE_TEXTO" value="varchar(255)" />
-		<property name="TYPE_BOOLEAN" value="integer" />
 	
 		<!-- Carregando entidades no banco de dados -->
 	<include file="db/changelog/entidades/db.changelog-revinfo.xml" />	
@@ -31,12 +27,14 @@
 	<include file="db/changelog/entidades/db.changelog-error.xml" />
 	<include file="db/changelog/entidades/db.changelog-alarme.xml" />
 	<include file="db/changelog/entidades/db.changelog-telefone.xml" />
+	<include file="db/changelog/entidades/db.changelog-contato.xml" />
 	
-	 	
 		<!-- Carregando associações no banco de dados -->
 	<include file="db/changelog/associações/db.changelog-alergia_medicamento.xml" />
 	<include file="db/changelog/associações/db.changelog-doenca_medicamento.xml" />
 	<include file="db/changelog/associações/db.changelog-alarme_medicamento.xml" />
 	<include file="db/changelog/associações/db.changelog-cirurgia_medicamento.xml" />
+	<include file="db/changelog/associações/db.changelog-contato_telefone.xml" />
+	
 	
 </databaseChangeLog>
