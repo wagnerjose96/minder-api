@@ -7,7 +7,6 @@ import javax.persistence.Entity;
 import org.hibernate.envers.Audited;
 
 import br.hela.contatoEmergencia.comandos.CriarContatoEmergencia;
-import br.hela.contatoEmergencia.comandos.EditarContatoEmergencia;
 
 @Entity
 @Audited
@@ -22,11 +21,6 @@ public class ContatoEmergencia {
 
 	public ContatoEmergencia(CriarContatoEmergencia comando) {
 		this.idContatoEmergencia = new ContatoEmergenciaId();
-		this.nomeContato = comando.getNomeContato();
-	}
-
-	public void apply(EditarContatoEmergencia comando) {
-		this.idContatoEmergencia = comando.getIdContatoEmergencia();
 		this.nomeContato = comando.getNomeContato();
 	}
 

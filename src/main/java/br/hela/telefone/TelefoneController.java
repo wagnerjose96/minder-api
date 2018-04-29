@@ -63,7 +63,7 @@ public class TelefoneController {
 					.buildAndExpand(telefone.get()).toUri();
 			return ResponseEntity.created(location).body("Telefone cadastrado com sucesso");
 		} else {
-			throw new SQLException("Erro interno durante a alteração do telefone");
+			throw new SQLException("Erro interno durante a criação do telefone");
 		}
 	}
 	

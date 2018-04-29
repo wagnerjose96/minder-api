@@ -20,10 +20,10 @@
 	<changeSet id="create_table_contato_emergencia_aud" author="camila.morais">
 		<createTable tableName="contato_emergencia_aud">
 			<column name="id" type="${TYPE_ID}">
-				<constraints nullable="true" />
+				<constraints nullable="false" />
 			</column>
 			<column name="nome_contato" type="${TYPE_DESCRICAO}">
-				<constraints nullable="true" />
+				<constraints nullable="false" />
 			</column>
 			<column name="rev" type="${TYPE_NUMBER}">
 				<constraints nullable="false" referencedTableName="revinfo"

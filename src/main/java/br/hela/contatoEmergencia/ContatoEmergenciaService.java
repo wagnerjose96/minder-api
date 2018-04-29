@@ -4,21 +4,17 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.Statement;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 import javax.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import br.hela.contatoEmergencia.comandos.BuscarContatoEmergencia;
 import br.hela.contatoEmergencia.comandos.CriarContatoEmergencia;
-import br.hela.contatoEmergencia.comandos.EditarContatoEmergencia;
 import br.hela.contatoEmergencia.contato_emergencia_telefone.Contato_emergencia_telefone;
 import br.hela.contatoEmergencia.contato_emergencia_telefone.Contato_emergencia_telefone_Service;
 import br.hela.telefone.Telefone;
 import br.hela.telefone.TelefoneId;
 import br.hela.telefone.TelefoneService;
-import br.hela.telefone.comandos.EditarTelefone;
+import br.hela.telefone.comandos.CriarTelefone;
 
 @Service
 @Transactional
@@ -33,60 +29,9 @@ public class ContatoEmergenciaService {
 	@Autowired
 	private TelefoneService telefoneService;
 
-	public Optional<ContatoEmergenciaId> salvar(CriarContatoEmergencia comando) {
-		ContatoEmergencia novo = repo.save(new ContatoEmergencia(comando));
-		Optional<TelefoneId> idTelefone = telefoneService.salvar(comando.getTelefone());
-		if (idTelefone.isPresent()) {
-			Contato_emergencia_telefone contatoEmergenciaTelefone = new Contato_emergencia_telefone();
-			contatoEmergenciaTelefone.setIdContatoEmergencia(novo.getIdContatoEmergencia());
-			contatoEmergenciaTelefone.setIdTelefone(idTelefone.get());
-			service.salvar(contatoEmergenciaTelefone);
-		}
-
-		return Optional.of(novo.getIdContatoEmergencia());
-	}
-
-	public Optional<BuscarContatoEmergencia> encontrar(ContatoEmergenciaId contatoEmergenciaId) throws Exception {
-		ResultSet rs = executeQuery(contatoEmergenciaId.toString());
-		BuscarContatoEmergencia contatoEmergencia = new BuscarContatoEmergencia(
-				repo.findById(contatoEmergenciaId).get());
-		String id = contatoEmergenciaId.toString();
-		contatoEmergencia.setTelefone(telefone(rs, id));
-		return Optional.of(contatoEmergencia);
-	}
-
-	public Optional<List<BuscarContatoEmergencia>> encontrar() throws Exception {
-		List<ContatoEmergencia> contatoEmergencias = repo.findAll();
-		List<BuscarContatoEmergencia> rsContatoEmergencia = new ArrayList<>();
-		for (ContatoEmergencia contatoEmergencia : contatoEmergencias) {
-			ResultSet rs = executeQuery(contatoEmergencia.getIdContatoEmergencia().toString());
-			BuscarContatoEmergencia nova = new BuscarContatoEmergencia(contatoEmergencia);
-			nova.setTelefone(telefone(rs, contatoEmergencia.getIdContatoEmergencia().toString()));
-			rsContatoEmergencia.add(nova);
-		}
-		return Optional.of(rsContatoEmergencia);
-	}
-
-	public Optional<ContatoEmergenciaId> alterar(EditarContatoEmergencia comando) {
-		Optional<ContatoEmergencia> optional = repo.findById(comando.getIdContatoEmergencia());
-		if (optional.isPresent()) {
-			ContatoEmergencia contatoEmergencia = optional.get();
-			contatoEmergencia.apply(comando);
-			repo.save(contatoEmergencia);
-		}
-		if (verificaTelefoneExistente(comando.getTelefone().getTelefoneId())) {
-			EditarTelefone telefone = new EditarTelefone(comando.getTelefone());
-			telefoneService.alterar(telefone);
-		}
-		return Optional.of(comando.getIdContatoEmergencia());
-	}
-
-	private boolean verificaTelefoneExistente(TelefoneId id) {
-		if (!telefoneService.encontrar(id).isPresent()) {
-			return false;
-		} else {
-			return true;
-		}
+	public Optional<ContatoEmergenciaId> salvar(CriarContatoEmergencia comando, Optional<TelefoneId> idTelefone) {
+		ContatoEmergencia contato = repo.save(new ContatoEmergencia(comando));
+		return Optional.of(contato.getIdContatoEmergencia());
 	}
 
 	private Telefone telefone(ResultSet rs, String id) throws Exception {
