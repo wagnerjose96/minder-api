@@ -59,7 +59,7 @@ public class AlarmeController {
 		throw new Exception("O alarme não foi salvo devido a um erro interno");
 	}
 
-	@ApiOperation(value = "Altere uma alarme")
+	@ApiOperation(value = "Altere um alarme")
 	@PutMapping
 	public ResponseEntity<String> putAlarme(@RequestBody EditarAlarme comando)
 			throws SQLException, NullPointerException, Exception {
@@ -72,7 +72,7 @@ public class AlarmeController {
 		if (optionalAlarmeId.isPresent()) {
 			URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
 					.buildAndExpand(optionalAlarmeId.get()).toUri();
-			return ResponseEntity.created(location).body("Alarme alterada com sucesso");
+			return ResponseEntity.created(location).body("Alarme alterado com sucesso");
 		} else {
 			throw new SQLException("Erro interno durante a alteração do alarme");
 		}

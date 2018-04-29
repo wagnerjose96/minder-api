@@ -17,7 +17,7 @@ import br.hela.telefone.comandos.CriarTelefone;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 
-@Api(description = "Basic ContatoEmergencia Controller")
+@Api(description = "Basic Contato De Emergência Controller")
 @RestController
 @RequestMapping("/contatos")
 public class ContatoEmergenciaController {

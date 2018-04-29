@@ -44,7 +44,7 @@ public class MedicamentoService {
 		Medicamento medicamento = medicamentoRepo.findById(id).get();
 		medicamento.setAtivo(0);
 		medicamentoRepo.save(medicamento);
-		return Optional.of("Usuário -> " + id + ": deletado com sucesso");
+		return Optional.of("Medicamento -> " + id + ": deletado com sucesso");
 	}
 
 	public Optional<MedicamentoId> alterar(EditarMedicamento comando) {

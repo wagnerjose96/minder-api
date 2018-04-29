@@ -34,7 +34,7 @@ public class MedicamentoController {
 		return ResponseEntity.ok(optionalMedicamentos.get());
 	}
 
-	@ApiOperation(value = "Busque um medicamento pelo id")
+	@ApiOperation(value = "Busque um medicamento pelo ID")
 	@GetMapping("/{id}")
 	public ResponseEntity<Medicamento> getMedicamentoPorId(@PathVariable MedicamentoId id) throws NullPointerException {
 
@@ -45,7 +45,7 @@ public class MedicamentoController {
 		throw new NullPointerException("O medicamento procurado não existe no banco de dados");
 	}
 
-	@ApiOperation(value = "Delete um medicamento pelo id")
+	@ApiOperation(value = "Delete um medicamento pelo ID")
 	@DeleteMapping("/{id}")
 	public ResponseEntity<Optional<String>> deletarMedicamento(@PathVariable MedicamentoId id)
 			throws NullPointerException {

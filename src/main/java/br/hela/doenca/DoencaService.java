@@ -140,5 +140,4 @@ public class DoencaService {
 		ResultSet rs = stmt.executeQuery(query);
 		return rs;
 	}
-
 }
