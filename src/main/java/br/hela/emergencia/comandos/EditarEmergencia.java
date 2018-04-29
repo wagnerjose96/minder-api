@@ -4,7 +4,7 @@ import br.hela.emergencia.EmergenciaId;
 
 public class EditarEmergencia {
 	private EmergenciaId id;
-	private String planoDeSaude;
+	private String idPlanoSaude;
 	private String contatoEmergencia;
 	private String endereco;
 	private Boolean doadorDeOrgaos;
@@ -22,12 +22,12 @@ public class EditarEmergencia {
 		this.id = id;
 	}
 
-	public String getPlanoDeSaude() {
-		return planoDeSaude;
+	public String getIdPlanoSaude() {
+		return idPlanoSaude;
 	}
 
-	public void setPlanoDeSaude(String planoDeSaude) {
-		this.planoDeSaude = planoDeSaude;
+	public void setIdPlanoSaude(String idPlanoSaude) {
+		this.idPlanoSaude = idPlanoSaude;
 	}
 
 	public String getContatoEmergencia() {

@@ -1,7 +1,7 @@
 package br.hela.emergencia.comandos;
 
 public class CriarEmergencia {
-	private String planoDeSaude;
+	private String idPlanoSaude;
 	private String contatoEmergencia;
 	private String endereco;
 	private Boolean doadorDeOrgaos;
@@ -27,12 +27,12 @@ public class CriarEmergencia {
 		this.contatoEmergencia = contatoEmergencia;
 	}
 
-	public String getPlanoDeSaude() {
-		return planoDeSaude;
+	public String getIdPlanoSaude() {
+		return idPlanoSaude;
 	}
 
-	public void setPlanoDeSaude(String planoDeSaude) {
-		this.planoDeSaude = planoDeSaude;
+	public void setIdPlanoSaude(String idPlanoSaude) {
+		this.idPlanoSaude = idPlanoSaude;
 	}
 
 	public Boolean getDoadorDeOrgaos() {

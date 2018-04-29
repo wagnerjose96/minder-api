@@ -71,7 +71,7 @@ public class AlarmeController {
 		if (optionalAlarmeId.isPresent()) {
 			URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
 					.buildAndExpand(optionalAlarmeId.get()).toUri();
-			return ResponseEntity.created(location).body("Alarme alterada com sucesso");
+			return ResponseEntity.created(location).body("Alarme alterado com sucesso");
 		} else {
 			throw new SQLException("Erro interno durante a alteração do alarme");
 		}

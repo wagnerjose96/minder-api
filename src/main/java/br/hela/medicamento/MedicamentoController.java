@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -32,7 +33,7 @@ public class MedicamentoController {
 		return ResponseEntity.ok(optionalMedicamentos.get());
 	}
 
-	@ApiOperation(value = "Busque um medicamento pelo id")
+	@ApiOperation(value = "Busque um medicamento pelo ID")
 	@GetMapping("/{id}")
 	public ResponseEntity<Medicamento> getMedicamentoPorId(@PathVariable MedicamentoId id) throws NullPointerException {
 		if (verificaMedicamentoExistente(id)) {
@@ -40,6 +41,18 @@ public class MedicamentoController {
 			return ResponseEntity.ok(optionalMedicamento.get());
 		}
 		throw new NullPointerException("O medicamento procurado não existe no banco de dados");
+	}
+
+	@ApiOperation(value = "Delete um medicamento pelo ID")
+	@DeleteMapping("/{id}")
+	public ResponseEntity<Optional<String>> deletarMedicamento(@PathVariable MedicamentoId id)
+			throws NullPointerException {
+
+		if(verificaMedicamentoExistente(id)) {
+			Optional<String> optionalMedicamento = service.deletar(id);
+			return ResponseEntity.ok(optionalMedicamento);
+		}
+		throw new NullPointerException("O medicamento a deletar não existe no banco de dados");
 	}
 
 	@ApiOperation(value = "Cadastre um novo medicamento")

@@ -16,7 +16,7 @@ public class Emergencia {
 	@EmbeddedId
 	@AttributeOverride(name = "value", column = @Column(name = "id"))
 	private EmergenciaId id;
-	private String planoDeSaude;
+	private String idPlanoSaude;
 	private String contatoEmergencia;
 	private String endereco;
 	private Boolean doadorDeOrgaos;
@@ -28,24 +28,23 @@ public class Emergencia {
 	
 	public Emergencia(CriarEmergencia comandos) {
 		this.id = new EmergenciaId();
-		this.planoDeSaude = comandos.getPlanoDeSaude();
+		this.idPlanoSaude = comandos.getIdPlanoSaude();
 		this.doadorDeOrgaos = comandos.getDoadorDeOrgaos();
 		this.ataqueConvucivos = comandos.getAtaqueConvucivos();
 		this.problemasCardiacos = comandos.getProblemasCardiacos();
 		this.endereco = comandos.getEndereco();
 		this.contatoEmergencia = comandos.getContatoEmergencia();
 	}
-	
+
 	public void apply(EditarEmergencia comandos) {
 		this.id = comandos.getId();
-		this.planoDeSaude = comandos.getPlanoDeSaude();
+		this.idPlanoSaude = comandos.getIdPlanoSaude();
 		this.doadorDeOrgaos = comandos.getDoadorDeOrgaos();
 		this.ataqueConvucivos = comandos.getAtaqueConvucivos();
 		this.problemasCardiacos = comandos.getProblemasCardiacos();
 		this.endereco = comandos.getEndereco();
 		this.contatoEmergencia = comandos.getContatoEmergencia();
 	}
-	
 
 	public EmergenciaId getId() {
 		return id;
@@ -59,12 +58,12 @@ public class Emergencia {
 		this.contatoEmergencia = contatoEmergencia;
 	}
 
-	public String getPlanoDeSaude() {
-		return planoDeSaude;
+	public String getIdPlanoSaude() {
+		return idPlanoSaude;
 	}
 
-	public void setPlanoDeSaude(String planoDeSaude) {
-		this.planoDeSaude = planoDeSaude;
+	public void setIdPlanoSaude(String idPlanoSaude) {
+		this.idPlanoSaude = idPlanoSaude;
 	}
 
 	public String getEndereco() {

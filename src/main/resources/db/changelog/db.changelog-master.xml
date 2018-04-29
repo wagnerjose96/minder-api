@@ -27,14 +27,23 @@
 	<include file="db/changelog/entidades/db.changelog-error.xml" />
 	<include file="db/changelog/entidades/db.changelog-alarme.xml" />
 	<include file="db/changelog/entidades/db.changelog-telefone.xml" />
+<<<<<<< HEAD
 	<include file="db/changelog/entidades/db.changelog-contato.xml" />
+=======
+	<include file="db/changelog/entidades/db.changelog-plano_de_saude.xml" />
+	<include file="db/changelog/entidades/db.changelog-convenio.xml" />
+>>>>>>> 1e65ac27c9a5b314f9f52a9112183ce97779df10
 	
 		<!-- Carregando associações no banco de dados -->
 	<include file="db/changelog/associações/db.changelog-alergia_medicamento.xml" />
 	<include file="db/changelog/associações/db.changelog-doenca_medicamento.xml" />
 	<include file="db/changelog/associações/db.changelog-alarme_medicamento.xml" />
+<<<<<<< HEAD
 	<include file="db/changelog/associações/db.changelog-cirurgia_medicamento.xml" />
 	<include file="db/changelog/associações/db.changelog-contato_telefone.xml" />
 	
+=======
+	<include file="db/changelog/associações/db.changelog-plano_de_saude_convenio.xml" />
+>>>>>>> 1e65ac27c9a5b314f9f52a9112183ce97779df10
 	
 </databaseChangeLog>
