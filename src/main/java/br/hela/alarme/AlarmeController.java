@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -77,6 +78,18 @@ public class AlarmeController {
 			throw new SQLException("Erro interno durante a alteração do alarme");
 		}
 
+	}
+	
+	@ApiOperation(value = "Delete um alarme pelo ID")
+	@DeleteMapping("/{id}")
+	public ResponseEntity<Optional<String>> deleteAlarme(@PathVariable AlarmeId id)
+			throws NullPointerException, Exception {
+
+		if (!verificaAlarmeExistente(id)) {
+			throw new NullPointerException("O alarme a ser deletado não existe no banco de dados");
+		}
+		Optional<String> resultado = alarmeService.deletar(id);
+		return ResponseEntity.ok(resultado);
 	}
 
 	private boolean verificaAlarmeExistente(AlarmeId id) throws Exception{

@@ -12,14 +12,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import br.hela.alarme.Alarme;
 import br.hela.alarme.AlarmeId;
-import br.hela.alarme.alarme_medicamento.Alarme_Medicamento;
-import br.hela.alarme.alarme_medicamento.Alarme_Medicamento_Service;
 import br.hela.alarme.comandos.BuscarAlarme;
 import br.hela.alarme.comandos.CriarAlarme;
 import br.hela.alarme.comandos.EditarAlarme;
 import br.hela.medicamento.Medicamento;
 import br.hela.medicamento.MedicamentoId;
-import br.hela.medicamento.MedicamentoService;
 
 @Service
 @Transactional
@@ -27,21 +24,14 @@ public class AlarmeService {
 
 	@Autowired
 	private AlarmeRepository repo;
-
-	@Autowired
-	private Alarme_Medicamento_Service service;
-
-	@Autowired
-	private MedicamentoService medicamentoService;
+	
+	public Optional<String> deletar(AlarmeId id) {
+		repo.deleteById(id);
+		return Optional.of("Alarme ==> " + id + " deletado com sucesso!");
+	}
 
 	public Optional<AlarmeId> salvar(CriarAlarme comando) {
 		Alarme novo = repo.save(new Alarme(comando));
-		if (verificaMedicamentoExistente(comando.getIdMedicamento())) {
-			Alarme_Medicamento alarme_medicamento = new Alarme_Medicamento();
-			alarme_medicamento.setIdAlarme(novo.getId());
-			alarme_medicamento.setIdMedicamento(comando.getIdMedicamento());
-			service.salvar(alarme_medicamento);
-		}
 		return Optional.of(novo.getId());
 	}
 
@@ -76,24 +66,9 @@ public class AlarmeService {
 			Alarme alarme = optional.get();
 			alarme.apply(comando);
 			repo.save(alarme);
-			if (verificaMedicamentoExistente(comando.getIdMedicamento())) {
-				Alarme_Medicamento alarmeMedicamento = new Alarme_Medicamento();
-				alarmeMedicamento.setIdAlarme(comando.getId());
-				alarmeMedicamento.setIdMedicamento(comando.getIdMedicamento());
-				service.salvar(alarmeMedicamento);
-			}
 			return Optional.of(comando.getId());
 		}
 		return Optional.empty();
-	}
-
-	private boolean verificaMedicamentoExistente(MedicamentoId id) {
-		if (id == null) {
-			return false;
-		}else if (medicamentoService.encontrar(id).isPresent()) {
-			return true;
-		}
-		return false;
 	}
 
 	private Medicamento medicamento(ResultSet rs, String id) throws Exception {
@@ -122,8 +97,7 @@ public class AlarmeService {
 		Statement stmt = connect();
 		String query = "select c.id, a.nome_medicamento, "
 				+ "a.composicao, a.id_medicamento, a.ativo from medicamento a "
-				+ "inner join alarme_medicamento b on a.id_medicamento = b.id_medicamento "
-				+ "inner join alarme c on b.id_alarme = c.id " + "group by c.id, a.id_medicamento having c.id = '" + id
+				+ "inner join alarme c on a.id_medicamento = c.id_medicamento " + "group by c.id, a.id_medicamento having c.id = '" + id
 				+ "'";
 		ResultSet rs = stmt.executeQuery(query);
 		return rs;

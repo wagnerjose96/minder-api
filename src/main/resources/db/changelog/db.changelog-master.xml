@@ -39,7 +39,6 @@
 		<!-- Carregando associações no banco de dados -->
 	<include file="db/changelog/associações/db.changelog-alergia_medicamento.xml" />
 	<include file="db/changelog/associações/db.changelog-doenca_medicamento.xml" />
-	<include file="db/changelog/associações/db.changelog-alarme_medicamento.xml" />
 	<include file="db/changelog/associações/db.changelog-cirurgia_medicamento.xml" />
 	<include file="db/changelog/associações/db.changelog-contato_emergencia_telefone.xml" />
 	

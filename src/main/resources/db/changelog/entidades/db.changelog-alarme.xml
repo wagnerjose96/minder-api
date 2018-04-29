@@ -12,6 +12,10 @@
 				<constraints nullable="false" primaryKey="true"
 					primaryKeyName="PK_ALARME" />	
 			</column>
+			<column name="id_medicamento" type="${TYPE_ID}">
+				<constraints nullable="false"
+					foreignKeyName="FK_ALARME_MEDICAMENTO" references="medicamento(id_medicamento)" />
+			</column>
 			<column name="data_inicio" type="${TYPE_DATA}">
 				<constraints nullable="false" />
 			</column>
@@ -28,35 +32,40 @@
 				<constraints nullable="false" />
 			</column>
 		</createTable>
+	<addForeignKeyConstraint
+			constraintName="UPDATE_ALARME" referencedTableName="medicamento"
+			baseColumnNames="id_medicamento" baseTableName="alarme"
+			referencedColumnNames="id_medicamento" onUpdate="CASCADE" />
 	</changeSet>
 	
 	<changeSet id="create_table_alarme_aud" author="wagner.junior">
 		<createTable tableName="alarme_aud">
 			
 			<column name="id" type="${TYPE_ID}">
-				<constraints nullable="false" />	
+				<constraints nullable="true"  />	
 			</column>
 			<column name="data_inicio" type="${TYPE_DATA}">
-				<constraints nullable="false" />
+				<constraints nullable="true" />
 			</column>
 			<column name="data_fim" type="${TYPE_DATA}">
-				<constraints nullable="false" />
+				<constraints nullable="true" />
 			</column>
 			<column name="quantidade" type="${TYPE_DESCRICAO}">
 				<constraints nullable="true" />
 			</column>
 			<column name="descricao" type="${TYPE_DESCRICAO}">
-				<constraints nullable="false" />
+				<constraints nullable="true" />
 			</column>
 			<column name="periodicidade" type="${TYPE_NUMBER}">
-				<constraints nullable="false" />
+				<constraints nullable="true" />
 			</column>
-			<column name="rev" type="${TYPE_NUMBER}">
-				<constraints nullable="false" referencedTableName="revinfo"
-					referencedColumnNames="rev" foreignKeyName="FK_ALARME_REVINFO" />
+		<column name="rev" type="${TYPE_NUMBER}">
+				<constraints nullable="true"
+					referencedTableName="revinfo" referencedColumnNames="rev"
+					foreignKeyName="alarme_revinfo_fk" />
 			</column>
 			<column name="revtype" type="${TYPE_NUMBER}">
-				<constraints nullable="false" />
+				<constraints nullable="true" />
 			</column>
 		</createTable>
 		<addPrimaryKey constraintName="PK_ALARME_AUD"

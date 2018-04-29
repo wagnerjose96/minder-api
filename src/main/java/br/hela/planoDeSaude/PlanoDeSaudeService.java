@@ -21,6 +21,11 @@ import br.hela.planoDeSaude.comandos.EditarPlanoDeSaude;
 public class PlanoDeSaudeService {
 	@Autowired
 	private PlanoDeSaudeRepository repo;
+	
+	public Optional<String> deletar(PlanoDeSaudeId id) {
+		repo.deleteById(id);
+		return Optional.of("Plano ==> " + id + " deletado com sucesso!");
+	}
 
 	public Optional<PlanoDeSaudeId> salvar(CriarPlanoDeSaude comando) {
 		PlanoDeSaude novo = repo.save(new PlanoDeSaude(comando));
@@ -28,23 +33,52 @@ public class PlanoDeSaudeService {
 	}
 
 	public Optional<BuscarPlanoDeSaude> encontrar(PlanoDeSaudeId planoId) throws Exception {
-		ResultSet rs = executeQuery(planoId.toString());
 		BuscarPlanoDeSaude plano = new BuscarPlanoDeSaude(repo.findById(planoId).get());
-		String id = planoId.toString();
-		plano.setConvenio(convenio(rs, id));
+		ResultSet rs = executeQuery(planoId.toString());
+		Convenio conv = convenio(rs, planoId.toString());
+		if (conv.getAtivo() != 0) {
+			plano.setConvenio(conv);
+		}
 		return Optional.of(plano);
 	}
 
 	public Optional<List<BuscarPlanoDeSaude>> encontrar() throws Exception {
-		List<PlanoDeSaude> planos = repo.findAll();
 		List<BuscarPlanoDeSaude> rsPlanos = new ArrayList<>();
+		List<PlanoDeSaude> planos = repo.findAll();
 		for (PlanoDeSaude plano : planos) {
 			ResultSet rs = executeQuery(plano.getId().toString());
 			BuscarPlanoDeSaude nova = new BuscarPlanoDeSaude(plano);
-			nova.setConvenio(convenio(rs, plano.getId().toString()));
+			Convenio conv = convenio(rs, plano.getId().toString());
+			if (conv.getAtivo() != 0) {
+				nova.setConvenio(conv);
+			}
 			rsPlanos.add(nova);
 		}
 		return Optional.of(rsPlanos);
+	}
+
+	public Optional<PlanoDeSaudeId> alterar(EditarPlanoDeSaude comando) {
+		Optional<PlanoDeSaude> optional = repo.findById(comando.getId());
+		if (optional.isPresent()) {
+			PlanoDeSaude plano = optional.get();
+			plano.apply(comando);
+			repo.save(plano);
+			return Optional.of(comando.getId());
+		}
+		return Optional.empty();
+	}
+
+	private Convenio convenio(ResultSet rs, String id) throws Exception {
+		Convenio conv = new Convenio();
+		while (rs.next()) {
+			String idPlano = rs.getString("id");
+			if (id.equals(idPlano)) {
+				conv.setId(new ConvenioId(rs.getString("id_convenio")));
+				conv.setNome(rs.getString("nome"));
+				conv.setAtivo(rs.getInt("ativo"));
+			}
+		}
+		return conv;
 	}
 
 	private Statement connect() throws Exception {
@@ -57,34 +91,11 @@ public class PlanoDeSaudeService {
 
 	private ResultSet executeQuery(String id) throws Exception {
 		Statement stmt = connect();
-		String query = "select b.id, a.nome, " + "a.id, a.ativo from convenio a "
-				+ "inner join plano_de_saude b on a.id = b.id_convenio "
-				+ "group by b.id, b.id_convenio, a.id having b.id = '" + id + "' " + "order by b.id";
+		String query = "select c.id, c.id_convenio, a.nome, " + "a.id, a.ativo from convenio a "
+				+ "inner join plano_de_saude c on a.id = c.id_convenio " + "group by c.id, a.id having c.id = '"
+				+ id + "'";
 		ResultSet rs = stmt.executeQuery(query);
 		return rs;
 	}
 
-	private Convenio convenio(ResultSet rs, String id) throws Exception {
-		Convenio conv = null;
-		while (rs.next()) {
-			String idPlano = rs.getString("id");
-			if (id.equals(idPlano)) {
-				conv = new Convenio();
-				conv.setId(new ConvenioId(rs.getString("id")));
-				conv.setNome(rs.getString("nome"));
-				conv.setAtivo(rs.getInt("ativo"));
-			}
-		}
-		return conv;
-	}
-
-	public Optional<PlanoDeSaudeId> alterar(EditarPlanoDeSaude comando) {
-		Optional<PlanoDeSaude> optional = repo.findById(comando.getId());
-		if (optional.isPresent()) {
-			PlanoDeSaude plano = optional.get();
-			plano.apply(comando);
-			repo.save(plano);
-		}
-		return Optional.of(comando.getId());
-	}
 }

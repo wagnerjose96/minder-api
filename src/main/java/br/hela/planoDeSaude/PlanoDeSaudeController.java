@@ -7,6 +7,7 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -38,7 +39,7 @@ public class PlanoDeSaudeController {
 
 	@ApiOperation(value = "Busque o plano de saúde pelo ID")
 	@GetMapping("/{id}")
-	public ResponseEntity<BuscarPlanoDeSaude> getPlanoDeSaudePorId(@PathVariable PlanoDeSaudeId id) 
+	public ResponseEntity<BuscarPlanoDeSaude> getPlanoDeSaudePorId(@PathVariable PlanoDeSaudeId id)
 			throws NullPointerException, Exception {
 
 		Optional<BuscarPlanoDeSaude> optionalPlanoDeSaude = service.encontrar(id);
@@ -60,8 +61,7 @@ public class PlanoDeSaudeController {
 		}
 		throw new Exception("O plano de saúde não foi salvo devido a um erro interno");
 	}
-	
-	
+
 	@ApiOperation(value = "Altere um plano de saúde")
 	@PutMapping
 	public ResponseEntity<String> putPlanoDeSaude(@RequestBody EditarPlanoDeSaude comando)
@@ -82,7 +82,19 @@ public class PlanoDeSaudeController {
 
 	}
 
-	private boolean verificaPlanoDeSaudeExistente(PlanoDeSaudeId id) throws Exception{
+	@ApiOperation(value = "Delete um plano de saúde pelo ID")
+	@DeleteMapping("/{id}")
+	public ResponseEntity<Optional<String>> deletePlanoDeSaude(@PathVariable PlanoDeSaudeId id)
+			throws NullPointerException, Exception {
+
+		if (!verificaPlanoDeSaudeExistente(id)) {
+			throw new NullPointerException("O plano de saúde a ser deletado não existe no banco de dados");
+		}
+		Optional<String> resultado = service.deletar(id);
+		return ResponseEntity.ok(resultado);
+	}
+
+	private boolean verificaPlanoDeSaudeExistente(PlanoDeSaudeId id) throws Exception {
 		if (!service.encontrar(id).isPresent()) {
 			return false;
 		} else {
