@@ -22,7 +22,8 @@
 		
 	
 		<!-- Carregando entidades no banco de dados -->
-	<include file="db/changelog/entidades/db.changelog-revinfo.xml" />	
+	<include file="db/changelog/entidades/db.changelog-revinfo.xml" />
+	<include file="db/changelog/entidades/db.changelog-tipoSanguineo.xml" />
 	<include file="db/changelog/entidades/db.changelog-medicamento.xml" />
 	<include file="db/changelog/entidades/db.changelog-alergia.xml" />
 	<include file="db/changelog/entidades/db.changelog-doenca.xml" />
