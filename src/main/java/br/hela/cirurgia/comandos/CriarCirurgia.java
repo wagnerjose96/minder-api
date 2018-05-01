@@ -1,6 +1,9 @@
 package br.hela.cirurgia.comandos;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
+
 import br.hela.medicamento.MedicamentoId;
 
 public class CriarCirurgia {
@@ -8,7 +11,7 @@ public class CriarCirurgia {
 	private Date dataCirurgia;
 	private String clinicaResponsavel;
 	private String medicoResponsavel;
-	private MedicamentoId idMedicamento;
+	private List<MedicamentoId> id_medicamentos = new ArrayList<MedicamentoId>();
 
 	public CriarCirurgia() {
 	}
@@ -45,12 +48,11 @@ public class CriarCirurgia {
 		this.medicoResponsavel = medicoResponsavel;
 	}
 
-	public MedicamentoId getIdMedicamento() {
-		return idMedicamento;
+	public List<MedicamentoId> getId_medicamentos() {
+		return this.id_medicamentos;
 	}
 
-	public void setIdMedicamentoConsumido(MedicamentoId medicamento) {
-		this.idMedicamento = medicamento;
+	public void setId_medicamentos(List<MedicamentoId> id_medicamentos) {
+		this.id_medicamentos.addAll(id_medicamentos);
 	}
-
 }

@@ -10,7 +10,7 @@ public class EditarDoenca {
 	private DoencaId idDoenca;
 	private String nomeDoenca;
 	private Date dataDescoberta;
-	private List<MedicamentoId> idMedicamento = new ArrayList<>();
+	private List<MedicamentoId> id_medicamentos = new ArrayList<MedicamentoId>();
 
 	public EditarDoenca() {
 	}
@@ -39,14 +39,12 @@ public class EditarDoenca {
 		this.dataDescoberta = dataDescoberta;
 	}
 
-	public List<MedicamentoId> getIdMedicamento() {
-		return idMedicamento;
+	public List<MedicamentoId> getId_medicamentos() {
+		return id_medicamentos;
 	}
 
-	public void setIdMedicamento(List<MedicamentoId> idMedicamento) {
-		this.idMedicamento = idMedicamento;
+	public void setId_medicamentos(List<MedicamentoId> id_medicamentos) {
+		this.id_medicamentos = id_medicamentos;
 	}
-
-	
 
 }

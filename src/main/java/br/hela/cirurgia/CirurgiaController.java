@@ -4,10 +4,8 @@ import java.net.URI;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Optional;
-import java.util.concurrent.TimeoutException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -16,11 +14,12 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+
+import br.hela.cirurgia.comandos.BuscarCirurgia;
 import br.hela.cirurgia.comandos.CriarCirurgia;
 import br.hela.cirurgia.comandos.EditarCirurgia;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import javassist.tools.web.BadHttpRequest;
 
 @Api(description = "Basic Cirurgia Controller")
 @RestController
@@ -32,33 +31,20 @@ public class CirurgiaController {
 
 	@ApiOperation(value = "Busque todas as cirurgias")
 	@GetMapping
-	public ResponseEntity<List<Cirurgia>> getCirurgias() {
-		Optional<List<Cirurgia>> optionalCirurgias = cirurgiaService.encontrar();
+	public ResponseEntity<List<BuscarCirurgia>> getCirurgias() throws Exception {
+		Optional<List<BuscarCirurgia>> optionalCirurgias = cirurgiaService.encontrar();
 		return ResponseEntity.ok(optionalCirurgias.get());
-
 	}
 
 	@ApiOperation(value = "Busque uma cirurgia pelo ID")
 	@GetMapping("/{id}")
-	public ResponseEntity<Cirurgia> getCirurgiaPorId(@PathVariable CirurgiaId id) throws NullPointerException {
+	public ResponseEntity<BuscarCirurgia> getCirurgiaPorId(@PathVariable CirurgiaId id) throws NullPointerException, Exception {
 
-		Optional<Cirurgia> optionalCirurgia = cirurgiaService.encontrar(id);
+		Optional<BuscarCirurgia> optionalCirurgia = cirurgiaService.encontrar(id);
 		if (verificaCirurgiaExistente(id)) {
 			return ResponseEntity.ok(optionalCirurgia.get());
 		}
 		throw new NullPointerException("A cirurgia procurada não existe no banco de dados");
-	}
-
-	@ApiOperation(value = "Delete uma cirurgia pelo ID")
-	@DeleteMapping("/{id}")
-	public ResponseEntity<String> deletarCirurgia(@PathVariable CirurgiaId id)
-			throws TimeoutException, NullPointerException, BadHttpRequest {
-
-		if (verificaCirurgiaExistente(id)) {
-			Optional<String> optionalCirurgia = cirurgiaService.deletar(id);
-			return ResponseEntity.ok(optionalCirurgia.get());
-		}
-		throw new NullPointerException("A cirugia a deletar não existe no banco de dados");
 	}
 
 	@ApiOperation(value = "Cadastre uma nova cirurgia")
@@ -69,14 +55,14 @@ public class CirurgiaController {
 		if (optionalCirurgiaId.isPresent()) {
 			URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
 					.buildAndExpand(optionalCirurgiaId.get()).toUri();
-			return ResponseEntity.created(location).body("Alergia criada com sucesso");
+			return ResponseEntity.created(location).body("Cirurgia criada com sucesso");
 		}
 		throw new Exception("A cirurgia não foi salva devido a um erro interno");
 	}
 
 	@ApiOperation(value = "Altere uma cirurgia")
 	@PutMapping
-	public ResponseEntity<String> putCirurgia(@RequestBody EditarCirurgia comando) throws NullPointerException, SQLException {
+	public ResponseEntity<String> putCirurgia(@RequestBody EditarCirurgia comando) throws SQLException, NullPointerException, Exception {
 
 		if (!verificaCirurgiaExistente(comando.getIdCirurgia())) {
 			throw new NullPointerException("A cirurgia a ser alterada não existe no banco de dados");
@@ -94,7 +80,7 @@ public class CirurgiaController {
 
 	}
 
-	private boolean verificaCirurgiaExistente(CirurgiaId id) throws NullPointerException {
+	private boolean verificaCirurgiaExistente(CirurgiaId id) throws Exception {
 		if (!cirurgiaService.encontrar(id).isPresent()) {
 			return false;
 		} else {

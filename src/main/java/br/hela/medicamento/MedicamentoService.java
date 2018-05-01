@@ -1,5 +1,6 @@
 package br.hela.medicamento;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,16 +22,29 @@ public class MedicamentoService {
 	}
 
 	public Optional<Medicamento> encontrar(MedicamentoId id) {
-		return medicamentoRepo.findById(id);
+		Medicamento medicamento = medicamentoRepo.findById(id).get();
+		if (medicamento.getAtivo() == 1) {
+			return Optional.of(medicamento);
+		}
+		return Optional.empty();
 	}
 
 	public Optional<List<Medicamento>> encontrar() {
-		return Optional.of(medicamentoRepo.findAll());
+		List<Medicamento> resultados = new ArrayList<>();
+		List<Medicamento> medicamentos = medicamentoRepo.findAll();
+		for (Medicamento medicamento : medicamentos) {
+			if (medicamento.getAtivo() == 1) {
+				resultados.add(medicamento);
+			}
+		}
+		return Optional.of(resultados);
 	}
 
 	public Optional<String> deletar(MedicamentoId id) {
-		medicamentoRepo.deleteById(id);
-		return Optional.of("Usuário -> " + id + ": deletado com sucesso");
+		Medicamento medicamento = medicamentoRepo.findById(id).get();
+		medicamento.setAtivo(0);
+		medicamentoRepo.save(medicamento);
+		return Optional.of("Medicamento -> " + id + ": deletado com sucesso");
 	}
 
 	public Optional<MedicamentoId> alterar(EditarMedicamento comando) {

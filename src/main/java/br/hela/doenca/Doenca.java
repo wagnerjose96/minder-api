@@ -1,31 +1,23 @@
 package br.hela.doenca;
 
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 import javax.persistence.AttributeOverride;
 import javax.persistence.Column;
-import javax.persistence.ElementCollection;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import org.hibernate.envers.Audited;
 import br.hela.doenca.comandos.CriarDoenca;
 import br.hela.doenca.comandos.EditarDoenca;
-import br.hela.medicamento.MedicamentoId;
 
 @Entity
 @Audited
 public class Doenca {
 	@EmbeddedId
-	@AttributeOverride(name="value", column=@Column(name="id_doenca"))
+	@AttributeOverride(name = "value", column = @Column(name = "id_doenca"))
 	private DoencaId idDoenca;
 	private String nomeDoenca;
 	private Date dataDescoberta;
-	@ElementCollection(fetch=FetchType.EAGER)
-	@AttributeOverride(name="value", column=@Column(name="id_medicamento"))
-	private List<MedicamentoId> idMedicamento = new ArrayList<>();
-	
+
 	public Doenca() {
 	}
 
@@ -33,14 +25,12 @@ public class Doenca {
 		this.idDoenca = new DoencaId();
 		this.nomeDoenca = comandos.getNomeDoenca();
 		this.dataDescoberta = comandos.getDataDescoberta();
-		this.idMedicamento = comandos.getIdMedicamento();
 	}
 
 	public void apply(EditarDoenca comandos) {
 		this.idDoenca = comandos.getIdDoenca();
 		this.nomeDoenca = comandos.getNomeDoenca();
 		this.dataDescoberta = comandos.getDataDescoberta();
-		this.idMedicamento = comandos.getIdMedicamento();
 	}
 
 	public DoencaId getIdDoenca() {
@@ -53,10 +43,6 @@ public class Doenca {
 
 	public Date getDataDescoberta() {
 		return dataDescoberta;
-	}
-
-	public List<MedicamentoId> getMedicamento() {
-		return idMedicamento;
 	}
 
 	@Override

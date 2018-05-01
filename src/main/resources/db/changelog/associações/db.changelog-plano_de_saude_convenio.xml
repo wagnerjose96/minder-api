@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd
+        http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
+
+<changeSet id="create_relation_plano_de_saude_convenio" author="larissa.andrade">
+		<createTable tableName="plano_de_saude_convenio">
+			<column name="id" type="${TYPE_ID}">
+				<constraints nullable="false" primaryKey="true" primaryKeyName="PK_PLANODESAUDE_CONVENIO"/>
+			</column>
+			<column name="id_convenio" type="${TYPE_ID}">
+				<constraints nullable="false" unique="false" foreignKeyName="FK_PLANODESAUDECONVENIO_CONVENIO" references="convenio(id)"/>
+			</column>
+			<column name="id_plano_de_saude" type="${TYPE_ID}">
+				<constraints nullable="false" unique="false" foreignKeyName="FK_PLANODESAUDECONVENIO_PLANODESAUDE" references="plano_de_saude(id)"/>
+			</column>
+		</createTable>
+	                                                 
+	</changeSet>
+</databaseChangeLog>

@@ -4,6 +4,15 @@ public class CriarMedicamento {
 
 	private String nomeMedicamento;
 	private String composicao;
+	private int ativo;
+
+	public int getAtivo() {
+		return ativo;
+	}
+
+	public void setAtivo(int ativo) {
+		this.ativo = ativo;
+	}
 
 	public CriarMedicamento() {
 

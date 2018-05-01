@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd
+        http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
+	
+	<changeSet id="create_table_alergia" author="larissa.andrade">
+		<createTable tableName="alergia">
+			
+			<column name="id" type="${TYPE_ID}">
+				<constraints nullable="false" primaryKey="true"
+					primaryKeyName="PK_ALERGIA" />	
+			</column>
+			
+			<column name="tipo_alergia" type="${TYPE_DESCRICAO}">
+				<constraints nullable="false" unique="true"/>
+			</column>
+			<column name="data_descoberta" type="${TYPE_DATA}">
+				<constraints nullable="false" />
+			</column>
+			<column name="local_afetado" type="${TYPE_DESCRICAO}">
+				<constraints nullable="false" />
+			</column>
+			<column name="efeitos" type="${TYPE_DESCRICAO}">
+				<constraints nullable="false" />
+			</column>
+		</createTable>
+	</changeSet>
+	
+	<changeSet id="create_table_alergia_aud" author="larissa.andrade">
+		<createTable tableName="alergia_aud">
+			
+			<column name="id" type="${TYPE_ID}">
+				<constraints nullable="false" />	
+			</column>		
+			<column name="tipo_alergia" type="${TYPE_DESCRICAO}">
+				<constraints nullable="false" unique="true"/>
+			</column>
+			<column name="data_descoberta" type="${TYPE_DATA}">
+				<constraints nullable="false" />
+			</column>
+			<column name="local_afetado" type="${TYPE_DESCRICAO}">
+				<constraints nullable="false" />
+			</column>
+			<column name="efeitos" type="${TYPE_DESCRICAO}">
+				<constraints nullable="false" />
+			</column>
+			<column name="rev" type="${TYPE_NUMBER}">
+				<constraints nullable="false" referencedTableName="revinfo"
+					referencedColumnNames="rev" foreignKeyName="FK_ALERGIA_REVINFO" />
+			</column>
+			<column name="revtype" type="${TYPE_NUMBER}">
+				<constraints nullable="false" />
+			</column>
+		</createTable>
+		<addPrimaryKey constraintName="PK_ALERGIA_AUD"
+			tableName="alergia_aud" columnNames="id, rev" />
+	</changeSet>
+	
+</databaseChangeLog>
