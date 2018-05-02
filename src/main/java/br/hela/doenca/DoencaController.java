@@ -31,7 +31,6 @@ public class DoencaController {
 	@ApiOperation(value = "Busque todas as doenças")
 	@GetMapping
 	public ResponseEntity<List<BuscarDoenca>> getDoencas() throws Exception {
-
 		Optional<List<BuscarDoenca>> optionalDoencas = doencaService.encontrar();
 		return ResponseEntity.ok(optionalDoencas.get());
 	}
@@ -39,7 +38,6 @@ public class DoencaController {
 	@ApiOperation(value = "Busque uma doença pelo ID")
 	@GetMapping("/{id}")
 	public ResponseEntity<BuscarDoenca> getDoencaPorId(@PathVariable DoencaId id) throws Exception {
-
 		Optional<BuscarDoenca> optionalDoenca = doencaService.encontrar(id);
 		if (verificaDoencaExistente(id)) {
 			return ResponseEntity.ok(optionalDoenca.get());
@@ -50,7 +48,6 @@ public class DoencaController {
 	@ApiOperation(value = "Cadastre uma nova doença")
 	@PostMapping
 	public ResponseEntity<String> postDoenca(@RequestBody CriarDoenca comando) throws Exception {
-
 		Optional<DoencaId> optionalDoencaId = doencaService.salvar(comando);
 		if (optionalDoencaId.isPresent()) {
 			URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
@@ -75,7 +72,6 @@ public class DoencaController {
 		} else {
 			throw new SQLException("Erro interno durante a alteração da doença");
 		}
-
 	}
 
 	private boolean verificaDoencaExistente(DoencaId id) throws Exception {
@@ -85,5 +81,4 @@ public class DoencaController {
 			return true;
 		}
 	}
-
 }

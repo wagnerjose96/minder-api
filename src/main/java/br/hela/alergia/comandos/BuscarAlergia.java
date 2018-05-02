@@ -16,6 +16,9 @@ public class BuscarAlergia {
 	private String efeitos;
 	private List<Medicamento> medicamentos = new ArrayList<>();
 
+	public BuscarAlergia() {
+	}
+
 	public BuscarAlergia(Alergia comando) {
 		this.idAlergia = comando.getIdAlergia();
 		this.tipoAlergia = comando.getTipoAlergia();

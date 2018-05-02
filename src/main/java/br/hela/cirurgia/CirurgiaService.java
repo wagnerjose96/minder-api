@@ -121,8 +121,8 @@ public class CirurgiaService {
 
 	private Statement connect() throws Exception {
 		Class.forName("org.postgresql.Driver");
-		Connection con = DriverManager.getConnection("jdbc:postgresql://localhost:5432/escoladeti2018", "postgres",
-				"11223344");
+		Connection con = DriverManager
+				.getConnection("jdbc:postgresql://localhost:5432/escoladeti2018", "postgres", "11223344");
 		Statement stmt = con.createStatement();
 		return stmt;
 	}
@@ -132,7 +132,8 @@ public class CirurgiaService {
 		String query = "select c.id, a.nome_medicamento, "
 				+ "a.composicao, a.id_medicamento, a.ativo from medicamento a "
 				+ "inner join cirurgia_medicamento b on a.id_medicamento = b.id_medicamento "
-				+ "inner join cirurgia c on b.id = c.id " + "group by c.id, a.id_medicamento having c.id = '"
+				+ "inner join cirurgia c on b.id = c.id " 
+				+ "group by c.id, a.id_medicamento having c.id = '" 
 				+ id + "' " + "order by c.tipo_cirurgia";
 		ResultSet rs = stmt.executeQuery(query);
 		return rs;

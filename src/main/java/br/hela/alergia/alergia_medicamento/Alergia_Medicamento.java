@@ -20,12 +20,6 @@ public class Alergia_Medicamento {
 	public Alergia_Medicamento() {
 		this.id = new Alergia_Medicamento_Id();
 	}
-	/*
-	public Alergia_Medicamento(MedicamentoId medicamentos, AlergiaId idAlergia) {
-		this.id = new Alergia_Medicamento_Id();
-		this.idAlergia = idAlergia;
-		this.idMedicamento = medicamentos;
-	}*/
 
 	public Alergia_Medicamento_Id getId() {
 		return id;

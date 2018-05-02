@@ -8,14 +8,6 @@ public class EditarMedicamento {
 	private String composicao;
 	public int ativo;
 
-	public void setAtivo(int ativo) {
-		this.ativo = ativo;
-	}
-
-	public int getAtivo() {
-		return ativo;
-	}
-
 	public EditarMedicamento() {
 	}
 
@@ -41,6 +33,14 @@ public class EditarMedicamento {
 
 	public void setComposicao(String composicao) {
 		this.composicao = composicao;
+	}
+
+	public void setAtivo(int ativo) {
+		this.ativo = ativo;
+	}
+
+	public int getAtivo() {
+		return ativo;
 	}
 
 }

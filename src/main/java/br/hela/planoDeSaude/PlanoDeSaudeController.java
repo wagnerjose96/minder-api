@@ -52,7 +52,6 @@ public class PlanoDeSaudeController {
 	@ApiOperation(value = "Cadastre um novo plano de saúde")
 	@PostMapping
 	public ResponseEntity<String> postPlanoDeSaude(@RequestBody CriarPlanoDeSaude comando) throws Exception {
-
 		Optional<PlanoDeSaudeId> optionalPlanoDeSaudeId = service.salvar(comando);
 		if (optionalPlanoDeSaudeId.isPresent()) {
 			URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
@@ -79,7 +78,6 @@ public class PlanoDeSaudeController {
 		} else {
 			throw new SQLException("Erro interno durante a alteração do plano de saúde");
 		}
-
 	}
 
 	@ApiOperation(value = "Delete um plano de saúde pelo ID")

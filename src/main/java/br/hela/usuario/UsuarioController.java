@@ -23,7 +23,6 @@ import io.swagger.annotations.ApiOperation;
 @RestController
 @RequestMapping("/usuarios")
 public class UsuarioController {
-
 	@Autowired
 	private UsuarioService service;
 
@@ -38,7 +37,6 @@ public class UsuarioController {
 	@ApiOperation(value = "Busque um usuário pelo ID")
 	@GetMapping("/{id}")
 	public ResponseEntity<Usuario> getUsuarioId(@PathVariable UsuarioId id) throws NullPointerException {
-
 		if (verificaUsuarioExistente(id)) {
 			Optional<Usuario> optionalUsuario = service.encontrar(id);
 			return ResponseEntity.ok(optionalUsuario.get());
@@ -49,7 +47,6 @@ public class UsuarioController {
 	@ApiOperation(value = "Delete um usuário pelo ID")
 	@DeleteMapping("/{id}")
 	public ResponseEntity<Optional<String>> deleteUsuario(@PathVariable UsuarioId id) throws NullPointerException {
-
 		if (verificaUsuarioExistente(id)) {
 			Optional<String> resultado = service.deletar(id);
 			return ResponseEntity.ok(resultado);
@@ -60,7 +57,6 @@ public class UsuarioController {
 	@ApiOperation(value = "Cadastre um novo usuário")
 	@PostMapping
 	public ResponseEntity<String> postUsuario(@RequestBody CriarUsuario comando) throws Exception {
-
 		Optional<UsuarioId> optionalUsuarioId = service.salvar(comando);
 		if (optionalUsuarioId.isPresent()) {
 			URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
@@ -86,7 +82,6 @@ public class UsuarioController {
 		} else {
 			throw new InternalError("Erro interno durante a alteração do usuário");
 		}
-
 	}
 
 	private boolean verificaUsuarioExistente(UsuarioId id) {
@@ -96,5 +91,4 @@ public class UsuarioController {
 			return true;
 		}
 	}
-
 }

@@ -10,7 +10,6 @@ import br.hela.exceptions.comandos.CriarErrorDetail;
 @Service
 @Transactional
 public class ErrorDetailService {
-
 	@Autowired
 	private ErrorDetailRepository repo;
 
@@ -26,10 +25,4 @@ public class ErrorDetailService {
 	public Optional<ErrorDetail> encontrar(ErrorDetailId id) {
 		return repo.findById(id);
 	}
-
-	public String deletarTodos() {
-		repo.deleteAll();
-		return "Todas as exceções foram deletadas com sucesso! ";
-	}
-
 }

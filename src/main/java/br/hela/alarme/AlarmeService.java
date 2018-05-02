@@ -21,14 +21,8 @@ import br.hela.medicamento.MedicamentoId;
 @Service
 @Transactional
 public class AlarmeService {
-
 	@Autowired
 	private AlarmeRepository repo;
-	
-	public Optional<String> deletar(AlarmeId id) {
-		repo.deleteById(id);
-		return Optional.of("Alarme ==> " + id + " deletado com sucesso!");
-	}
 
 	public Optional<AlarmeId> salvar(CriarAlarme comando) {
 		Alarme novo = repo.save(new Alarme(comando));
@@ -70,6 +64,14 @@ public class AlarmeService {
 		}
 		return Optional.empty();
 	}
+	
+	public Optional<String> deletar(AlarmeId id){
+		if(repo.findById(id).isPresent()) {
+			repo.deleteById(id);
+			return Optional.of("Alarme" + id + " deletado com sucesso");
+		}
+		return Optional.empty();
+	}
 
 	private Medicamento medicamento(ResultSet rs, String id) throws Exception {
 		Medicamento med = new Medicamento();
@@ -87,8 +89,8 @@ public class AlarmeService {
 
 	private Statement connect() throws Exception {
 		Class.forName("org.postgresql.Driver");
-		Connection con = DriverManager.getConnection("jdbc:postgresql://localhost:5432/escoladeti2018", "postgres",
-				"11223344");
+		Connection con = DriverManager
+				.getConnection("jdbc:postgresql://localhost:5432/escoladeti2018", "postgres", "11223344");
 		Statement stmt = con.createStatement();
 		return stmt;
 	}
@@ -97,10 +99,10 @@ public class AlarmeService {
 		Statement stmt = connect();
 		String query = "select c.id, a.nome_medicamento, "
 				+ "a.composicao, a.id_medicamento, a.ativo from medicamento a "
-				+ "inner join alarme c on a.id_medicamento = c.id_medicamento " + "group by c.id, a.id_medicamento having c.id = '" + id
-				+ "'";
+				+ "inner join alarme_medicamento b on a.id_medicamento = b.id_medicamento "
+				+ "inner join alarme c on b.id_alarme = c.id " 
+				+ "group by c.id, a.id_medicamento having c.id = '" + id + "'";
 		ResultSet rs = stmt.executeQuery(query);
 		return rs;
 	}
-
 }

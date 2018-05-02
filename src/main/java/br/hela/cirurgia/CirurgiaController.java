@@ -25,7 +25,6 @@ import io.swagger.annotations.ApiOperation;
 @RestController
 @RequestMapping("/cirurgias")
 public class CirurgiaController {
-
 	@Autowired
 	private CirurgiaService cirurgiaService;
 
@@ -38,7 +37,8 @@ public class CirurgiaController {
 
 	@ApiOperation(value = "Busque uma cirurgia pelo ID")
 	@GetMapping("/{id}")
-	public ResponseEntity<BuscarCirurgia> getCirurgiaPorId(@PathVariable CirurgiaId id) throws NullPointerException, Exception {
+	public ResponseEntity<BuscarCirurgia> getCirurgiaPorId(@PathVariable CirurgiaId id)
+			throws NullPointerException, Exception {
 
 		Optional<BuscarCirurgia> optionalCirurgia = cirurgiaService.encontrar(id);
 		if (verificaCirurgiaExistente(id)) {
@@ -50,7 +50,6 @@ public class CirurgiaController {
 	@ApiOperation(value = "Cadastre uma nova cirurgia")
 	@PostMapping
 	public ResponseEntity<String> postCirurgia(@RequestBody CriarCirurgia comando) throws Exception {
-
 		Optional<CirurgiaId> optionalCirurgiaId = cirurgiaService.salvar(comando);
 		if (optionalCirurgiaId.isPresent()) {
 			URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
@@ -62,7 +61,8 @@ public class CirurgiaController {
 
 	@ApiOperation(value = "Altere uma cirurgia")
 	@PutMapping
-	public ResponseEntity<String> putCirurgia(@RequestBody EditarCirurgia comando) throws SQLException, NullPointerException, Exception {
+	public ResponseEntity<String> putCirurgia(@RequestBody EditarCirurgia comando)
+			throws SQLException, NullPointerException, Exception {
 
 		if (!verificaCirurgiaExistente(comando.getIdCirurgia())) {
 			throw new NullPointerException("A cirurgia a ser alterada não existe no banco de dados");
@@ -72,12 +72,9 @@ public class CirurgiaController {
 			URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
 					.buildAndExpand(optionalCirurgiaId.get()).toUri();
 			return ResponseEntity.created(location).body("Cirurgia alterada com sucesso");
-		}
-
-		else {
+		} else {
 			throw new SQLException("Erro interno durante a alteração do cirurgia");
 		}
-
 	}
 
 	private boolean verificaCirurgiaExistente(CirurgiaId id) throws Exception {

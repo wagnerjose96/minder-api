@@ -42,7 +42,7 @@
 		<createTable tableName="alarme_aud">
 			
 			<column name="id" type="${TYPE_ID}">
-				<constraints nullable="true"  />	
+				<constraints nullable="true" />	
 			</column>
 			<column name="data_inicio" type="${TYPE_DATA}">
 				<constraints nullable="true" />
@@ -59,10 +59,9 @@
 			<column name="periodicidade" type="${TYPE_NUMBER}">
 				<constraints nullable="true" />
 			</column>
-		<column name="rev" type="${TYPE_NUMBER}">
-				<constraints nullable="true"
-					referencedTableName="revinfo" referencedColumnNames="rev"
-					foreignKeyName="alarme_revinfo_fk" />
+			<column name="rev" type="${TYPE_NUMBER}">
+				<constraints nullable="true" referencedTableName="revinfo"
+					referencedColumnNames="rev" foreignKeyName="FK_ALARME_REVINFO" />
 			</column>
 			<column name="revtype" type="${TYPE_NUMBER}">
 				<constraints nullable="true" />

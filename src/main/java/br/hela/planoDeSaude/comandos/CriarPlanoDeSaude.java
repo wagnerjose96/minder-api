@@ -11,7 +11,7 @@ public class CriarPlanoDeSaude {
 	private int numeroCartao;
 	private String habitacao;
 	private String territorio;
-	
+
 	public CriarPlanoDeSaude() {
 	}
 
@@ -42,7 +42,7 @@ public class CriarPlanoDeSaude {
 	public String getTerritorio() {
 		return territorio;
 	}
-
+	
 	public void setTerritorio(String territorio) {
 		this.territorio = territorio;
 	}

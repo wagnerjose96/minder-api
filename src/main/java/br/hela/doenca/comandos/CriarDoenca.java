@@ -6,7 +6,6 @@ import java.util.List;
 import br.hela.medicamento.MedicamentoId;
 
 public class CriarDoenca {
-
 	private String nomeDoenca;
 	private Date dataDescoberta;
 	private List<MedicamentoId> id_medicamentos = new ArrayList<MedicamentoId>();

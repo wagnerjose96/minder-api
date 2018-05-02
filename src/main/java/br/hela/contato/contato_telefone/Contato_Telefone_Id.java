@@ -1,18 +1,17 @@
-package br.hela.contatoEmergencia;
+package br.hela.contato.contato_telefone;
 
 import javax.persistence.Embeddable;
 import br.hela.BaseId;
 
 @Embeddable
-public class ContatoEmergenciaId extends BaseId {
-	
+public class Contato_Telefone_Id extends BaseId {
 	private static final long serialVersionUID = 8965550305250511524L;
-	
-	public ContatoEmergenciaId() {
+
+	public Contato_Telefone_Id() {
 		super();
 	}
-	public ContatoEmergenciaId(String value) {
+
+	public Contato_Telefone_Id(String value) {
 		super(value);
 	}
-
 }

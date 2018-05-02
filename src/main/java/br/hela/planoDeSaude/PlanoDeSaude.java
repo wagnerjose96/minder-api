@@ -21,11 +21,11 @@ public class PlanoDeSaude {
 	private int numeroCartao;
 	private String habitacao;
 	private String territorio;
-	
+
 	public PlanoDeSaude() {
-		
+
 	}
-	
+
 	public PlanoDeSaude(CriarPlanoDeSaude comando) {
 		this.id = new PlanoDeSaudeId();
 		this.idConvenio = comando.getIdConvenio();
@@ -41,16 +41,15 @@ public class PlanoDeSaude {
 		this.habitacao = comando.getHabitacao();
 		this.territorio = comando.getTerritorio();
 	}
-	
-	
+
 	public int getNumeroCartao() {
 		return numeroCartao;
 	}
-	
+
 	public void setNumeroCartao(int numeroCartao) {
 		this.numeroCartao = numeroCartao;
 	}
-	
+
 	public PlanoDeSaudeId getId() {
 		return id;
 	}

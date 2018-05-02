@@ -5,36 +5,37 @@
 	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd
         http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
 
-	<changeSet id="create_table_contato_emergencia" author="camila.morais">
-		<createTable tableName="contato_emergencia">
+	<changeSet id="create_table_contato" author="camila.morais">
+		<createTable tableName="contato">
 			<column name="id" type="${TYPE_ID}">
 				<constraints nullable="false" primaryKey="true"
 					primaryKeyName="PK_CONTATO" />
 			</column>
-			<column name="nome_contato" type="${TYPE_DESCRICAO}">
+			<column name="nome" type="${TYPE_DESCRICAO}">
 				<constraints nullable="false" />
 			</column>
 		</createTable>
 	</changeSet>
 
-	<changeSet id="create_table_contato_emergencia_aud" author="camila.morais">
-		<createTable tableName="contato_emergencia_aud">
+
+	<changeSet id="create_table_contato_aud" author="camila.morais">
+		<createTable tableName="contato_aud">
 			<column name="id" type="${TYPE_ID}">
 				<constraints nullable="false" />
 			</column>
-			<column name="nome_contato" type="${TYPE_DESCRICAO}">
-				<constraints nullable="false" />
+			<column name="nome" type="${TYPE_DESCRICAO}">
+				<constraints nullable="true" />
 			</column>
 			<column name="rev" type="${TYPE_NUMBER}">
 				<constraints nullable="false" referencedTableName="revinfo"
-					referencedColumnNames="rev" foreignKeyName="contato_emergencia_revinfo_fk" />
+					referencedColumnNames="rev" foreignKeyName="FK_CONTATO_REVINFO" />
 			</column>
 			<column name="revtype" type="${TYPE_NUMBER}">
 				<constraints nullable="false" />
 			</column>
 		</createTable>
 		<addPrimaryKey constraintName="PK_CONTATO_AUD"
-			tableName="contato_emergencia_aud" columnNames="id, rev" />
+			tableName="contato_aud" columnNames="id, rev" />
 	</changeSet>
 
 </databaseChangeLog>

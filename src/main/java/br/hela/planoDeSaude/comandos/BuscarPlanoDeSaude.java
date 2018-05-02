@@ -1,7 +1,6 @@
 package br.hela.planoDeSaude.comandos;
 
 import br.hela.convenio.Convenio;
-import br.hela.convenio.ConvenioId;
 import br.hela.planoDeSaude.PlanoDeSaude;
 import br.hela.planoDeSaude.PlanoDeSaudeId;
 
@@ -11,14 +10,17 @@ public class BuscarPlanoDeSaude {
 	private int numeroCartao;
 	private String habitacao;
 	private String territorio;
-	
+
+	public BuscarPlanoDeSaude() {
+	}
+
 	public BuscarPlanoDeSaude(PlanoDeSaude comandos) {
 		this.id = comandos.getId();
 		this.numeroCartao = comandos.getNumeroCartao();
 		this.habitacao = comandos.getHabitacao();
 		this.territorio = comandos.getTerritorio();
 	}
-	
+
 	public PlanoDeSaudeId getId() {
 		return id;
 	}
@@ -34,8 +36,6 @@ public class BuscarPlanoDeSaude {
 	public void setNumeroCartao(int numeroCartao) {
 		this.numeroCartao = numeroCartao;
 	}
-	
-	
 
 	public Convenio getConvenio() {
 		return convenio;
@@ -62,4 +62,3 @@ public class BuscarPlanoDeSaude {
 	}
 
 }
-

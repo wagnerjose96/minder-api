@@ -13,10 +13,10 @@ public class EditarPlanoDeSaude {
 	private int numeroCartao;
 	private String habitacao;
 	private String territorio;
-	
+
 	public EditarPlanoDeSaude() {
 	}
-	
+
 	public PlanoDeSaudeId getId() {
 		return id;
 	}
@@ -32,7 +32,7 @@ public class EditarPlanoDeSaude {
 	public void setNumeroCartao(int numeroCartao) {
 		this.numeroCartao = numeroCartao;
 	}
-	
+
 	public ConvenioId getIdConvenio() {
 		return idConvenio;
 	}
