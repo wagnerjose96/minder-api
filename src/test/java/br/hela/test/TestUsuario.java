@@ -1,4 +1,4 @@
-/*//package br.hela.test;
+/*package br.hela.test;
 //
 //import static org.junit.Assert.assertEquals;
 //import static org.junit.Assert.assertFalse;
