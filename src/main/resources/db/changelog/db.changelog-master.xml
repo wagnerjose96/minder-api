@@ -33,6 +33,7 @@
 	<include file="db/changelog/entidades/db.changelog-telefone.xml" />
 	<include file="db/changelog/entidades/db.changelog-plano_de_saude.xml" />
 	<include file="db/changelog/entidades/db.changelog-convenio.xml" />
+	<include file="db/changelog/entidades/db.changelog-endereco.xml" />
 	
 	 	
 		<!-- Carregando associações no banco de dados -->
