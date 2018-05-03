@@ -16,75 +16,45 @@ public class Emergencia {
 	@EmbeddedId
 	@AttributeOverride(name = "value", column = @Column(name = "id"))
 	private EmergenciaId id;
-	private String idPlanoSaude;
-	private String contatoEmergencia;
-	private String endereco;
-	private Boolean doadorDeOrgaos;
-	private Boolean ataqueConvucivos;
+	private int doadorDeOrgaos;
+	private int ataqueConvulsivos;
 	private String problemasCardiacos;
+
+	public Emergencia() {
+	}
 
 	public Emergencia(CriarEmergencia comandos) {
 		this.id = new EmergenciaId();
-		this.idPlanoSaude = comandos.getIdPlanoSaude();
 		this.doadorDeOrgaos = comandos.getDoadorDeOrgaos();
-		this.ataqueConvucivos = comandos.getAtaqueConvucivos();
+		this.ataqueConvulsivos = comandos.getAtaqueConvulsivos();
 		this.problemasCardiacos = comandos.getProblemasCardiacos();
-		this.endereco = comandos.getEndereco();
-		this.contatoEmergencia = comandos.getContatoEmergencia();
 	}
 
 	public void apply(EditarEmergencia comandos) {
 		this.id = comandos.getId();
-		this.idPlanoSaude = comandos.getIdPlanoSaude();
 		this.doadorDeOrgaos = comandos.getDoadorDeOrgaos();
-		this.ataqueConvucivos = comandos.getAtaqueConvucivos();
+		this.ataqueConvulsivos = comandos.getAtaqueConvulsivos();
 		this.problemasCardiacos = comandos.getProblemasCardiacos();
-		this.endereco = comandos.getEndereco();
-		this.contatoEmergencia = comandos.getContatoEmergencia();
 	}
 
 	public EmergenciaId getId() {
 		return id;
 	}
 
-	public String getContatoEmergencia() {
-		return contatoEmergencia;
-	}
-
-	public void setContatoEmergencia(String contatoEmergencia) {
-		this.contatoEmergencia = contatoEmergencia;
-	}
-
-	public String getIdPlanoSaude() {
-		return idPlanoSaude;
-	}
-
-	public void setIdPlanoSaude(String idPlanoSaude) {
-		this.idPlanoSaude = idPlanoSaude;
-	}
-
-	public String getEndereco() {
-		return endereco;
-	}
-
-	public void setEndereco(String endereco) {
-		this.endereco = endereco;
-	}
-
-	public Boolean getDoadorDeOrgaos() {
+	public int getDoadorDeOrgaos() {
 		return doadorDeOrgaos;
 	}
 
-	public void setDoadorDeOrgaos(Boolean doadorDeOrgaos) {
+	public void setDoadorDeOrgaos(int doadorDeOrgaos) {
 		this.doadorDeOrgaos = doadorDeOrgaos;
 	}
 
-	public Boolean getAtaqueConvucivos() {
-		return ataqueConvucivos;
+	public int getAtaqueConvulsivos() {
+		return ataqueConvulsivos;
 	}
 
-	public void setAtaqueConvucivos(Boolean ataqueConvucivos) {
-		this.ataqueConvucivos = ataqueConvucivos;
+	public void setAtaqueConvulsivos(int ataqueConvulsivos) {
+		this.ataqueConvulsivos = ataqueConvulsivos;
 	}
 
 	public String getProblemasCardiacos() {

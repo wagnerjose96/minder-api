@@ -14,6 +14,9 @@ public class BuscarDoenca {
 	private Date dataDescoberta;
 	private List<Medicamento> medicamentos = new ArrayList<Medicamento>();
 
+	public BuscarDoenca() {
+	}
+
 	public BuscarDoenca(Doenca comandos) {
 		this.idDoenca = comandos.getIdDoenca();
 		this.nomeDoenca = comandos.getNomeDoenca();

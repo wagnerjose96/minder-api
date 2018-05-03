@@ -23,7 +23,6 @@ import io.swagger.annotations.ApiOperation;
 @RestController
 @RequestMapping("/medicamentos")
 public class MedicamentoController {
-
 	@Autowired
 	private MedicamentoService service;
 
@@ -37,7 +36,6 @@ public class MedicamentoController {
 	@ApiOperation(value = "Busque um medicamento pelo ID")
 	@GetMapping("/{id}")
 	public ResponseEntity<Medicamento> getMedicamentoPorId(@PathVariable MedicamentoId id) throws NullPointerException {
-
 		if (verificaMedicamentoExistente(id)) {
 			Optional<Medicamento> optionalMedicamento = service.encontrar(id);
 			return ResponseEntity.ok(optionalMedicamento.get());
@@ -59,9 +57,7 @@ public class MedicamentoController {
 
 	@ApiOperation(value = "Cadastre um novo medicamento")
 	@PostMapping
-	public ResponseEntity<String> postMedicamento(@RequestBody CriarMedicamento comando)
-			throws Exception {
-
+	public ResponseEntity<String> postMedicamento(@RequestBody CriarMedicamento comando) throws Exception {
 		Optional<MedicamentoId> optionalMedicamentoId = service.salvar(comando);
 		if (optionalMedicamentoId.isPresent()) {
 			URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
@@ -76,7 +72,7 @@ public class MedicamentoController {
 	public ResponseEntity<String> putMedicamentoContinuo(@RequestBody EditarMedicamento comando)
 			throws NullPointerException, InternalError {
 
-		if(!verificaMedicamentoExistente(comando.getIdMedicamento())) {
+		if (!verificaMedicamentoExistente(comando.getIdMedicamento())) {
 			throw new NullPointerException("O medicamento a ser alterado não existe no banco de dados");
 		}
 		Optional<MedicamentoId> optionalMedicamentoId = service.alterar(comando);
@@ -96,5 +92,4 @@ public class MedicamentoController {
 			return true;
 		}
 	}
-
 }

@@ -14,6 +14,9 @@ public class EditarAlergia {
 	private String efeitos;
 	private List<MedicamentoId> id_medicamentos = new ArrayList<MedicamentoId>();
 
+	public EditarAlergia() {
+	}
+	
 	public AlergiaId getIdAlergia() {
 		return idAlergia;
 	}

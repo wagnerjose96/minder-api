@@ -6,11 +6,10 @@ import javax.persistence.AttributeOverride;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
-
 import org.hibernate.envers.Audited;
-
 import br.hela.alarme.comandos.CriarAlarme;
 import br.hela.alarme.comandos.EditarAlarme;
+import br.hela.medicamento.MedicamentoId;
 
 @Entity
 @Audited
@@ -18,6 +17,8 @@ public class Alarme {
 	@EmbeddedId
 	@AttributeOverride(name = "value", column = @Column(name = "id"))
 	private AlarmeId id;
+	@AttributeOverride(name = "value", column = @Column(name = "id_medicamento"))
+	private MedicamentoId idMedicamento;
 	private Date dataInicio;
 	private Date dataFim;
 	private String quantidade;
@@ -29,6 +30,7 @@ public class Alarme {
 
 	public Alarme(CriarAlarme comando) {
 		this.id = new AlarmeId();
+		this.idMedicamento = comando.getIdMedicamento();
 		this.dataInicio = comando.getDataInicio();
 		this.dataFim = comando.getDataFim();
 		this.quantidade = comando.getQuantidade();
@@ -38,11 +40,20 @@ public class Alarme {
 
 	public void apply(EditarAlarme comando) {
 		this.id = comando.getId();
+		this.idMedicamento = comando.getIdMedicamento();
 		this.dataInicio = comando.getDataInicio();
 		this.dataFim = comando.getDataFim();
 		this.quantidade = comando.getQuantidade();
 		this.descricao = comando.getDescricao();
 		this.periodicidade = comando.getPeriodicidade();
+	}
+
+	public MedicamentoId getIdMedicamento() {
+		return idMedicamento;
+	}
+
+	public void setIdMedicamento(MedicamentoId idMedicamento) {
+		this.idMedicamento = idMedicamento;
 	}
 
 	public Date getDataInicio() {

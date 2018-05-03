@@ -3,9 +3,9 @@ package br.hela.convenio.comandos;
 public class CriarConvenio {
 	private String nome;
 	private int ativo;
-	
+
 	public CriarConvenio() {
-		
+
 	}
 
 	public String getNome() {
@@ -15,7 +15,7 @@ public class CriarConvenio {
 	public void setNome(String nome) {
 		this.nome = nome;
 	}
-	
+
 	public int getAtivo() {
 		return ativo;
 	}

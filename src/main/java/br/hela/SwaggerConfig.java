@@ -23,14 +23,14 @@ public class SwaggerConfig extends WebMvcConfigurationSupport {
 		return new Docket(DocumentationType.SWAGGER_2).select()
 				.apis(Predicates.not(RequestHandlerSelectors.basePackage("org.springframework.boot")))
 				.paths(PathSelectors.any()).build().apiInfo(apiInfo());
-
 	}
+
 	@Override
 	protected void addResourceHandlers(ResourceHandlerRegistry registry) {
 		registry.addResourceHandler("swagger-ui.html").addResourceLocations("classpath:/META-INF/resources/");
-
 		registry.addResourceHandler("/webjars/**").addResourceLocations("classpath:/META-INF/resources/webjars/");
 	}
+
 	@Override
 	public void addViewControllers(ViewControllerRegistry registry) {
 		registry.addRedirectViewController("/docApi/v2/api-docs", "/v2/api-docs");
@@ -40,6 +40,7 @@ public class SwaggerConfig extends WebMvcConfigurationSupport {
 				"/swagger-resources/configuration/security");
 		registry.addRedirectViewController("/docApi/swagger-resources", "/swagger-resources");
 	}
+
 	private ApiInfo apiInfo() {
 		return new ApiInfo("Documentação Api-Hela", "Descrição da API", "Rotas disponíveis", "Licença Aberta",
 				new Contact("Hela-Company", "www.hela.com.br", "hela@gmail.com"), "License of API", "API license URL",

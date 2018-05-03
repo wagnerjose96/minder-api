@@ -36,7 +36,7 @@ public class AlergiaController {
 
 	@ApiOperation(value = "Busque a alergia pelo ID")
 	@GetMapping("/{id}")
-	public ResponseEntity<BuscarAlergia> getAlergiaPorId(@PathVariable AlergiaId id) 
+	public ResponseEntity<BuscarAlergia> getAlergiaPorId(@PathVariable AlergiaId id)
 			throws NullPointerException, Exception {
 
 		Optional<BuscarAlergia> optionalAlergia = alergiaService.encontrar(id);
@@ -49,7 +49,6 @@ public class AlergiaController {
 	@ApiOperation(value = "Cadastre uma nova alergia")
 	@PostMapping
 	public ResponseEntity<String> postAlergia(@RequestBody CriarAlergia comando) throws Exception {
-
 		Optional<AlergiaId> optionalAlergiaId = alergiaService.salvar(comando);
 		if (optionalAlergiaId.isPresent()) {
 			URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
@@ -67,19 +66,17 @@ public class AlergiaController {
 		if (!verificaAlergiaExistente(comando.getIdAlergia())) {
 			throw new NullPointerException("A alergia a ser alterada não existe no banco de dados");
 		}
-
 		Optional<AlergiaId> optionalAlergiaId = alergiaService.alterar(comando);
 		if (optionalAlergiaId.isPresent()) {
 			URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
 					.buildAndExpand(optionalAlergiaId.get()).toUri();
 			return ResponseEntity.created(location).body("Alergia alterada com sucesso");
 		} else {
-			throw new SQLException("Erro interno durante a alteração do alergia");
+			throw new SQLException("Erro interno durante a alteração da alergia");
 		}
-
 	}
 
-	private boolean verificaAlergiaExistente(AlergiaId id) throws Exception{
+	private boolean verificaAlergiaExistente(AlergiaId id) throws Exception {
 		if (!alergiaService.encontrar(id).isPresent()) {
 			return false;
 		} else {

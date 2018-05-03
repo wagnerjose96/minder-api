@@ -18,136 +18,113 @@ import javassist.tools.web.BadHttpRequest;
 
 @ControllerAdvice
 public class RestExceptionHandler {
-
 	@Autowired
 	private ErrorDetailService service;
 
 	@ExceptionHandler({ Exception.class })
 	public @ResponseBody ResponseEntity<?> allExceptions(Exception message) throws Exception {
-
-		CriarErrorDetail errorDetail = new CriarErrorDetail();
-		errorDetail.setType("Generic Error");
-		errorDetail.setHttpStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
-		errorDetail.setError(message.getMessage());
-		errorDetail.setDeveloperMessage("Erro vindo da exceção generica - Verificar console");
-		// errorDetail.setDeveloperMessage(message.getClass().getName());
-
+		HttpStatus status = HttpStatus.INTERNAL_SERVER_ERROR;
+		String type = "Generic Error";
+		String developerMessage = "Erro vindo da exceção generica - Verificar console";
+		CriarErrorDetail errorDetail = gerarErro(type, status.value(), message.getMessage(), developerMessage);
 		service.salvar(errorDetail);
-		return new ResponseEntity<>(errorDetail, null, HttpStatus.INTERNAL_SERVER_ERROR);
-
+		return new ResponseEntity<>(errorDetail, status);
 	}
 
 	@ResponseStatus(code = HttpStatus.REQUEST_TIMEOUT)
 	@ExceptionHandler({ TimeoutException.class })
 	public @ResponseBody ResponseEntity<?> requestTimeout(TimeoutException message) {
-
-		CriarErrorDetail errorDetail = new CriarErrorDetail();
-		errorDetail.setType("Request Timeout");
-		errorDetail.setHttpStatus(HttpStatus.REQUEST_TIMEOUT.value());
-		errorDetail.setError(message.getMessage());
-		errorDetail.setDeveloperMessage(message.getClass().getName());
-
+		HttpStatus status = HttpStatus.REQUEST_TIMEOUT;
+		String type = "Request Timeout";
+		CriarErrorDetail errorDetail = gerarErro(type, status.value(), message.getMessage(),
+				message.getClass().getName());
 		service.salvar(errorDetail);
-		return new ResponseEntity<>(errorDetail, null, HttpStatus.REQUEST_TIMEOUT);
+		return new ResponseEntity<>(errorDetail, status);
 	}
 
 	@ResponseStatus(code = HttpStatus.UNSUPPORTED_MEDIA_TYPE)
 	@ExceptionHandler({ UnsupportedMediaTypeStatusException.class })
 	public @ResponseBody ResponseEntity<?> unsupportedMediaType(UnsupportedMediaTypeStatusException message) {
-
-		CriarErrorDetail errorDetail = new CriarErrorDetail();
-		errorDetail.setType("Unsupported media type");
-		errorDetail.setHttpStatus(HttpStatus.UNSUPPORTED_MEDIA_TYPE.value());
-		errorDetail.setError(message.getMessage());
-		errorDetail.setDeveloperMessage(message.getClass().getName());
-
+		HttpStatus status = HttpStatus.UNSUPPORTED_MEDIA_TYPE;
+		String type = "Unsupported media type";
+		CriarErrorDetail errorDetail = gerarErro(type, status.value(), message.getMessage(),
+				message.getClass().getName());
 		service.salvar(errorDetail);
-		return new ResponseEntity<>(errorDetail, null, HttpStatus.UNSUPPORTED_MEDIA_TYPE);
+		return new ResponseEntity<>(errorDetail, status);
 	}
 
 	@ResponseStatus(code = HttpStatus.METHOD_NOT_ALLOWED)
 	@ExceptionHandler({ MethodNotAllowedException.class })
 	public @ResponseBody ResponseEntity<?> methodNotAllowed(MethodNotAllowedException message) {
-
-		CriarErrorDetail errorDetail = new CriarErrorDetail();
-		errorDetail.setType("Método não implementado");
-		errorDetail.setHttpStatus(HttpStatus.METHOD_NOT_ALLOWED.value());
-		errorDetail.setError(message.getMessage());
-		errorDetail.setDeveloperMessage(message.getClass().getName());
-
+		HttpStatus status = HttpStatus.METHOD_NOT_ALLOWED;
+		String type = "Método não implementado";
+		CriarErrorDetail errorDetail = gerarErro(type, status.value(), message.getMessage(),
+				message.getClass().getName());
 		service.salvar(errorDetail);
-		return new ResponseEntity<>(errorDetail, null, HttpStatus.METHOD_NOT_ALLOWED);
+		return new ResponseEntity<>(errorDetail, status);
 	}
 
 	@ResponseStatus(code = HttpStatus.NOT_FOUND)
 	@ExceptionHandler({ NullPointerException.class })
 	public @ResponseBody ResponseEntity<?> handleNullPointerException(NullPointerException message) {
-
-		CriarErrorDetail errorDetail = new CriarErrorDetail();
-		errorDetail.setType("Not found");
-		errorDetail.setHttpStatus(HttpStatus.NOT_FOUND.value());
-		errorDetail.setError(message.getMessage());
-		errorDetail.setDeveloperMessage(message.getClass().getName());
-
-		// Optional<MedicamentoContinuoId> optionalMedicamentoContinuoId =
-		// service.salvar(comando);
+		HttpStatus status = HttpStatus.NOT_FOUND;
+		String type = "Not found";
+		CriarErrorDetail errorDetail = gerarErro(type, status.value(), message.getMessage(),
+				message.getClass().getName());
 		service.salvar(errorDetail);
-		return new ResponseEntity<>(errorDetail, null, HttpStatus.NOT_FOUND);
+		return new ResponseEntity<>(errorDetail, status);
 	}
 
 	@ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
 	@ExceptionHandler({ SQLException.class })
 	public @ResponseBody ResponseEntity<?> handleSQLException(InternalError message) {
-
-		CriarErrorDetail errorDetail = new CriarErrorDetail();
-		errorDetail.setType("Internal Server Error");
-		errorDetail.setHttpStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
-		errorDetail.setError(message.getMessage());
-		errorDetail.setDeveloperMessage(message.getClass().getName());
-
+		HttpStatus status = HttpStatus.INTERNAL_SERVER_ERROR;
+		String type = "Internal Server Error";
+		CriarErrorDetail errorDetail = gerarErro(type, status.value(), message.getMessage(),
+				message.getClass().getName());
 		service.salvar(errorDetail);
-		return new ResponseEntity<>(errorDetail, HttpStatus.INTERNAL_SERVER_ERROR);
+		return new ResponseEntity<>(errorDetail, status);
 	}
 
 	@ResponseStatus(HttpStatus.FORBIDDEN)
 	@ExceptionHandler({ AccessDeniedException.class })
 	public @ResponseBody ResponseEntity<?> handleForbidden(Exception message) {
-
-		CriarErrorDetail errorDetail = new CriarErrorDetail();
-		errorDetail.setType("Forbidden");
-		errorDetail.setHttpStatus(HttpStatus.FORBIDDEN.value());
-		errorDetail.setError(message.getMessage());
-		errorDetail.setDeveloperMessage(message.getClass().getName());
-
+		HttpStatus status = HttpStatus.FORBIDDEN;
+		String type = "Forbidden";
+		CriarErrorDetail errorDetail = gerarErro(type, status.value(), message.getMessage(),
+				message.getClass().getName());
 		service.salvar(errorDetail);
-		return new ResponseEntity<>(errorDetail, HttpStatus.FORBIDDEN);
+		return new ResponseEntity<>(errorDetail, status);
 	}
 
 	@ResponseStatus(HttpStatus.NOT_IMPLEMENTED)
 	@ExceptionHandler({ NotYetImplementedException.class })
 	public @ResponseBody ResponseEntity<?> handleNotImplemented(NotYetImplementedException message) {
-
-		CriarErrorDetail errorDetail = new CriarErrorDetail();
-		errorDetail.setType("Not implemented");
-		errorDetail.setHttpStatus(HttpStatus.NOT_IMPLEMENTED.value());
-		errorDetail.setError(message.getMessage());
-		errorDetail.setDeveloperMessage(message.getClass().getName());
-
+		HttpStatus status = HttpStatus.NOT_IMPLEMENTED;
+		String type = "Not implemented";
+		CriarErrorDetail errorDetail = gerarErro(type, status.value(), message.getMessage(),
+				message.getClass().getName());
 		service.salvar(errorDetail);
-		return new ResponseEntity<>(errorDetail, HttpStatus.NOT_IMPLEMENTED);
+		return new ResponseEntity<>(errorDetail, status);
 	}
 
 	@ResponseStatus(HttpStatus.BAD_REQUEST)
 	@ExceptionHandler({ BadHttpRequest.class })
 	public @ResponseBody ResponseEntity<?> handleBadHttpRequest(BadHttpRequest message) {
-
-		CriarErrorDetail errorDetail = new CriarErrorDetail();
-		errorDetail.setType("Bad request");
-		errorDetail.setHttpStatus(HttpStatus.BAD_REQUEST.value());
-		errorDetail.setError(message.getMessage());
-		errorDetail.setDeveloperMessage(message.getClass().getName());
-
+		HttpStatus status = HttpStatus.BAD_REQUEST;
+		String type = "Bad request";
+		CriarErrorDetail errorDetail = gerarErro(type, status.value(), message.getMessage(),
+				message.getClass().getName());
 		service.salvar(errorDetail);
-		return new ResponseEntity<>(errorDetail, HttpStatus.BAD_REQUEST);
+		return new ResponseEntity<>(errorDetail, status);
+	}
+
+	private CriarErrorDetail gerarErro(String type, int status, String message, String developerMessage) {
+		CriarErrorDetail errorDetail = new CriarErrorDetail();
+		errorDetail.setType("Generic Error");
+		errorDetail.setHttpStatus(status);
+		errorDetail.setError(message);
+		errorDetail.setDeveloperMessage("Erro vindo da exceção generica - Verificar console");
+		return errorDetail;
 	}
 }

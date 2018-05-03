@@ -1,10 +1,12 @@
 package br.hela.medicamento.comandos;
 
 public class CriarMedicamento {
-
 	private String nomeMedicamento;
 	private String composicao;
 	private int ativo;
+
+	public CriarMedicamento() {
+	}
 
 	public int getAtivo() {
 		return ativo;
@@ -12,10 +14,6 @@ public class CriarMedicamento {
 
 	public void setAtivo(int ativo) {
 		this.ativo = ativo;
-	}
-
-	public CriarMedicamento() {
-
 	}
 
 	public String getNomeMedicamento() {
@@ -33,5 +31,4 @@ public class CriarMedicamento {
 	public void setComposicao(String composicao) {
 		this.composicao = composicao;
 	}
-
 }

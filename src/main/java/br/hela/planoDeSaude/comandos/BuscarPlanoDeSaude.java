@@ -6,12 +6,19 @@ import br.hela.planoDeSaude.PlanoDeSaudeId;
 
 public class BuscarPlanoDeSaude {
 	private PlanoDeSaudeId id;
-	private int numeroCartao;
 	private Convenio convenio;
-	
+	private int numeroCartao;
+	private String habitacao;
+	private String territorio;
+
+	public BuscarPlanoDeSaude() {
+	}
+
 	public BuscarPlanoDeSaude(PlanoDeSaude comandos) {
 		this.id = comandos.getId();
 		this.numeroCartao = comandos.getNumeroCartao();
+		this.habitacao = comandos.getHabitacao();
+		this.territorio = comandos.getTerritorio();
 	}
 
 	public PlanoDeSaudeId getId() {
@@ -36,6 +43,22 @@ public class BuscarPlanoDeSaude {
 
 	public void setConvenio(Convenio convenio) {
 		this.convenio = convenio;
+	}
+
+	public String getHabitacao() {
+		return habitacao;
+	}
+
+	public void setHabitacao(String habitacao) {
+		this.habitacao = habitacao;
+	}
+
+	public String getTerritorio() {
+		return territorio;
+	}
+
+	public void setTerritorio(String territorio) {
+		this.territorio = territorio;
 	}
 
 }

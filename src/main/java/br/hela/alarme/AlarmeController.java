@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -36,7 +37,7 @@ public class AlarmeController {
 
 	@ApiOperation(value = "Busque o alarme pelo ID")
 	@GetMapping("/{id}")
-	public ResponseEntity<BuscarAlarme> getAlarmePorId(@PathVariable AlarmeId id) 
+	public ResponseEntity<BuscarAlarme> getAlarmePorId(@PathVariable AlarmeId id)
 			throws NullPointerException, Exception {
 
 		Optional<BuscarAlarme> optionalAlarme = alarmeService.encontrar(id);
@@ -49,7 +50,6 @@ public class AlarmeController {
 	@ApiOperation(value = "Cadastre um novo alarme")
 	@PostMapping
 	public ResponseEntity<String> postAlarme(@RequestBody CriarAlarme comando) throws Exception {
-
 		Optional<AlarmeId> optionalAlarmeId = alarmeService.salvar(comando);
 		if (optionalAlarmeId.isPresent()) {
 			URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
@@ -67,7 +67,6 @@ public class AlarmeController {
 		if (!verificaAlarmeExistente(comando.getId())) {
 			throw new NullPointerException("O alarme a ser alterado não existe no banco de dados");
 		}
-
 		Optional<AlarmeId> optionalAlarmeId = alarmeService.alterar(comando);
 		if (optionalAlarmeId.isPresent()) {
 			URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
@@ -76,15 +75,25 @@ public class AlarmeController {
 		} else {
 			throw new SQLException("Erro interno durante a alteração do alarme");
 		}
-
 	}
 
-	private boolean verificaAlarmeExistente(AlarmeId id) throws Exception{
+	@ApiOperation(value = "Delete um alarme pelo ID")
+	@DeleteMapping("/{id}")
+	public ResponseEntity<Optional<String>> deleteAlarme(@PathVariable AlarmeId id)
+			throws NullPointerException, Exception {
+
+		if (!verificaAlarmeExistente(id)) {
+			throw new NullPointerException("O alarme a ser deletado não existe no banco de dados");
+		}
+		Optional<String> resultado = alarmeService.deletar(id);
+		return ResponseEntity.ok(resultado);
+	}
+
+	private boolean verificaAlarmeExistente(AlarmeId id) throws Exception {
 		if (!alarmeService.encontrar(id).isPresent()) {
 			return false;
 		} else {
 			return true;
 		}
 	}
-
 }

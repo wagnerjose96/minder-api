@@ -12,7 +12,6 @@ import br.hela.medicamento.comandos.EditarMedicamento;
 @Service
 @Transactional
 public class MedicamentoService {
-
 	@Autowired
 	private MedicamentoRepository medicamentoRepo;
 
@@ -57,5 +56,4 @@ public class MedicamentoService {
 		}
 		return Optional.empty();
 	}
-
 }

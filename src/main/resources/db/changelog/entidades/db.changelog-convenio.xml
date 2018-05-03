@@ -14,7 +14,7 @@
 			<column name="nome" type="${TYPE_DESCRICAO}">
 				<constraints nullable="false" />
 			</column>
-			<column name="ativo" type="${TYPE_BOOLEAN}">
+			<column name="ativo" type="${TYPE_NUMBER}">
 				<constraints nullable="false" />
 			</column>
 		</createTable>
@@ -28,7 +28,7 @@
 			<column name="nome" type="${TYPE_DESCRICAO}">
 				<constraints nullable="false" />
 			</column>
-			<column name="ativo" type="${TYPE_BOOLEAN}">
+			<column name="ativo" type="${TYPE_NUMBER}">
 				<constraints nullable="false" />
 			</column>
 			<column name="rev" type="${TYPE_NUMBER}">

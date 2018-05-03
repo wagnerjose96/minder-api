@@ -6,9 +6,9 @@ public class EditarConvenio {
 	private ConvenioId id;
 	private String nome;
 	private int ativo;
-	
+
 	public EditarConvenio() {
-		
+
 	}
 
 	public ConvenioId getId() {

@@ -12,33 +12,23 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import br.hela.convenio.Convenio;
 import br.hela.convenio.ConvenioId;
-import br.hela.convenio.ConvenioService;
 import br.hela.planoDeSaude.comandos.BuscarPlanoDeSaude;
 import br.hela.planoDeSaude.comandos.CriarPlanoDeSaude;
 import br.hela.planoDeSaude.comandos.EditarPlanoDeSaude;
-import br.hela.planoDeSaude.planoDeSaude_convenio.PlanoDeSaude_Convenio;
-import br.hela.planoDeSaude.planoDeSaude_convenio.PlanoDeSaude_Convenio_Service;
 
 @Service
 @Transactional
 public class PlanoDeSaudeService {
 	@Autowired
 	private PlanoDeSaudeRepository repo;
-
-	@Autowired
-	private PlanoDeSaude_Convenio_Service service;
-
-	@Autowired
-	private ConvenioService convenioService;
+	
+	public Optional<String> deletar(PlanoDeSaudeId id) {
+		repo.deleteById(id);
+		return Optional.of("Plano ==> " + id + " deletado com sucesso!");
+	}
 
 	public Optional<PlanoDeSaudeId> salvar(CriarPlanoDeSaude comando) {
 		PlanoDeSaude novo = repo.save(new PlanoDeSaude(comando));
-		if (verificaConvenioExistente(comando.getConvenioId())) {
-			PlanoDeSaude_Convenio plano_convenio = new PlanoDeSaude_Convenio();
-			plano_convenio.setIdPlanoDeSaude(novo.getId());
-			plano_convenio.setIdConvenio(comando.getConvenioId());
-			service.salvar(plano_convenio);
-		}
 		return Optional.of(novo.getId());
 	}
 
@@ -73,24 +63,9 @@ public class PlanoDeSaudeService {
 			PlanoDeSaude plano = optional.get();
 			plano.apply(comando);
 			repo.save(plano);
-			if (verificaConvenioExistente(comando.getConvenioId())) {
-				PlanoDeSaude_Convenio planoConvenio = new PlanoDeSaude_Convenio();
-				planoConvenio.setIdPlanoDeSaude(comando.getId());
-				planoConvenio.setIdConvenio(comando.getConvenioId());
-				service.salvar(planoConvenio);
-			}
 			return Optional.of(comando.getId());
 		}
 		return Optional.empty();
-	}
-
-	private boolean verificaConvenioExistente(ConvenioId id) {
-		if (id == null) {
-			return false;
-		} else if (convenioService.encontrar(id).isPresent()) {
-			return true;
-		}
-		return false;
 	}
 
 	private Convenio convenio(ResultSet rs, String id) throws Exception {
@@ -98,7 +73,7 @@ public class PlanoDeSaudeService {
 		while (rs.next()) {
 			String idPlano = rs.getString("id");
 			if (id.equals(idPlano)) {
-				conv.setId(new ConvenioId(rs.getString("id")));
+				conv.setId(new ConvenioId(rs.getString("id_convenio")));
 				conv.setNome(rs.getString("nome"));
 				conv.setAtivo(rs.getInt("ativo"));
 			}
@@ -108,18 +83,18 @@ public class PlanoDeSaudeService {
 
 	private Statement connect() throws Exception {
 		Class.forName("org.postgresql.Driver");
-		Connection con = DriverManager.getConnection("jdbc:postgresql://localhost:5432/escoladeti2018", "postgres",
-				"11223344");
+		Connection con = DriverManager
+				.getConnection("jdbc:postgresql://localhost:5432/escoladeti2018", "postgres", "11223344");
 		Statement stmt = con.createStatement();
 		return stmt;
 	}
 
 	private ResultSet executeQuery(String id) throws Exception {
 		Statement stmt = connect();
-		String query = "select c.id, a.nome, " + "a.id, a.ativo from convenio a "
-				+ "inner join plano_de_saude_convenio b on a.id = b.id_convenio "
-				+ "inner join plano_de_saude c on b.id_plano_de_saude = c.id " + "group by c.id, a.id having c.id = '"
-				+ id + "'";
+		String query = "select c.id, c.id_convenio, a.nome, " 
+				+ "a.id, a.ativo from convenio a "
+				+ "inner join plano_de_saude c on a.id = c.id_convenio "
+				+ "group by c.id, a.id having c.id = '" + id + "'";
 		ResultSet rs = stmt.executeQuery(query);
 		return rs;
 	}

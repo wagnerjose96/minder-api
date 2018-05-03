@@ -12,29 +12,32 @@ import br.hela.telefone.comandos.EditarTelefone;
 @Audited
 public class Telefone {
 	@EmbeddedId
-	@AttributeOverride(name = "value", column = @Column(name = "id"))
-	private TelefoneId telefoneId;
+	@AttributeOverride(name = "value", column = @Column(name = "id_telefone"))
+	private TelefoneId idTelefone;
 	private int ddd;
 	private int numero;
 
 	public Telefone() {
-
 	}
 
-	public Telefone(CriarTelefone comandos) {
-		this.telefoneId = new TelefoneId();
-		this.ddd = comandos.getDdd();
-		this.numero = comandos.getNumero();
+	public Telefone(CriarTelefone comando) {
+		this.idTelefone = new TelefoneId();
+		this.ddd = comando.getDdd();
+		this.numero = comando.getNumero();
 	}
 
-	public void aplly(EditarTelefone comandos) {
-		this.telefoneId = comandos.getTelefoneId();
-		this.ddd = comandos.getDdd();
-		this.numero = comandos.getNumero();
+	public void apply(EditarTelefone comando) {
+		this.idTelefone = comando.getIdTelefone();
+		this.ddd = comando.getDdd();
+		this.numero = comando.getNumero();
 	}
 
-	public TelefoneId getTelefoneId() {
-		return telefoneId;
+	public TelefoneId getIdTelefone() {
+		return idTelefone;
+	}
+
+	public void setIdTelefone(TelefoneId idTelefone) {
+		this.idTelefone = idTelefone;
 	}
 
 	public int getDdd() {
@@ -51,6 +54,31 @@ public class Telefone {
 
 	public void setNumero(int numero) {
 		this.numero = numero;
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((idTelefone == null) ? 0 : idTelefone.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Telefone other = (Telefone) obj;
+		if (idTelefone == null) {
+			if (other.idTelefone != null)
+				return false;
+		} else if (!idTelefone.equals(other.idTelefone))
+			return false;
+		return true;
 	}
 
 }

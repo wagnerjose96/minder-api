@@ -1,7 +1,6 @@
 package br.hela.exceptions.comandos;
 
 public class CriarErrorDetail {
-
 	private String type;
 	private String error;
 	private String developerMessage;
@@ -41,5 +40,4 @@ public class CriarErrorDetail {
 	public void setHttpStatus(int httpStatus) {
 		this.httpStatus = httpStatus;
 	}
-
 }

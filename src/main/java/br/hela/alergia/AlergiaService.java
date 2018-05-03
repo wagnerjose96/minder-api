@@ -24,7 +24,6 @@ import br.hela.medicamento.MedicamentoService;
 @Service
 @Transactional
 public class AlergiaService {
-
 	@Autowired
 	private AlergiaRepository repo;
 
@@ -114,8 +113,8 @@ public class AlergiaService {
 
 	private Statement connect() throws Exception {
 		Class.forName("org.postgresql.Driver");
-		Connection con = DriverManager.getConnection("jdbc:postgresql://localhost:5432/escoladeti2018", "postgres",
-				"11223344");
+		Connection con = DriverManager
+				.getConnection("jdbc:postgresql://localhost:5432/escoladeti2018", "postgres", "11223344");
 		Statement stmt = con.createStatement();
 		return stmt;
 	}
@@ -128,16 +127,17 @@ public class AlergiaService {
 		}
 		return true;
 	}
-	
+
 	private ResultSet executeQuery(String id) throws Exception {
 		Statement stmt = connect();
 		String query = "select c.id, a.nome_medicamento, "
 				+ "a.composicao, a.id_medicamento, a.ativo from medicamento a "
 				+ "inner join alergia_medicamento b on a.id_medicamento = b.id_medicamento "
-				+ "inner join alergia c on b.id_alergia = c.id " + "group by c.id, a.id_medicamento having c.id = '"
+				+ "inner join alergia c on b.id_alergia = c.id " 
+				+ "group by c.id, a.id_medicamento having c.id = '"
 				+ id + "' " + "order by c.tipo_alergia";
 		ResultSet rs = stmt.executeQuery(query);
 		return rs;
 	}
-	
+
 }

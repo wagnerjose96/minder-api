@@ -39,7 +39,6 @@ public class ConvenioController {
 	@ApiOperation(value = "Busque um convênio pelo ID")
 	@GetMapping("/{id}")
 	public ResponseEntity<Convenio> getConvenioPorId(@PathVariable ConvenioId id) throws NullPointerException {
-
 		if (verificaConvenioExistente(id)) {
 			Optional<Convenio> optionalConvenio = service.encontrar(id);
 			return ResponseEntity.ok(optionalConvenio.get());
@@ -49,10 +48,8 @@ public class ConvenioController {
 
 	@ApiOperation(value = "Delete um convênio pelo ID")
 	@DeleteMapping("/{id}")
-	public ResponseEntity<Optional<String>> deletarConvenio(@PathVariable ConvenioId id)
-			throws NullPointerException {
-
-		if(verificaConvenioExistente(id)) {
+	public ResponseEntity<Optional<String>> deletarConvenio(@PathVariable ConvenioId id) throws NullPointerException {
+		if (verificaConvenioExistente(id)) {
 			Optional<String> optionalConvenio = service.deletar(id);
 			return ResponseEntity.ok(optionalConvenio);
 		}
@@ -61,9 +58,7 @@ public class ConvenioController {
 
 	@ApiOperation(value = "Cadastre um novo convênio")
 	@PostMapping
-	public ResponseEntity<String> postConvenio(@RequestBody CriarConvenio comando)
-			throws Exception {
-
+	public ResponseEntity<String> postConvenio(@RequestBody CriarConvenio comando) throws Exception {
 		Optional<ConvenioId> optionalConvenioId = service.salvar(comando);
 		if (optionalConvenioId.isPresent()) {
 			URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
@@ -78,7 +73,7 @@ public class ConvenioController {
 	public ResponseEntity<String> putConvenioContinuo(@RequestBody EditarConvenio comando)
 			throws NullPointerException, InternalError {
 
-		if(!verificaConvenioExistente(comando.getId())) {
+		if (!verificaConvenioExistente(comando.getId())) {
 			throw new NullPointerException("O convênio a ser alterado não existe no banco de dados");
 		}
 		Optional<ConvenioId> optionalConvenioId = service.alterar(comando);
@@ -100,4 +95,3 @@ public class ConvenioController {
 	}
 
 }
-

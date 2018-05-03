@@ -11,7 +11,6 @@ import br.hela.medicamento.comandos.EditarMedicamento;
 @Entity
 @Audited
 public class Medicamento {
-
 	@EmbeddedId
 	@AttributeOverride(name = "value", column = @Column(name = "id_medicamento"))
 	private MedicamentoId idMedicamento;
