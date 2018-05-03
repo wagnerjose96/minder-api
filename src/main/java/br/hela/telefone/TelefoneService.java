@@ -20,8 +20,7 @@ public class TelefoneService {
 	}
 
 	public Optional<Telefone> encontrar(TelefoneId id) {
-		Telefone telefone = telefoneRepo.findById(id).get();
-		return Optional.of(telefone);
+		return telefoneRepo.findById(id);
 	}
 
 	public Optional<List<Telefone>> encontrar() {

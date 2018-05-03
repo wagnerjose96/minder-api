@@ -1,54 +1,27 @@
 package br.hela.emergencia.comandos;
 
 public class CriarEmergencia {
-	private String idPlanoSaude;
-	private String contatoEmergencia;
-	private String endereco;
-	private Boolean doadorDeOrgaos;
-	private Boolean ataqueConvucivos;
+	private int doadorDeOrgaos;
+	private int ataqueConvulsivos;
 	private String problemasCardiacos;
 
 	public CriarEmergencia() {
 	}
 
-	public String getContatoEmergencia() {
-		return contatoEmergencia;
-	}
-
-	public String getEndereco() {
-		return endereco;
-	}
-
-	public void setEndereco(String endereco) {
-		this.endereco = endereco;
-	}
-
-	public void setContatoEmergencia(String contatoEmergencia) {
-		this.contatoEmergencia = contatoEmergencia;
-	}
-
-	public String getIdPlanoSaude() {
-		return idPlanoSaude;
-	}
-
-	public void setIdPlanoSaude(String idPlanoSaude) {
-		this.idPlanoSaude = idPlanoSaude;
-	}
-
-	public Boolean getDoadorDeOrgaos() {
+	public int getDoadorDeOrgaos() {
 		return doadorDeOrgaos;
 	}
 
-	public void setDoadorDeOrgaos(Boolean doadorDeOrgaos) {
+	public void setDoadorDeOrgaos(int doadorDeOrgaos) {
 		this.doadorDeOrgaos = doadorDeOrgaos;
 	}
 
-	public Boolean getAtaqueConvucivos() {
-		return ataqueConvucivos;
+	public int getAtaqueConvulsivos() {
+		return ataqueConvulsivos;
 	}
 
-	public void setAtaqueConvucivos(Boolean ataqueConvucivos) {
-		this.ataqueConvucivos = ataqueConvucivos;
+	public void setAtaqueConvulsivos(int ataqueConvulsivos) {
+		this.ataqueConvulsivos = ataqueConvulsivos;
 	}
 
 	public String getProblemasCardiacos() {

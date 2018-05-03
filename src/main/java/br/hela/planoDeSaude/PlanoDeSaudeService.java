@@ -91,9 +91,10 @@ public class PlanoDeSaudeService {
 
 	private ResultSet executeQuery(String id) throws Exception {
 		Statement stmt = connect();
-		String query = "select c.id, c.id_convenio, a.nome, " + "a.id, a.ativo from convenio a "
-				+ "inner join plano_de_saude c on a.id = c.id_convenio " + "group by c.id, a.id having c.id = '"
-				+ id + "'";
+		String query = "select c.id, c.id_convenio, a.nome, " 
+				+ "a.id, a.ativo from convenio a "
+				+ "inner join plano_de_saude c on a.id = c.id_convenio "
+				+ "group by c.id, a.id having c.id = '" + id + "'";
 		ResultSet rs = stmt.executeQuery(query);
 		return rs;
 	}

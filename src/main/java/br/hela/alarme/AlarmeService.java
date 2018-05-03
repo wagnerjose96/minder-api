@@ -68,7 +68,7 @@ public class AlarmeService {
 	public Optional<String> deletar(AlarmeId id){
 		if(repo.findById(id).isPresent()) {
 			repo.deleteById(id);
-			return Optional.of("Alarme" + id + " deletado com sucesso");
+			return Optional.of("Alarme " + id + " deletado com sucesso");
 		}
 		return Optional.empty();
 	}
@@ -97,10 +97,9 @@ public class AlarmeService {
 
 	private ResultSet executeQuery(String id) throws Exception {
 		Statement stmt = connect();
-		String query = "select c.id, a.nome_medicamento, "
+		String query = "select c.id, c.id_medicamento, a.nome_medicamento, "
 				+ "a.composicao, a.id_medicamento, a.ativo from medicamento a "
-				+ "inner join alarme_medicamento b on a.id_medicamento = b.id_medicamento "
-				+ "inner join alarme c on b.id_alarme = c.id " 
+				+ "inner join alarme c on c.id_medicamento = a.id_medicamento " 
 				+ "group by c.id, a.id_medicamento having c.id = '" + id + "'";
 		ResultSet rs = stmt.executeQuery(query);
 		return rs;
