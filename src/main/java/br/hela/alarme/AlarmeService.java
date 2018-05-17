@@ -1,14 +1,12 @@
 package br.hela.alarme;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.ResultSet;
-import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+
 import javax.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 import br.hela.alarme.Alarme;
 import br.hela.alarme.AlarmeId;
@@ -24,6 +22,24 @@ public class AlarmeService {
 	@Autowired
 	private AlarmeRepository repo;
 
+	@Autowired
+	JdbcTemplate jdbcTemplate;
+
+	public void retorno(String id) {
+
+		List<BuscarAlarme> buscarAlarmes = jdbcTemplate.query("select c.id, c.id_medicamento, a.nome_medicamento, "
+				+ "a.composicao, a.id_medicamento, a.ativo from medicamento a "
+				+ "inner join alarme c on c.id_medicamento = a.id_medicamento "
+				+ "group by c.id, a.id_medicamento having c.id = ?", new Object[] { id }, (rs, rowNum) -> {
+					BuscarAlarme alarme = new BuscarAlarme();
+					rs.getString("nome");
+
+					return alarme;
+				});
+
+		System.out.println(buscarAlarmes);
+	}
+
 	public Optional<AlarmeId> salvar(CriarAlarme comando) {
 		Alarme novo = repo.save(new Alarme(comando));
 		return Optional.of(novo.getId());
@@ -31,10 +47,9 @@ public class AlarmeService {
 
 	public Optional<BuscarAlarme> encontrar(AlarmeId alarmeId) throws Exception {
 		BuscarAlarme alarme = new BuscarAlarme(repo.findById(alarmeId).get());
-		ResultSet rs = executeQuery(alarmeId.toString());
-		Medicamento med = medicamento(rs, alarmeId.toString());
-		if (med.getAtivo() != 0) {
-			alarme.setMedicamento(med);
+		List<Medicamento> medicamentos = executeQuery(alarmeId.toString());
+		if (medicamentos.get(0).getAtivo() != 0) {
+			alarme.setMedicamento(medicamentos.get(0));
 		}
 		return Optional.of(alarme);
 	}
@@ -43,11 +58,10 @@ public class AlarmeService {
 		List<BuscarAlarme> rsAlarmes = new ArrayList<>();
 		List<Alarme> alarmes = repo.findAll();
 		for (Alarme alarme : alarmes) {
-			ResultSet rs = executeQuery(alarme.getId().toString());
 			BuscarAlarme nova = new BuscarAlarme(alarme);
-			Medicamento med = medicamento(rs, alarme.getId().toString());
-			if (med.getAtivo() != 0) {
-				nova.setMedicamento(med);
+			List<Medicamento> medicamentos = executeQuery(nova.getId().toString());
+			if (medicamentos.get(0).getAtivo() != 0) {
+				nova.setMedicamento(medicamentos.get(0));
 			}
 			rsAlarmes.add(nova);
 		}
@@ -64,44 +78,30 @@ public class AlarmeService {
 		}
 		return Optional.empty();
 	}
-	
-	public Optional<String> deletar(AlarmeId id){
-		if(repo.findById(id).isPresent()) {
+
+	public Optional<String> deletar(AlarmeId id) {
+		if (repo.findById(id).isPresent()) {
 			repo.deleteById(id);
 			return Optional.of("Alarme " + id + " deletado com sucesso");
 		}
 		return Optional.empty();
 	}
 
-	private Medicamento medicamento(ResultSet rs, String id) throws Exception {
-		Medicamento med = new Medicamento();
-		while (rs.next()) {
-			String idAlarme = rs.getString("id");
-			if (id.equals(idAlarme)) {
-				med.setIdMedicamento(new MedicamentoId(rs.getString("id_medicamento")));
-				med.setNomeMedicamento(rs.getString("nome_medicamento"));
-				med.setComposicao(rs.getString("composicao"));
-				med.setAtivo(rs.getInt("ativo"));
-			}
-		}
-		return med;
-	}
-
-	private Statement connect() throws Exception {
-		Class.forName("org.postgresql.Driver");
-		Connection con = DriverManager
-				.getConnection("jdbc:postgresql://localhost:5432/escoladeti2018", "postgres", "11223344");
-		Statement stmt = con.createStatement();
-		return stmt;
-	}
-
-	private ResultSet executeQuery(String id) throws Exception {
-		Statement stmt = connect();
-		String query = "select c.id, c.id_medicamento, a.nome_medicamento, "
+	private List<Medicamento> executeQuery(String id) {
+		List<Medicamento> medicamentos = jdbcTemplate.query("select c.id, c.id_medicamento, a.nome_medicamento, "
 				+ "a.composicao, a.id_medicamento, a.ativo from medicamento a "
-				+ "inner join alarme c on c.id_medicamento = a.id_medicamento " 
-				+ "group by c.id, a.id_medicamento having c.id = '" + id + "'";
-		ResultSet rs = stmt.executeQuery(query);
-		return rs;
+				+ "inner join alarme c on c.id_medicamento = a.id_medicamento "
+				+ "group by c.id, a.id_medicamento having c.id = ?", new Object[] { id }, (rs, rowNum) -> {
+					Medicamento med = new Medicamento();
+					String idAlarme = rs.getString("id");
+					if (id.equals(idAlarme)) {
+						med.setIdMedicamento(new MedicamentoId(rs.getString("id_medicamento")));
+						med.setNomeMedicamento(rs.getString("nome_medicamento"));
+						med.setComposicao(rs.getString("composicao"));
+						med.setAtivo(rs.getInt("ativo"));
+					}
+					return med;
+				});
+		return medicamentos;
 	}
 }
