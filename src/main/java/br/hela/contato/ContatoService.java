@@ -1,16 +1,12 @@
 package br.hela.contato;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.ResultSet;
-import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import javax.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
-
 import br.hela.contato.Contato;
 import br.hela.contato.ContatoId;
 import br.hela.contato.comandos.BuscarContato;
@@ -27,11 +23,14 @@ import br.hela.telefone.TelefoneService;
 public class ContatoService {
 
 	@Autowired
+	JdbcTemplate jdbcTemplate;
+
+	@Autowired
 	private ContatoRepository repo;
 
 	@Autowired
 	private Contato_Telefone_Service service;
-	
+
 	@Autowired
 	private TelefoneService telefoneService;
 
@@ -48,10 +47,9 @@ public class ContatoService {
 	}
 
 	public Optional<BuscarContato> encontrar(ContatoId contatoId) throws Exception {
-		ResultSet rs = executeQuery(contatoId.toString());		
+		List<Telefone> telefone = executeQuery(contatoId.toString());
 		BuscarContato contato = new BuscarContato(repo.findById(contatoId).get());
-		String id = contatoId.toString();
-		contato.setTelefone(telefone(rs, id));
+		contato.setTelefone(telefone.get(0));
 		return Optional.of(contato);
 	}
 
@@ -59,9 +57,9 @@ public class ContatoService {
 		List<Contato> contatos = repo.findAll();
 		List<BuscarContato> rsContatos = new ArrayList<>();
 		for (Contato contato : contatos) {
-			ResultSet rs = executeQuery(contato.getId().toString());
+			List<Telefone> telefone = executeQuery(contato.getId().toString());
 			BuscarContato novo = new BuscarContato(contato);
-			novo.setTelefone(telefone(rs, contato.getId().toString()));
+			novo.setTelefone(telefone.get(0));
 			rsContatos.add(novo);
 		}
 		return Optional.of(rsContatos);
@@ -80,9 +78,9 @@ public class ContatoService {
 		}
 		return Optional.empty();
 	}
-	
-	public Optional<String> deletar(ContatoId id){
-		if(repo.findById(id).isPresent()) {
+
+	public Optional<String> deletar(ContatoId id) {
+		if (repo.findById(id).isPresent()) {
 			repo.deleteById(id);
 			return Optional.of("Contato" + id + " deletado com sucesso");
 		}
@@ -97,38 +95,22 @@ public class ContatoService {
 		}
 	}
 
-	private Telefone telefone(ResultSet rs, String id) throws Exception {
-			Telefone telefone = new Telefone();;			
-			while (rs.next()) {
-			String idContato = rs.getString("id");
-			if (id.equals(idContato)) {
-				telefone.setIdTelefone(new TelefoneId(rs.getString("id_telefone")));
-				int ddd = Integer.parseInt(rs.getString("ddd"));
-				telefone.setDdd(ddd);
-				int numero = Integer.parseInt(rs.getString("numero"));
-				telefone.setNumero(numero);
-			}
-		}
-		return telefone;
-	}
-
-	private Statement connect() throws Exception {
-		Class.forName("org.postgresql.Driver");
-		Connection con = DriverManager.getConnection("jdbc:postgresql://localhost:5432/escoladeti2018", "postgres",
-				"11223344");
-		Statement stmt = con.createStatement();
-		return stmt;
-	}
-	
-	private ResultSet executeQuery(String id) throws Exception {
-		Statement stmt = connect();
-		String query = "select c.id, a.id_telefone, a.ddd, a.numero from telefone a "
+	private List<Telefone> executeQuery(String id) throws Exception {
+		List<Telefone> telefones = jdbcTemplate.query("select c.id, a.id_telefone, a.ddd, a.numero from telefone a "
 				+ "inner join contato_telefone b on a.id_telefone = b.id_telefone "
-				+ "inner join contato c on b.id_contato = c.id " 
-				+ "group by c.id, a.id_telefone having c.id = '"
-				+ id + "' " + "order by c.nome";
-		ResultSet rs = stmt.executeQuery(query);
-		return rs;
+				+ "inner join contato c on b.id_contato = c.id " + "group by c.id, a.id_telefone having c.id = ?",
+				new Object[] { id }, (rs, rowNum) -> {
+					Telefone telefone = new Telefone();
+					String idContato = rs.getString("id");
+					if (id.equals(idContato)) {
+						telefone.setIdTelefone(new TelefoneId(rs.getString("id_telefone")));
+						int ddd = Integer.parseInt(rs.getString("ddd"));
+						telefone.setDdd(ddd);
+						int numero = Integer.parseInt(rs.getString("numero"));
+						telefone.setNumero(numero);
+					}
+					return telefone;
+				});
+		return telefones;
 	}
-	
 }

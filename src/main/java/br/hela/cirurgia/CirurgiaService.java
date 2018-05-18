@@ -106,8 +106,7 @@ public class CirurgiaService {
 		List<Medicamento> medicamentos = jdbcTemplate.query(
 				"select c.id, a.nome_medicamento, " + "a.composicao, a.id_medicamento, a.ativo from medicamento a "
 						+ "inner join cirurgia_medicamento b on a.id_medicamento = b.id_medicamento "
-						+ "inner join cirurgia c on b.id = c.id " + "group by c.id, a.id_medicamento having c.id = ?"
-						+ "order by c.tipo_cirurgia",
+						+ "inner join cirurgia c on b.id = c.id " + "group by c.id, a.id_medicamento having c.id = ?",
 				new Object[] { id }, (rs, rowNum) -> {
 					Medicamento med = new Medicamento();
 					String idAlarme = rs.getString("id");
