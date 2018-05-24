@@ -7,6 +7,7 @@ import javax.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
+
 import br.hela.alarme.Alarme;
 import br.hela.alarme.AlarmeId;
 import br.hela.alarme.comandos.BuscarAlarme;
@@ -18,12 +19,11 @@ import br.hela.medicamento.MedicamentoId;
 @Service
 @Transactional
 public class AlarmeService {
+	@Autowired
+	private AlarmeRepository repo;
 	
 	@Autowired
 	private JdbcTemplate jdbcTemplate; 
-	
-	@Autowired
-	private AlarmeRepository repo;
 	
 	private String sql = "select c.id, c.id_medicamento, a.nome_medicamento, "
 			+ "a.composicao, a.id_medicamento, a.ativo from medicamento a "
@@ -72,7 +72,7 @@ public class AlarmeService {
 		}
 		return Optional.empty();
 	}
-
+	
 	public List<Medicamento> executeQuery(String id, String sql) {
 		List<Medicamento> medicamentos = jdbcTemplate.query(sql, new Object[] { id }, (rs, rowNum) -> {
 			Medicamento med = new Medicamento();

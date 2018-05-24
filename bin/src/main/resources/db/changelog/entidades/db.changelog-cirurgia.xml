@@ -4,57 +4,55 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
 	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd
         http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
-	
-	<changeSet id="create_table_error" author="alan.secundo">
-		<createTable tableName="error_detail">
-		
-			<column name="id_error_detail" type="${TYPE_ID}">
+
+	<changeSet id="create_table_cirurgia" author="camila.morais">
+		<createTable tableName="cirurgia">
+			<column name="id" type="${TYPE_ID}">
 				<constraints nullable="false" primaryKey="true"
-					primaryKeyName="PK_ERROR_DETAIL" />	
+					primaryKeyName="PK_CIRURGIA" />
 			</column>
-			<column name="type" type="${TYPE_TEXTO}">
+			<column name="tipo_cirurgia" type="${TYPE_DESCRICAO}">
 				<constraints nullable="false" />
 			</column>
-			<column name="error" type="${TYPE_TEXTO}">
+			<column name="data_cirurgia" type="${TYPE_DATA}">
 				<constraints nullable="false" />
 			</column>
-			<column name="developer_message" type="${TYPE_TEXTO}">
+			<column name="clinica_responsavel" type="${TYPE_DESCRICAO}">
 				<constraints nullable="false" />
 			</column>
-			<column name="http_status" type="${TYPE_INTEGER}">
+			<column name="medico_responsavel" type="${TYPE_DESCRICAO}">
 				<constraints nullable="false" />
 			</column>
-			
 		</createTable>
 	</changeSet>
-	
-	<changeSet id="create_table_error_aud" author="alan.secundo">
-		<createTable tableName="error_detail_aud">
-			<column name="id_error_detail" type="${TYPE_ID}">
-				<constraints nullable="false"/>	
-			</column>
-			<column name="type" type="${TYPE_TEXTO}">
+
+	<changeSet id="create_table_cirurgia_aud" author="camila.morais">
+		<createTable tableName="cirurgia_aud">
+			<column name="id" type="${TYPE_ID}">
 				<constraints nullable="false" />
 			</column>
-			<column name="error" type="${TYPE_TEXTO}">
+			<column name="tipo_cirurgia" type="${TYPE_DESCRICAO}">
 				<constraints nullable="false" />
 			</column>
-			<column name="developer_message" type="${TYPE_TEXTO}">
+			<column name="data_cirurgia" type="${TYPE_DATA}">
 				<constraints nullable="false" />
 			</column>
-			<column name="http_status" type="${TYPE_INTEGER}">
+			<column name="clinica_responsavel" type="${TYPE_DESCRICAO}">
 				<constraints nullable="false" />
 			</column>
-			<column name="rev" type="${TYPE_INTEGER}">
+			<column name="medico_responsavel" type="${TYPE_DESCRICAO}">
+				<constraints nullable="false" />
+			</column>
+			<column name="rev" type="${TYPE_NUMBER}">
 				<constraints nullable="false" referencedTableName="revinfo"
-					referencedColumnNames="rev" foreignKeyName="FK_ERROR_REVINFO" />
+					referencedColumnNames="rev" foreignKeyName="cirurgia_revinfo_fk" />
 			</column>
-			<column name="revtype" type="${TYPE_INTEGER}">
+			<column name="revtype" type="${TYPE_NUMBER}">
 				<constraints nullable="false" />
 			</column>
 		</createTable>
-		<addPrimaryKey constraintName="PK_ERROR_AUD"
-			tableName="error_detail_aud" columnNames="id_error_detail, rev" />
+		<addPrimaryKey constraintName="PK_CIRURGIA_AUD"
+			tableName="cirurgia_aud" columnNames="id, rev" />
 	</changeSet>
-	
+
 </databaseChangeLog>

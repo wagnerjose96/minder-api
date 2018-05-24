@@ -19,9 +19,6 @@
 			<column name="data_descoberta" type="${TYPE_DATA}">
 				<constraints nullable="false" />
 			</column>
-			<column name="id_medicamento" type="${TYPE_ID}">
-				<constraints nullable="false" />
-			</column>
 			<column name="local_afetado" type="${TYPE_DESCRICAO}">
 				<constraints nullable="false" />
 			</column>
@@ -29,11 +26,6 @@
 				<constraints nullable="false" />
 			</column>
 		</createTable>
-		<addForeignKeyConstraint baseColumnNames="id_medicamento"
-	                             baseTableName="alergia"
-	                             constraintName="FK_ALERGIA_MEDICAMENTO"
-	                             referencedColumnNames="id_medicamento"
-	                             referencedTableName="medicamento"/>
 	</changeSet>
 	
 	<changeSet id="create_table_alergia_aud" author="larissa.andrade">
@@ -48,20 +40,17 @@
 			<column name="data_descoberta" type="${TYPE_DATA}">
 				<constraints nullable="false" />
 			</column>
-			<column name="id_medicamento" type="${TYPE_DESCRICAO}">
-				<constraints nullable="true" foreignKeyName="FK_ALERGIA_MEDICAMENTO" references="medicamento(id_medicamento)"/>
-			</column>
 			<column name="local_afetado" type="${TYPE_DESCRICAO}">
 				<constraints nullable="false" />
 			</column>
 			<column name="efeitos" type="${TYPE_DESCRICAO}">
 				<constraints nullable="false" />
 			</column>
-			<column name="rev" type="${TYPE_INTEGER}">
+			<column name="rev" type="${TYPE_NUMBER}">
 				<constraints nullable="false" referencedTableName="revinfo"
 					referencedColumnNames="rev" foreignKeyName="FK_ALERGIA_REVINFO" />
 			</column>
-			<column name="revtype" type="${TYPE_INTEGER}">
+			<column name="revtype" type="${TYPE_NUMBER}">
 				<constraints nullable="false" />
 			</column>
 		</createTable>

@@ -12,16 +12,16 @@
 				<constraints nullable="false" primaryKey="true"
 					primaryKeyName="PK_ERROR_DETAIL" />	
 			</column>
-			<column name="type" type="${TYPE_TEXTO}">
+			<column name="type" type="${TYPE_DESCRICAO}">
 				<constraints nullable="false" />
 			</column>
-			<column name="error" type="${TYPE_TEXTO}">
+			<column name="error" type="${TYPE_DESCRICAO}">
 				<constraints nullable="false" />
 			</column>
-			<column name="developer_message" type="${TYPE_TEXTO}">
+			<column name="developer_message" type="${TYPE_DESCRICAO}">
 				<constraints nullable="false" />
 			</column>
-			<column name="http_status" type="${TYPE_INTEGER}">
+			<column name="http_status" type="${TYPE_NUMBER}">
 				<constraints nullable="false" />
 			</column>
 			
@@ -33,23 +33,23 @@
 			<column name="id_error_detail" type="${TYPE_ID}">
 				<constraints nullable="false"/>	
 			</column>
-			<column name="type" type="${TYPE_TEXTO}">
+			<column name="type" type="${TYPE_DESCRICAO}">
 				<constraints nullable="false" />
 			</column>
-			<column name="error" type="${TYPE_TEXTO}">
+			<column name="error" type="${TYPE_DESCRICAO}">
 				<constraints nullable="false" />
 			</column>
-			<column name="developer_message" type="${TYPE_TEXTO}">
+			<column name="developer_message" type="${TYPE_DESCRICAO}">
 				<constraints nullable="false" />
 			</column>
-			<column name="http_status" type="${TYPE_INTEGER}">
+			<column name="http_status" type="${TYPE_NUMBER}">
 				<constraints nullable="false" />
 			</column>
-			<column name="rev" type="${TYPE_INTEGER}">
+			<column name="rev" type="${TYPE_NUMBER}">
 				<constraints nullable="false" referencedTableName="revinfo"
 					referencedColumnNames="rev" foreignKeyName="FK_ERROR_REVINFO" />
 			</column>
-			<column name="revtype" type="${TYPE_INTEGER}">
+			<column name="revtype" type="${TYPE_NUMBER}">
 				<constraints nullable="false" />
 			</column>
 		</createTable>

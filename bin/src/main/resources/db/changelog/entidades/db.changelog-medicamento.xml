@@ -16,7 +16,9 @@
 			<column name="composicao" type="${TYPE_DESCRICAO}">
 				<constraints nullable="false" />
 			</column>
-										
+			<column name="ativo" type="${TYPE_NUMBER}">
+				<constraints nullable="false" />
+			</column>						
 		</createTable>
 	</changeSet>
 	
@@ -26,16 +28,19 @@
 				<constraints nullable="false"/>
 			</column>
 			<column name="nome_medicamento" type="${TYPE_DESCRICAO}">
-				<constraints nullable="true" />
+				<constraints nullable="false" />
 			</column>
 			<column name="composicao" type="${TYPE_DESCRICAO}">
-				<constraints nullable="true" />
+				<constraints nullable="false" />
+			</column>	
+			<column name="ativo" type="${TYPE_NUMBER}">
+				<constraints nullable="false" />
 			</column>							
-			<column name="rev" type="${TYPE_INTEGER}">
+			<column name="rev" type="${TYPE_NUMBER}">
 				<constraints nullable="false" referencedTableName="revinfo"
 					referencedColumnNames="rev" foreignKeyName="medicamento_revinfo_fk" />
 			</column>
-			<column name="revtype" type="${TYPE_INTEGER}">
+			<column name="revtype" type="${TYPE_NUMBER}">
 				<constraints nullable="false" />
 			</column>
 		</createTable>
