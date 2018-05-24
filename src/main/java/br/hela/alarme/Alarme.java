@@ -22,7 +22,8 @@ import lombok.Setter;
 public class Alarme {
 	@EmbeddedId
 	@AttributeOverride(name = "value", column = @Column(name = "id"))
-	@Setter(AccessLevel.NONE) private AlarmeId id;
+	@Setter(AccessLevel.NONE) 
+	private AlarmeId id;
 	@AttributeOverride(name = "value", column = @Column(name = "id_medicamento"))
 	private MedicamentoId idMedicamento;
 	private Date dataInicio;
