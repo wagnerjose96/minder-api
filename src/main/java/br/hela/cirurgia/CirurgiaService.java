@@ -49,6 +49,7 @@ public class CirurgiaService {
 
 	public Optional<BuscarCirurgia> encontrar(CirurgiaId cirurgiaId) throws Exception {
 		List<Medicamento> medicamentos = executeQuery(cirurgiaId.toString());
+		System.out.println(medicamentos.size());
 		BuscarCirurgia cirurgia = new BuscarCirurgia(cirurgiaRepo.findById(cirurgiaId).get());
 		cirurgia.setMedicamentos(medicamentos);
 		return Optional.of(cirurgia);
@@ -60,6 +61,7 @@ public class CirurgiaService {
 		for (Cirurgia cirurgia : cirurgias) {
 			List<Medicamento> medicamentos = executeQuery(cirurgia.getIdCirurgia().toString());
 			BuscarCirurgia nova = new BuscarCirurgia(cirurgia);
+			System.out.println(medicamentos.size());
 			nova.setMedicamentos(medicamentos);
 			rsCirurgias.add(nova);
 		}
