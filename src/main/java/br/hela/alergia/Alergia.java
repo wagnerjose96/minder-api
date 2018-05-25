@@ -16,8 +16,8 @@ import lombok.Setter;
 
 @Entity
 @Audited
-@EqualsAndHashCode(exclude={"tipoAlergia", "localAfetado", "dataDescoberta", "efeitos"})
 @Data
+@EqualsAndHashCode(exclude={"tipoAlergia", "localAfetado", "dataDescoberta", "efeitos"})
 public class Alergia {
 	@EmbeddedId
 	@AttributeOverride(name = "value", column = @Column(name = "id"))

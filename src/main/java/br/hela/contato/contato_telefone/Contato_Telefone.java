@@ -6,8 +6,10 @@ import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import br.hela.contato.ContatoId;
 import br.hela.telefone.TelefoneId;
+import lombok.Data;
 
 @Entity
+@Data
 public class Contato_Telefone {
 	@EmbeddedId
 	@AttributeOverride(name = "value", column = @Column(name = "id"))
@@ -20,25 +22,4 @@ public class Contato_Telefone {
 	public Contato_Telefone() {
 		this.id = new Contato_Telefone_Id();
 	}
-
-	public Contato_Telefone_Id getId() {
-		return id;
-	}
-
-	public ContatoId getIdContato() {
-		return idContato;
-	}
-
-	public void setIdContato(ContatoId idContato) {
-		this.idContato = idContato;
-	}
-
-	public TelefoneId getIdTelefone() {
-		return idTelefone;
-	}
-
-	public void setIdTelefone(TelefoneId idTelefone) {
-		this.idTelefone = idTelefone;
-	}
-
 }

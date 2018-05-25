@@ -6,8 +6,10 @@ import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import br.hela.doenca.DoencaId;
 import br.hela.medicamento.MedicamentoId;
+import lombok.Data;
 
 @Entity
+@Data
 public class Doenca_Medicamento {
 	@EmbeddedId
 	@AttributeOverride(name = "value", column = @Column(name = "id"))
@@ -19,25 +21,5 @@ public class Doenca_Medicamento {
 
 	public Doenca_Medicamento() {
 		this.id = new Doenca_Medicamento_Id();
-	}
-
-	public Doenca_Medicamento_Id getId() {
-		return id;
-	}
-
-	public DoencaId getIdDoenca() {
-		return idDoenca;
-	}
-
-	public void setIdDoenca(DoencaId idDoenca) {
-		this.idDoenca = idDoenca;
-	}
-
-	public MedicamentoId getIdMedicamento() {
-		return idMedicamento;
-	}
-
-	public void setIdMedicamento(MedicamentoId idMedicamento) {
-		this.idMedicamento = idMedicamento;
 	}
 }

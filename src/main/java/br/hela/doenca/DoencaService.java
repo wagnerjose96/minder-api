@@ -114,8 +114,8 @@ public class DoencaService {
 						+ "group by c.id_doenca, a.id_medicamento having c.id_doenca = ?",
 				new Object[] { id }, (rs, rowNum) -> {
 					Medicamento med = new Medicamento();
-					String idAlarme = rs.getString("id");
-					if (id.equals(idAlarme)) {
+					String idDoenca = rs.getString("id_doenca");
+					if (id.equals(idDoenca)) {
 						med.setIdMedicamento(new MedicamentoId(rs.getString("id_medicamento")));
 						med.setNomeMedicamento(rs.getString("nome_medicamento"));
 						med.setComposicao(rs.getString("composicao"));
