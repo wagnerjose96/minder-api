@@ -3,10 +3,9 @@ package br.hela.alergia.comandos;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-
 import br.hela.alergia.Alergia;
 import br.hela.alergia.AlergiaId;
-import br.hela.medicamento.Medicamento;
+import br.hela.medicamento.comandos.BuscarMedicamento;
 import lombok.Data;
 
 @Data
@@ -16,7 +15,7 @@ public class BuscarAlergia {
 	private String localAfetado;
 	private Date dataDescoberta;
 	private String efeitos;
-	private List<Medicamento> medicamentos = new ArrayList<>();
+	private List<BuscarMedicamento> medicamentos = new ArrayList<>();
 
 	public BuscarAlergia(Alergia comando) {
 		this.idAlergia = comando.getIdAlergia();

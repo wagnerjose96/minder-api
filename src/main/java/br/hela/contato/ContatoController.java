@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -73,11 +74,22 @@ public class ContatoController {
 		if (optionalContatoId.isPresent()) {
 			URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
 					.buildAndExpand(optionalContatoId.get()).toUri();
-			return ResponseEntity.created(location).body("Contato alterada com sucesso");
+			return ResponseEntity.created(location).body("Contato alterado com sucesso");
 		} else {
 			throw new SQLException("Erro interno durante a alteração do contato");
 		}
 
+	}
+	
+	@ApiOperation(value = "Delete um contato pelo id")
+	@DeleteMapping("/{id}")
+	public ResponseEntity<Optional<String>> deletarContato(@PathVariable ContatoId id) throws Exception {
+
+		if (verificaContatoExistente(id)) {
+			Optional<String> optionalContato = contatoService.deletar(id);
+			return ResponseEntity.ok(optionalContato);
+		}
+		throw new NullPointerException("O contato a deletar não existe no banco de dados");
 	}
 
 	private boolean verificaContatoExistente(ContatoId id) throws Exception {

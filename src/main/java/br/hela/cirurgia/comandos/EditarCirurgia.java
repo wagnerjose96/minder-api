@@ -3,7 +3,6 @@ package br.hela.cirurgia.comandos;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-
 import br.hela.cirurgia.CirurgiaId;
 import br.hela.medicamento.MedicamentoId;
 import lombok.Data;

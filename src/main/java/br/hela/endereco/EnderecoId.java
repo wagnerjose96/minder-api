@@ -1,7 +1,6 @@
 package br.hela.endereco;
 
 import javax.persistence.Embeddable;
-
 import br.hela.BaseId;
 
 @Embeddable

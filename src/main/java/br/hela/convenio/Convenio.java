@@ -7,8 +7,10 @@ import javax.persistence.Entity;
 import org.hibernate.envers.Audited;
 import br.hela.convenio.comandos.CriarConvenio;
 import br.hela.convenio.comandos.EditarConvenio;
+import lombok.AccessLevel;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.Setter;
 
 @Entity
 @Audited
@@ -17,6 +19,7 @@ import lombok.EqualsAndHashCode;
 public class Convenio {
 	@EmbeddedId
 	@AttributeOverride(name = "value", column = @Column(name = "id"))
+	@Setter(AccessLevel.NONE)
 	private ConvenioId id;
 	private String nome;
 	private int ativo;

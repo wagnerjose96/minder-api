@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -14,13 +15,12 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
-
 import br.hela.endereco.comandos.CriarEndereco;
 import br.hela.endereco.comandos.EditarEndereco;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 
-@Api(description = "Basic Endereco Controller")
+@Api(description = "Basic Endereço Controller")
 @RestController
 @RequestMapping("/enderecos")
 public class EnderecoController {
@@ -28,14 +28,14 @@ public class EnderecoController {
 	@Autowired
 	private EnderecoService enderecoService;
 
-	@ApiOperation(value = "Busque todos os enderecos")
+	@ApiOperation(value = "Busque todos os endereços")
 	@GetMapping
 	public ResponseEntity<Optional<List<Endereco>>> getenderecos() throws Exception {
 		Optional<List<Endereco>> optionalenderecos = enderecoService.encontrar();
 		return ResponseEntity.ok(optionalenderecos);
 	}
 
-	@ApiOperation(value = "Busque o endereco pelo ID")
+	@ApiOperation(value = "Busque o endereço pelo ID")
 	@GetMapping("/{id}")
 	public ResponseEntity<Endereco> getenderecoPorId(@PathVariable EnderecoId id) 
 			throws NullPointerException, Exception {
@@ -44,10 +44,10 @@ public class EnderecoController {
 		if (verificaEnderecoExistente(id)) {
 			return ResponseEntity.ok(optionalendereco.get());
 		}
-		throw new NullPointerException("O endereco procurado não existe no banco de dados");
+		throw new NullPointerException("O endereço procurado não existe no banco de dados");
 	}
 
-	@ApiOperation(value = "Cadastre um novo endereco")
+	@ApiOperation(value = "Cadastre um novo endereço")
 	@PostMapping
 	public ResponseEntity<String> postendereco(@RequestBody CriarEndereco comando) throws Exception {
 
@@ -55,29 +55,39 @@ public class EnderecoController {
 		if (optionalenderecoId.isPresent()) {
 			URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
 					.buildAndExpand(optionalenderecoId.get()).toUri();
-			return ResponseEntity.created(location).body("endereco cadastrado com sucesso");
+			return ResponseEntity.created(location).body("Endereço cadastrado com sucesso");
 		}
-		throw new Exception("O endereco não foi salvo devido a um erro interno");
+		throw new Exception("O endereço não foi salvo devido a um erro interno");
 	}
 
-	@ApiOperation(value = "Altere um endereco")
+	@ApiOperation(value = "Altere um endereço")
 	@PutMapping
 	public ResponseEntity<String> putendereco(@RequestBody EditarEndereco comando)
 			throws SQLException, NullPointerException, Exception {
 
 		if (!verificaEnderecoExistente(comando.getId())) {
-			throw new NullPointerException("O endereco a ser alterado não existe no banco de dados");
+			throw new NullPointerException("O endereço a ser alterado não existe no banco de dados");
 		}
 
 		Optional<EnderecoId> optionalenderecoId = enderecoService.alterar(comando);
 		if (optionalenderecoId.isPresent()) {
 			URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
 					.buildAndExpand(optionalenderecoId.get()).toUri();
-			return ResponseEntity.created(location).body("endereco alterado com sucesso");
+			return ResponseEntity.created(location).body("Endereço alterado com sucesso");
 		} else {
-			throw new SQLException("Erro interno durante a alteração do endereco");
+			throw new SQLException("Erro interno durante a alteração do endereço");
 		}
+	}
+	
+	@ApiOperation(value = "Delete um endereço pelo id")
+	@DeleteMapping("/{id}")
+	public ResponseEntity<Optional<String>> deletarSexo(@PathVariable EnderecoId id) throws Exception {
 
+		if (verificaEnderecoExistente(id)) {
+			Optional<String> optionalEndereco = enderecoService.deletar(id);
+			return ResponseEntity.ok(optionalEndereco);
+		}
+		throw new NullPointerException("O endereço a deletar não existe no banco de dados");
 	}
 
 	private boolean verificaEnderecoExistente(EnderecoId id) throws Exception{

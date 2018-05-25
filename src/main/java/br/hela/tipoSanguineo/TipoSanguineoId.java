@@ -12,7 +12,4 @@ public class TipoSanguineoId extends BaseId {
 	public TipoSanguineoId(String value) {
 		super(value);
 	}
-	
-	
-
 }

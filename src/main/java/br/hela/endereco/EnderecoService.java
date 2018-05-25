@@ -5,7 +5,6 @@ import java.util.Optional;
 import javax.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import br.hela.endereco.comandos.CriarEndereco;
 import br.hela.endereco.comandos.EditarEndereco;
 
@@ -30,7 +29,7 @@ public class EnderecoService {
 
 	public Optional<String> deletar(EnderecoId id) {
 		EnderecoRepo.deleteById(id);
-		return Optional.of("Endereco -> " + id + ": deletada com sucesso");
+		return Optional.of("Endereço -> " + id + ": deletado com sucesso");
 	}
 	
 	public Optional<EnderecoId> alterar(EditarEndereco comando) {

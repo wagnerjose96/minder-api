@@ -52,7 +52,7 @@ public class EmergenciaController {
 		if (optionalEmergenciaId.isPresent()) {
 			URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
 					.buildAndExpand(optionalEmergenciaId.get()).toUri();
-			return ResponseEntity.created(location).body("Emergência criada com sucesso");
+			return ResponseEntity.created(location).body("Emergência cadastrada com sucesso");
 		}
 		throw new Exception("A emergência não foi salva devido a um erro interno");
 	}

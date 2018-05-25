@@ -14,7 +14,7 @@
 			</column>
 			
 			<column name="tipo_alergia" type="${TYPE_DESCRICAO}">
-				<constraints nullable="false" unique="true"/>
+				<constraints nullable="false"/>
 			</column>
 			<column name="data_descoberta" type="${TYPE_DATA}">
 				<constraints nullable="false" />
@@ -35,7 +35,7 @@
 				<constraints nullable="false" />	
 			</column>		
 			<column name="tipo_alergia" type="${TYPE_DESCRICAO}">
-				<constraints nullable="false" unique="true"/>
+				<constraints nullable="false"/>
 			</column>
 			<column name="data_descoberta" type="${TYPE_DATA}">
 				<constraints nullable="false" />

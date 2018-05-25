@@ -1,10 +1,9 @@
 package br.hela.alarme.comandos;
 
 import java.util.Date;
-
 import br.hela.alarme.Alarme;
 import br.hela.alarme.AlarmeId;
-import br.hela.medicamento.Medicamento;
+import br.hela.medicamento.comandos.BuscarMedicamento;
 import lombok.Data;
 
 @Data
@@ -15,7 +14,7 @@ public class BuscarAlarme {
 	private String quantidade;
 	private String descricao;
 	private int periodicidade;
-	private Medicamento medicamento;
+	private BuscarMedicamento medicamento;
 
 	public BuscarAlarme(Alarme comandos) {
 		this.id = comandos.getId();

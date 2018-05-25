@@ -41,6 +41,9 @@
 			<column name="imagem_usuario" type="${TYPE_DESCRICAO}">
 				<constraints nullable="false" />
 			</column>
+			<column name="ativo" type="${TYPE_NUMBER}">
+				<constraints nullable="false" />
+			</column>
 		</createTable>
 	</changeSet>
 
@@ -77,6 +80,9 @@
 				<constraints nullable="false" />
 			</column>
 			<column name="imagem_usuario" type="${TYPE_DESCRICAO}">
+				<constraints nullable="false" />
+			</column>
+			<column name="ativo" type="${TYPE_NUMBER}">
 				<constraints nullable="false" />
 			</column>
 			<column name="rev" type="${TYPE_NUMBER}">

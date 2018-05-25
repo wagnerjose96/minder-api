@@ -1,5 +1,6 @@
 package br.hela.usuario;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,15 +21,28 @@ public class UsuarioService {
 	}
 
 	public Optional<Usuario> encontrar(UsuarioId id) {
-		return repo.findById(id);
+		Usuario usuario = repo.findById(id).get();
+		if (usuario.getAtivo() == 1) {
+			return Optional.of(usuario);
+		}
+		return Optional.empty();
 	}
 
 	public Optional<List<Usuario>> encontrar() {
-		return Optional.of(repo.findAll());
+		List<Usuario> resultados = new ArrayList<>();
+		List<Usuario> usuarios = repo.findAll();
+		for (Usuario usuario : usuarios) {
+			if (usuario.getAtivo() == 1) {
+				resultados.add(usuario);
+			}
+		}
+		return Optional.of(resultados);
 	}
 
 	public Optional<String> deletar(UsuarioId id) {
-		repo.deleteById(id);
+		Usuario usuario = repo.findById(id).get();
+		usuario.setAtivo(0);
+		repo.save(usuario);
 		return Optional.of("Usuário -> " + id + ": deletado com sucesso");
 	}
 

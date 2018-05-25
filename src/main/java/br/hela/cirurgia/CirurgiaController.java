@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
-
 import br.hela.cirurgia.comandos.BuscarCirurgia;
 import br.hela.cirurgia.comandos.CriarCirurgia;
 import br.hela.cirurgia.comandos.EditarCirurgia;
@@ -54,7 +53,7 @@ public class CirurgiaController {
 		if (optionalCirurgiaId.isPresent()) {
 			URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
 					.buildAndExpand(optionalCirurgiaId.get()).toUri();
-			return ResponseEntity.created(location).body("Cirurgia criada com sucesso");
+			return ResponseEntity.created(location).body("Cirurgia cadastrada com sucesso");
 		}
 		throw new Exception("A cirurgia não foi salva devido a um erro interno");
 	}

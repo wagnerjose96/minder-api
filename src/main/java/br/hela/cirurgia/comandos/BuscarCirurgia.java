@@ -3,10 +3,9 @@ package br.hela.cirurgia.comandos;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-
 import br.hela.cirurgia.Cirurgia;
 import br.hela.cirurgia.CirurgiaId;
-import br.hela.medicamento.Medicamento;
+import br.hela.medicamento.comandos.BuscarMedicamento;
 import lombok.Data;
 
 @Data
@@ -16,7 +15,7 @@ public class BuscarCirurgia {
 	private Date dataCirurgia;
 	private String clinicaResponsavel;
 	private String medicoResponsavel;
-	private List<Medicamento> medicamentos = new ArrayList<>();
+	private List<BuscarMedicamento> medicamentos = new ArrayList<>();
 
 	public BuscarCirurgia(Cirurgia comando) {
 		this.idCirurgia = comando.getIdCirurgia();

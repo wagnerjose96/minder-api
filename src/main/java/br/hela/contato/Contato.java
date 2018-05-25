@@ -5,7 +5,6 @@ import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import org.hibernate.envers.Audited;
-
 import br.hela.contato.comandos.CriarContato;
 import br.hela.contato.comandos.EditarContato;
 import lombok.AccessLevel;

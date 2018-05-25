@@ -7,8 +7,8 @@ import javax.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
-import br.hela.convenio.Convenio;
 import br.hela.convenio.ConvenioId;
+import br.hela.convenio.comandos.BuscarConvenio;
 import br.hela.planoDeSaude.comandos.BuscarPlanoDeSaude;
 import br.hela.planoDeSaude.comandos.CriarPlanoDeSaude;
 import br.hela.planoDeSaude.comandos.EditarPlanoDeSaude;
@@ -25,7 +25,7 @@ public class PlanoDeSaudeService {
 	
 	public Optional<String> deletar(PlanoDeSaudeId id) {
 		repo.deleteById(id);
-		return Optional.of("Plano ==> " + id + " deletado com sucesso!");
+		return Optional.of("Plano de saúde ==> " + id + " deletado com sucesso!");
 	}
 
 	public Optional<PlanoDeSaudeId> salvar(CriarPlanoDeSaude comando) {
@@ -35,7 +35,7 @@ public class PlanoDeSaudeService {
 
 	public Optional<BuscarPlanoDeSaude> encontrar(PlanoDeSaudeId planoId) throws Exception {
 		BuscarPlanoDeSaude plano = new BuscarPlanoDeSaude(repo.findById(planoId).get());
-		List<Convenio> convenio = executeQuery(planoId.toString());
+		List<BuscarConvenio> convenio = executeQuery(planoId.toString());
 		plano.setConvenio(convenio.get(0));
 		return Optional.of(plano);
 	}
@@ -44,7 +44,7 @@ public class PlanoDeSaudeService {
 		List<BuscarPlanoDeSaude> rsPlanos = new ArrayList<>();
 		List<PlanoDeSaude> planos = repo.findAll();
 		for (PlanoDeSaude plano : planos) {
-			List<Convenio> convenio = executeQuery(plano.getId().toString());
+			List<BuscarConvenio> convenio = executeQuery(plano.getId().toString());
 			BuscarPlanoDeSaude nova = new BuscarPlanoDeSaude(plano);
 			nova.setConvenio(convenio.get(0));
 			rsPlanos.add(nova);
@@ -63,13 +63,13 @@ public class PlanoDeSaudeService {
 		return Optional.empty();
 	}
 	
-	private List<Convenio> executeQuery(String id) throws Exception {
-		List<Convenio> convenio = jdbcTemplate.query("select c.id, c.id_convenio, a.nome, " 
+	private List<BuscarConvenio> executeQuery(String id) throws Exception {
+		List<BuscarConvenio> convenio = jdbcTemplate.query("select c.id, c.id_convenio, a.nome, " 
 				+ "a.id, a.ativo from convenio a "
 				+ "inner join plano_de_saude c on a.id = c.id_convenio "
 				+ "group by c.id, a.id having c.id = ?",
 				new Object[] { id }, (rs, rowNum) -> {
-					Convenio conv = new Convenio();
+					BuscarConvenio conv = new BuscarConvenio();
 						String idPlano = rs.getString("id");
 						if (id.equals(idPlano)) {
 							conv.setId(new ConvenioId(rs.getString("id_convenio")));

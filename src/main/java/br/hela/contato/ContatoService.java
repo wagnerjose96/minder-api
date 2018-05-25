@@ -14,9 +14,9 @@ import br.hela.contato.comandos.CriarContato;
 import br.hela.contato.comandos.EditarContato;
 import br.hela.contato.contato_telefone.Contato_Telefone;
 import br.hela.contato.contato_telefone.Contato_Telefone_Service;
-import br.hela.telefone.Telefone;
 import br.hela.telefone.TelefoneId;
 import br.hela.telefone.TelefoneService;
+import br.hela.telefone.comandos.BuscarTelefone;
 
 @Service
 @Transactional
@@ -47,7 +47,7 @@ public class ContatoService {
 	}
 
 	public Optional<BuscarContato> encontrar(ContatoId contatoId) throws Exception {
-		List<Telefone> telefone = executeQuery(contatoId.toString());
+		List<BuscarTelefone> telefone = executeQuery(contatoId.toString());
 		BuscarContato contato = new BuscarContato(repo.findById(contatoId).get());
 		contato.setTelefone(telefone.get(0));
 		return Optional.of(contato);
@@ -57,7 +57,7 @@ public class ContatoService {
 		List<Contato> contatos = repo.findAll();
 		List<BuscarContato> rsContatos = new ArrayList<>();
 		for (Contato contato : contatos) {
-			List<Telefone> telefone = executeQuery(contato.getId().toString());
+			List<BuscarTelefone> telefone = executeQuery(contato.getId().toString());
 			BuscarContato novo = new BuscarContato(contato);
 			novo.setTelefone(telefone.get(0));
 			rsContatos.add(novo);
@@ -95,12 +95,12 @@ public class ContatoService {
 		}
 	}
 
-	private List<Telefone> executeQuery(String id) throws Exception {
-		List<Telefone> telefones = jdbcTemplate.query("select c.id, a.id_telefone, a.ddd, a.numero from telefone a "
+	private List<BuscarTelefone> executeQuery(String id) throws Exception {
+		List<BuscarTelefone> telefones = jdbcTemplate.query("select c.id, a.id_telefone, a.ddd, a.numero from telefone a "
 				+ "inner join contato_telefone b on a.id_telefone = b.id_telefone "
 				+ "inner join contato c on b.id_contato = c.id " + "group by c.id, a.id_telefone having c.id = ?",
 				new Object[] { id }, (rs, rowNum) -> {
-					Telefone telefone = new Telefone();
+					BuscarTelefone telefone = new BuscarTelefone();
 					String idContato = rs.getString("id");
 					if (id.equals(idContato)) {
 						telefone.setIdTelefone(new TelefoneId(rs.getString("id_telefone")));

@@ -62,7 +62,7 @@ public class MedicamentoController {
 		if (optionalMedicamentoId.isPresent()) {
 			URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
 					.buildAndExpand(optionalMedicamentoId.get()).toUri();
-			return ResponseEntity.created(location).body("O medicamento foi criado com sucesso");
+			return ResponseEntity.created(location).body("O medicamento foi cadastrado com sucesso");
 		}
 		throw new Exception("O medicamento não foi salvo devido a um erro interno");
 	}
@@ -81,7 +81,7 @@ public class MedicamentoController {
 					.buildAndExpand(optionalMedicamentoId.get()).toUri();
 			return ResponseEntity.created(location).body("Medicamento alterado com sucesso");
 		} else {
-			throw new InternalError("Erro interno durante a alteração do usuário");
+			throw new InternalError("Erro interno durante a alteração do medicamento");
 		}
 	}
 

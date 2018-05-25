@@ -63,7 +63,7 @@ public class ConvenioController {
 		if (optionalConvenioId.isPresent()) {
 			URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
 					.buildAndExpand(optionalConvenioId.get()).toUri();
-			return ResponseEntity.created(location).body("O convênio foi criado com sucesso");
+			return ResponseEntity.created(location).body("O convênio foi cadastrado com sucesso");
 		}
 		throw new Exception("O convênio não foi salvo devido a um erro interno");
 	}
@@ -80,9 +80,9 @@ public class ConvenioController {
 		if (optionalConvenioId.isPresent()) {
 			URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
 					.buildAndExpand(optionalConvenioId.get()).toUri();
-			return ResponseEntity.created(location).body("Convenio alterado com sucesso");
+			return ResponseEntity.created(location).body("Convênio alterado com sucesso");
 		} else {
-			throw new InternalError("Erro interno durante a alteração do usuário");
+			throw new InternalError("Erro interno durante a alteração do convênio");
 		}
 	}
 

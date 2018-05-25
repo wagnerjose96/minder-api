@@ -7,14 +7,13 @@ import javax.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
-
 import br.hela.alarme.Alarme;
 import br.hela.alarme.AlarmeId;
 import br.hela.alarme.comandos.BuscarAlarme;
 import br.hela.alarme.comandos.CriarAlarme;
 import br.hela.alarme.comandos.EditarAlarme;
-import br.hela.medicamento.Medicamento;
 import br.hela.medicamento.MedicamentoId;
+import br.hela.medicamento.comandos.BuscarMedicamento;
 
 @Service
 @Transactional
@@ -36,7 +35,7 @@ public class AlarmeService {
 	}
 
 	public Optional<BuscarAlarme> encontrar(AlarmeId alarmeId) throws Exception {
-		List<Medicamento> medicamentos = executeQuery(alarmeId.toString(), this.sql);
+		List<BuscarMedicamento> medicamentos = executeQuery(alarmeId.toString(), this.sql);
 		BuscarAlarme alarme = new BuscarAlarme(repo.findById(alarmeId).get());
 		alarme.setMedicamento(medicamentos.get(0));
 		return Optional.of(alarme);
@@ -47,7 +46,7 @@ public class AlarmeService {
 		List<Alarme> alarmes = repo.findAll();
 		for (Alarme alarme : alarmes) {
 			BuscarAlarme nova = new BuscarAlarme(alarme);
-			List<Medicamento> medicamentos = executeQuery(alarme.getId().toString(), this.sql);
+			List<BuscarMedicamento> medicamentos = executeQuery(alarme.getId().toString(), this.sql);
 			nova.setMedicamento(medicamentos.get(0));
 			rsAlarmes.add(nova);
 		}
@@ -73,9 +72,9 @@ public class AlarmeService {
 		return Optional.empty();
 	}
 	
-	public List<Medicamento> executeQuery(String id, String sql) {
-		List<Medicamento> medicamentos = jdbcTemplate.query(sql, new Object[] { id }, (rs, rowNum) -> {
-			Medicamento med = new Medicamento();
+	public List<BuscarMedicamento> executeQuery(String id, String sql) {
+		List<BuscarMedicamento> medicamentos = jdbcTemplate.query(sql, new Object[] { id }, (rs, rowNum) -> {
+			BuscarMedicamento med = new BuscarMedicamento();
 			String idAlarme = rs.getString("id");
 			if (id.equals(idAlarme)) {
 				med.setIdMedicamento(new MedicamentoId(rs.getString("id_medicamento")));

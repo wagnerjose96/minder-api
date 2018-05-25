@@ -14,9 +14,9 @@ import br.hela.alergia.alergia_medicamento.Alergia_Medicamento_Service;
 import br.hela.alergia.comandos.BuscarAlergia;
 import br.hela.alergia.comandos.CriarAlergia;
 import br.hela.alergia.comandos.EditarAlergia;
-import br.hela.medicamento.Medicamento;
 import br.hela.medicamento.MedicamentoId;
 import br.hela.medicamento.MedicamentoService;
+import br.hela.medicamento.comandos.BuscarMedicamento;
 
 @Service
 @Transactional
@@ -49,7 +49,7 @@ public class AlergiaService {
 	}
 
 	public Optional<BuscarAlergia> encontrar(AlergiaId alergiaId) throws Exception {
-		List<Medicamento> medicamentos = executeQuery(alergiaId.toString());
+		List<BuscarMedicamento> medicamentos = executeQuery(alergiaId.toString());
 		BuscarAlergia alergia = new BuscarAlergia(repo.findById(alergiaId).get());
 		alergia.setMedicamentos(medicamentos);
 		return Optional.of(alergia);
@@ -59,7 +59,7 @@ public class AlergiaService {
 		List<Alergia> alergias = repo.findAll();
 		List<BuscarAlergia> rsAlergias = new ArrayList<>();
 		for (Alergia alergia : alergias) {
-			List<Medicamento> medicamentos = executeQuery(alergia.getIdAlergia().toString());
+			List<BuscarMedicamento> medicamentos = executeQuery(alergia.getIdAlergia().toString());
 			BuscarAlergia nova = new BuscarAlergia(alergia);
 			nova.setMedicamentos(medicamentos);
 			rsAlergias.add(nova);
@@ -103,14 +103,14 @@ public class AlergiaService {
 		return true;
 	}
 
-	private List<Medicamento> executeQuery(String id) {
-		List<Medicamento> medicamentos = jdbcTemplate.query(
+	private List<BuscarMedicamento> executeQuery(String id) {
+		List<BuscarMedicamento> medicamentos = jdbcTemplate.query(
 				"select c.id, a.nome_medicamento, " + "a.composicao, a.id_medicamento, a.ativo from medicamento a "
 						+ "inner join alergia_medicamento b on a.id_medicamento = b.id_medicamento "
 						+ "inner join alergia c on b.id_alergia = c.id "
 						+ "group by c.id, a.id_medicamento having c.id = ? " + "order by c.tipo_alergia",
 				new Object[] { id }, (rs, rowNum) -> {
-					Medicamento med = new Medicamento();
+					BuscarMedicamento med = new BuscarMedicamento();
 					String idAlarme = rs.getString("id");
 					if (id.equals(idAlarme)) {
 						med.setIdMedicamento(new MedicamentoId(rs.getString("id_medicamento")));

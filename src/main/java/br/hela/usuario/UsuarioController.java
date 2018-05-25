@@ -61,7 +61,7 @@ public class UsuarioController {
 		if (optionalUsuarioId.isPresent()) {
 			URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
 					.buildAndExpand(optionalUsuarioId.get()).toUri();
-			return ResponseEntity.created(location).body("Usuário criado com sucesso");
+			return ResponseEntity.created(location).body("Usuário cadastrado com sucesso");
 		}
 		throw new Exception("O Usuário não foi salvo devido a um erro interno");
 	}

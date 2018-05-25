@@ -62,7 +62,7 @@ public class TelefoneController {
 		if (optionalTelefoneId.isPresent()) {
 			URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
 					.buildAndExpand(optionalTelefoneId.get()).toUri();
-			return ResponseEntity.created(location).body("O telefone foi criado com sucesso");
+			return ResponseEntity.created(location).body("O telefone foi cadastrado com sucesso");
 		}
 		throw new Exception("O telefone não foi salvo devido a um erro interno");
 	}
@@ -81,7 +81,7 @@ public class TelefoneController {
 					.buildAndExpand(optionalTelefoneId.get()).toUri();
 			return ResponseEntity.created(location).body("Telefone alterado com sucesso");
 		} else {
-			throw new InternalError("Erro interno durante a alteração do usuário");
+			throw new InternalError("Erro interno durante a alteração do telefone");
 		}
 	}
 
