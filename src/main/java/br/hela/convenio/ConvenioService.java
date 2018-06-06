@@ -19,6 +19,7 @@ public class ConvenioService {
 	private ConvenioRepository convenioRepo;
 
 	public Optional<ConvenioId> salvar(CriarConvenio comando) {
+		comando.setAtivo(1);
 		Convenio novo = convenioRepo.save(new Convenio(comando));
 		return Optional.of(novo.getId());
 	}
@@ -53,6 +54,7 @@ public class ConvenioService {
 		Optional<Convenio> optional = convenioRepo.findById(comando.getId());
 		if (optional.isPresent()) {
 			Convenio conv = optional.get();
+			comando.setAtivo(1);
 			conv.apply(comando);
 			convenioRepo.save(conv);
 			return Optional.of(comando.getId());

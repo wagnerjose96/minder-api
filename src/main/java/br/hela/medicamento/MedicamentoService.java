@@ -16,6 +16,7 @@ public class MedicamentoService {
 	private MedicamentoRepository medicamentoRepo;
 
 	public Optional<MedicamentoId> salvar(CriarMedicamento comando) {
+		comando.setAtivo(1);
 		Medicamento novo = medicamentoRepo.save(new Medicamento(comando));
 		return Optional.of(novo.getIdMedicamento());
 	}
@@ -50,6 +51,7 @@ public class MedicamentoService {
 		Optional<Medicamento> optional = medicamentoRepo.findById(comando.getIdMedicamento());
 		if (optional.isPresent()) {
 			Medicamento med = optional.get();
+			comando.setAtivo(1);
 			med.apply(comando);
 			medicamentoRepo.save(med);
 			return Optional.of(comando.getIdMedicamento());

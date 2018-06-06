@@ -28,6 +28,7 @@ public class UsuarioService {
 			+ "where email = ? and senha = ?";
 
 	public Optional<UsuarioId> salvar(CriarUsuario comando) {
+		comando.setAtivo(1);
 		Usuario novo = repo.save(new Usuario(comando));
 		return Optional.of(novo.getId());
 	}
@@ -62,6 +63,7 @@ public class UsuarioService {
 		Optional<Usuario> optional = repo.findById(comando.getId());
 		if (optional.isPresent()) {
 			Usuario user = optional.get();
+			comando.setAtivo(1);
 			user.apply(comando);
 			repo.save(user);
 			return Optional.of(comando.getId());

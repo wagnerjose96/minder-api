@@ -17,6 +17,7 @@ public class TelefoneService {
 	private TelefoneRepository telefoneRepo;
 
 	public Optional<TelefoneId> salvar(CriarTelefone comando) {
+		comando.setAtivo(1);
 		Telefone novo = telefoneRepo.save(new Telefone(comando));
 		return Optional.of(novo.getIdTelefone());
 	}
@@ -37,7 +38,8 @@ public class TelefoneService {
 				resultados.add(telefone);
 			}
 		}
-		return Optional.of(resultados);	}
+		return Optional.of(resultados);	
+	}
 
 	public Optional<String> deletar(TelefoneId id) {
 		Telefone telefone = telefoneRepo.findById(id).get();
@@ -50,6 +52,7 @@ public class TelefoneService {
 		Optional<Telefone> optional = telefoneRepo.findById(comando.getIdTelefone());
 		if (optional.isPresent()) {
 			Telefone tel = optional.get();
+			comando.setAtivo(1);
 			tel.apply(comando);
 			telefoneRepo.save(tel);
 			return Optional.of(comando.getIdTelefone());

@@ -15,7 +15,7 @@
 				<constraints nullable="false" />
 			</column>
 			<column name="ativo" type="${TYPE_NUMBER}">
-				<constraints nullable="false" />
+				<constraints nullable="true" />
 			</column>
 		</createTable>
 	</changeSet>
@@ -29,7 +29,7 @@
 				<constraints nullable="false" />
 			</column>
 			<column name="ativo" type="${TYPE_NUMBER}">
-				<constraints nullable="false" />
+				<constraints nullable="true" />
 			</column>
 			<column name="rev" type="${TYPE_NUMBER}">
 				<constraints nullable="false" referencedTableName="revinfo"
