@@ -105,15 +105,11 @@ public class UsuarioController {
 	@ApiOperation(value = "Altere a senha de um usuário")
 	@PutMapping("/senha")
 	public String putUSenha(@RequestBody GerarSenha comando)
-			throws NullPointerException, InternalError {
-
-		if (!verificaUsuarioExistente(comando.getId())) {
-			throw new NullPointerException("O usuário não existe no banco de dados");
-		}
+			throws NullPointerException {
 		if (service.gerarSenhaAleatoria(comando)) 
 			return "Nova senha criada com sucesso";
 		else 
-			throw new InternalError("Erro interno durante a alteração da senha");
+			throw new NullPointerException("Usuário não encontrado");
 	}
 	
 	private boolean verificaUsuarioExistente(UsuarioId id) {

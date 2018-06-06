@@ -8,4 +8,5 @@ public class GerarSenha {
 	private UsuarioId id;
 	private String senha;
 	private String email;
+	private int ativo;
 }

@@ -70,7 +70,6 @@ public class Usuario {
 	}
 	
 	public void applySenha(GerarSenha comando) {
-		this.id = comando.getId();
 		this.email = comando.getEmail();
 		this.senha = criptografa(comando.getSenha());
 	}
