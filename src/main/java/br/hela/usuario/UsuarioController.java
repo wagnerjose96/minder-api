@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import br.hela.usuario.comandos.CriarUsuario;
 import br.hela.usuario.comandos.EditarUsuario;
+import br.hela.usuario.comandos.LogarUsuario;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 
@@ -64,6 +65,22 @@ public class UsuarioController {
 			return ResponseEntity.created(location).body("Usuário cadastrado com sucesso");
 		}
 		throw new Exception("O Usuário não foi salvo devido a um erro interno");
+	}
+	
+	@ApiOperation(value = "Efetue o login pelo nome de usuário")
+	@PostMapping("/loginNomeUsuario")
+	public String loginPorNomeDeUsuario(@RequestBody LogarUsuario comando) throws NullPointerException {
+		if (service.logarPorNomeDeUsuario(comando))
+			return "Usuário logado com sucesso";
+		throw new NullPointerException ("Login não realizado! Favor conferir os dados digitados");
+	}
+	
+	@ApiOperation(value = "Efetue o login pelo email")
+	@PostMapping("/loginEmail")
+	public String loginPorEmail(@RequestBody LogarUsuario comando) throws NullPointerException {
+		if (service.logarPorEmail(comando))
+			return "Usuário logado com sucesso";
+		throw new NullPointerException ("Login não realizado! Favor conferir os dados digitados");
 	}
 
 	@ApiOperation(value = "Altere um usuário")

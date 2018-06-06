@@ -4,16 +4,27 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import br.hela.usuario.comandos.CriarUsuario;
 import br.hela.usuario.comandos.EditarUsuario;
+import br.hela.usuario.comandos.LogarUsuario;
 
 @Service
 @Transactional
 public class UsuarioService {
 	@Autowired
 	private UsuarioRepository repo;
+
+	@Autowired
+	private JdbcTemplate jdbcTemplate;
+
+	private String sqlNomeUsuario = "select nome_usuario, senha, ativo from usuario " 
+	+ "where nome_usuario = ? and senha = ?";
+	
+	private String sqlEmail = "select email, senha, ativo from usuario " 
+			+ "where email = ? and senha = ?";
 
 	public Optional<UsuarioId> salvar(CriarUsuario comando) {
 		Usuario novo = repo.save(new Usuario(comando));
@@ -59,5 +70,55 @@ public class UsuarioService {
 
 	public void deletarTodos() {
 		repo.deleteAll();
+	}
+	
+	public Boolean logarPorNomeDeUsuario(LogarUsuario comando) {
+		List<LogarUsuario> usuario = consultarUsuario(comando);
+		if (usuario.size() > 0 && usuario.get(0).getAtivo() == 1) {
+			return true;
+		}
+		else return false;
+	}
+	
+	public Boolean logarPorEmail(LogarUsuario comando) {
+		List<LogarUsuario> usuario = consultarEmail(comando);
+		if (usuario.size() > 0 && usuario.get(0).getAtivo() == 1) {
+			return true;
+		}
+		else return false;
+	}
+
+	public List<LogarUsuario> consultarUsuario(LogarUsuario comando) {
+		String senha = comando.criptografa(comando.getSenha());
+		String nome_usuario = comando.getNome_usuario();
+		List<LogarUsuario> user = jdbcTemplate.query(sqlNomeUsuario, new Object[] { nome_usuario, senha }, (rs, rowNum) -> {
+			LogarUsuario usuario = new LogarUsuario();
+			String senhaUsuario = rs.getString("senha");
+			String nomeUsuario = rs.getString("nome_usuario");
+			if (senhaUsuario.equals(senha) && nomeUsuario.equals(nome_usuario)) {
+				usuario.setNome_usuario(rs.getString("nome_usuario"));
+				usuario.setSenha(rs.getString("senha"));
+				usuario.setAtivo(rs.getInt("ativo"));
+			}
+			return usuario;
+		} );
+		return user;
+	}
+	
+	public List<LogarUsuario> consultarEmail(LogarUsuario comando) {
+		String senha = comando.criptografa(comando.getSenha());
+		String email = comando.getEmail();
+		List<LogarUsuario> user = jdbcTemplate.query(sqlEmail, new Object[] { email, senha }, (rs, rowNum) -> {
+			LogarUsuario usuario = new LogarUsuario();
+			String senhaUsuario = rs.getString("senha");
+			String emailUsuario = rs.getString("email");
+			if (senhaUsuario.equals(senha) && emailUsuario.equals(email)) {
+				usuario.setEmail(rs.getString("email"));
+				usuario.setSenha(rs.getString("senha"));
+				usuario.setAtivo(rs.getInt("ativo"));
+			}
+			return usuario;
+		} );
+		return user;
 	}
 }

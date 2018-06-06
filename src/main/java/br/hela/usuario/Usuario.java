@@ -1,5 +1,8 @@
 package br.hela.usuario;
 
+import java.math.BigInteger;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.Date;
 import javax.persistence.AttributeOverride;
 import javax.persistence.Column;
@@ -42,7 +45,7 @@ public class Usuario {
 		this.nome_completo = comando.getNome_completo();
 		this.nome_usuario = comando.getNome_usuario();
 		this.email = comando.getEmail();
-		this.senha = comando.getSenha();
+		this.senha = criptografa(comando.getSenha());
 		this.tipo_sangue = comando.getTipo_sangue();
 		this.endereco = comando.getEndereco();
 		this.telefone = comando.getTelefone();
@@ -63,5 +66,17 @@ public class Usuario {
 		this.sexo = comando.getSexo();
 		this.imagem_usuario = comando.getImagem_usuario();
 		this.ativo = comando.getAtivo();
+	}
+
+	private String criptografa(String senha) {
+		String senhaCriptografada = null;
+		try {
+			MessageDigest digest = MessageDigest.getInstance("MD5");
+			digest.update(senha.getBytes(),0,senha.length());
+			senhaCriptografada = new BigInteger(1,digest.digest()).toString(16);
+		} catch (NoSuchAlgorithmException ns) {
+			ns.printStackTrace();
+		}
+		return senhaCriptografada;
 	}
 }

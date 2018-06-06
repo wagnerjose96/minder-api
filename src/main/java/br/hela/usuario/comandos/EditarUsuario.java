@@ -15,5 +15,5 @@ public class EditarUsuario {
 	private Date data_nascimento;
 	private String sexo;
 	private String imagem_usuario;
-	private int ativo;
+	private int ativo = 1;
 }

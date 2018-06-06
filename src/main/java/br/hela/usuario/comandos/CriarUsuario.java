@@ -1,5 +1,4 @@
 package br.hela.usuario.comandos;
-
 import java.util.Date;
 import lombok.Data;
 
@@ -15,5 +14,5 @@ public class CriarUsuario {
 	private Date data_nascimento;
 	private String sexo;
 	private String imagem_usuario;
-	private int ativo;
+	private int ativo = 1;
 }
