@@ -12,13 +12,13 @@ public class LogarUsuario {
 	private String nome_usuario;
 	private String senha;
 	private int ativo;
-	
+
 	public String criptografa(String senha) {
 		String senhaCriptografada = null;
 		try {
 			MessageDigest digest = MessageDigest.getInstance("MD5");
-			digest.update(senha.getBytes(),0,senha.length());
-			senhaCriptografada = new BigInteger(1,digest.digest()).toString(16);
+			digest.update(senha.getBytes(), 0, senha.length());
+			senhaCriptografada = new BigInteger(1, digest.digest()).toString(16);
 		} catch (NoSuchAlgorithmException ns) {
 			ns.printStackTrace();
 		}

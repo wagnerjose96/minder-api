@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import br.hela.usuario.comandos.CriarUsuario;
 import br.hela.usuario.comandos.EditarUsuario;
+import br.hela.usuario.comandos.GerarSenha;
 import br.hela.usuario.comandos.LogarUsuario;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -67,7 +68,7 @@ public class UsuarioController {
 		throw new Exception("O Usuário não foi salvo devido a um erro interno");
 	}
 	
-	@ApiOperation(value = "Efetue o login pelo nome de usuário")
+	@ApiOperation(value = "Efetue o login de um usuário pelo nome de usuário")
 	@PostMapping("/loginNomeUsuario")
 	public String loginPorNomeDeUsuario(@RequestBody LogarUsuario comando) throws NullPointerException {
 		if (service.logarPorNomeDeUsuario(comando))
@@ -75,7 +76,7 @@ public class UsuarioController {
 		throw new NullPointerException ("Login não realizado! Favor conferir os dados digitados");
 	}
 	
-	@ApiOperation(value = "Efetue o login pelo email")
+	@ApiOperation(value = "Efetue o login de um usuário pelo email")
 	@PostMapping("/loginEmail")
 	public String loginPorEmail(@RequestBody LogarUsuario comando) throws NullPointerException {
 		if (service.logarPorEmail(comando))
@@ -101,6 +102,20 @@ public class UsuarioController {
 		}
 	}
 
+	@ApiOperation(value = "Altere a senha de um usuário")
+	@PutMapping("/senha")
+	public String putUSenha(@RequestBody GerarSenha comando)
+			throws NullPointerException, InternalError {
+
+		if (!verificaUsuarioExistente(comando.getId())) {
+			throw new NullPointerException("O usuário não existe no banco de dados");
+		}
+		if (service.gerarSenhaAleatoria(comando)) 
+			return "Nova senha criada com sucesso";
+		else 
+			throw new InternalError("Erro interno durante a alteração da senha");
+	}
+	
 	private boolean verificaUsuarioExistente(UsuarioId id) {
 		if (!service.encontrar(id).isPresent()) {
 			return false;

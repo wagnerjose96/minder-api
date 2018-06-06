@@ -11,6 +11,7 @@ import javax.persistence.Entity;
 import org.hibernate.envers.Audited;
 import br.hela.usuario.comandos.CriarUsuario;
 import br.hela.usuario.comandos.EditarUsuario;
+import br.hela.usuario.comandos.GerarSenha;
 import lombok.AccessLevel;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -58,7 +59,7 @@ public class Usuario {
 	public void apply(EditarUsuario comando) {
 		this.id = comando.getId();
 		this.nome_completo = comando.getNome_completo();
-		this.senha = comando.getSenha();
+		this.senha = criptografa(comando.getSenha());
 		this.tipo_sangue = comando.getTipo_sangue();
 		this.endereco = comando.getEndereco();
 		this.telefone = comando.getTelefone();
@@ -66,6 +67,12 @@ public class Usuario {
 		this.sexo = comando.getSexo();
 		this.imagem_usuario = comando.getImagem_usuario();
 		this.ativo = comando.getAtivo();
+	}
+	
+	public void applySenha(GerarSenha comando) {
+		this.id = comando.getId();
+		this.email = comando.getEmail();
+		this.senha = criptografa(comando.getSenha());
 	}
 
 	private String criptografa(String senha) {
@@ -79,4 +86,5 @@ public class Usuario {
 		}
 		return senhaCriptografada;
 	}
+
 }
