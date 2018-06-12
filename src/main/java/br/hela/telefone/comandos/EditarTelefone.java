@@ -8,5 +8,4 @@ public class EditarTelefone {
 	private TelefoneId idTelefone;
 	private int ddd;
 	private int numero;
-	private int ativo;
 }

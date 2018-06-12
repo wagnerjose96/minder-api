@@ -9,5 +9,4 @@ public class BuscarMedicamento {
 	private String nomeMedicamento;
 	private String composicao;
 	public int ativo;
-
 }

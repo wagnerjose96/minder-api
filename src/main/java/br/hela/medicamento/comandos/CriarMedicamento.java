@@ -6,5 +6,4 @@ import lombok.Data;
 public class CriarMedicamento {
 	private String nomeMedicamento;
 	private String composicao;
-	private int ativo = 1;
 }

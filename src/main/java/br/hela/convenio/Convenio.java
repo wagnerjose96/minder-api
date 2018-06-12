@@ -30,12 +30,11 @@ public class Convenio {
 	public Convenio(CriarConvenio comandos) {
 		this.id = new ConvenioId();
 		this.nome = comandos.getNome();
-		this.ativo = comandos.getAtivo();
+		this.ativo = 1;
 	}
 
 	public void apply(EditarConvenio comandos) {
 		this.id = comandos.getId();
 		this.nome = comandos.getNome();
-		this.ativo = comandos.getAtivo();
 	}
 }

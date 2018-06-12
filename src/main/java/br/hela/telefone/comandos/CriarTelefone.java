@@ -6,5 +6,4 @@ import lombok.Data;
 public class CriarTelefone {
 	private int ddd;
 	private int numero;
-	private int ativo;
 }

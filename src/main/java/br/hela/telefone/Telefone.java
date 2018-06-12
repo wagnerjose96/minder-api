@@ -33,13 +33,12 @@ public class Telefone {
 		this.idTelefone = new TelefoneId();
 		this.ddd = comando.getDdd();
 		this.numero = comando.getNumero();
-		this.ativo = comando.getAtivo();
+		this.ativo = 1;
 	}
 
 	public void apply(EditarTelefone comando) {
 		this.idTelefone = comando.getIdTelefone();
 		this.ddd = comando.getDdd();
 		this.numero = comando.getNumero();
-		this.ativo = comando.getAtivo();
 	}
 }

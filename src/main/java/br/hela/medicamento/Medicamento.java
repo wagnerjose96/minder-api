@@ -32,13 +32,12 @@ public class Medicamento {
 		this.idMedicamento = new MedicamentoId();
 		this.nomeMedicamento = comando.getNomeMedicamento();
 		this.composicao = comando.getComposicao();
-		this.ativo = comando.getAtivo();
+		this.ativo = 1;
 	}
 
 	public void apply(EditarMedicamento comando) {
 		this.idMedicamento = comando.getIdMedicamento();
 		this.nomeMedicamento = comando.getNomeMedicamento();
 		this.composicao = comando.getComposicao();
-		this.ativo = comando.getAtivo();
 	}
 }

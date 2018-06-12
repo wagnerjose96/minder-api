@@ -24,6 +24,7 @@
 	<include file="db/changelog/entidades/db.changelog-doenca.xml" />
 	<include file="db/changelog/entidades/db.changelog-cirurgia.xml" />
 	<include file="db/changelog/entidades/db.changelog-usuario.xml" />
+	<include file="db/changelog/entidades/db.changelog-usuario_adm.xml" />
 	<include file="db/changelog/entidades/db.changelog-error.xml" />
 	<include file="db/changelog/entidades/db.changelog-alarme.xml" />
 	<include file="db/changelog/entidades/db.changelog-telefone.xml" />

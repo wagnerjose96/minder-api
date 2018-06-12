@@ -1,17 +1,15 @@
 package br.hela.usuario;
 
-import java.math.BigInteger;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import java.util.Date;
 import javax.persistence.AttributeOverride;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import org.hibernate.envers.Audited;
+import br.hela.esqueciSenha.comandos.GerarSenha;
+import br.hela.security.Criptografia;
 import br.hela.usuario.comandos.CriarUsuario;
 import br.hela.usuario.comandos.EditarUsuario;
-import br.hela.usuario.comandos.GerarSenha;
 import lombok.AccessLevel;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -20,7 +18,7 @@ import lombok.Setter;
 @Entity
 @Audited
 @Data
-@EqualsAndHashCode(exclude = { "nome_completo", "nome_usuario", "email", "senha", "tipo_sangue", "endereco", "telefone", "data_nascimento", "sexo", "imagem_usuario"})
+@EqualsAndHashCode(exclude = { "nome_completo", "nome_usuario", "email", "senha", "tipo_sangue", "endereco", "telefone", "data_nascimento", "sexo", "imagem_usuario", "ativo"})
 public class Usuario {
 	@EmbeddedId
 	@AttributeOverride(name = "value", column = @Column(name = "id"))
@@ -37,7 +35,7 @@ public class Usuario {
 	private String sexo;
 	private String imagem_usuario;
 	private int ativo;
-
+	
 	public Usuario() {
 	}
 
@@ -46,44 +44,33 @@ public class Usuario {
 		this.nome_completo = comando.getNome_completo();
 		this.nome_usuario = comando.getNome_usuario();
 		this.email = comando.getEmail();
-		this.senha = criptografa(comando.getSenha());
+		this.senha = Criptografia.criptografa(comando.getSenha());
 		this.tipo_sangue = comando.getTipo_sangue();
 		this.endereco = comando.getEndereco();
 		this.telefone = comando.getTelefone();
 		this.data_nascimento = comando.getData_nascimento();
 		this.sexo = comando.getSexo();
 		this.imagem_usuario = comando.getImagem_usuario();
-		this.ativo = comando.getAtivo();
+		this.ativo = 1;
 	}
 
 	public void apply(EditarUsuario comando) {
 		this.id = comando.getId();
 		this.nome_completo = comando.getNome_completo();
-		this.senha = criptografa(comando.getSenha());
+		this.senha = Criptografia.criptografa(comando.getSenha());
 		this.tipo_sangue = comando.getTipo_sangue();
 		this.endereco = comando.getEndereco();
 		this.telefone = comando.getTelefone();
 		this.data_nascimento = comando.getData_nascimento();
 		this.sexo = comando.getSexo();
 		this.imagem_usuario = comando.getImagem_usuario();
-		this.ativo = comando.getAtivo();
 	}
 	
 	public void applySenha(GerarSenha comando) {
 		this.email = comando.getEmail();
-		this.senha = criptografa(comando.getSenha());
+		this.senha = Criptografia.criptografa(comando.getSenha());
 	}
 
-	private String criptografa(String senha) {
-		String senhaCriptografada = null;
-		try {
-			MessageDigest digest = MessageDigest.getInstance("MD5");
-			digest.update(senha.getBytes(),0,senha.length());
-			senhaCriptografada = new BigInteger(1,digest.digest()).toString(16);
-		} catch (NoSuchAlgorithmException ns) {
-			ns.printStackTrace();
-		}
-		return senhaCriptografada;
-	}
+	
 
 }

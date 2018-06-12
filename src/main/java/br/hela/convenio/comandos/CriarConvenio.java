@@ -5,5 +5,4 @@ import lombok.Data;
 @Data
 public class CriarConvenio {
 	private String nome;
-	private int ativo;
 }
