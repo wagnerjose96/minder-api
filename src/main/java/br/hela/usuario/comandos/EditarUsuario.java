@@ -7,12 +7,12 @@ import lombok.Data;
 @Data
 public class EditarUsuario {
 	private UsuarioId id;
-	private String nome_completo;
 	private String senha;
-	private String tipo_sangue;
+	private String nome;
+	private String tipoSanguineo;
 	private String endereco;
 	private int telefone;
-	private Date data_nascimento;
+	private Date dataNascimento;
 	private String sexo;
-	private String imagem_usuario;
+	private String imagem;
 }

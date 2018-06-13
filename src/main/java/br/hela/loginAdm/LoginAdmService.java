@@ -5,7 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import br.hela.login.comandos.LogarUsuario;
+import br.hela.loginAdm.comandos.LogarAdm;
 import br.hela.security.Criptografia;
 
 @Service
@@ -15,19 +15,19 @@ public class LoginAdmService {
 	@Autowired
 	private JdbcTemplate jdbcTemplate;
 
-	private String sqlNomeUsuario = "select nome_usuario, senha from usuario "
+	private String sql = "select nome_usuario, senha from usuario_adm "
 			+ "where nome_usuario = ? and senha = ?";
 	
-	public boolean consultarUsuario(LogarUsuario comando) {
+	public boolean consultarUsuario(LogarAdm comando) {
 		String senha = Criptografia.criptografa(comando.getSenha());
-		String nome_usuario = comando.getIdentificador();
-		LogarUsuario usuario = new LogarUsuario();
-		List<LogarUsuario> user = jdbcTemplate.query(sqlNomeUsuario, new Object[] { nome_usuario, senha },
+		String nome_usuario = comando.getUsername();
+		LogarAdm usuario = new LogarAdm();
+		List<LogarAdm> user = jdbcTemplate.query(sql, new Object[] { nome_usuario, senha },
 				(rs, rowNum) -> {
 					String senhaUsuario = rs.getString("senha");
 					String nomeUsuario = rs.getString("nome_usuario");
 					if (senhaUsuario.equals(senha) && nomeUsuario.equals(nome_usuario)) {
-						usuario.setIdentificador(rs.getString("nome_usuario"));
+						usuario.setUsername(rs.getString("nome_usuario"));
 						usuario.setSenha(rs.getString("senha"));
 					}
 					return usuario;

@@ -23,42 +23,35 @@ import br.hela.security.AutenticaRequisicao;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 
-@Api(description = "Basic Alergia Controller")
+@Api("Basic Alergia Controller")
 @RestController
 @RequestMapping("/alergias")
 public class AlergiaController {
 	@Autowired
 	private AlergiaService alergiaService;
-	
+
 	@Autowired
 	private AutenticaRequisicao autentica;
 
-	@ApiOperation(value = "Busque todas as alergias")
+	@ApiOperation("Busque todas as alergias")
 	@GetMapping
-	public ResponseEntity<List<BuscarAlergia>> getAlergias(@RequestHeader String token)
-			throws Exception, AccessDeniedException {
-		if (autentica.autenticaRequisicao(token)) {
-			Optional<List<BuscarAlergia>> optionalAlergias = alergiaService.encontrar();
-			return ResponseEntity.ok(optionalAlergias.get());
-		}
-		throw new AccessDeniedException("Acesso negado");
+	public ResponseEntity<List<BuscarAlergia>> getAlergias() throws SQLException, Exception {
+		Optional<List<BuscarAlergia>> optionalAlergias = alergiaService.encontrar();
+		return ResponseEntity.ok(optionalAlergias.get());
 	}
 
-	@ApiOperation(value = "Busque a alergia pelo ID")
+	@ApiOperation("Busque a alergia pelo ID")
 	@GetMapping("/{id}")
-	public ResponseEntity<BuscarAlergia> getAlergiaPorId(@PathVariable AlergiaId id, @RequestHeader String token)
-			throws NullPointerException, Exception, AccessDeniedException {
-		if (autentica.autenticaRequisicao(token)) {
-			Optional<BuscarAlergia> optionalAlergia = alergiaService.encontrar(id);
-			if (verificaAlergiaExistente(id)) {
-				return ResponseEntity.ok(optionalAlergia.get());
-			}
-			throw new NullPointerException("A alergia procurada não existe no banco de dados");
+	public ResponseEntity<BuscarAlergia> getAlergiaPorId(@PathVariable AlergiaId id)
+			throws SQLException, NullPointerException, Exception {
+		Optional<BuscarAlergia> optionalAlergia = alergiaService.encontrar(id);
+		if (verificaAlergiaExistente(id)) {
+			return ResponseEntity.ok(optionalAlergia.get());
 		}
-		throw new AccessDeniedException("Acesso negado");
+		throw new NullPointerException("A alergia procurada não existe no banco de dados");
 	}
 
-	@ApiOperation(value = "Cadastre uma nova alergia")
+	@ApiOperation("Cadastre uma nova alergia")
 	@PostMapping
 	public ResponseEntity<String> postAlergia(@RequestBody CriarAlergia comando, @RequestHeader String token)
 			throws Exception, AccessDeniedException {
@@ -74,7 +67,7 @@ public class AlergiaController {
 		throw new AccessDeniedException("Acesso negado");
 	}
 
-	@ApiOperation(value = "Altere uma alergia")
+	@ApiOperation("Altere uma alergia")
 	@PutMapping
 	public ResponseEntity<String> putAlergia(@RequestBody EditarAlergia comando, @RequestHeader String token)
 			throws SQLException, NullPointerException, Exception, AccessDeniedException {

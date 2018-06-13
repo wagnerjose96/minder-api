@@ -5,7 +5,6 @@ import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import org.hibernate.envers.Audited;
-import br.hela.esqueciSenha.comandos.GerarSenha;
 import br.hela.security.Criptografia;
 import br.hela.usuarioAdm.comandos.CriarUsuarioAdm;
 import br.hela.usuarioAdm.comandos.EditarUsuarioAdm;
@@ -31,17 +30,14 @@ public class UsuarioAdm {
 
 	public UsuarioAdm(CriarUsuarioAdm comando) {
 		this.id = new UsuarioAdmId();
-		this.nome_usuario = comando.getNome_usuario();
+		this.nome_usuario = comando.getUsername();
 		this.senha = Criptografia.criptografa(comando.getSenha());
 	}
 	
 	public void apply(EditarUsuarioAdm comando) {
 		this.id = comando.getId();
+		this.nome_usuario = comando.getUsername();
 		this.senha = Criptografia.criptografa(comando.getSenha());
 	}
 	
-	public void applySenha(GerarSenha comando) {
-		this.nome_usuario = comando.getEmail();
-		this.senha = Criptografia.criptografa(comando.getSenha());
-	}
 }

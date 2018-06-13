@@ -23,7 +23,7 @@ public class SenhaService {
 	private String sqlSenha = "select email, id, ativo from usuario " 
 			+ "where email = ?";
 	
-	public List<GerarSenha> consultarId(GerarSenha comando) {
+	private List<GerarSenha> consultarId(GerarSenha comando) {
 		String email = comando.getEmail();
 		List<GerarSenha> user = jdbcTemplate.query(sqlSenha, new Object[] { email }, (rs, rowNum) -> {
 			GerarSenha usuario = new GerarSenha();
@@ -38,9 +38,9 @@ public class SenhaService {
 		return user;
 	}
 
-	public boolean gerarSenhaAleatoria(GerarSenha comando) {
+	public String gerarSenhaAleatoria(GerarSenha comando) {
 		String[] carct ={"0","1","2","3","4","5","6","7","8","9","a","b","c","d","e","f","g","h","i","j","k","l","m","n","o","p","q","r","s","t","u","v","w","x","y","z","A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R","S","T","U","V","W","X","Y","Z"};
-		String senha="";
+		String senha = null;
 		for (int x=0; x<6; x++) {
 			int j = (int) (Math.random()*carct.length);
 			senha += carct[j];
@@ -54,9 +54,9 @@ public class SenhaService {
 				user.applySenha(comando);
 				repo.save(user);
 			}
-			return true;
+			return senha;
 		}
-		return false;
+		return senha;
 	}
 
 }

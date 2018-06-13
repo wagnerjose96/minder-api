@@ -2,6 +2,7 @@ package br.hela.usuario;
 
 import java.net.URI;
 import java.nio.file.AccessDeniedException;
+import java.sql.SQLException;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,50 +17,52 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+
+import br.hela.security.AutenticaAdm;
 import br.hela.security.AutenticaRequisicao;
 import br.hela.usuario.comandos.CriarUsuario;
 import br.hela.usuario.comandos.EditarUsuario;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 
-@Api(description = "Basic Usuário Controller")
+@Api("Basic Usuário Controller")
 @RestController
 @RequestMapping("/usuarios")
 public class UsuarioController {
 	@Autowired
 	private UsuarioService service;
-	
+
 	@Autowired
 	private AutenticaRequisicao autentica;
+	
+	@Autowired
+	private AutenticaAdm autenticaAdm;
 
-	@ApiOperation(value = "Busque todos os usuários")
+	@ApiOperation("Busque todos os usuários")
 	@GetMapping
-	public ResponseEntity<List<Usuario>> getUsuarios(@RequestHeader String token) throws AccessDeniedException {
-		if (autentica.autenticaRequisicao(token)) {
+	public ResponseEntity<List<Usuario>> getUsuarios(@RequestHeader String token)
+			throws SQLException, AccessDeniedException {
+		if (autenticaAdm.autenticaRequisicao(token)) {
 			Optional<List<Usuario>> optionalUsuario = service.encontrar();
 			return ResponseEntity.ok(optionalUsuario.get());
 		}
 		throw new AccessDeniedException("Acesso negado");
 	}
 
-	@ApiOperation(value = "Busque um usuário pelo ID")
+	@ApiOperation("Busque um usuário pelo ID")
 	@GetMapping("/{id}")
-	public ResponseEntity<Usuario> getUsuarioId(@PathVariable UsuarioId id, @RequestHeader String token)
-			throws NullPointerException, AccessDeniedException {
-		if (autentica.autenticaRequisicao(token)) {
-			if (verificaUsuarioExistente(id)) {
-				Optional<Usuario> optionalUsuario = service.encontrar(id);
-				return ResponseEntity.ok(optionalUsuario.get());
-			}
-			throw new NullPointerException("O usuário procurado não existe no banco de dados");
+	public ResponseEntity<Usuario> getUsuarioId(@PathVariable UsuarioId id) throws NullPointerException, SQLException {
+		if (verificaUsuarioExistente(id)) {
+			Optional<Usuario> optionalUsuario = service.encontrar(id);
+			return ResponseEntity.ok(optionalUsuario.get());
 		}
-		throw new AccessDeniedException("Acesso negado");
+		throw new NullPointerException("O usuário procurado não existe no banco de dados");
 	}
 
-	@ApiOperation(value = "Delete um usuário pelo ID")
+	@ApiOperation("Delete um usuário pelo ID")
 	@DeleteMapping("/{id}")
 	public ResponseEntity<Optional<String>> deleteUsuario(@PathVariable UsuarioId id, @RequestHeader String token)
-			throws NullPointerException, AccessDeniedException {
+			throws NullPointerException, AccessDeniedException, SQLException, Exception {
 		if (autentica.autenticaRequisicao(token)) {
 			if (verificaUsuarioExistente(id)) {
 				Optional<String> resultado = service.deletar(id);
@@ -70,7 +73,7 @@ public class UsuarioController {
 		throw new AccessDeniedException("Acesso negado");
 	}
 
-	@ApiOperation(value = "Cadastre um novo usuário")
+	@ApiOperation("Cadastre um novo usuário")
 	@PostMapping
 	public ResponseEntity<String> postUsuario(@RequestBody CriarUsuario comando) throws Exception {
 		Optional<UsuarioId> optionalUsuarioId = service.salvar(comando);
@@ -82,10 +85,10 @@ public class UsuarioController {
 		throw new Exception("O usuário não foi salvo devido a um erro interno");
 	}
 
-	@ApiOperation(value = "Altere um usuário")
+	@ApiOperation("Altere um usuário")
 	@PutMapping
 	public ResponseEntity<String> putUsuario(@RequestBody EditarUsuario comando, @RequestHeader String token)
-			throws NullPointerException, InternalError, AccessDeniedException {
+			throws NullPointerException, SQLException, Exception, AccessDeniedException {
 		if (autentica.autenticaRequisicao(token)) {
 			if (!verificaUsuarioExistente(comando.getId())) {
 				throw new NullPointerException("O usuário a ser alterado não existe no banco de dados");

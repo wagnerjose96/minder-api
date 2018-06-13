@@ -10,5 +10,5 @@ import lombok.Data;
 public class CriarDoenca {
 	private String nomeDoenca;
 	private Date dataDescoberta;
-	private List<MedicamentoId> id_medicamentos = new ArrayList<MedicamentoId>();
+	private List<MedicamentoId> idMedicamentos = new ArrayList<MedicamentoId>();
 }

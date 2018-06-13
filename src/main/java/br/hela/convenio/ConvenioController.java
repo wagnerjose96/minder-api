@@ -2,6 +2,7 @@ package br.hela.convenio;
 
 import java.net.URI;
 import java.nio.file.AccessDeniedException;
+import java.sql.SQLException;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,10 +23,10 @@ import br.hela.convenio.ConvenioService;
 import br.hela.convenio.comandos.CriarConvenio;
 import br.hela.convenio.comandos.EditarConvenio;
 import br.hela.security.AutenticaAdm;
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import springfox.documentation.annotations.ApiIgnore;
 
-@ApiIgnore
+@Api("Basic Convenios Controller")
 @Controller
 @RequestMapping("/convenios")
 public class ConvenioController {
@@ -35,34 +36,28 @@ public class ConvenioController {
 	@Autowired
 	private AutenticaAdm autentica;
 
-	@ApiOperation(value = "Busque todos os convênios")
+	@ApiOperation("Busque todos os convênios")
 	@GetMapping
-	public ResponseEntity<List<Convenio>> getConvenio(@RequestHeader String token) throws AccessDeniedException {
-		if (autentica.autenticaRequisicao(token)) {
+	public ResponseEntity<List<Convenio>> getConvenio() throws SQLException, Exception {
 			Optional<List<Convenio>> optionalConvenios = service.encontrar();
 			return ResponseEntity.ok(optionalConvenios.get());
-		}
-		throw new AccessDeniedException("Acesso negado");
 	}
 
-	@ApiOperation(value = "Busque um convênio pelo ID")
+	@ApiOperation("Busque um convênio pelo ID")
 	@GetMapping("/{id}")
-	public ResponseEntity<Convenio> getConvenioPorId(@PathVariable ConvenioId id, @RequestHeader String token)
-			throws NullPointerException, AccessDeniedException {
-		if (autentica.autenticaRequisicao(token)) {
+	public ResponseEntity<Convenio> getConvenioPorId(@PathVariable ConvenioId id)
+			throws SQLException, NullPointerException, Exception {
 			if (verificaConvenioExistente(id)) {
 				Optional<Convenio> optionalConvenio = service.encontrar(id);
 				return ResponseEntity.ok(optionalConvenio.get());
 			}
 			throw new NullPointerException("O convênio procurado não existe no banco de dados");
-		}
-		throw new AccessDeniedException("Acesso negado");
 	}
 
-	@ApiOperation(value = "Delete um convênio pelo ID")
+	@ApiOperation("Delete um convênio pelo ID")
 	@DeleteMapping("/{id}")
 	public ResponseEntity<Optional<String>> deletarConvenio(@PathVariable ConvenioId id, @RequestHeader String token)
-			throws NullPointerException, AccessDeniedException {
+			throws SQLException, NullPointerException, Exception, AccessDeniedException {
 		if (autentica.autenticaRequisicao(token)) {
 			if (verificaConvenioExistente(id)) {
 				Optional<String> optionalConvenio = service.deletar(id);
@@ -92,7 +87,7 @@ public class ConvenioController {
 	@ApiOperation(value = "Altere um convênio")
 	@PutMapping
 	public ResponseEntity<String> putConvenioContinuo(@RequestBody EditarConvenio comando, @RequestHeader String token)
-			throws NullPointerException, InternalError, AccessDeniedException {
+			throws SQLException, NullPointerException, Exception, AccessDeniedException {
 		if (autentica.autenticaRequisicao(token)) {
 			if (!verificaConvenioExistente(comando.getId())) {
 				throw new NullPointerException("O convênio a ser alterado não existe no banco de dados");

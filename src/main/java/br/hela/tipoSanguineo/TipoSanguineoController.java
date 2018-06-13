@@ -20,10 +20,10 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import br.hela.security.AutenticaAdm;
 import br.hela.tipoSanguineo.comandos.CriarTipoSanguineo;
 import br.hela.tipoSanguineo.comandos.EditarTipoSanguineo;
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import springfox.documentation.annotations.ApiIgnore;
 
-@ApiIgnore
+@Api("Basic Tipo sanguíneo Controller")
 @Controller
 @RequestMapping("/sangues")
 public class TipoSanguineoController {
@@ -33,10 +33,10 @@ public class TipoSanguineoController {
 	@Autowired
 	private AutenticaAdm autentica;
 
-	@ApiOperation(value = "Altere um tipo sanguíneo")
+	@ApiOperation("Altere um tipo sanguíneo")
 	@PutMapping
 	public ResponseEntity<String> putTipoSanguineo(@RequestBody EditarTipoSanguineo comando,
-			@RequestHeader String token) throws NullPointerException, InternalError, AccessDeniedException {
+			@RequestHeader String token) throws SQLException, NullPointerException, Exception, AccessDeniedException {
 		if (autentica.autenticaRequisicao(token)) {
 			if (!verificaTipoSangueExistente(comando.getTipoSanguineoId())) {
 				throw new NullPointerException("O tipo sanguíneo a ser alterado não existe no banco de dados");
@@ -53,32 +53,25 @@ public class TipoSanguineoController {
 		throw new AccessDeniedException("Acesso negado");
 	}
 
-	@ApiOperation(value = "Busque todos os tipos sanguíneos")
+	@ApiOperation("Busque todos os tipos sanguíneos")
 	@GetMapping
-	public ResponseEntity<Optional<List<TipoSanguineo>>> getTipoSanguineo(@RequestHeader String token)
-			throws AccessDeniedException {
-		if (autentica.autenticaRequisicao(token)) {
-			Optional<List<TipoSanguineo>> tipoSangue = service.encontrarTudo();
-			return ResponseEntity.ok(tipoSangue);
-		}
-		throw new AccessDeniedException("Acesso negado");
+	public ResponseEntity<Optional<List<TipoSanguineo>>> getTipoSanguineo() throws SQLException {
+		Optional<List<TipoSanguineo>> tipoSangue = service.encontrarTudo();
+		return ResponseEntity.ok(tipoSangue);
 	}
 
-	@ApiOperation(value = "Busque um tipo sanguíneo pelo ID")
+	@ApiOperation("Busque um tipo sanguíneo pelo ID")
 	@GetMapping("/{id}")
-	public ResponseEntity<TipoSanguineo> getTipoSanguineoPorId(@PathVariable TipoSanguineoId id,
-			@RequestHeader String token) throws NullPointerException, AccessDeniedException {
-		if (autentica.autenticaRequisicao(token)) {
-			Optional<TipoSanguineo> tipoSangue = service.encontrarPorId(id);
-			if (verificaTipoSangueExistente(id)) {
-				return ResponseEntity.ok(tipoSangue.get());
-			}
-			throw new NullPointerException("O tipo sanguíneo procurado não existente no banco de dados");
+	public ResponseEntity<TipoSanguineo> getTipoSanguineoPorId(@PathVariable TipoSanguineoId id)
+			throws NullPointerException, SQLException {
+		Optional<TipoSanguineo> tipoSangue = service.encontrarPorId(id);
+		if (verificaTipoSangueExistente(id)) {
+			return ResponseEntity.ok(tipoSangue.get());
 		}
-		throw new AccessDeniedException("Acesso negado");
+		throw new NullPointerException("O tipo sanguíneo procurado não existente no banco de dados");
 	}
 
-	@ApiOperation(value = "Cadastre um novo tipo sanguíneo")
+	@ApiOperation("Cadastre um novo tipo sanguíneo")
 	@PostMapping
 	public ResponseEntity<String> postTelefone(@RequestBody CriarTipoSanguineo comandos, @RequestHeader String token)
 			throws Exception, AccessDeniedException {

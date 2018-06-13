@@ -7,8 +7,7 @@ import io.jsonwebtoken.SignatureAlgorithm;
 
 @Component
 public class JWTUtil {
-
-//	@Value("${jwt.secret}")
+	// @Value("${jwt.secret}")
 	private static String secret = "MYSECRET";
 
 	public static String create(String subject) {

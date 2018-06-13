@@ -11,7 +11,6 @@ import br.hela.security.Criptografia;
 @Service
 @Transactional
 public class LoginService {
-
 	@Autowired
 	private JdbcTemplate jdbcTemplate;
 

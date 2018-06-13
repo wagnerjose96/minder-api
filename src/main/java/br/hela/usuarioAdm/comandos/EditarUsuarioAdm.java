@@ -6,7 +6,7 @@ import lombok.Data;
 @Data
 public class EditarUsuarioAdm {
 	private UsuarioAdmId id;
-	private String nome_usuario;
+	private String username;
 	private String senha;
 
 }

@@ -16,7 +16,6 @@ import br.hela.planoDeSaude.comandos.EditarPlanoDeSaude;
 @Service
 @Transactional
 public class PlanoDeSaudeService {
-	
 	@Autowired
 	JdbcTemplate jdbcTemplate;
 	

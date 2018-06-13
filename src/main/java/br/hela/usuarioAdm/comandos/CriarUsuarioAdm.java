@@ -4,6 +4,6 @@ import lombok.Data;
 
 @Data
 public class CriarUsuarioAdm {
-	private String nome_usuario;
+	private String username;
 	private String senha;
 }

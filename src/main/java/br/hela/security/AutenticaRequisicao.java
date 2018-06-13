@@ -9,21 +9,20 @@ import br.hela.login.comandos.LogarUsuario;
 
 @Component
 public class AutenticaRequisicao {
-	
 	@Autowired
 	private JdbcTemplate jdbcTemplate;
-	
+
 	private String sql = "select nome_usuario, email, ativo from usuario where nome_usuario = ? or email = ?";
-	
+
 	public boolean autenticaRequisicao(String token) throws AccessDeniedException {
-		String identificador = JWTUtil.getUsername(token); //pegou o username ou email do token
+		String identificador = JWTUtil.getUsername(token); // pegou o username ou email do token
 		LogarUsuario usuario = new LogarUsuario();
 		List<LogarUsuario> user = jdbcTemplate.query(sql, new Object[] { identificador, identificador },
 				(rs, rowNum) -> {
 					String email = rs.getString("email");
 					String nomeUsuario = rs.getString("nome_usuario");
-					if (email.equals(identificador) || nomeUsuario.equals(identificador) 
-							&& rs.getInt("ativo") != 0 && JWTUtil.tokenValido(token)) {
+					if (email.equals(identificador) || nomeUsuario.equals(identificador) && rs.getInt("ativo") != 0
+							&& JWTUtil.tokenValido(token)) {
 						usuario.setIdentificador(rs.getString("nome_usuario"));
 					}
 					return usuario;
@@ -32,6 +31,5 @@ public class AutenticaRequisicao {
 			return true;
 		return false;
 	}
-		
 
 }

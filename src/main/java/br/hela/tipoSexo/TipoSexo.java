@@ -1,4 +1,4 @@
-package br.hela.tipoGenero;
+package br.hela.tipoSexo;
 
 import javax.persistence.AttributeOverride;
 import javax.persistence.Column;
@@ -6,8 +6,8 @@ import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import org.hibernate.envers.Audited;
 
-import br.hela.tipoGenero.comandos.CriarGenero;
-import br.hela.tipoGenero.comandos.EditarGenero;
+import br.hela.tipoSexo.comandos.CriarTipoSexo;
+import br.hela.tipoSexo.comandos.EditarTipoSexo;
 import lombok.AccessLevel;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -16,25 +16,25 @@ import lombok.Setter;
 @Entity
 @Audited
 @Data
-@EqualsAndHashCode(exclude = {"genero"})
-public class Genero {
+@EqualsAndHashCode(exclude = {"sexo"})
+public class TipoSexo {
 	@EmbeddedId
 	@AttributeOverride(name = "value", column = @Column(name = "id"))
 	@Setter(AccessLevel.NONE)
-	private GeneroId id;
-	private String genero;
+	private TipoSexoId id;
+	private String sexo;
 	
-	public Genero() {
+	public TipoSexo() {
 		super();
 	}
 
-	public Genero(CriarGenero comando) {
-		this.id = new GeneroId();
-		this.genero = comando.getGenero();
+	public TipoSexo(CriarTipoSexo comando) {
+		this.id = new TipoSexoId();
+		this.sexo = comando.getSexo();
 	}
 	
-	public void apply(EditarGenero comando) {
+	public void apply(EditarTipoSexo comando) {
 		this.id = comando.getId();
-		this.genero = comando.getGenero();
+		this.sexo = comando.getSexo();
 	}
 }

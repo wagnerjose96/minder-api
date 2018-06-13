@@ -1,5 +1,7 @@
 package br.hela.login;
 
+import java.sql.SQLException;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -11,7 +13,7 @@ import br.hela.security.JWTUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 
-@Api(description = "Basic Login Controller")
+@Api("Basic Login Controller")
 @RestController
 @RequestMapping("/login")
 public class LoginController {
@@ -19,10 +21,10 @@ public class LoginController {
 	@Autowired
 	private LoginService service;
 	
-	@ApiOperation(value = "Efetue o login de um usuário pelo nome de usuário")
+	@ApiOperation("Efetue o login de um usuário")
 	@PostMapping
 	public ResponseEntity<String> loginPorNomeDeUsuario(@RequestBody LogarUsuario comando) 
-			throws NullPointerException {
+			throws SQLException, NullPointerException {
 		String username = comando.getIdentificador();
 		if(username.indexOf("@") > 0 && username.indexOf(".com") > -1 && username.indexOf("@.com") == -1){ 
 			if (service.consultarEmail(comando)) {

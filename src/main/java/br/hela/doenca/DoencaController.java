@@ -23,7 +23,7 @@ import br.hela.security.AutenticaRequisicao;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 
-@Api(description = "Basic Doença Controller")
+@Api("Basic Doença Controller")
 @RestController
 @RequestMapping("/doencas")
 public class DoencaController {
@@ -31,33 +31,25 @@ public class DoencaController {
 	private DoencaService doencaService;
 	@Autowired
 	private AutenticaRequisicao autentica;
-	
-	@ApiOperation(value = "Busque todas as doenças")
+
+	@ApiOperation("Busque todas as doenças")
 	@GetMapping
-	public ResponseEntity<List<BuscarDoenca>> getDoencas(@RequestHeader String token)
-			throws Exception, AccessDeniedException {
-		if (autentica.autenticaRequisicao(token)) {
-			Optional<List<BuscarDoenca>> optionalDoencas = doencaService.encontrar();
-			return ResponseEntity.ok(optionalDoencas.get());
-		}
-		throw new AccessDeniedException("Acesso negado");
+	public ResponseEntity<List<BuscarDoenca>> getDoencas() throws Exception, SQLException {
+		Optional<List<BuscarDoenca>> optionalDoencas = doencaService.encontrar();
+		return ResponseEntity.ok(optionalDoencas.get());
 	}
 
-	@ApiOperation(value = "Busque uma doença pelo ID")
+	@ApiOperation("Busque uma doença pelo ID")
 	@GetMapping("/{id}")
-	public ResponseEntity<BuscarDoenca> getDoencaPorId(@PathVariable DoencaId id, @RequestHeader String token)
-			throws Exception, AccessDeniedException {
-		if (autentica.autenticaRequisicao(token)) {
-			Optional<BuscarDoenca> optionalDoenca = doencaService.encontrar(id);
-			if (verificaDoencaExistente(id)) {
-				return ResponseEntity.ok(optionalDoenca.get());
-			}
-			throw new NullPointerException("A doença procurada não existe no banco de dados");
+	public ResponseEntity<BuscarDoenca> getDoencaPorId(@PathVariable DoencaId id) throws Exception, SQLException {
+		Optional<BuscarDoenca> optionalDoenca = doencaService.encontrar(id);
+		if (verificaDoencaExistente(id)) {
+			return ResponseEntity.ok(optionalDoenca.get());
 		}
-		throw new AccessDeniedException("Acesso negado");
+		throw new NullPointerException("A doença procurada não existe no banco de dados");
 	}
 
-	@ApiOperation(value = "Cadastre uma nova doença")
+	@ApiOperation("Cadastre uma nova doença")
 	@PostMapping
 	public ResponseEntity<String> postDoenca(@RequestBody CriarDoenca comando, @RequestHeader String token)
 			throws Exception, AccessDeniedException {
@@ -73,10 +65,10 @@ public class DoencaController {
 		throw new AccessDeniedException("Acesso negado");
 	}
 
-	@ApiOperation(value = "Altere uma doença")
+	@ApiOperation("Altere uma doença")
 	@PutMapping
 	public ResponseEntity<String> putDoenca(@RequestBody EditarDoenca comando, @RequestHeader String token)
-			throws NullPointerException, Exception, AccessDeniedException {
+			throws SQLException, NullPointerException, Exception, AccessDeniedException {
 		if (autentica.autenticaRequisicao(token)) {
 			if (!verificaDoencaExistente(comando.getIdDoenca())) {
 				throw new NullPointerException("A doença a ser alterada não existe no banco de dados");

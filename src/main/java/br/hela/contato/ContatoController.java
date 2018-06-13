@@ -17,50 +17,42 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
-import br.hela.contato.comandos.BuscarContato;
 import br.hela.contato.comandos.CriarContato;
 import br.hela.contato.comandos.EditarContato;
 import br.hela.security.AutenticaRequisicao;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 
-@Api(description = "Basic Contato Controller")
+@Api("Basic Contato Controller")
 @RestController
 @RequestMapping("/contatos")
 public class ContatoController {
 
 	@Autowired
 	private ContatoService contatoService;
-	
+
 	@Autowired
 	private AutenticaRequisicao autentica;
 
-	@ApiOperation(value = "Busque todos os contatos")
+	@ApiOperation("Busque todos os contatos")
 	@GetMapping
-	public ResponseEntity<List<BuscarContato>> getContatos(@RequestHeader String token)
-			throws Exception, AccessDeniedException {
-		if (autentica.autenticaRequisicao(token)) {
-			Optional<List<BuscarContato>> optionalContatos = contatoService.encontrar();
-			return ResponseEntity.ok(optionalContatos.get());
-		}
-		throw new AccessDeniedException("Acesso negado");
+	public ResponseEntity<List<Contato>> getContatos() throws SQLException, Exception {
+		Optional<List<Contato>> optionalContatos = contatoService.encontrar();
+		return ResponseEntity.ok(optionalContatos.get());
 	}
 
-	@ApiOperation(value = "Busque o contato pelo ID")
+	@ApiOperation("Busque o contato pelo ID")
 	@GetMapping("/{id}")
-	public ResponseEntity<BuscarContato> getContatoPorId(@PathVariable ContatoId id, @RequestHeader String token)
-			throws NullPointerException, Exception, AccessDeniedException {
-		if (autentica.autenticaRequisicao(token)) {
-			Optional<BuscarContato> optionalContato = contatoService.encontrar(id);
+	public ResponseEntity<Contato> getContatoPorId(@PathVariable ContatoId id)
+			throws SQLException, NullPointerException, Exception {
+			Optional<Contato> optionalContato = contatoService.encontrar(id);
 			if (verificaContatoExistente(id)) {
 				return ResponseEntity.ok(optionalContato.get());
 			}
 			throw new NullPointerException("O contato procurado não existe no banco de dados");
-		}
-		throw new AccessDeniedException("Acesso negado");
 	}
 
-	@ApiOperation(value = "Cadastre um novo contato")
+	@ApiOperation("Cadastre um novo contato")
 	@PostMapping
 	public ResponseEntity<String> postContato(@RequestBody CriarContato comando, @RequestHeader String token)
 			throws Exception, AccessDeniedException {
@@ -76,7 +68,7 @@ public class ContatoController {
 		throw new AccessDeniedException("Acesso negado");
 	}
 
-	@ApiOperation(value = "Altere um contato")
+	@ApiOperation("Altere um contato")
 	@PutMapping
 	public ResponseEntity<String> putContato(@RequestBody EditarContato comando, @RequestHeader String token)
 			throws SQLException, NullPointerException, Exception, AccessDeniedException {
@@ -97,10 +89,10 @@ public class ContatoController {
 		throw new AccessDeniedException("Acesso negado");
 	}
 
-	@ApiOperation(value = "Delete um contato pelo id")
+	@ApiOperation("Delete um contato pelo ID")
 	@DeleteMapping("/{id}")
 	public ResponseEntity<Optional<String>> deletarContato(@PathVariable ContatoId id, @RequestHeader String token)
-			throws Exception, AccessDeniedException {
+			throws SQLException, NullPointerException, Exception, AccessDeniedException {
 		if (autentica.autenticaRequisicao(token)) {
 
 			if (verificaContatoExistente(id)) {

@@ -1,7 +1,8 @@
-package br.hela.tipoGenero;
+package br.hela.tipoSexo;
 
 import java.net.URI;
 import java.nio.file.AccessDeniedException;
+import java.sql.SQLException;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,51 +18,44 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import br.hela.security.AutenticaAdm;
-import br.hela.tipoGenero.comandos.CriarGenero;
-import br.hela.tipoGenero.comandos.EditarGenero;
+import br.hela.tipoSexo.comandos.CriarTipoSexo;
+import br.hela.tipoSexo.comandos.EditarTipoSexo;
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import springfox.documentation.annotations.ApiIgnore;
 
-@ApiIgnore
+@Api("Basic Genêro Controller")
 @RestController
 @RequestMapping("/generos")
-public class GeneroController {
+public class TipoSexoController {
 	@Autowired
-	private GeneroService service;
+	private TipoSexoService service;
 
 	@Autowired
 	private AutenticaAdm autentica;
 
-	@ApiOperation(value = "Busque todos os gêneros")
+	@ApiOperation("Busque todos os gêneros")
 	@GetMapping
-	public ResponseEntity<List<Genero>> getGenero(@RequestHeader String token) throws AccessDeniedException {
-		if (autentica.autenticaRequisicao(token)) {
-			Optional<List<Genero>> optionalGeneros = service.encontrarTudo();
-			return ResponseEntity.ok(optionalGeneros.get());
-		}
-		throw new AccessDeniedException("Acesso negado");
+	public ResponseEntity<List<TipoSexo>> getGenero() throws SQLException {
+		Optional<List<TipoSexo>> optionalGeneros = service.encontrarTudo();
+		return ResponseEntity.ok(optionalGeneros.get());
 	}
 
-	@ApiOperation(value = "Busque um gênero pelo id")
+	@ApiOperation("Busque um gênero pelo ID")
 	@GetMapping("/{id}")
-	public ResponseEntity<Genero> getGeneroPorId(@PathVariable GeneroId id, @RequestHeader String token)
-			throws NullPointerException, AccessDeniedException {
-		if (autentica.autenticaRequisicao(token)) {
-			if (verificaGeneroExistente(id)) {
-				Optional<Genero> optionalGenero = service.encontrarPorId(id);
-				return ResponseEntity.ok(optionalGenero.get());
-			}
-			throw new NullPointerException("O gênero procurado não existe no banco de dados");
+	public ResponseEntity<TipoSexo> getGeneroPorId(@PathVariable TipoSexoId id) throws NullPointerException, SQLException {
+		if (verificaGeneroExistente(id)) {
+			Optional<TipoSexo> optionalGenero = service.encontrarPorId(id);
+			return ResponseEntity.ok(optionalGenero.get());
 		}
-		throw new AccessDeniedException("Acesso negado");
+		throw new NullPointerException("O gênero procurado não existe no banco de dados");
 	}
 
-	@ApiOperation(value = "Cadastre um novo gênero")
+	@ApiOperation("Cadastre um novo gênero")
 	@PostMapping
-	public ResponseEntity<String> postGenero(@RequestBody CriarGenero comando, @RequestHeader String token)
+	public ResponseEntity<String> postGenero(@RequestBody CriarTipoSexo comando, @RequestHeader String token)
 			throws Exception, AccessDeniedException {
 		if (autentica.autenticaRequisicao(token)) {
-			Optional<GeneroId> optionalGeneroId = service.salvar(comando);
+			Optional<TipoSexoId> optionalGeneroId = service.salvar(comando);
 			if (optionalGeneroId.isPresent()) {
 				URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
 						.buildAndExpand(optionalGeneroId.get()).toUri();
@@ -72,15 +66,15 @@ public class GeneroController {
 		throw new AccessDeniedException("Acesso negado");
 	}
 
-	@ApiOperation(value = "Altere um gênero")
+	@ApiOperation("Altere um gênero")
 	@PutMapping
-	public ResponseEntity<String> putGenero(@RequestBody EditarGenero comando, @RequestHeader String token)
-			throws NullPointerException, InternalError, AccessDeniedException {
+	public ResponseEntity<String> putGenero(@RequestBody EditarTipoSexo comando, @RequestHeader String token)
+			throws NullPointerException, Exception, SQLException, AccessDeniedException {
 		if (autentica.autenticaRequisicao(token)) {
 			if (!verificaGeneroExistente(comando.getId())) {
 				throw new NullPointerException("O gênero a ser alterado não existe no banco de dados");
 			}
-			Optional<GeneroId> optionalGeneroId = service.alterar(comando);
+			Optional<TipoSexoId> optionalGeneroId = service.alterar(comando);
 			if (optionalGeneroId.isPresent()) {
 				URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
 						.buildAndExpand(optionalGeneroId.get()).toUri();
@@ -92,7 +86,7 @@ public class GeneroController {
 		throw new AccessDeniedException("Acesso negado");
 	}
 
-	private boolean verificaGeneroExistente(GeneroId id) {
+	private boolean verificaGeneroExistente(TipoSexoId id) {
 		if (!service.encontrarPorId(id).isPresent()) {
 			return false;
 		} else {

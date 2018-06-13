@@ -20,6 +20,13 @@ import br.hela.medicamento.comandos.BuscarMedicamento;
 @Transactional
 public class CirurgiaService {
 	@Autowired
+	private JdbcTemplate jdbcTemplate;
+	
+	private String sql = "select c.id, a.nome_medicamento, " + "a.composicao, a.id_medicamento, a.ativo from medicamento a "
+			+ "inner join cirurgia_medicamento b on a.id_medicamento = b.id_medicamento "
+			+ "inner join cirurgia c on b.id_cirurgia = c.id group by c.id, a.id_medicamento having c.id = ?";
+	
+	@Autowired
 	private CirurgiaRepository cirurgiaRepo;
 
 	@Autowired
@@ -27,9 +34,6 @@ public class CirurgiaService {
 
 	@Autowired
 	private MedicamentoService medicamentoService;
-
-	@Autowired
-	JdbcTemplate jdbcTemplate;
 
 	public Optional<CirurgiaId> salvar(CriarCirurgia comando) throws NullPointerException {
 		Cirurgia novo = cirurgiaRepo.save(new Cirurgia(comando));
@@ -47,7 +51,7 @@ public class CirurgiaService {
 	}
 
 	public Optional<BuscarCirurgia> encontrar(CirurgiaId cirurgiaId) throws Exception {
-		List<BuscarMedicamento> medicamentos = executeQuery(cirurgiaId.toString());
+		List<BuscarMedicamento> medicamentos = executeQuery(cirurgiaId.toString(), sql);
 		BuscarCirurgia cirurgia = new BuscarCirurgia(cirurgiaRepo.findById(cirurgiaId).get());
 		cirurgia.setMedicamentos(medicamentos);
 		return Optional.of(cirurgia);
@@ -57,7 +61,7 @@ public class CirurgiaService {
 		List<Cirurgia> cirurgias = cirurgiaRepo.findAll();
 		List<BuscarCirurgia> rsCirurgias = new ArrayList<>();
 		for (Cirurgia cirurgia : cirurgias) {
-			List<BuscarMedicamento> medicamentos = executeQuery(cirurgia.getIdCirurgia().toString());
+			List<BuscarMedicamento> medicamentos = executeQuery(cirurgia.getIdCirurgia().toString(), sql);
 			BuscarCirurgia nova = new BuscarCirurgia(cirurgia);
 			nova.setMedicamentos(medicamentos);
 			rsCirurgias.add(nova);
@@ -100,23 +104,20 @@ public class CirurgiaService {
 		}
 		return true;
 	}
-
-	private List<BuscarMedicamento> executeQuery(String id) {
-		List<BuscarMedicamento> medicamentos = jdbcTemplate.query(
-				"select c.id, a.nome_medicamento, " + "a.composicao, a.id_medicamento, a.ativo from medicamento a "
-						+ "inner join cirurgia_medicamento b on a.id_medicamento = b.id_medicamento "
-						+ "inner join cirurgia c on b.id_cirurgia = c.id group by c.id, a.id_medicamento having c.id = ?",
-				new Object[] { id }, (rs, rowNum) -> {
-					BuscarMedicamento med = new BuscarMedicamento();
-					String idAlarme = rs.getString("id");
-					if (id.equals(idAlarme)) {
-						med.setIdMedicamento(new MedicamentoId(rs.getString("id_medicamento")));
-						med.setNomeMedicamento(rs.getString("nome_medicamento"));
-						med.setComposicao(rs.getString("composicao"));
-						med.setAtivo(rs.getInt("ativo"));
-					}
-					return med;
-				});
+	
+	private List<BuscarMedicamento> executeQuery(String id, String sql) {
+		List<BuscarMedicamento> medicamentos = jdbcTemplate.query(sql, new Object[] { id }, (rs, rowNum) -> {
+			BuscarMedicamento med = new BuscarMedicamento();
+			String idCirurgia = rs.getString("id");
+			if (id.equals(idCirurgia)) {
+				med.setIdMedicamento(new MedicamentoId(rs.getString("id_medicamento")));
+				med.setNomeMedicamento(rs.getString("nome_medicamento"));
+				med.setComposicao(rs.getString("composicao"));
+				med.setAtivo(rs.getInt("ativo"));
+			}
+			return med;
+		});
 		return medicamentos;
 	}
+
 }

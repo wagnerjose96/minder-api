@@ -22,6 +22,14 @@ import br.hela.medicamento.comandos.BuscarMedicamento;
 @Transactional
 public class AlergiaService {
 	@Autowired
+	private JdbcTemplate jdbcTemplate;
+	
+	private String sql = "select c.id, a.nome_medicamento, " + "a.composicao, a.id_medicamento, a.ativo from medicamento a "
+			+ "inner join alergia_medicamento b on a.id_medicamento = b.id_medicamento "
+			+ "inner join alergia c on b.id_alergia = c.id "
+			+ "group by c.id, a.id_medicamento having c.id = ? " + "order by c.tipo_alergia";
+	
+	@Autowired
 	private AlergiaRepository repo;
 
 	@Autowired
@@ -29,9 +37,6 @@ public class AlergiaService {
 
 	@Autowired
 	private MedicamentoService medicamentoService;
-
-	@Autowired
-	JdbcTemplate jdbcTemplate;
 
 	public Optional<AlergiaId> salvar(CriarAlergia comando) throws NullPointerException {
 		Alergia novo = repo.save(new Alergia(comando));
@@ -49,7 +54,7 @@ public class AlergiaService {
 	}
 
 	public Optional<BuscarAlergia> encontrar(AlergiaId alergiaId) throws Exception {
-		List<BuscarMedicamento> medicamentos = executeQuery(alergiaId.toString());
+		List<BuscarMedicamento> medicamentos = executeQuery(alergiaId.toString(), sql);
 		BuscarAlergia alergia = new BuscarAlergia(repo.findById(alergiaId).get());
 		alergia.setMedicamentos(medicamentos);
 		return Optional.of(alergia);
@@ -59,7 +64,7 @@ public class AlergiaService {
 		List<Alergia> alergias = repo.findAll();
 		List<BuscarAlergia> rsAlergias = new ArrayList<>();
 		for (Alergia alergia : alergias) {
-			List<BuscarMedicamento> medicamentos = executeQuery(alergia.getIdAlergia().toString());
+			List<BuscarMedicamento> medicamentos = executeQuery(alergia.getIdAlergia().toString(), sql);
 			BuscarAlergia nova = new BuscarAlergia(alergia);
 			nova.setMedicamentos(medicamentos);
 			rsAlergias.add(nova);
@@ -102,24 +107,19 @@ public class AlergiaService {
 		}
 		return true;
 	}
-
-	private List<BuscarMedicamento> executeQuery(String id) {
-		List<BuscarMedicamento> medicamentos = jdbcTemplate.query(
-				"select c.id, a.nome_medicamento, " + "a.composicao, a.id_medicamento, a.ativo from medicamento a "
-						+ "inner join alergia_medicamento b on a.id_medicamento = b.id_medicamento "
-						+ "inner join alergia c on b.id_alergia = c.id "
-						+ "group by c.id, a.id_medicamento having c.id = ? " + "order by c.tipo_alergia",
-				new Object[] { id }, (rs, rowNum) -> {
-					BuscarMedicamento med = new BuscarMedicamento();
-					String idAlarme = rs.getString("id");
-					if (id.equals(idAlarme)) {
-						med.setIdMedicamento(new MedicamentoId(rs.getString("id_medicamento")));
-						med.setNomeMedicamento(rs.getString("nome_medicamento"));
-						med.setComposicao(rs.getString("composicao"));
-						med.setAtivo(rs.getInt("ativo"));
-					}
-					return med;
-				});
+	
+	private List<BuscarMedicamento> executeQuery(String id, String sql) {
+		List<BuscarMedicamento> medicamentos = jdbcTemplate.query(sql, new Object[] { id }, (rs, rowNum) -> {
+			BuscarMedicamento med = new BuscarMedicamento();
+			String idAlergia = rs.getString("id");
+			if (id.equals(idAlergia)) {
+				med.setIdMedicamento(new MedicamentoId(rs.getString("id_medicamento")));
+				med.setNomeMedicamento(rs.getString("nome_medicamento"));
+				med.setComposicao(rs.getString("composicao"));
+				med.setAtivo(rs.getInt("ativo"));
+			}
+			return med;
+		});
 		return medicamentos;
 	}
 }

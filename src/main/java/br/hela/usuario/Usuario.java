@@ -41,29 +41,29 @@ public class Usuario {
 
 	public Usuario(CriarUsuario comando) {
 		this.id = new UsuarioId();
-		this.nome_completo = comando.getNome_completo();
-		this.nome_usuario = comando.getNome_usuario();
+		this.nome_completo = comando.getNome();
+		this.nome_usuario = comando.getUsername();
 		this.email = comando.getEmail();
 		this.senha = Criptografia.criptografa(comando.getSenha());
-		this.tipo_sangue = comando.getTipo_sangue();
+		this.tipo_sangue = comando.getTipoSanguineo();
 		this.endereco = comando.getEndereco();
 		this.telefone = comando.getTelefone();
-		this.data_nascimento = comando.getData_nascimento();
+		this.data_nascimento = comando.getDataNascimento();
 		this.sexo = comando.getSexo();
-		this.imagem_usuario = comando.getImagem_usuario();
+		this.imagem_usuario = comando.getImagem();
 		this.ativo = 1;
 	}
 
 	public void apply(EditarUsuario comando) {
 		this.id = comando.getId();
-		this.nome_completo = comando.getNome_completo();
+		this.nome_completo = comando.getNome();
 		this.senha = Criptografia.criptografa(comando.getSenha());
-		this.tipo_sangue = comando.getTipo_sangue();
+		this.tipo_sangue = comando.getTipoSanguineo();
 		this.endereco = comando.getEndereco();
 		this.telefone = comando.getTelefone();
-		this.data_nascimento = comando.getData_nascimento();
+		this.data_nascimento = comando.getDataNascimento();
 		this.sexo = comando.getSexo();
-		this.imagem_usuario = comando.getImagem_usuario();
+		this.imagem_usuario = comando.getImagem();
 	}
 	
 	public void applySenha(GerarSenha comando) {

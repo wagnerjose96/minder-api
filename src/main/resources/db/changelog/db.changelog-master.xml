@@ -7,6 +7,7 @@
 
 	
 		<!-- Tipos de dados utilizados -->
+		
 	<property name="TYPE_ID" value="varchar(36)" />
 	<property name="TYPE_DESCRICAO" value="varchar(255)" />
 	<property name="TYPE_TEXT" value="text" />
@@ -17,28 +18,28 @@
 	<property name="TYPE_TIME" value="timestamp" />
 	
 		<!-- Carregando entidades no banco de dados -->
+	
 	<include file="db/changelog/entidades/db.changelog-revinfo.xml" />
-	<include file="db/changelog/entidades/db.changelog-tipoSanguineo.xml" />
 	<include file="db/changelog/entidades/db.changelog-medicamento.xml" />
-	<include file="db/changelog/entidades/db.changelog-alergia.xml" />
-	<include file="db/changelog/entidades/db.changelog-doenca.xml" />
-	<include file="db/changelog/entidades/db.changelog-cirurgia.xml" />
-	<include file="db/changelog/entidades/db.changelog-usuario.xml" />
-	<include file="db/changelog/entidades/db.changelog-usuario_adm.xml" />
-	<include file="db/changelog/entidades/db.changelog-error.xml" />
 	<include file="db/changelog/entidades/db.changelog-alarme.xml" />
-	<include file="db/changelog/entidades/db.changelog-telefone.xml" />
+	<include file="db/changelog/entidades/db.changelog-alergia.xml" />
+	<include file="db/changelog/entidades/db.changelog-cirurgia.xml" />
 	<include file="db/changelog/entidades/db.changelog-contato.xml" />
 	<include file="db/changelog/entidades/db.changelog-convenio.xml" />
-	<include file="db/changelog/entidades/db.changelog-plano_de_saude.xml" />
-	<include file="db/changelog/entidades/db.changelog-endereco.xml" />
+	<include file="db/changelog/entidades/db.changelog-doenca.xml" />
 	<include file="db/changelog/entidades/db.changelog-emergencia.xml" />
+	<include file="db/changelog/entidades/db.changelog-endereco.xml" />
+	<include file="db/changelog/entidades/db.changelog-error.xml" />
+	<include file="db/changelog/entidades/db.changelog-plano_de_saude.xml" />
+	<include file="db/changelog/entidades/db.changelog-tipo_sanguineo.xml" />
+	<include file="db/changelog/entidades/db.changelog-tipo_sexo.xml" />
+	<include file="db/changelog/entidades/db.changelog-usuario_adm.xml" />
+	<include file="db/changelog/entidades/db.changelog-usuario.xml" />
 	
-
 		<!-- Carregando associações no banco de dados -->
+		
 	<include file="db/changelog/associações/db.changelog-alergia_medicamento.xml" />
 	<include file="db/changelog/associações/db.changelog-doenca_medicamento.xml" />
 	<include file="db/changelog/associações/db.changelog-cirurgia_medicamento.xml" />
-	<include file="db/changelog/associações/db.changelog-contato_telefone.xml" />
 	
 </databaseChangeLog>

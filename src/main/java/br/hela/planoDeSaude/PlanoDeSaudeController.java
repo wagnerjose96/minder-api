@@ -26,42 +26,35 @@ import br.hela.security.AutenticaRequisicao;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 
-@Api(description = "Basic Plano De Saúde Controller")
+@Api("Basic Plano De Saúde Controller")
 @Controller
 @RequestMapping("/planos")
 public class PlanoDeSaudeController {
 	@Autowired
 	private PlanoDeSaudeService service;
-	
+
 	@Autowired
 	private AutenticaRequisicao autentica;
-	
-	@ApiOperation(value = "Busque todos os planos de saúde")
+
+	@ApiOperation("Busque todos os planos de saúde")
 	@GetMapping
-	public ResponseEntity<List<BuscarPlanoDeSaude>> getPlanoDeSaudes(@RequestHeader String token)
-			throws Exception, AccessDeniedException {
-		if (autentica.autenticaRequisicao(token)) {
-			Optional<List<BuscarPlanoDeSaude>> optionalPlanoDeSaude = service.encontrar();
+	public ResponseEntity<List<BuscarPlanoDeSaude>> getPlanoDeSaudes() throws Exception, SQLException {
+		Optional<List<BuscarPlanoDeSaude>> optionalPlanoDeSaude = service.encontrar();
+		return ResponseEntity.ok(optionalPlanoDeSaude.get());
+	}
+
+	@ApiOperation("Busque o plano de saúde pelo ID")
+	@GetMapping("/{id}")
+	public ResponseEntity<BuscarPlanoDeSaude> getPlanoDeSaudePorId(@PathVariable PlanoDeSaudeId id)
+			throws NullPointerException, Exception, SQLException {
+		Optional<BuscarPlanoDeSaude> optionalPlanoDeSaude = service.encontrar(id);
+		if (verificaPlanoDeSaudeExistente(id)) {
 			return ResponseEntity.ok(optionalPlanoDeSaude.get());
 		}
-		throw new AccessDeniedException("Acesso negado");
+		throw new NullPointerException("O plano de saúde procurado não existe no banco de dados");
 	}
 
-	@ApiOperation(value = "Busque o plano de saúde pelo ID")
-	@GetMapping("/{id}")
-	public ResponseEntity<BuscarPlanoDeSaude> getPlanoDeSaudePorId(@PathVariable PlanoDeSaudeId id,
-			@RequestHeader String token) throws NullPointerException, Exception, AccessDeniedException {
-		if (autentica.autenticaRequisicao(token)) {
-			Optional<BuscarPlanoDeSaude> optionalPlanoDeSaude = service.encontrar(id);
-			if (verificaPlanoDeSaudeExistente(id)) {
-				return ResponseEntity.ok(optionalPlanoDeSaude.get());
-			}
-			throw new NullPointerException("O plano de saúde procurado não existe no banco de dados");
-		}
-		throw new AccessDeniedException("Acesso negado");
-	}
-
-	@ApiOperation(value = "Cadastre um novo plano de saúde")
+	@ApiOperation("Cadastre um novo plano de saúde")
 	@PostMapping
 	public ResponseEntity<String> postPlanoDeSaude(@RequestBody CriarPlanoDeSaude comando, @RequestHeader String token)
 			throws Exception, AccessDeniedException {
@@ -77,7 +70,7 @@ public class PlanoDeSaudeController {
 		throw new AccessDeniedException("Acesso negado");
 	}
 
-	@ApiOperation(value = "Altere um plano de saúde")
+	@ApiOperation("Altere um plano de saúde")
 	@PutMapping
 	public ResponseEntity<String> putPlanoDeSaude(@RequestBody EditarPlanoDeSaude comando, @RequestHeader String token)
 			throws SQLException, NullPointerException, Exception, AccessDeniedException {
@@ -98,10 +91,10 @@ public class PlanoDeSaudeController {
 		throw new AccessDeniedException("Acesso negado");
 	}
 
-	@ApiOperation(value = "Delete um plano de saúde pelo ID")
+	@ApiOperation("Delete um plano de saúde pelo ID")
 	@DeleteMapping("/{id}")
 	public ResponseEntity<Optional<String>> deletePlanoDeSaude(@PathVariable PlanoDeSaudeId id,
-			@RequestHeader String token) throws NullPointerException, Exception, AccessDeniedException {
+			@RequestHeader String token) throws NullPointerException, Exception, AccessDeniedException, SQLException {
 		if (autentica.autenticaRequisicao(token)) {
 			if (!verificaPlanoDeSaudeExistente(id)) {
 				throw new NullPointerException("O plano de saúde a ser deletado não existe no banco de dados");

@@ -2,6 +2,7 @@ package br.hela.medicamento;
 
 import java.net.URI;
 import java.nio.file.AccessDeniedException;
+import java.sql.SQLException;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,10 +20,10 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import br.hela.medicamento.comandos.CriarMedicamento;
 import br.hela.medicamento.comandos.EditarMedicamento;
 import br.hela.security.AutenticaAdm;
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import springfox.documentation.annotations.ApiIgnore;
 
-@ApiIgnore
+@Api("Basic Medicamento Controller")
 @RestController
 @RequestMapping("/medicamentos")
 public class MedicamentoController {
@@ -32,34 +33,28 @@ public class MedicamentoController {
 	@Autowired
 	private AutenticaAdm autentica;
 
-	@ApiOperation(value = "Busque todos os medicamentos")
+	@ApiOperation("Busque todos os medicamentos")
 	@GetMapping
-	public ResponseEntity<List<Medicamento>> getMedicamento(@RequestHeader String token) throws AccessDeniedException {
-		if (autentica.autenticaRequisicao(token)) {
-			Optional<List<Medicamento>> optionalMedicamentos = service.encontrar();
-			return ResponseEntity.ok(optionalMedicamentos.get());
-		}
-		throw new AccessDeniedException("Acesso negado");
+	public ResponseEntity<List<Medicamento>> getMedicamento() throws SQLException, Exception {
+		Optional<List<Medicamento>> optionalMedicamentos = service.encontrar();
+		return ResponseEntity.ok(optionalMedicamentos.get());
 	}
 
-	@ApiOperation(value = "Busque um medicamento pelo ID")
+	@ApiOperation("Busque um medicamento pelo ID")
 	@GetMapping("/{id}")
-	public ResponseEntity<Medicamento> getMedicamentoPorId(@PathVariable MedicamentoId id, @RequestHeader String token)
-			throws NullPointerException, AccessDeniedException {
-		if (autentica.autenticaRequisicao(token)) {
-			if (verificaMedicamentoExistente(id)) {
-				Optional<Medicamento> optionalMedicamento = service.encontrar(id);
-				return ResponseEntity.ok(optionalMedicamento.get());
-			}
-			throw new NullPointerException("O medicamento procurado não existe no banco de dados");
+	public ResponseEntity<Medicamento> getMedicamentoPorId(@PathVariable MedicamentoId id)
+			throws SQLException, Exception, NullPointerException {
+		if (verificaMedicamentoExistente(id)) {
+			Optional<Medicamento> optionalMedicamento = service.encontrar(id);
+			return ResponseEntity.ok(optionalMedicamento.get());
 		}
-		throw new AccessDeniedException("Acesso negado");
+		throw new NullPointerException("O medicamento procurado não existe no banco de dados");
 	}
 
-	@ApiOperation(value = "Delete um medicamento pelo ID")
+	@ApiOperation("Delete um medicamento pelo ID")
 	@DeleteMapping("/{id}")
 	public ResponseEntity<Optional<String>> deletarMedicamento(@PathVariable MedicamentoId id,
-			@RequestHeader String token) throws NullPointerException, AccessDeniedException {
+			@RequestHeader String token) throws SQLException, NullPointerException, Exception, AccessDeniedException {
 		if (autentica.autenticaRequisicao(token)) {
 			if (verificaMedicamentoExistente(id)) {
 				Optional<String> optionalMedicamento = service.deletar(id);
@@ -70,7 +65,7 @@ public class MedicamentoController {
 		throw new AccessDeniedException("Acesso negado");
 	}
 
-	@ApiOperation(value = "Cadastre um novo medicamento")
+	@ApiOperation("Cadastre um novo medicamento")
 	@PostMapping
 	public ResponseEntity<String> postMedicamento(@RequestBody CriarMedicamento comando, @RequestHeader String token)
 			throws Exception, AccessDeniedException {
@@ -86,10 +81,10 @@ public class MedicamentoController {
 		throw new AccessDeniedException("Acesso negado");
 	}
 
-	@ApiOperation(value = "Altere um medicamento")
+	@ApiOperation("Altere um medicamento")
 	@PutMapping
 	public ResponseEntity<String> putMedicamentoContinuo(@RequestBody EditarMedicamento comando,
-			@RequestHeader String token) throws NullPointerException, InternalError, AccessDeniedException {
+			@RequestHeader String token) throws NullPointerException, Exception, SQLException, AccessDeniedException {
 		if (autentica.autenticaRequisicao(token)) {
 			if (!verificaMedicamentoExistente(comando.getIdMedicamento())) {
 				throw new NullPointerException("O medicamento a ser alterado não existe no banco de dados");

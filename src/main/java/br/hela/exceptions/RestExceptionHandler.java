@@ -24,7 +24,7 @@ public class RestExceptionHandler {
 	public @ResponseBody ResponseEntity<?> allExceptions(Exception message) throws Exception {
 		HttpStatus status = HttpStatus.INTERNAL_SERVER_ERROR;
 		String type = "Generic Error";
-		String developerMessage = "Recurso não encontrado";
+		String developerMessage = "Falha interna no servidor";
 		CriarErrorDetail errorDetail = gerarErro(type, status.value(), message.getMessage(), developerMessage);
 		service.salvar(errorDetail);
 		return new ResponseEntity<>(errorDetail, status);
@@ -83,7 +83,7 @@ public class RestExceptionHandler {
 	public @ResponseBody ResponseEntity<?> handleForbidden(Exception message) {
 		HttpStatus status = HttpStatus.FORBIDDEN;
 		String type = "Forbidden";
-		String developerMessage = "Autorização incorreta";
+		String developerMessage = "Token incorreto";
 		CriarErrorDetail errorDetail = gerarErro(type, status.value(), message.getMessage(),
 				developerMessage);
 		service.salvar(errorDetail);
@@ -107,7 +107,7 @@ public class RestExceptionHandler {
 	public @ResponseBody ResponseEntity<?> handleBadHttpRequest(BadHttpRequest message) {
 		HttpStatus status = HttpStatus.BAD_REQUEST;
 		String type = "Bad request";
-		String developerMessage = "Método incorreto";
+		String developerMessage = "Requisição incorreta";
 		CriarErrorDetail errorDetail = gerarErro(type, status.value(), message.getMessage(),
 				developerMessage);
 		service.salvar(errorDetail);

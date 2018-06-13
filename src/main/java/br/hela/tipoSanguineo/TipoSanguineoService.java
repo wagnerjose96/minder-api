@@ -13,21 +13,21 @@ import br.hela.tipoSanguineo.comandos.EditarTipoSanguineo;
 public class TipoSanguineoService {
 	@Autowired
 	TipoSanguineoRepository repoSangue;
-	
-	public Optional<List<TipoSanguineo>> encontrarTudo(){
+
+	public Optional<List<TipoSanguineo>> encontrarTudo() {
 		return Optional.of(repoSangue.findAll());
 	}
-	
-	public Optional<TipoSanguineo> encontrarPorId(TipoSanguineoId id){
+
+	public Optional<TipoSanguineo> encontrarPorId(TipoSanguineoId id) {
 		return repoSangue.findById(id);
 	}
-	
-	public Optional<TipoSanguineoId> salvar(CriarTipoSanguineo comando){
+
+	public Optional<TipoSanguineoId> salvar(CriarTipoSanguineo comando) {
 		TipoSanguineo novo = new TipoSanguineo(comando);
 		repoSangue.save(novo);
 		return Optional.of(novo.getTipoSanguineoId());
 	}
-	
+
 	public Optional<TipoSanguineoId> alterar(EditarTipoSanguineo comando) {
 		Optional<TipoSanguineo> optional = repoSangue.findById(comando.getTipoSanguineoId());
 		if (optional.isPresent()) {

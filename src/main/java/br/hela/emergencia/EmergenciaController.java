@@ -2,6 +2,7 @@ package br.hela.emergencia;
 
 import java.net.URI;
 import java.nio.file.AccessDeniedException;
+import java.sql.SQLException;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,40 +22,32 @@ import br.hela.security.AutenticaRequisicao;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 
-@Api(description = "Basic Emergência Controller")
+@Api("Basic Emergência Controller")
 @RestController
 @RequestMapping("/emergencias")
 public class EmergenciaController {
-
 	@Autowired
 	private EmergenciaService service;
-	
+
 	@Autowired
 	private AutenticaRequisicao autentica;
 
-	@ApiOperation(value = "Busque todas as emergências")
+	@ApiOperation("Busque todas as emergências")
 	@GetMapping
-	public ResponseEntity<List<Emergencia>> getEmergencias(@RequestHeader String token)
-			throws Exception, AccessDeniedException {
-		if (autentica.autenticaRequisicao(token)) {
-			Optional<List<Emergencia>> optionalEmergencia = service.encontrar();
-			return ResponseEntity.ok(optionalEmergencia.get());
-		}
-		throw new AccessDeniedException("Acesso negado");
+	public ResponseEntity<List<Emergencia>> getEmergencias() throws Exception, SQLException {
+		Optional<List<Emergencia>> optionalEmergencia = service.encontrar();
+		return ResponseEntity.ok(optionalEmergencia.get());
 	}
 
-	@ApiOperation(value = "Busque uma emergência pelo ID")
+	@ApiOperation("Busque uma emergência pelo ID")
 	@GetMapping("/{id}")
-	public ResponseEntity<Emergencia> getEmergenciaId(@PathVariable EmergenciaId id, @RequestHeader String token)
-			throws NullPointerException, AccessDeniedException {
-		if (autentica.autenticaRequisicao(token)) {
-			if (verificaEmergenciaExistente(id)) {
-				Optional<Emergencia> optionalEmergencia = service.encontrar(id);
-				return ResponseEntity.ok(optionalEmergencia.get());
-			}
-			throw new NullPointerException("A emergência procurada não existe no banco de dados");
+	public ResponseEntity<Emergencia> getEmergenciaId(@PathVariable EmergenciaId id)
+			throws NullPointerException, SQLException {
+		if (verificaEmergenciaExistente(id)) {
+			Optional<Emergencia> optionalEmergencia = service.encontrar(id);
+			return ResponseEntity.ok(optionalEmergencia.get());
 		}
-		throw new AccessDeniedException("Acesso negado");
+		throw new NullPointerException("A emergência procurada não existe no banco de dados");
 	}
 
 	@ApiOperation(value = "Cadastre uma nova emergência")
@@ -76,7 +69,7 @@ public class EmergenciaController {
 	@ApiOperation(value = "Altere uma emergência")
 	@PutMapping
 	public ResponseEntity<String> putEmergencia(@RequestBody EditarEmergencia comando, @RequestHeader String token)
-			throws NullPointerException, InternalError, AccessDeniedException {
+			throws SQLException, NullPointerException, Exception, AccessDeniedException {
 		if (autentica.autenticaRequisicao(token)) {
 			if (!verificaEmergenciaExistente(comando.getId())) {
 				throw new NullPointerException("A emergência a ser alterada não existe no banco de dados");

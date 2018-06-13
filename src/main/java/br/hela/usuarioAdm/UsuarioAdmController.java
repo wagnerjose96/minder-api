@@ -2,6 +2,7 @@ package br.hela.usuarioAdm;
 
 import java.net.URI;
 import java.nio.file.AccessDeniedException;
+import java.sql.SQLException;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,7 +23,6 @@ import br.hela.usuarioAdm.UsuarioAdmId;
 import br.hela.usuarioAdm.UsuarioAdmService;
 import br.hela.usuarioAdm.comandos.CriarUsuarioAdm;
 import br.hela.usuarioAdm.comandos.EditarUsuarioAdm;
-import io.swagger.annotations.ApiOperation;
 import springfox.documentation.annotations.ApiIgnore;
 
 @ApiIgnore
@@ -35,9 +35,9 @@ public class UsuarioAdmController {
 	@Autowired
 	private AutenticaAdm autentica;
 
-	@ApiOperation(value = "Busque todos os administradores")
 	@GetMapping
-	public ResponseEntity<List<UsuarioAdm>> getUsuarioAdmins(@RequestHeader String token) throws AccessDeniedException {
+	public ResponseEntity<List<UsuarioAdm>> getUsuarioAdmins(@RequestHeader String token)
+			throws SQLException, AccessDeniedException {
 		if (autentica.autenticaRequisicao(token)) {
 			Optional<List<UsuarioAdm>> optionalUsuarioAdmin = service.encontrar();
 			return ResponseEntity.ok(optionalUsuarioAdmin.get());
@@ -45,10 +45,9 @@ public class UsuarioAdmController {
 		throw new AccessDeniedException("Acesso negado");
 	}
 
-	@ApiOperation(value = "Busque um administrador pelo ID")
 	@GetMapping("/{id}")
 	public ResponseEntity<UsuarioAdm> getUsuarioAdminId(@PathVariable UsuarioAdmId id, @RequestHeader String token)
-			throws NullPointerException, AccessDeniedException {
+			throws NullPointerException, SQLException, AccessDeniedException {
 		if (autentica.autenticaRequisicao(token)) {
 			if (verificaUsuarioAdminExistente(id)) {
 				Optional<UsuarioAdm> optionalUsuarioAdmin = service.encontrar(id);
@@ -59,10 +58,9 @@ public class UsuarioAdmController {
 		throw new AccessDeniedException("Acesso negado");
 	}
 
-	@ApiOperation(value = "Delete um administrador pelo ID")
 	@DeleteMapping("/{id}")
 	public ResponseEntity<Optional<String>> deleteUsuarioAdmin(@PathVariable UsuarioAdmId id,
-			@RequestHeader String token) throws NullPointerException, AccessDeniedException {
+			@RequestHeader String token) throws NullPointerException, AccessDeniedException, SQLException, Exception {
 		if (autentica.autenticaRequisicao(token)) {
 			if (verificaUsuarioAdminExistente(id)) {
 				Optional<String> resultado = service.deletar(id);
@@ -73,21 +71,8 @@ public class UsuarioAdmController {
 		throw new AccessDeniedException("Acesso negado");
 	}
 
-	@ApiOperation(value = "Cadastre um novo administrador")
 	@PostMapping
-	public ResponseEntity<String> postUsuarioAdmin(@RequestBody CriarUsuarioAdm comando, @RequestHeader String token) throws Exception {
-		if (service.encontrar().get().size() > 0) {
-			if (autentica.autenticaRequisicao(token)) {
-				Optional<UsuarioAdmId> optionalUsuarioAdminId = service.salvar(comando);
-				if (optionalUsuarioAdminId.isPresent()) {
-					URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
-							.buildAndExpand(optionalUsuarioAdminId.get()).toUri();
-					return ResponseEntity.created(location).body("Administrador cadastrado com sucesso");
-				}
-				throw new Exception("O administrador não foi salvo devido a um erro interno");
-			}
-			throw new AccessDeniedException("Acesso negado");
-		}
+	public ResponseEntity<String> postUsuarioAdmin(@RequestBody CriarUsuarioAdm comando) throws Exception {
 		Optional<UsuarioAdmId> optionalUsuarioAdminId = service.salvar(comando);
 		if (optionalUsuarioAdminId.isPresent()) {
 			URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
@@ -97,10 +82,9 @@ public class UsuarioAdmController {
 		throw new Exception("O administrador não foi salvo devido a um erro interno");
 	}
 
-	@ApiOperation(value = "Altere um administrador")
 	@PutMapping
-	public ResponseEntity<String> putUsuarioAdmin(@RequestBody EditarUsuarioAdm comando, @RequestHeader String token)
-			throws NullPointerException, InternalError, AccessDeniedException {
+	public ResponseEntity<String> putUsuarioAdmin(@RequestHeader String token, @RequestBody EditarUsuarioAdm comando)
+			throws NullPointerException, Exception, SQLException, AccessDeniedException {
 		if (autentica.autenticaRequisicao(token)) {
 			if (!verificaUsuarioAdminExistente(comando.getId())) {
 				throw new NullPointerException("O administrador a ser alterado não existe no banco de dados");
