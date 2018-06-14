@@ -1,6 +1,9 @@
 package br.hela.usuario.comandos;
 
 import java.util.Date;
+import br.hela.sangue.comandos.BuscarSangue;
+import br.hela.sexo.SexoId;
+import br.hela.usuario.Usuario;
 import br.hela.usuario.UsuarioId;
 import lombok.Data;
 
@@ -11,10 +14,26 @@ public class BuscarUsuario {
 	private String email;
 	private String senha;
 	private String nome;
-	private String tipoSanguineo;
+	private BuscarSangue tipoSanguineo;
 	private String endereco;
 	private int telefone;
 	private Date dataNascimento;
-	private String sexo;
+	private SexoId idSexo;
 	private String imagem;
+	
+	public BuscarUsuario(Usuario comandos) {
+		this.id = comandos.getId();
+		this.username = comandos.getNome_usuario();
+		this.email = comandos.getEmail();
+		this.senha = comandos.getSenha();
+		this.nome = comandos.getNome_completo();
+		this.endereco = comandos.getEndereco();
+		this.telefone = comandos.getTelefone();
+		this.dataNascimento = comandos.getData_nascimento();
+		this.idSexo = comandos.getIdSexo();
+		this.imagem = comandos.getImagem_usuario();
+	}
+
+	public BuscarUsuario() {
+	}
 }

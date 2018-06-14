@@ -17,6 +17,8 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+
+import br.hela.medicamento.comandos.BuscarMedicamento;
 import br.hela.medicamento.comandos.CriarMedicamento;
 import br.hela.medicamento.comandos.EditarMedicamento;
 import br.hela.security.AutenticaAdm;
@@ -35,17 +37,17 @@ public class MedicamentoController {
 
 	@ApiOperation("Busque todos os medicamentos")
 	@GetMapping
-	public ResponseEntity<List<Medicamento>> getMedicamento() throws SQLException, Exception {
-		Optional<List<Medicamento>> optionalMedicamentos = service.encontrar();
+	public ResponseEntity<List<BuscarMedicamento>> getMedicamento() throws SQLException, Exception {
+		Optional<List<BuscarMedicamento>> optionalMedicamentos = service.encontrar();
 		return ResponseEntity.ok(optionalMedicamentos.get());
 	}
 
 	@ApiOperation("Busque um medicamento pelo ID")
 	@GetMapping("/{id}")
-	public ResponseEntity<Medicamento> getMedicamentoPorId(@PathVariable MedicamentoId id)
+	public ResponseEntity<BuscarMedicamento> getMedicamentoPorId(@PathVariable MedicamentoId id)
 			throws SQLException, Exception, NullPointerException {
 		if (verificaMedicamentoExistente(id)) {
-			Optional<Medicamento> optionalMedicamento = service.encontrar(id);
+			Optional<BuscarMedicamento> optionalMedicamento = service.encontrar(id);
 			return ResponseEntity.ok(optionalMedicamento.get());
 		}
 		throw new NullPointerException("O medicamento procurado não existe no banco de dados");
@@ -83,7 +85,7 @@ public class MedicamentoController {
 
 	@ApiOperation("Altere um medicamento")
 	@PutMapping
-	public ResponseEntity<String> putMedicamentoContinuo(@RequestBody EditarMedicamento comando,
+	public ResponseEntity<String> putMedicamento(@RequestBody EditarMedicamento comando,
 			@RequestHeader String token) throws NullPointerException, Exception, SQLException, AccessDeniedException {
 		if (autentica.autenticaRequisicao(token)) {
 			if (!verificaMedicamentoExistente(comando.getIdMedicamento())) {

@@ -1,5 +1,6 @@
 package br.hela.endereco.comandos;
 
+import br.hela.endereco.Endereco;
 import lombok.Data;
 
 @Data
@@ -10,4 +11,16 @@ public class CriarEndereco {
 	private String estado;
 	private String complemento;
 	private int numero;
+	
+	public CriarEndereco() {
+	}
+	
+	public CriarEndereco(Endereco comando) {
+		this.rua = comando.getRua();
+		this.bairro = comando.getBairro();
+		this.cidade = comando.getCidade();
+		this.estado = comando.getEstado();
+		this.complemento = comando.getComplemento();
+		this.numero = comando.getNumero();
+	}
 }

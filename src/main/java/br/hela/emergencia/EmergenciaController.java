@@ -16,6 +16,8 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+
+import br.hela.emergencia.comandos.BuscarEmergencia;
 import br.hela.emergencia.comandos.CriarEmergencia;
 import br.hela.emergencia.comandos.EditarEmergencia;
 import br.hela.security.AutenticaRequisicao;
@@ -34,17 +36,17 @@ public class EmergenciaController {
 
 	@ApiOperation("Busque todas as emergências")
 	@GetMapping
-	public ResponseEntity<List<Emergencia>> getEmergencias() throws Exception, SQLException {
-		Optional<List<Emergencia>> optionalEmergencia = service.encontrar();
+	public ResponseEntity<List<BuscarEmergencia>> getEmergencias() throws Exception, SQLException {
+		Optional<List<BuscarEmergencia>> optionalEmergencia = service.encontrar();
 		return ResponseEntity.ok(optionalEmergencia.get());
 	}
 
 	@ApiOperation("Busque uma emergência pelo ID")
 	@GetMapping("/{id}")
-	public ResponseEntity<Emergencia> getEmergenciaId(@PathVariable EmergenciaId id)
+	public ResponseEntity<BuscarEmergencia> getEmergenciaId(@PathVariable EmergenciaId id)
 			throws NullPointerException, SQLException {
 		if (verificaEmergenciaExistente(id)) {
-			Optional<Emergencia> optionalEmergencia = service.encontrar(id);
+			Optional<BuscarEmergencia> optionalEmergencia = service.encontrar(id);
 			return ResponseEntity.ok(optionalEmergencia.get());
 		}
 		throw new NullPointerException("A emergência procurada não existe no banco de dados");

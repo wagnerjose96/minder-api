@@ -14,8 +14,10 @@ public class BuscarEndereco {
 	private String complemento;
 	private int numero;
 
+	public BuscarEndereco() {
+	}
+	
 	public BuscarEndereco(Endereco comandos) {
-		super();
 		this.id = comandos.getId();
 		this.rua = comandos.getRua();
 		this.bairro = comandos.getBairro();

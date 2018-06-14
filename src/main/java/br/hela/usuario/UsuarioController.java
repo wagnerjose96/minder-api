@@ -20,6 +20,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import br.hela.security.AutenticaAdm;
 import br.hela.security.AutenticaRequisicao;
+import br.hela.usuario.comandos.BuscarUsuario;
 import br.hela.usuario.comandos.CriarUsuario;
 import br.hela.usuario.comandos.EditarUsuario;
 import io.swagger.annotations.Api;
@@ -40,10 +41,10 @@ public class UsuarioController {
 
 	@ApiOperation("Busque todos os usuários")
 	@GetMapping
-	public ResponseEntity<List<Usuario>> getUsuarios(@RequestHeader String token)
+	public ResponseEntity<List<BuscarUsuario>> getUsuarios(@RequestHeader String token)
 			throws SQLException, AccessDeniedException {
 		if (autenticaAdm.autenticaRequisicao(token)) {
-			Optional<List<Usuario>> optionalUsuario = service.encontrar();
+			Optional<List<BuscarUsuario>> optionalUsuario = service.encontrar();
 			return ResponseEntity.ok(optionalUsuario.get());
 		}
 		throw new AccessDeniedException("Acesso negado");
@@ -51,9 +52,9 @@ public class UsuarioController {
 
 	@ApiOperation("Busque um usuário pelo ID")
 	@GetMapping("/{id}")
-	public ResponseEntity<Usuario> getUsuarioId(@PathVariable UsuarioId id) throws NullPointerException, SQLException {
+	public ResponseEntity<BuscarUsuario> getUsuarioId(@PathVariable UsuarioId id) throws NullPointerException, SQLException {
 		if (verificaUsuarioExistente(id)) {
-			Optional<Usuario> optionalUsuario = service.encontrar(id);
+			Optional<BuscarUsuario> optionalUsuario = service.encontrar(id);
 			return ResponseEntity.ok(optionalUsuario.get());
 		}
 		throw new NullPointerException("O usuário procurado não existe no banco de dados");

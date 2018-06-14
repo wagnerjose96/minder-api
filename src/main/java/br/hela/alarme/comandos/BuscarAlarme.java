@@ -25,4 +25,7 @@ public class BuscarAlarme {
 		this.periodicidade = comandos.getPeriodicidade();
 	}
 
+	public BuscarAlarme() {
+	}
+
 }

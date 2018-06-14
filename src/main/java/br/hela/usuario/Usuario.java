@@ -7,7 +7,9 @@ import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import org.hibernate.envers.Audited;
 import br.hela.esqueciSenha.comandos.GerarSenha;
+import br.hela.sangue.SangueId;
 import br.hela.security.Criptografia;
+import br.hela.sexo.SexoId;
 import br.hela.usuario.comandos.CriarUsuario;
 import br.hela.usuario.comandos.EditarUsuario;
 import lombok.AccessLevel;
@@ -18,7 +20,8 @@ import lombok.Setter;
 @Entity
 @Audited
 @Data
-@EqualsAndHashCode(exclude = { "nome_completo", "nome_usuario", "email", "senha", "tipo_sangue", "endereco", "telefone", "data_nascimento", "sexo", "imagem_usuario", "ativo"})
+@EqualsAndHashCode(exclude = { "nome_completo", "nome_usuario", "email", "senha", "idSangue", "endereco", "telefone",
+		"data_nascimento", "idSexo", "imagem_usuario", "ativo" })
 public class Usuario {
 	@EmbeddedId
 	@AttributeOverride(name = "value", column = @Column(name = "id"))
@@ -28,14 +31,16 @@ public class Usuario {
 	private String nome_usuario;
 	private String email;
 	private String senha;
-	private String tipo_sangue;
+	@AttributeOverride(name = "value", column = @Column(name = "id_sangue"))
+	private SangueId idSangue;
 	private String endereco;
 	private int telefone;
 	private Date data_nascimento;
-	private String sexo;
+	@AttributeOverride(name = "value", column = @Column(name = "id_sexo"))
+	private SexoId idSexo;
 	private String imagem_usuario;
 	private int ativo;
-	
+
 	public Usuario() {
 	}
 
@@ -45,11 +50,11 @@ public class Usuario {
 		this.nome_usuario = comando.getUsername();
 		this.email = comando.getEmail();
 		this.senha = Criptografia.criptografa(comando.getSenha());
-		this.tipo_sangue = comando.getTipoSanguineo();
+		this.idSangue = comando.getIdSangue();
 		this.endereco = comando.getEndereco();
 		this.telefone = comando.getTelefone();
 		this.data_nascimento = comando.getDataNascimento();
-		this.sexo = comando.getSexo();
+		this.idSexo = comando.getIdSexo();
 		this.imagem_usuario = comando.getImagem();
 		this.ativo = 1;
 	}
@@ -58,19 +63,14 @@ public class Usuario {
 		this.id = comando.getId();
 		this.nome_completo = comando.getNome();
 		this.senha = Criptografia.criptografa(comando.getSenha());
-		this.tipo_sangue = comando.getTipoSanguineo();
 		this.endereco = comando.getEndereco();
 		this.telefone = comando.getTelefone();
-		this.data_nascimento = comando.getDataNascimento();
-		this.sexo = comando.getSexo();
 		this.imagem_usuario = comando.getImagem();
 	}
-	
+
 	public void applySenha(GerarSenha comando) {
 		this.email = comando.getEmail();
 		this.senha = Criptografia.criptografa(comando.getSenha());
 	}
-
-	
 
 }

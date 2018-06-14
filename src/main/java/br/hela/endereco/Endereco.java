@@ -35,19 +35,19 @@ public class Endereco {
 		this.id =  comando.getId();
 		this.rua = comando.getRua();
 		this.bairro = comando.getBairro();
-		this.cidade = comando.getCidade();;
-		this.estado = comando.getEstado();;
-		this.complemento = comando.getComplemento();;
-		this.numero = comando.getNumero();;
+		this.cidade = comando.getCidade();
+		this.estado = comando.getEstado();
+		this.complemento = comando.getComplemento();
+		this.numero = comando.getNumero();
 	}
 
 	public Endereco(CriarEndereco comando) {
 		this.id =  new EnderecoId();
 		this.rua = comando.getRua();
 		this.bairro = comando.getBairro();
-		this.cidade = comando.getCidade();;
-		this.estado = comando.getEstado();;
-		this.complemento = comando.getComplemento();;
-		this.numero = comando.getNumero();;
+		this.cidade = comando.getCidade();
+		this.estado = comando.getEstado();
+		this.complemento = comando.getComplemento();
+		this.numero = comando.getNumero();
 	}
 }

@@ -17,9 +17,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
-import br.hela.convenio.Convenio;
 import br.hela.convenio.ConvenioId;
 import br.hela.convenio.ConvenioService;
+import br.hela.convenio.comandos.BuscarConvenio;
 import br.hela.convenio.comandos.CriarConvenio;
 import br.hela.convenio.comandos.EditarConvenio;
 import br.hela.security.AutenticaAdm;
@@ -38,17 +38,17 @@ public class ConvenioController {
 
 	@ApiOperation("Busque todos os convênios")
 	@GetMapping
-	public ResponseEntity<List<Convenio>> getConvenio() throws SQLException, Exception {
-			Optional<List<Convenio>> optionalConvenios = service.encontrar();
+	public ResponseEntity<List<BuscarConvenio>> getConvenio() throws SQLException, Exception {
+			Optional<List<BuscarConvenio>> optionalConvenios = service.encontrar();
 			return ResponseEntity.ok(optionalConvenios.get());
 	}
 
 	@ApiOperation("Busque um convênio pelo ID")
 	@GetMapping("/{id}")
-	public ResponseEntity<Convenio> getConvenioPorId(@PathVariable ConvenioId id)
+	public ResponseEntity<BuscarConvenio> getConvenioPorId(@PathVariable ConvenioId id)
 			throws SQLException, NullPointerException, Exception {
 			if (verificaConvenioExistente(id)) {
-				Optional<Convenio> optionalConvenio = service.encontrar(id);
+				Optional<BuscarConvenio> optionalConvenio = service.encontrar(id);
 				return ResponseEntity.ok(optionalConvenio.get());
 			}
 			throw new NullPointerException("O convênio procurado não existe no banco de dados");

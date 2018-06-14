@@ -18,9 +18,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import br.hela.security.AutenticaAdm;
-import br.hela.usuarioAdm.UsuarioAdm;
 import br.hela.usuarioAdm.UsuarioAdmId;
 import br.hela.usuarioAdm.UsuarioAdmService;
+import br.hela.usuarioAdm.comandos.BuscarUsuarioAdm;
 import br.hela.usuarioAdm.comandos.CriarUsuarioAdm;
 import br.hela.usuarioAdm.comandos.EditarUsuarioAdm;
 import springfox.documentation.annotations.ApiIgnore;
@@ -36,21 +36,21 @@ public class UsuarioAdmController {
 	private AutenticaAdm autentica;
 
 	@GetMapping
-	public ResponseEntity<List<UsuarioAdm>> getUsuarioAdmins(@RequestHeader String token)
+	public ResponseEntity<List<BuscarUsuarioAdm>> getUsuarioAdmins(@RequestHeader String token)
 			throws SQLException, AccessDeniedException {
 		if (autentica.autenticaRequisicao(token)) {
-			Optional<List<UsuarioAdm>> optionalUsuarioAdmin = service.encontrar();
+			Optional<List<BuscarUsuarioAdm>> optionalUsuarioAdmin = service.encontrar();
 			return ResponseEntity.ok(optionalUsuarioAdmin.get());
 		}
 		throw new AccessDeniedException("Acesso negado");
 	}
 
 	@GetMapping("/{id}")
-	public ResponseEntity<UsuarioAdm> getUsuarioAdminId(@PathVariable UsuarioAdmId id, @RequestHeader String token)
+	public ResponseEntity<BuscarUsuarioAdm> getUsuarioAdminId(@PathVariable UsuarioAdmId id, @RequestHeader String token)
 			throws NullPointerException, SQLException, AccessDeniedException {
 		if (autentica.autenticaRequisicao(token)) {
 			if (verificaUsuarioAdminExistente(id)) {
-				Optional<UsuarioAdm> optionalUsuarioAdmin = service.encontrar(id);
+				Optional<BuscarUsuarioAdm> optionalUsuarioAdmin = service.encontrar(id);
 				return ResponseEntity.ok(optionalUsuarioAdmin.get());
 			}
 			throw new NullPointerException("O administrador procurado não existe no banco de dados");

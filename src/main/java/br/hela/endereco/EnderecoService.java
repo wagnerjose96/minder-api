@@ -1,10 +1,12 @@
 package br.hela.endereco;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import javax.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import br.hela.endereco.comandos.BuscarEndereco;
 import br.hela.endereco.comandos.CriarEndereco;
 import br.hela.endereco.comandos.EditarEndereco;
 
@@ -12,36 +14,43 @@ import br.hela.endereco.comandos.EditarEndereco;
 @Transactional
 public class EnderecoService {
 	@Autowired
-	private EnderecoRepository EnderecoRepo;
-	
+	private EnderecoRepository repo;
+
 	public Optional<EnderecoId> salvar(CriarEndereco comando) {
-		Endereco nova = EnderecoRepo.save(new Endereco(comando));
+		Endereco nova = repo.save(new Endereco(comando));
 		return Optional.of(nova.getId());
 	}
-	
-	public Optional<Endereco> encontrar(EnderecoId id) {
-		return EnderecoRepo.findById(id);
+
+	public Optional<BuscarEndereco> encontrar(EnderecoId id) {
+		Endereco endereco = repo.findById(id).get();
+		BuscarEndereco resultado = new BuscarEndereco(endereco);
+		return Optional.of(resultado);
 	}
 
-	public Optional<List<Endereco>> encontrar() {
-		return Optional.of(EnderecoRepo.findAll());
+	public Optional<List<BuscarEndereco>> encontrar() {
+		List<Endereco> enderecos = repo.findAll();
+		List<BuscarEndereco> resultados = new ArrayList<>();
+		for (Endereco endereco : enderecos) {
+			BuscarEndereco nova = new BuscarEndereco(endereco);
+			resultados.add(nova);
+		}
+		return Optional.of(resultados);
 	}
 
 	public Optional<String> deletar(EnderecoId id) {
-		EnderecoRepo.deleteById(id);
+		repo.deleteById(id);
 		return Optional.of("Endereço -> " + id + ": deletado com sucesso");
 	}
-	
+
 	public Optional<EnderecoId> alterar(EditarEndereco comando) {
-		Optional<Endereco> optional = EnderecoRepo.findById(comando.getId());
+		Optional<Endereco> optional = repo.findById(comando.getId());
 		if (optional.isPresent()) {
 			Endereco Endereco = optional.get();
 			Endereco.apply(comando);
-			EnderecoRepo.save(Endereco);
+			repo.save(Endereco);
 			return Optional.of(comando.getId());
 		}
 		return Optional.empty();
 	}
 
 }
-

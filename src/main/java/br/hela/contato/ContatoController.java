@@ -17,6 +17,8 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+
+import br.hela.contato.comandos.BuscarContato;
 import br.hela.contato.comandos.CriarContato;
 import br.hela.contato.comandos.EditarContato;
 import br.hela.security.AutenticaRequisicao;
@@ -36,16 +38,16 @@ public class ContatoController {
 
 	@ApiOperation("Busque todos os contatos")
 	@GetMapping
-	public ResponseEntity<List<Contato>> getContatos() throws SQLException, Exception {
-		Optional<List<Contato>> optionalContatos = contatoService.encontrar();
+	public ResponseEntity<List<BuscarContato>> getContatos() throws SQLException, Exception {
+		Optional<List<BuscarContato>> optionalContatos = contatoService.encontrar();
 		return ResponseEntity.ok(optionalContatos.get());
 	}
 
 	@ApiOperation("Busque o contato pelo ID")
 	@GetMapping("/{id}")
-	public ResponseEntity<Contato> getContatoPorId(@PathVariable ContatoId id)
+	public ResponseEntity<BuscarContato> getContatoPorId(@PathVariable ContatoId id)
 			throws SQLException, NullPointerException, Exception {
-			Optional<Contato> optionalContato = contatoService.encontrar(id);
+			Optional<BuscarContato> optionalContato = contatoService.encontrar(id);
 			if (verificaContatoExistente(id)) {
 				return ResponseEntity.ok(optionalContato.get());
 			}

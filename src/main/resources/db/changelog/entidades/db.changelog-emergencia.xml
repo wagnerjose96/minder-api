@@ -13,13 +13,13 @@
 					primaryKeyName="PK_EMERGENCIA" />	
 			</column>
 			<column name="doador_de_orgaos" type="${TYPE_NUMBER}">
-				<constraints nullable="false" />
+				<constraints nullable="true" />
 			</column>
 			<column name="ataque_convulsivos" type="${TYPE_NUMBER}">
-				<constraints nullable="false" />
+				<constraints nullable="true" />
 			</column>
 			<column name="problemas_cardiacos" type="${TYPE_DESCRICAO}">
-				<constraints nullable="false" />
+				<constraints nullable="true" />
 			</column>
 		</createTable>
 	</changeSet>
@@ -31,13 +31,13 @@
 				<constraints nullable="false" />	
 			</column>
 			<column name="doador_de_orgaos" type="${TYPE_NUMBER}">
-				<constraints nullable="false" />
+				<constraints nullable="true" />
 			</column>
 			<column name="ataque_convulsivos" type="${TYPE_NUMBER}">
-				<constraints nullable="false" />
+				<constraints nullable="true" />
 			</column>
 			<column name="problemas_cardiacos" type="${TYPE_DESCRICAO}">
-				<constraints nullable="false" />
+				<constraints nullable="true" />
 			</column>
 			<column name="rev" type="${TYPE_NUMBER}">
 				<constraints nullable="false" referencedTableName="revinfo"

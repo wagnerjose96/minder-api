@@ -17,6 +17,8 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+
+import br.hela.endereco.comandos.BuscarEndereco;
 import br.hela.endereco.comandos.CriarEndereco;
 import br.hela.endereco.comandos.EditarEndereco;
 import br.hela.security.AutenticaRequisicao;
@@ -35,16 +37,16 @@ public class EnderecoController {
 
 	@ApiOperation("Busque todos os endereços")
 	@GetMapping
-	public ResponseEntity<Optional<List<Endereco>>> getenderecos() throws Exception, SQLException {
-		Optional<List<Endereco>> optionalenderecos = enderecoService.encontrar();
+	public ResponseEntity<Optional<List<BuscarEndereco>>> getenderecos() throws Exception, SQLException {
+		Optional<List<BuscarEndereco>> optionalenderecos = enderecoService.encontrar();
 		return ResponseEntity.ok(optionalenderecos);
 	}
 
 	@ApiOperation("Busque o endereço pelo ID")
 	@GetMapping("/{id}")
-	public ResponseEntity<Endereco> getenderecoPorId(@PathVariable EnderecoId id)
+	public ResponseEntity<BuscarEndereco> getenderecoPorId(@PathVariable EnderecoId id)
 			throws NullPointerException, Exception, SQLException {
-		Optional<Endereco> optionalendereco = enderecoService.encontrar(id);
+		Optional<BuscarEndereco> optionalendereco = enderecoService.encontrar(id);
 		if (verificaEnderecoExistente(id)) {
 			return ResponseEntity.ok(optionalendereco.get());
 		}
