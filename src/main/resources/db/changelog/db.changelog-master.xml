@@ -20,6 +20,11 @@
 		<!-- Carregando entidades no banco de dados -->
 	
 	<include file="db/changelog/entidades/db.changelog-revinfo.xml" />
+	<include file="db/changelog/entidades/db.changelog-sangue.xml" />
+	<include file="db/changelog/entidades/db.changelog-sexo.xml" />
+	<include file="db/changelog/entidades/db.changelog-endereco.xml" />
+	<include file="db/changelog/entidades/db.changelog-usuario_adm.xml" />
+	<include file="db/changelog/entidades/db.changelog-usuario.xml" />
 	<include file="db/changelog/entidades/db.changelog-medicamento.xml" />
 	<include file="db/changelog/entidades/db.changelog-alarme.xml" />
 	<include file="db/changelog/entidades/db.changelog-alergia.xml" />
@@ -28,19 +33,15 @@
 	<include file="db/changelog/entidades/db.changelog-convenio.xml" />
 	<include file="db/changelog/entidades/db.changelog-doenca.xml" />
 	<include file="db/changelog/entidades/db.changelog-emergencia.xml" />
-	<include file="db/changelog/entidades/db.changelog-endereco.xml" />
 	<include file="db/changelog/entidades/db.changelog-error.xml" />
 	<include file="db/changelog/entidades/db.changelog-plano_de_saude.xml" />
-	<include file="db/changelog/entidades/db.changelog-sangue.xml" />
-	<include file="db/changelog/entidades/db.changelog-sexo.xml" />
-	<include file="db/changelog/entidades/db.changelog-usuario_adm.xml" />
-	<include file="db/changelog/entidades/db.changelog-usuario.xml" />
+	
 	
 		<!-- Carregando associações no banco de dados -->
 		
 	<include file="db/changelog/associações/db.changelog-alergia_medicamento.xml" />
 	<include file="db/changelog/associações/db.changelog-doenca_medicamento.xml" />
 	<include file="db/changelog/associações/db.changelog-cirurgia_medicamento.xml" />
-	<include file="db/changelog/associações/db.changelog-emergencia_usuario.xml" />
+	<include file="db/changelog/associações/db.changelog-contato_emergencia.xml" />
 	
 </databaseChangeLog>

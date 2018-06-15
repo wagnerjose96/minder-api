@@ -96,9 +96,9 @@ public class ConvenioController {
 			if (optionalConvenioId.isPresent()) {
 				URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
 						.buildAndExpand(optionalConvenioId.get()).toUri();
-				return ResponseEntity.created(location).body("Convênio alterado com sucesso");
+				return ResponseEntity.created(location).body("O convênio foi alterado com sucesso");
 			} else {
-				throw new InternalError("Erro interno durante a alteração do convênio");
+				throw new InternalError("Ocorreu um erro interno durante a alteração do convênio");
 			}
 		}
 		throw new AccessDeniedException("Acesso negado");

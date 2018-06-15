@@ -44,7 +44,7 @@
 					foreignKeyName="FK_USUARIO_SEXO" references="sexo(id_sexo)" />
 			</column>
 			<column name="imagem_usuario" type="${TYPE_DESCRICAO}">
-				<constraints nullable="false" />
+				<constraints nullable="true" />
 			</column>
 			<column name="ativo" type="${TYPE_NUMBER}">
 				<constraints nullable="true" />
@@ -77,7 +77,7 @@
 				<constraints nullable="false" />
 			</column>
 			<column name="imagem_usuario" type="${TYPE_DESCRICAO}">
-				<constraints nullable="false" />
+				<constraints nullable="true" />
 			</column>
 			<column name="ativo" type="${TYPE_NUMBER}">
 				<constraints nullable="true" />

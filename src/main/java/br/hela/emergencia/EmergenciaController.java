@@ -21,6 +21,7 @@ import br.hela.emergencia.comandos.BuscarEmergencia;
 import br.hela.emergencia.comandos.CriarEmergencia;
 import br.hela.emergencia.comandos.EditarEmergencia;
 import br.hela.security.AutenticaRequisicao;
+import br.hela.usuario.UsuarioId;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 
@@ -41,7 +42,7 @@ public class EmergenciaController {
 		return ResponseEntity.ok(optionalEmergencias.get());
 	}
 
-	@ApiOperation("Busque um medicamento pelo ID")
+	@ApiOperation("Busque uma emergência pelo ID")
 	@GetMapping("/{id}")
 	public ResponseEntity<BuscarEmergencia> getEmergenciaPorId(@PathVariable EmergenciaId id)
 			throws SQLException, Exception, NullPointerException {
@@ -49,40 +50,42 @@ public class EmergenciaController {
 			Optional<BuscarEmergencia> optionalEmergencia = service.encontrar(id);
 			return ResponseEntity.ok(optionalEmergencia.get());
 		}
-		throw new NullPointerException("O medicamento procurado não existe no banco de dados");
+		throw new NullPointerException("A emergência procurada não existe no banco de dados");
 	}
 
-	@ApiOperation("Cadastre um novo medicamento")
+	@ApiOperation("Cadastre uma nova emergência")
 	@PostMapping
 	public ResponseEntity<String> postEmergencia(@RequestBody CriarEmergencia comando, @RequestHeader String token)
 			throws Exception, AccessDeniedException {
 		if (autentica.autenticaRequisicao(token)) {
-			Optional<EmergenciaId> optionalEmergenciaId = service.salvar(comando, autentica.idUser(token));
+			UsuarioId id = autentica.idUser(token);
+			comando.setIdUsuario(id);
+			Optional<EmergenciaId> optionalEmergenciaId = service.salvar(comando);
 			if (optionalEmergenciaId.isPresent()) {
 				URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
 						.buildAndExpand(optionalEmergenciaId.get()).toUri();
-				return ResponseEntity.created(location).body("O medicamento foi cadastrado com sucesso");
+				return ResponseEntity.created(location).body("A emergência foi cadastrada com sucesso");
 			}
-			throw new Exception("O medicamento não foi salvo devido a um erro interno");
+			throw new Exception("A emergência não foi salva devido a um erro interno");
 		}
 		throw new AccessDeniedException("Acesso negado");
 	}
 
-	@ApiOperation("Altere um medicamento")
+	@ApiOperation("Altere uma emergência")
 	@PutMapping
 	public ResponseEntity<String> putEmergencia(@RequestBody EditarEmergencia comando,
 			@RequestHeader String token) throws NullPointerException, Exception, SQLException, AccessDeniedException {
 		if (autentica.autenticaRequisicao(token)) {
 			if (!verificaEmergenciaExistente(comando.getId())) {
-				throw new NullPointerException("O medicamento a ser alterado não existe no banco de dados");
+				throw new NullPointerException("A emergência a ser alterada não existe no banco de dados");
 			}
 			Optional<EmergenciaId> optionalEmergenciaId = service.alterar(comando);
 			if (optionalEmergenciaId.isPresent()) {
 				URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
 						.buildAndExpand(optionalEmergenciaId.get()).toUri();
-				return ResponseEntity.created(location).body("Medicamento alterado com sucesso");
+				return ResponseEntity.created(location).body("A emergência foi alterada com sucesso");
 			} else {
-				throw new InternalError("Erro interno durante a alteração do medicamento");
+				throw new InternalError("Ocorreu um erro interno durante a alteração da emergência");
 			}
 		}
 		throw new AccessDeniedException("Acesso negado");

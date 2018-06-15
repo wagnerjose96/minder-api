@@ -79,9 +79,9 @@ public class SexoController {
 			if (optionalSexoId.isPresent()) {
 				URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
 						.buildAndExpand(optionalSexoId.get()).toUri();
-				return ResponseEntity.created(location).body("Genêro alterado com sucesso");
+				return ResponseEntity.created(location).body("O genêro foi alterado com sucesso");
 			} else {
-				throw new InternalError("Erro interno durante a alteração do genêro");
+				throw new InternalError("Ocorreu um erro interno durante a alteração do genêro");
 			}
 		}
 		throw new AccessDeniedException("Acesso negado");

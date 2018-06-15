@@ -95,9 +95,9 @@ public class MedicamentoController {
 			if (optionalMedicamentoId.isPresent()) {
 				URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
 						.buildAndExpand(optionalMedicamentoId.get()).toUri();
-				return ResponseEntity.created(location).body("Medicamento alterado com sucesso");
+				return ResponseEntity.created(location).body("O medicamento foi alterado com sucesso");
 			} else {
-				throw new InternalError("Erro interno durante a alteração do medicamento");
+				throw new InternalError("Ocorreu um erro interno durante a alteração do medicamento");
 			}
 		}
 		throw new AccessDeniedException("Acesso negado");

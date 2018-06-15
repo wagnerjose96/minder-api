@@ -37,11 +37,6 @@ public class EnderecoService {
 		return Optional.of(resultados);
 	}
 
-	public Optional<String> deletar(EnderecoId id) {
-		repo.deleteById(id);
-		return Optional.of("Endereço -> " + id + ": deletado com sucesso");
-	}
-
 	public Optional<EnderecoId> alterar(EditarEndereco comando) {
 		Optional<Endereco> optional = repo.findById(comando.getId());
 		if (optional.isPresent()) {

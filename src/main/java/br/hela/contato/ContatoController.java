@@ -63,7 +63,7 @@ public class ContatoController {
 			if (optionalContatoId.isPresent()) {
 				URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
 						.buildAndExpand(optionalContatoId.get()).toUri();
-				return ResponseEntity.created(location).body("Contato cadastrado com sucesso");
+				return ResponseEntity.created(location).body("O contato foi cadastrado com sucesso");
 			}
 			throw new Exception("O contato não foi salvo devido a um erro interno");
 		}
@@ -83,9 +83,9 @@ public class ContatoController {
 			if (optionalContatoId.isPresent()) {
 				URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
 						.buildAndExpand(optionalContatoId.get()).toUri();
-				return ResponseEntity.created(location).body("Contato alterado com sucesso");
+				return ResponseEntity.created(location).body("O contato foi alterado com sucesso");
 			} else {
-				throw new SQLException("Erro interno durante a alteração do contato");
+				throw new SQLException("Ocorreu um erro interno durante a alteração do contato");
 			}
 		}
 		throw new AccessDeniedException("Acesso negado");
@@ -98,7 +98,7 @@ public class ContatoController {
 		if (autentica.autenticaRequisicao(token)) {
 
 			if (verificaContatoExistente(id)) {
-				Optional<String> optionalContato = contatoService.deletar(id);
+				Optional<String> optionalContato = contatoService.deletar(id, autentica.idUser(token));
 				return ResponseEntity.ok(optionalContato);
 			}
 			throw new NullPointerException("O contato a deletar não existe no banco de dados");

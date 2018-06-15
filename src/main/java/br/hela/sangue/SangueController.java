@@ -80,9 +80,9 @@ public class SangueController {
 			if (optionalSangueId.isPresent()) {
 				URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
 						.buildAndExpand(optionalSangueId.get()).toUri();
-				return ResponseEntity.created(location).body("Tipo sanguíneo alterado com sucesso");
+				return ResponseEntity.created(location).body("O tipo sanguíneo foi alterado com sucesso");
 			} else {
-				throw new InternalError("Erro interno durante a alteração do tipo sanguíneo");
+				throw new InternalError("Ocorreu um erro interno durante a alteração do tipo sanguíneo");
 			}
 		}
 		throw new AccessDeniedException("Acesso negado");

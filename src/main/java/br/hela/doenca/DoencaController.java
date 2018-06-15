@@ -58,7 +58,7 @@ public class DoencaController {
 			if (optionalDoencaId.isPresent()) {
 				URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
 						.buildAndExpand(optionalDoencaId.get()).toUri();
-				return ResponseEntity.created(location).body("Doença cadastrada com sucesso");
+				return ResponseEntity.created(location).body("A doença foi cadastrada com sucesso");
 			}
 			throw new Exception("A doença não foi salva devido a um erro interno");
 		}
@@ -77,9 +77,9 @@ public class DoencaController {
 			if (optionalDoencaId.isPresent()) {
 				URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
 						.buildAndExpand(optionalDoencaId.get()).toUri();
-				return ResponseEntity.created(location).body("Doença alterada com sucesso");
+				return ResponseEntity.created(location).body("A doença foi alterada com sucesso");
 			} else {
-				throw new SQLException("Erro interno durante a alteração da doença");
+				throw new SQLException("Ocorreu um erro interno durante a alteração da doença");
 			}
 		}
 		throw new AccessDeniedException("Acesso negado");

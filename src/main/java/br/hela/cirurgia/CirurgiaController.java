@@ -60,7 +60,7 @@ public class CirurgiaController {
 			if (optionalCirurgiaId.isPresent()) {
 				URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
 						.buildAndExpand(optionalCirurgiaId.get()).toUri();
-				return ResponseEntity.created(location).body("Cirurgia cadastrada com sucesso");
+				return ResponseEntity.created(location).body("A cirurgia foi cadastrada com sucesso");
 			}
 			throw new Exception("A cirurgia não foi salva devido a um erro interno");
 		}
@@ -79,9 +79,9 @@ public class CirurgiaController {
 			if (optionalCirurgiaId.isPresent()) {
 				URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
 						.buildAndExpand(optionalCirurgiaId.get()).toUri();
-				return ResponseEntity.created(location).body("Cirurgia alterada com sucesso");
+				return ResponseEntity.created(location).body("A cirurgia foi alterada com sucesso");
 			} else {
-				throw new SQLException("Erro interno durante a alteração do cirurgia");
+				throw new SQLException("Ocorreu um erro interno durante a alteração do cirurgia");
 			}
 		}
 		throw new AccessDeniedException("Acesso negado");

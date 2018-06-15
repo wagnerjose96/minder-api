@@ -1,12 +1,12 @@
 package br.hela.usuario;
 
 import java.util.Date;
+
 import javax.persistence.AttributeOverride;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import org.hibernate.envers.Audited;
-
 import br.hela.endereco.EnderecoId;
 import br.hela.esqueciSenha.comandos.GerarSenha;
 import br.hela.sangue.SangueId;
@@ -31,8 +31,8 @@ public class Usuario {
 	private UsuarioId id;
 	private String nome_completo;
 	private String nome_usuario;
-	private String email;
 	private String senha;
+	private String email;
 	@AttributeOverride(name = "value", column = @Column(name = "id_sangue"))
 	private SangueId idSangue;
 	@AttributeOverride(name = "value", column = @Column(name = "id_endereco"))

@@ -60,7 +60,7 @@ public class AlergiaController {
 			if (optionalAlergiaId.isPresent()) {
 				URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
 						.buildAndExpand(optionalAlergiaId.get()).toUri();
-				return ResponseEntity.created(location).body("Alergia cadastrada com sucesso");
+				return ResponseEntity.created(location).body("A alergia foi cadastrada com sucesso");
 			}
 			throw new Exception("A alergia não foi salva devido a um erro interno");
 		}
@@ -80,9 +80,9 @@ public class AlergiaController {
 			if (optionalAlergiaId.isPresent()) {
 				URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
 						.buildAndExpand(optionalAlergiaId.get()).toUri();
-				return ResponseEntity.created(location).body("Alergia alterada com sucesso");
+				return ResponseEntity.created(location).body("A alergia foi alterada com sucesso");
 			} else {
-				throw new SQLException("Erro interno durante a alteração da alergia");
+				throw new SQLException("Ocorreu um erro interno durante a alteração da alergia");
 			}
 		}
 		throw new AccessDeniedException("Acesso negado");

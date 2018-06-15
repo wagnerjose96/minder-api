@@ -63,7 +63,7 @@ public class PlanoDeSaudeController {
 			if (optionalPlanoDeSaudeId.isPresent()) {
 				URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
 						.buildAndExpand(optionalPlanoDeSaudeId.get()).toUri();
-				return ResponseEntity.created(location).body("Plano de saúde cadastrado com sucesso");
+				return ResponseEntity.created(location).body("O plano de saúde foi cadastrado com sucesso");
 			}
 			throw new Exception("O plano de saúde não foi salvo devido a um erro interno");
 		}
@@ -83,9 +83,9 @@ public class PlanoDeSaudeController {
 			if (optionalPlanoId.isPresent()) {
 				URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
 						.buildAndExpand(optionalPlanoId.get()).toUri();
-				return ResponseEntity.created(location).body("Plano de saúde alterado com sucesso");
+				return ResponseEntity.created(location).body("O plano de saúde foi alterado com sucesso");
 			} else {
-				throw new SQLException("Erro interno durante a alteração do plano de saúde");
+				throw new SQLException("Ocorreu um erro interno durante a alteração do plano de saúde");
 			}
 		}
 		throw new AccessDeniedException("Acesso negado");

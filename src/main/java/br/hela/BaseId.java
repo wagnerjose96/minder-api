@@ -6,7 +6,7 @@ import javax.persistence.MappedSuperclass;
 
 @MappedSuperclass
 public abstract class BaseId implements Serializable {
-	private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 8965550305250511524L;
 	private String value;
 
 	public BaseId() {

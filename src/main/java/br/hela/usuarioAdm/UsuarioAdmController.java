@@ -77,7 +77,7 @@ public class UsuarioAdmController {
 		if (optionalUsuarioAdminId.isPresent()) {
 			URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
 					.buildAndExpand(optionalUsuarioAdminId.get()).toUri();
-			return ResponseEntity.created(location).body("Administrador cadastrado com sucesso");
+			return ResponseEntity.created(location).body("O administrador foi cadastrado com sucesso");
 		}
 		throw new Exception("O administrador não foi salvo devido a um erro interno");
 	}
@@ -93,9 +93,9 @@ public class UsuarioAdmController {
 			if (optionalUsuarioAdminId.isPresent()) {
 				URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
 						.buildAndExpand(optionalUsuarioAdminId.get()).toUri();
-				return ResponseEntity.created(location).body("Administrador alterado com sucesso");
+				return ResponseEntity.created(location).body("O administrador foi alterado com sucesso");
 			} else {
-				throw new InternalError("Erro interno durante a alteração do administrador");
+				throw new InternalError("Ocorreu um erro interno durante a alteração do administrador");
 			}
 		}
 		throw new AccessDeniedException("Acesso negado");
