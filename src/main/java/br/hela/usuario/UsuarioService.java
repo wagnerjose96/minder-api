@@ -6,6 +6,10 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import br.hela.endereco.EnderecoId;
+import br.hela.endereco.EnderecoService;
+import br.hela.endereco.comandos.BuscarEndereco;
 import br.hela.sangue.SangueService;
 import br.hela.sangue.comandos.BuscarSangue;
 import br.hela.usuario.comandos.BuscarUsuario;
@@ -17,13 +21,20 @@ import br.hela.usuario.comandos.EditarUsuario;
 public class UsuarioService {
 	@Autowired
 	private UsuarioRepository repo;
-
+	@Autowired
+	private EnderecoService servEndereco;
 	@Autowired
 	private SangueService sangueService;
 
 	public Optional<UsuarioId> salvar(CriarUsuario comando) {
-		Usuario novo = repo.save(new Usuario(comando));
-		return Optional.of(novo.getId());
+		if (comando.getEndereco() != null) {
+			EnderecoId idEndereco = servEndereco.salvar(comando.getEndereco()).get();
+			Usuario novo = new Usuario(comando);
+			novo.setIdEndereco(idEndereco);
+			repo.save(novo);
+			return Optional.of(novo.getId());
+		}
+		return Optional.empty();
 	}
 
 	public Optional<BuscarUsuario> encontrar(UsuarioId id) {
@@ -32,7 +43,9 @@ public class UsuarioService {
 		if (usuario.getAtivo() == 1) {
 			user = new BuscarUsuario(usuario);
 			Optional<BuscarSangue> sangue = sangueService.encontrar(usuario.getIdSangue());
+			Optional<BuscarEndereco> endereco = servEndereco.encontrar(usuario.getIdEndereco());
 			user.setTipoSanguineo(sangue.get());
+			user.setEndereco(endereco.get());
 		}
 		return Optional.of(user);
 	}
@@ -44,7 +57,9 @@ public class UsuarioService {
 			if (usuario.getAtivo() == 1) {
 				BuscarUsuario user = new BuscarUsuario(usuario);
 				Optional<BuscarSangue> sangue = sangueService.encontrar(usuario.getIdSangue());
+				Optional<BuscarEndereco> endereco = servEndereco.encontrar(usuario.getIdEndereco());
 				user.setTipoSanguineo(sangue.get());
+				user.setEndereco(endereco.get());
 				resultados.add(user);
 			}
 		}
@@ -61,6 +76,8 @@ public class UsuarioService {
 	public Optional<UsuarioId> alterar(EditarUsuario comando) {
 		Optional<Usuario> optional = repo.findById(comando.getId());
 		if (optional.isPresent()) {
+			if (comando.getEndereco() != null)
+				servEndereco.alterar(comando.getEndereco()).get();
 			Usuario user = optional.get();
 			user.apply(comando);
 			repo.save(user);

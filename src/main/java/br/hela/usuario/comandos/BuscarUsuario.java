@@ -1,6 +1,8 @@
 package br.hela.usuario.comandos;
 
 import java.util.Date;
+
+import br.hela.endereco.comandos.BuscarEndereco;
 import br.hela.sangue.comandos.BuscarSangue;
 import br.hela.sexo.SexoId;
 import br.hela.usuario.Usuario;
@@ -15,7 +17,7 @@ public class BuscarUsuario {
 	private String senha;
 	private String nome;
 	private BuscarSangue tipoSanguineo;
-	private String endereco;
+	private BuscarEndereco endereco;
 	private int telefone;
 	private Date dataNascimento;
 	private SexoId idSexo;
@@ -27,7 +29,6 @@ public class BuscarUsuario {
 		this.email = comandos.getEmail();
 		this.senha = comandos.getSenha();
 		this.nome = comandos.getNome_completo();
-		this.endereco = comandos.getEndereco();
 		this.telefone = comandos.getTelefone();
 		this.dataNascimento = comandos.getData_nascimento();
 		this.idSexo = comandos.getIdSexo();

@@ -15,31 +15,30 @@ import lombok.Setter;
 @Entity
 @Audited
 @Data
-@EqualsAndHashCode(exclude = { "doadorDeOrgaos", "ataqueConvulsivos", "problemasCardiacos"})
+@EqualsAndHashCode(exclude = { "ataqueConvulsivos", "problemasCardiacos", "doadorDeOrgaos"})
 public class Emergencia {
 	@EmbeddedId
-	@AttributeOverride(name = "value", column = @Column(name = "id"))
+	@AttributeOverride(name = "value", column = @Column(name = "id_emergencia"))
 	@Setter(AccessLevel.NONE)
-	private EmergenciaId id;
-	private int doadorDeOrgaos;
+	private EmergenciaId idEmergencia;
 	private int ataqueConvulsivos;
 	private String problemasCardiacos;
+	public int doadorDeOrgaos;
 
 	public Emergencia() {
 	}
 
-	public Emergencia(CriarEmergencia comandos) {
-		this.id = new EmergenciaId();
-		this.doadorDeOrgaos = comandos.getDoadorDeOrgaos();
-		this.ataqueConvulsivos = comandos.getAtaqueConvulsivos();
-		this.problemasCardiacos = comandos.getProblemasCardiacos();
+	public Emergencia(CriarEmergencia comando) {
+		this.idEmergencia = new EmergenciaId();
+		this.ataqueConvulsivos = comando.getAtaqueConvulsivos();
+		this.problemasCardiacos = comando.getProblemasCardiacos();
+		this.doadorDeOrgaos = comando.getDoadorDeOrgaos();
 	}
 
-	public void apply(EditarEmergencia comandos) {
-		this.id = comandos.getId();
-		this.doadorDeOrgaos = comandos.getDoadorDeOrgaos();
-		this.ataqueConvulsivos = comandos.getAtaqueConvulsivos();
-		this.problemasCardiacos = comandos.getProblemasCardiacos();
+	public void apply(EditarEmergencia comando) {
+		this.idEmergencia = comando.getId();
+		this.ataqueConvulsivos = comando.getAtaqueConvulsivos();
+		this.problemasCardiacos = comando.getProblemasCardiacos();
+		this.doadorDeOrgaos = comando.getDoadorDeOrgaos();
 	}
-
 }

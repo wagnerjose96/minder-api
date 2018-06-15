@@ -7,17 +7,18 @@ import lombok.Data;
 @Data
 public class BuscarEmergencia {
 	private EmergenciaId id;
-	private int doadorDeOrgaos;
 	private int ataqueConvulsivos;
 	private String problemasCardiacos;
+	public int doadorDeOrgaos;
 	
-	public BuscarEmergencia() {
-	}
 	
 	public BuscarEmergencia(Emergencia comandos) {
-		this.id = comandos.getId();
-		this.doadorDeOrgaos = comandos.getDoadorDeOrgaos();
+		this.id = comandos.getIdEmergencia();
 		this.ataqueConvulsivos = comandos.getAtaqueConvulsivos();
 		this.problemasCardiacos = comandos.getProblemasCardiacos();
+		this.doadorDeOrgaos = comandos.getDoadorDeOrgaos();
+	}
+
+	public BuscarEmergencia() {
 	}
 }

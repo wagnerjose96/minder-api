@@ -8,7 +8,7 @@
 	<changeSet id="create_table_emergencia" author="wagner.junior">
 		<createTable tableName="emergencia">
 			
-			<column name="id" type="${TYPE_ID}">
+			<column name="id_emergencia" type="${TYPE_ID}">
 				<constraints nullable="false" primaryKey="true"
 					primaryKeyName="PK_EMERGENCIA" />	
 			</column>
@@ -27,7 +27,7 @@
 	
 	<changeSet id="create_table_emergencia_aud" author="wagner.junior">
 		<createTable tableName="emergencia_aud">
-			<column name="id" type="${TYPE_ID}">
+			<column name="id_emergencia" type="${TYPE_ID}">
 				<constraints nullable="false" />	
 			</column>
 			<column name="doador_de_orgaos" type="${TYPE_NUMBER}">
@@ -48,7 +48,7 @@
 			</column>
 		</createTable>
 		<addPrimaryKey constraintName="PK_EMERGENCIA_AUD"
-			tableName="emergencia_aud" columnNames="id, rev" />
+			tableName="emergencia_aud" columnNames="id_emergencia, rev" />
 	</changeSet>
 	
 </databaseChangeLog>

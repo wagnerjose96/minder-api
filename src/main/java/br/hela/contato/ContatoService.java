@@ -11,6 +11,8 @@ import br.hela.contato.ContatoId;
 import br.hela.contato.comandos.BuscarContato;
 import br.hela.contato.comandos.CriarContato;
 import br.hela.contato.comandos.EditarContato;
+import br.hela.medicamento.MedicamentoId;
+import br.hela.usuario.UsuarioId;
 
 @Service
 @Transactional
@@ -19,8 +21,9 @@ public class ContatoService {
 	private ContatoRepository repo;
 
 
-	public Optional<ContatoId> salvar(CriarContato comando) {
+	public Optional<ContatoId> salvar(CriarContato comando, UsuarioId id) {
 		Contato novo = repo.save(new Contato(comando));
+		
 		return Optional.of(novo.getId());
 	}
 

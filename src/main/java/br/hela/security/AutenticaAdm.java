@@ -28,5 +28,4 @@ public class AutenticaAdm {
 			return true;
 		return false;
 	}
-
 }

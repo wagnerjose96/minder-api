@@ -29,8 +29,9 @@
 				<constraints nullable="false"
 					foreignKeyName="FK_USUARIO_SANGUE" references="sangue(id_sangue)" />
 			</column>
-			<column name="endereco" type="${TYPE_DESCRICAO}">
-				<constraints nullable="true" />
+			<column name="id_endereco" type="${TYPE_ID}">
+				<constraints nullable="true" 
+				foreignKeyName="FK_USUARIO_ENDERECO" references="endereco(id)" />
 			</column>
 			<column name="telefone" type="${TYPE_NUMBER}">
 				<constraints nullable="false" />
@@ -67,9 +68,6 @@
 				<constraints nullable="false" />
 			</column>
 			<column name="senha" type="${TYPE_DESCRICAO}">
-				<constraints nullable="false" />
-			</column>
-			<column name="endereco" type="${TYPE_DESCRICAO}">
 				<constraints nullable="false" />
 			</column>
 			<column name="telefone" type="${TYPE_NUMBER}">

@@ -59,7 +59,7 @@ public class ContatoController {
 	public ResponseEntity<String> postContato(@RequestBody CriarContato comando, @RequestHeader String token)
 			throws Exception, AccessDeniedException {
 		if (autentica.autenticaRequisicao(token)) {
-			Optional<ContatoId> optionalContatoId = contatoService.salvar(comando);
+			Optional<ContatoId> optionalContatoId = contatoService.salvar(comando, autentica.idUser(token));
 			if (optionalContatoId.isPresent()) {
 				URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
 						.buildAndExpand(optionalContatoId.get()).toUri();

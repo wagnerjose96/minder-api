@@ -41,5 +41,6 @@
 	<include file="db/changelog/associações/db.changelog-alergia_medicamento.xml" />
 	<include file="db/changelog/associações/db.changelog-doenca_medicamento.xml" />
 	<include file="db/changelog/associações/db.changelog-cirurgia_medicamento.xml" />
+	<include file="db/changelog/associações/db.changelog-emergencia_usuario.xml" />
 	
 </databaseChangeLog>

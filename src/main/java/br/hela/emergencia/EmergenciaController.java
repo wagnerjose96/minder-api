@@ -34,55 +34,55 @@ public class EmergenciaController {
 	@Autowired
 	private AutenticaRequisicao autentica;
 
-	@ApiOperation("Busque todas as emergências")
+	@ApiOperation("Busque todas as emergencias")
 	@GetMapping
-	public ResponseEntity<List<BuscarEmergencia>> getEmergencias() throws Exception, SQLException {
-		Optional<List<BuscarEmergencia>> optionalEmergencia = service.encontrar();
-		return ResponseEntity.ok(optionalEmergencia.get());
+	public ResponseEntity<List<BuscarEmergencia>> getEmergencias() throws SQLException, Exception {
+		Optional<List<BuscarEmergencia>> optionalEmergencias = service.encontrar();
+		return ResponseEntity.ok(optionalEmergencias.get());
 	}
 
-	@ApiOperation("Busque uma emergência pelo ID")
+	@ApiOperation("Busque um medicamento pelo ID")
 	@GetMapping("/{id}")
-	public ResponseEntity<BuscarEmergencia> getEmergenciaId(@PathVariable EmergenciaId id)
-			throws NullPointerException, SQLException {
+	public ResponseEntity<BuscarEmergencia> getEmergenciaPorId(@PathVariable EmergenciaId id)
+			throws SQLException, Exception, NullPointerException {
 		if (verificaEmergenciaExistente(id)) {
 			Optional<BuscarEmergencia> optionalEmergencia = service.encontrar(id);
 			return ResponseEntity.ok(optionalEmergencia.get());
 		}
-		throw new NullPointerException("A emergência procurada não existe no banco de dados");
+		throw new NullPointerException("O medicamento procurado não existe no banco de dados");
 	}
 
-	@ApiOperation(value = "Cadastre uma nova emergência")
+	@ApiOperation("Cadastre um novo medicamento")
 	@PostMapping
 	public ResponseEntity<String> postEmergencia(@RequestBody CriarEmergencia comando, @RequestHeader String token)
 			throws Exception, AccessDeniedException {
 		if (autentica.autenticaRequisicao(token)) {
-			Optional<EmergenciaId> optionalEmergenciaId = service.salvar(comando);
+			Optional<EmergenciaId> optionalEmergenciaId = service.salvar(comando, autentica.idUser(token));
 			if (optionalEmergenciaId.isPresent()) {
 				URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
 						.buildAndExpand(optionalEmergenciaId.get()).toUri();
-				return ResponseEntity.created(location).body("Emergência cadastrada com sucesso");
+				return ResponseEntity.created(location).body("O medicamento foi cadastrado com sucesso");
 			}
-			throw new Exception("A emergência não foi salva devido a um erro interno");
+			throw new Exception("O medicamento não foi salvo devido a um erro interno");
 		}
 		throw new AccessDeniedException("Acesso negado");
 	}
 
-	@ApiOperation(value = "Altere uma emergência")
+	@ApiOperation("Altere um medicamento")
 	@PutMapping
-	public ResponseEntity<String> putEmergencia(@RequestBody EditarEmergencia comando, @RequestHeader String token)
-			throws SQLException, NullPointerException, Exception, AccessDeniedException {
+	public ResponseEntity<String> putEmergencia(@RequestBody EditarEmergencia comando,
+			@RequestHeader String token) throws NullPointerException, Exception, SQLException, AccessDeniedException {
 		if (autentica.autenticaRequisicao(token)) {
 			if (!verificaEmergenciaExistente(comando.getId())) {
-				throw new NullPointerException("A emergência a ser alterada não existe no banco de dados");
+				throw new NullPointerException("O medicamento a ser alterado não existe no banco de dados");
 			}
 			Optional<EmergenciaId> optionalEmergenciaId = service.alterar(comando);
 			if (optionalEmergenciaId.isPresent()) {
 				URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
 						.buildAndExpand(optionalEmergenciaId.get()).toUri();
-				return ResponseEntity.created(location).body("Emergência alterada com sucesso");
+				return ResponseEntity.created(location).body("Medicamento alterado com sucesso");
 			} else {
-				throw new InternalError("Erro interno durante a alteração da emergência");
+				throw new InternalError("Erro interno durante a alteração do medicamento");
 			}
 		}
 		throw new AccessDeniedException("Acesso negado");
@@ -95,5 +95,4 @@ public class EmergenciaController {
 			return true;
 		}
 	}
-
 }
