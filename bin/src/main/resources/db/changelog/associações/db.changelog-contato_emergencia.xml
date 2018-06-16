@@ -5,21 +5,20 @@
 	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd
         http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
 
-	<changeSet id="create_relation_contato_telefone" author="camila.morais">
-		<createTable tableName="contato_telefone">
+	<changeSet id="create_relation_contato_emergencia" author="larissa.andrade">
+		<createTable tableName="contato_emergencia">
 			<column name="id" type="${TYPE_ID}">
 				<constraints nullable="false" primaryKey="true"
-					primaryKeyName="PK_CONTATO_TELEFONE" />
+					primaryKeyName="PK_CONTATO_EMERGENCIA" />
 			</column>
 			<column name="id_contato" type="${TYPE_ID}">
 				<constraints nullable="false" unique="false"
-					foreignKeyName="FK_CONTATOTELEFONE_CONTATO" references="contato(id)" />
+					foreignKeyName="FK_CONTATOEMERGENCIA_CONTATO" references="contato(id)" />
 			</column>
-			<column name="id_telefone" type="${TYPE_ID}">
+			<column name="id_emergencia" type="${TYPE_ID}">
 				<constraints nullable="false" unique="false"
-					foreignKeyName="FK_CONTATOTELEFONE_TELEFONE" references="telefone(id_telefone)" />
+					foreignKeyName="FK_CONTATOEMERGENCIA_EMERGENCIA" references="emergencia(id_emergencia)" />
 			</column>
 		</createTable>
-
 	</changeSet>
 </databaseChangeLog>
