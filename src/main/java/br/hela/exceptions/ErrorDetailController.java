@@ -8,9 +8,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import io.swagger.annotations.Api;
+import springfox.documentation.annotations.ApiIgnore;
 
-@Api(description = "Basic Error Controller")
+@ApiIgnore
 @RestController
 @RequestMapping("/exceptions")
 public class ErrorDetailController {

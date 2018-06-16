@@ -6,8 +6,10 @@ import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import br.hela.alergia.AlergiaId;
 import br.hela.medicamento.MedicamentoId;
+import lombok.Data;
 
 @Entity
+@Data
 public class Alergia_Medicamento {
 	@EmbeddedId
 	@AttributeOverride(name = "value", column = @Column(name = "id"))
@@ -19,25 +21,5 @@ public class Alergia_Medicamento {
 
 	public Alergia_Medicamento() {
 		this.id = new Alergia_Medicamento_Id();
-	}
-
-	public Alergia_Medicamento_Id getId() {
-		return id;
-	}
-
-	public AlergiaId getIdAlergia() {
-		return idAlergia;
-	}
-
-	public void setIdAlergia(AlergiaId idAlergia) {
-		this.idAlergia = idAlergia;
-	}
-
-	public MedicamentoId getIdMedicamento() {
-		return idMedicamento;
-	}
-
-	public void setIdMedicamento(MedicamentoId idMedicamento) {
-		this.idMedicamento = idMedicamento;
 	}
 }

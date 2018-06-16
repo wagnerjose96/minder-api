@@ -1,7 +1,6 @@
 package br.hela.alarme;
 
 import java.util.Date;
-
 import javax.persistence.AttributeOverride;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
@@ -10,12 +9,19 @@ import org.hibernate.envers.Audited;
 import br.hela.alarme.comandos.CriarAlarme;
 import br.hela.alarme.comandos.EditarAlarme;
 import br.hela.medicamento.MedicamentoId;
+import lombok.AccessLevel;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.Setter;
 
 @Entity
 @Audited
+@EqualsAndHashCode(exclude={"idMedicamento", "dataInicio", "dataFim", "quantidade", "descricao", "periodicidade"})
+@Data
 public class Alarme {
 	@EmbeddedId
 	@AttributeOverride(name = "value", column = @Column(name = "id"))
+	@Setter(AccessLevel.NONE) 
 	private AlarmeId id;
 	@AttributeOverride(name = "value", column = @Column(name = "id_medicamento"))
 	private MedicamentoId idMedicamento;
@@ -46,58 +52,6 @@ public class Alarme {
 		this.quantidade = comando.getQuantidade();
 		this.descricao = comando.getDescricao();
 		this.periodicidade = comando.getPeriodicidade();
-	}
-
-	public MedicamentoId getIdMedicamento() {
-		return idMedicamento;
-	}
-
-	public void setIdMedicamento(MedicamentoId idMedicamento) {
-		this.idMedicamento = idMedicamento;
-	}
-
-	public Date getDataInicio() {
-		return dataInicio;
-	}
-
-	public void setDataInicio(Date dataInicio) {
-		this.dataInicio = dataInicio;
-	}
-
-	public Date getDataFim() {
-		return dataFim;
-	}
-
-	public void setDataFim(Date dataFim) {
-		this.dataFim = dataFim;
-	}
-
-	public String getQuantidade() {
-		return quantidade;
-	}
-
-	public void setQuantidade(String quantidade) {
-		this.quantidade = quantidade;
-	}
-
-	public String getDescricao() {
-		return descricao;
-	}
-
-	public void setDescricao(String descricao) {
-		this.descricao = descricao;
-	}
-
-	public int getPeriodicidade() {
-		return periodicidade;
-	}
-
-	public void setPeriodicidade(int periodicidade) {
-		this.periodicidade = periodicidade;
-	}
-
-	public AlarmeId getId() {
-		return id;
 	}
 
 }

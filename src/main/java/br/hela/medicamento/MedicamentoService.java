@@ -6,6 +6,7 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import br.hela.medicamento.comandos.BuscarMedicamento;
 import br.hela.medicamento.comandos.CriarMedicamento;
 import br.hela.medicamento.comandos.EditarMedicamento;
 
@@ -20,20 +21,22 @@ public class MedicamentoService {
 		return Optional.of(novo.getIdMedicamento());
 	}
 
-	public Optional<Medicamento> encontrar(MedicamentoId id) {
+	public Optional<BuscarMedicamento> encontrar(MedicamentoId id) {
 		Medicamento medicamento = medicamentoRepo.findById(id).get();
+		BuscarMedicamento resultado = new BuscarMedicamento();
 		if (medicamento.getAtivo() == 1) {
-			return Optional.of(medicamento);
+			resultado = new BuscarMedicamento(medicamento);
 		}
-		return Optional.empty();
+		return Optional.of(resultado);
 	}
 
-	public Optional<List<Medicamento>> encontrar() {
-		List<Medicamento> resultados = new ArrayList<>();
+	public Optional<List<BuscarMedicamento>> encontrar() {
+		List<BuscarMedicamento> resultados = new ArrayList<>();
 		List<Medicamento> medicamentos = medicamentoRepo.findAll();
 		for (Medicamento medicamento : medicamentos) {
 			if (medicamento.getAtivo() == 1) {
-				resultados.add(medicamento);
+				BuscarMedicamento med = new BuscarMedicamento(medicamento);
+				resultados.add(med);
 			}
 		}
 		return Optional.of(resultados);

@@ -2,39 +2,22 @@ package br.hela.contato.comandos;
 
 import br.hela.contato.Contato;
 import br.hela.contato.ContatoId;
-import br.hela.telefone.Telefone;
+import lombok.Data;
 
+@Data
 public class BuscarContato {
 	private ContatoId id;
 	private String nome;
-	private Telefone telefone;
-
+	private int ddd;
+	private int numero;
+	
 	public BuscarContato() {
 	}
-
-	public BuscarContato(Contato comando) {
-		this.id = comando.getId();
-		this.nome = comando.getNome();
+	
+	public BuscarContato(Contato comandos) {
+		this.id = comandos.getId();
+		this.nome = comandos.getNome();
+		this.ddd = comandos.getDdd();
+		this.numero = comandos.getNumero();
 	}
-
-	public String getNome() {
-		return nome;
-	}
-
-	public void setNome(String nome) {
-		this.nome = nome;
-	}
-
-	public Telefone getTelefone() {
-		return telefone;
-	}
-
-	public void setTelefone(Telefone telefone) {
-		this.telefone = telefone;
-	}
-
-	public ContatoId getId() {
-		return id;
-	}
-
 }

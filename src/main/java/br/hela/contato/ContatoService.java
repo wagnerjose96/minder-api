@@ -1,70 +1,70 @@
 package br.hela.contato;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.ResultSet;
-import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import javax.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
-
 import br.hela.contato.Contato;
 import br.hela.contato.ContatoId;
 import br.hela.contato.comandos.BuscarContato;
 import br.hela.contato.comandos.CriarContato;
 import br.hela.contato.comandos.EditarContato;
-import br.hela.contato.contato_telefone.Contato_Telefone;
-import br.hela.contato.contato_telefone.Contato_Telefone_Service;
-import br.hela.telefone.Telefone;
-import br.hela.telefone.TelefoneId;
-import br.hela.telefone.TelefoneService;
+import br.hela.contato.contato_emergencia.Contato_Emergencia;
+import br.hela.contato.contato_emergencia.Contato_Emergencia_Id;
+import br.hela.contato.contato_emergencia.Contato_Emergencia_Repository;
+import br.hela.emergencia.EmergenciaId;
+import br.hela.emergencia.comandos.BuscarEmergencia;
+import br.hela.usuario.UsuarioId;
 
 @Service
 @Transactional
 public class ContatoService {
-
 	@Autowired
 	private ContatoRepository repo;
-
-	@Autowired
-	private Contato_Telefone_Service service;
 	
 	@Autowired
-	private TelefoneService telefoneService;
+	private Contato_Emergencia_Repository repoContatoEmergencia;
 
-	public Optional<ContatoId> salvar(CriarContato comando) {
+	@Autowired
+	private JdbcTemplate jdbcTemplate;
+
+	private String sql = "select e.id_usuario, e.id_emergencia, u.ativo, u.id "
+			+ "from usuario u inner join emergencia e "
+			+ "on u.id = e.id_usuario "
+			+ "group by u.id, e.id_usuario, e.id_emergencia "
+			+ "having u.id = ?";
+	
+	private String sqlContatoEmergencia = "select e.id_contato, e.id_emergencia, e.id "
+			+ "from contato_emergencia e "
+			+ "where e.id_emergencia = ? and e.id_contato = ?";
+
+	public Optional<ContatoId> salvar(CriarContato comando, UsuarioId id) {
 		Contato novo = repo.save(new Contato(comando));
-		Optional<TelefoneId> idTelefone = telefoneService.salvar(comando.getTelefone());
-		if (verificaTelefoneExistente(idTelefone.get()) && novo.getId() != null) {
-			Contato_Telefone contatoTelefone = new Contato_Telefone();
-			contatoTelefone.setIdContato(novo.getId());
-			contatoTelefone.setIdTelefone(idTelefone.get());
-			service.salvar(contatoTelefone);
-		}
+		Contato_Emergencia contatoEmergencia = new Contato_Emergencia();
+		List<BuscarEmergencia> emergencia = executeQuery(id.toString(), sql);
+		contatoEmergencia.setIdEmergencia(emergencia.get(0).getId());
+		contatoEmergencia.setIdContato(novo.getId());
+		repoContatoEmergencia.save(contatoEmergencia);
 		return Optional.of(novo.getId());
 	}
 
 	public Optional<BuscarContato> encontrar(ContatoId contatoId) throws Exception {
-		ResultSet rs = executeQuery(contatoId.toString());		
-		BuscarContato contato = new BuscarContato(repo.findById(contatoId).get());
-		String id = contatoId.toString();
-		contato.setTelefone(telefone(rs, id));
-		return Optional.of(contato);
+		Contato contato = repo.findById(contatoId).get();
+		BuscarContato resultado = new BuscarContato(contato);
+		return Optional.of(resultado);
 	}
 
 	public Optional<List<BuscarContato>> encontrar() throws Exception {
 		List<Contato> contatos = repo.findAll();
-		List<BuscarContato> rsContatos = new ArrayList<>();
+		List<BuscarContato> resultados = new ArrayList<>();
 		for (Contato contato : contatos) {
-			ResultSet rs = executeQuery(contato.getId().toString());
-			BuscarContato novo = new BuscarContato(contato);
-			novo.setTelefone(telefone(rs, contato.getId().toString()));
-			rsContatos.add(novo);
+			BuscarContato nova = new BuscarContato(contato);
+			resultados.add(nova);
 		}
-		return Optional.of(rsContatos);
+		return Optional.of(resultados);
 	}
 
 	public Optional<ContatoId> alterar(EditarContato comando) {
@@ -73,62 +73,44 @@ public class ContatoService {
 			Contato contato = optional.get();
 			contato.apply(comando);
 			repo.save(contato);
-			if (verificaTelefoneExistente(comando.getTelefone().getIdTelefone())) {
-				telefoneService.alterar(comando.getTelefone());
-			}
 			return Optional.of(comando.getId());
 		}
 		return Optional.empty();
 	}
-	
-	public Optional<String> deletar(ContatoId id){
-		if(repo.findById(id).isPresent()) {
+
+	public Optional<String> deletar(ContatoId id, UsuarioId idUsuario) {
+		if (repo.findById(id).isPresent()) {
+			EmergenciaId idEmergencia = executeQuery(idUsuario.toString(), sql).get(0).getId(); 
+			Contato_Emergencia_Id idContatoEmergencia = buscaId(idEmergencia.toString(), id.toString(), sqlContatoEmergencia).get(0).getId();
+			repoContatoEmergencia.deleteById(idContatoEmergencia);
 			repo.deleteById(id);
-			return Optional.of("Contato" + id + " deletado com sucesso");
+			return Optional.of("Contato " + id + " deletado com sucesso");
 		}
 		return Optional.empty();
 	}
-
-	private boolean verificaTelefoneExistente(TelefoneId id) {
-		if (!telefoneService.encontrar(id).isPresent()) {
-			return false;
-		} else {
-			return true;
-		}
-	}
-
-	private Telefone telefone(ResultSet rs, String id) throws Exception {
-			Telefone telefone = new Telefone();;			
-			while (rs.next()) {
-			String idContato = rs.getString("id");
-			if (id.equals(idContato)) {
-				telefone.setIdTelefone(new TelefoneId(rs.getString("id_telefone")));
-				int ddd = Integer.parseInt(rs.getString("ddd"));
-				telefone.setDdd(ddd);
-				int numero = Integer.parseInt(rs.getString("numero"));
-				telefone.setNumero(numero);
+	
+	private List<BuscarEmergencia> executeQuery(String id, String sql) {
+		List<BuscarEmergencia> emergencias = jdbcTemplate.query(sql, new Object[] { id }, (rs, rowNum) -> {
+			BuscarEmergencia emer = new BuscarEmergencia();
+			String idUsuario = rs.getString("id_usuario");
+			if (id.equals(idUsuario) && rs.getInt("ativo") != 0) {
+				emer.setId(new EmergenciaId(rs.getString("id_emergencia")));
 			}
-		}
-		return telefone;
-	}
-
-	private Statement connect() throws Exception {
-		Class.forName("org.postgresql.Driver");
-		Connection con = DriverManager.getConnection("jdbc:postgresql://localhost:5432/escoladeti2018", "postgres",
-				"11223344");
-		Statement stmt = con.createStatement();
-		return stmt;
+			return emer;
+		});
+		return emergencias;
 	}
 	
-	private ResultSet executeQuery(String id) throws Exception {
-		Statement stmt = connect();
-		String query = "select c.id, a.id_telefone, a.ddd, a.numero from telefone a "
-				+ "inner join contato_telefone b on a.id_telefone = b.id_telefone "
-				+ "inner join contato c on b.id_contato = c.id " 
-				+ "group by c.id, a.id_telefone having c.id = '"
-				+ id + "' " + "order by c.nome";
-		ResultSet rs = stmt.executeQuery(query);
-		return rs;
+	private List<Contato_Emergencia> buscaId(String idEmergencia, String idContato, String sql) {
+		List<Contato_Emergencia> emergencias = jdbcTemplate.query(sql, new Object[] { idEmergencia, idContato }, (rs, rowNum) -> {
+			Contato_Emergencia emer = new Contato_Emergencia();
+			String emergencia = rs.getString("id_emergencia");
+			String contato = rs.getString("id_contato");
+			if (emergencia.equals(idEmergencia) && contato.equals(idContato)) {
+				emer.setId(new Contato_Emergencia_Id(rs.getString("id")));
+			}
+			return emer;
+		});
+		return emergencias;
 	}
-	
 }

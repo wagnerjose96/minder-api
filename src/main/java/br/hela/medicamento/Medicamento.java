@@ -7,12 +7,19 @@ import javax.persistence.Entity;
 import org.hibernate.envers.Audited;
 import br.hela.medicamento.comandos.CriarMedicamento;
 import br.hela.medicamento.comandos.EditarMedicamento;
+import lombok.AccessLevel;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.Setter;
 
 @Entity
 @Audited
+@Data
+@EqualsAndHashCode(exclude = { "nomeMedicamento", "composicao", "ativo"})
 public class Medicamento {
 	@EmbeddedId
 	@AttributeOverride(name = "value", column = @Column(name = "id_medicamento"))
+	@Setter(AccessLevel.NONE)
 	private MedicamentoId idMedicamento;
 	private String nomeMedicamento;
 	private String composicao;
@@ -25,71 +32,12 @@ public class Medicamento {
 		this.idMedicamento = new MedicamentoId();
 		this.nomeMedicamento = comando.getNomeMedicamento();
 		this.composicao = comando.getComposicao();
-		this.ativo = comando.getAtivo();
+		this.ativo = 1;
 	}
 
 	public void apply(EditarMedicamento comando) {
 		this.idMedicamento = comando.getIdMedicamento();
 		this.nomeMedicamento = comando.getNomeMedicamento();
 		this.composicao = comando.getComposicao();
-		this.ativo = comando.getAtivo();
 	}
-
-	public int getAtivo() {
-		return ativo;
-	}
-
-	public void setAtivo(int ativo) {
-		this.ativo = ativo;
-	}
-
-	public MedicamentoId getIdMedicamento() {
-		return idMedicamento;
-	}
-
-	public void setIdMedicamento(MedicamentoId idMedicamento) {
-		this.idMedicamento = idMedicamento;
-	}
-
-	public String getNomeMedicamento() {
-		return nomeMedicamento;
-	}
-
-	public void setNomeMedicamento(String nomeMedicamento) {
-		this.nomeMedicamento = nomeMedicamento;
-	}
-
-	public String getComposicao() {
-		return composicao;
-	}
-
-	public void setComposicao(String composicao) {
-		this.composicao = composicao;
-	}
-
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + ((idMedicamento == null) ? 0 : idMedicamento.hashCode());
-		return result;
-	}
-
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		Medicamento other = (Medicamento) obj;
-		if (idMedicamento == null) {
-			if (other.idMedicamento != null)
-				return false;
-		} else if (!idMedicamento.equals(other.idMedicamento))
-			return false;
-		return true;
-	}
-
 }

@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd
+        http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
+
+	<changeSet id="create_table_emergencia" author="douglas.mendonca">
+		<createTable tableName="emergencia">
+			<column name="id_emergencia" type="${TYPE_ID}">
+				<constraints nullable="false" primaryKey="true" primaryKeyName="PK_EMERGENCIA"/>
+			</column>
+			<column name="ataque_convulsivos" type="${TYPE_NUMBER}">
+				<constraints nullable="true" />
+			</column>
+			<column name="problemas_cardiacos" type="${TYPE_DESCRICAO}">
+				<constraints nullable="true" />
+			</column>
+			<column name="doador_de_orgaos" type="${TYPE_NUMBER}">
+				<constraints nullable="true" />
+			</column>
+			<column name="id_usuario" type="${TYPE_ID}">
+				<constraints nullable="false"
+					foreignKeyName="FK_EMERGENCIA_USUARIO" references="usuario(id)" />
+			</column>				
+		</createTable>
+	</changeSet>
+	
+	<changeSet id="create_table_emergencia_aud" author="douglas.mendonca">
+		<createTable tableName="emergencia_aud">
+			<column name="id_emergencia" type="${TYPE_ID}">
+				<constraints nullable="false" />
+			</column>
+			<column name="ataque_convulsivos" type="${TYPE_NUMBER}">
+				<constraints nullable="true" />
+			</column>
+			<column name="problemas_cardiacos" type="${TYPE_DESCRICAO}">
+				<constraints nullable="true" />
+			</column>
+			<column name="doador_de_orgaos" type="${TYPE_NUMBER}">
+				<constraints nullable="true" />
+			</column>								
+			<column name="rev" type="${TYPE_NUMBER}">
+				<constraints nullable="false" referencedTableName="revinfo"
+					referencedColumnNames="rev" foreignKeyName="emergencia_revinfo_fk" />
+			</column>
+			<column name="revtype" type="${TYPE_NUMBER}">
+				<constraints nullable="false" />
+			</column>
+		</createTable>
+		<addPrimaryKey constraintName="emergencia_aud_pkey"
+			tableName="emergencia_aud" columnNames="id_emergencia, rev" />
+	</changeSet>
+	
+</databaseChangeLog>

@@ -5,16 +5,22 @@ import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import org.hibernate.envers.Audited;
-
 import br.hela.convenio.ConvenioId;
 import br.hela.planoDeSaude.comandos.CriarPlanoDeSaude;
 import br.hela.planoDeSaude.comandos.EditarPlanoDeSaude;
+import lombok.AccessLevel;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.Setter;
 
 @Entity
 @Audited
+@Data
+@EqualsAndHashCode(exclude = { "numeroCartao", "habitacao", "territorio"})
 public class PlanoDeSaude {
 	@EmbeddedId
 	@AttributeOverride(name = "value", column = @Column(name = "id"))
+	@Setter(AccessLevel.NONE)
 	private PlanoDeSaudeId id;
 	@AttributeOverride(name = "value", column = @Column(name = "id_convenio"))
 	private ConvenioId idConvenio;
@@ -41,41 +47,4 @@ public class PlanoDeSaude {
 		this.habitacao = comando.getHabitacao();
 		this.territorio = comando.getTerritorio();
 	}
-
-	public int getNumeroCartao() {
-		return numeroCartao;
-	}
-
-	public void setNumeroCartao(int numeroCartao) {
-		this.numeroCartao = numeroCartao;
-	}
-
-	public PlanoDeSaudeId getId() {
-		return id;
-	}
-
-	public String getHabitacao() {
-		return habitacao;
-	}
-
-	public void setHabitacao(String habitacao) {
-		this.habitacao = habitacao;
-	}
-
-	public String getTerritorio() {
-		return territorio;
-	}
-
-	public void setTerritorio(String territorio) {
-		this.territorio = territorio;
-	}
-
-	public ConvenioId getIdConvenio() {
-		return idConvenio;
-	}
-
-	public void setIdConvenio(ConvenioId idConvenio) {
-		this.idConvenio = idConvenio;
-	}
-
 }

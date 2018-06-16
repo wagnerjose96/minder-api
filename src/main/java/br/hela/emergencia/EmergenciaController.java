@@ -1,6 +1,8 @@
 package br.hela.emergencia;
 
 import java.net.URI;
+import java.nio.file.AccessDeniedException;
+import java.sql.SQLException;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,70 +12,83 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+
+import br.hela.emergencia.comandos.BuscarEmergencia;
 import br.hela.emergencia.comandos.CriarEmergencia;
 import br.hela.emergencia.comandos.EditarEmergencia;
+import br.hela.security.AutenticaRequisicao;
+import br.hela.usuario.UsuarioId;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 
-@Api(description = "Basic Emergência Controller")
+@Api("Basic Emergência Controller")
 @RestController
 @RequestMapping("/emergencias")
 public class EmergenciaController {
-
 	@Autowired
 	private EmergenciaService service;
 
-	@ApiOperation(value = "Busque todas as emergências")
+	@Autowired
+	private AutenticaRequisicao autentica;
+
+	@ApiOperation("Busque todas as emergencias")
 	@GetMapping
-	public ResponseEntity<List<Emergencia>> getEmergencias() throws Exception {
-		Optional<List<Emergencia>> optionalEmergencia = service.encontrar();
-		return ResponseEntity.ok(optionalEmergencia.get());
+	public ResponseEntity<List<BuscarEmergencia>> getEmergencias() throws SQLException, Exception {
+		Optional<List<BuscarEmergencia>> optionalEmergencias = service.encontrar();
+		return ResponseEntity.ok(optionalEmergencias.get());
 	}
 
-	@ApiOperation(value = "Busque uma emergência pelo ID")
+	@ApiOperation("Busque uma emergência pelo ID")
 	@GetMapping("/{id}")
-	public ResponseEntity<Emergencia> getEmergenciaId(@PathVariable EmergenciaId id) throws NullPointerException {
-
+	public ResponseEntity<BuscarEmergencia> getEmergenciaPorId(@PathVariable EmergenciaId id)
+			throws SQLException, Exception, NullPointerException {
 		if (verificaEmergenciaExistente(id)) {
-			Optional<Emergencia> optionalEmergencia = service.encontrar(id);
+			Optional<BuscarEmergencia> optionalEmergencia = service.encontrar(id);
 			return ResponseEntity.ok(optionalEmergencia.get());
 		}
 		throw new NullPointerException("A emergência procurada não existe no banco de dados");
 	}
 
-	@ApiOperation(value = "Cadastre uma nova emergência")
+	@ApiOperation("Cadastre uma nova emergência")
 	@PostMapping
-	public ResponseEntity<String> postEmergencia(@RequestBody CriarEmergencia comando) throws Exception {
-
-		Optional<EmergenciaId> optionalEmergenciaId = service.salvar(comando);
-		if (optionalEmergenciaId.isPresent()) {
-			URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
-					.buildAndExpand(optionalEmergenciaId.get()).toUri();
-			return ResponseEntity.created(location).body("Emergência criada com sucesso");
+	public ResponseEntity<String> postEmergencia(@RequestBody CriarEmergencia comando, @RequestHeader String token)
+			throws Exception, AccessDeniedException {
+		if (autentica.autenticaRequisicao(token)) {
+			UsuarioId id = autentica.idUser(token);
+			comando.setIdUsuario(id);
+			Optional<EmergenciaId> optionalEmergenciaId = service.salvar(comando);
+			if (optionalEmergenciaId.isPresent()) {
+				URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
+						.buildAndExpand(optionalEmergenciaId.get()).toUri();
+				return ResponseEntity.created(location).body("A emergência foi cadastrada com sucesso");
+			}
+			throw new Exception("A emergência não foi salva devido a um erro interno");
 		}
-		throw new Exception("A emergência não foi salva devido a um erro interno");
+		throw new AccessDeniedException("Acesso negado");
 	}
 
-	@ApiOperation(value = "Altere uma emergência")
+	@ApiOperation("Altere uma emergência")
 	@PutMapping
-	public ResponseEntity<String> putEmergencia(@RequestBody EditarEmergencia comando)
-			throws NullPointerException, InternalError {
-
-		if (!verificaEmergenciaExistente(comando.getId())) {
-			throw new NullPointerException("A emergência a ser alterada não existe no banco de dados");
+	public ResponseEntity<String> putEmergencia(@RequestBody EditarEmergencia comando,
+			@RequestHeader String token) throws NullPointerException, Exception, SQLException, AccessDeniedException {
+		if (autentica.autenticaRequisicao(token)) {
+			if (!verificaEmergenciaExistente(comando.getId())) {
+				throw new NullPointerException("A emergência a ser alterada não existe no banco de dados");
+			}
+			Optional<EmergenciaId> optionalEmergenciaId = service.alterar(comando);
+			if (optionalEmergenciaId.isPresent()) {
+				URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
+						.buildAndExpand(optionalEmergenciaId.get()).toUri();
+				return ResponseEntity.created(location).body("A emergência foi alterada com sucesso");
+			} else {
+				throw new InternalError("Ocorreu um erro interno durante a alteração da emergência");
+			}
 		}
-		Optional<EmergenciaId> optionalEmergenciaId = service.alterar(comando);
-		if (optionalEmergenciaId.isPresent()) {
-			URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
-					.buildAndExpand(optionalEmergenciaId.get()).toUri();
-			return ResponseEntity.created(location).body("Emergência alterada com sucesso");
-		} else {
-			throw new InternalError("Erro interno durante a alteração da emergência");
-		}
-
+		throw new AccessDeniedException("Acesso negado");
 	}
 
 	private boolean verificaEmergenciaExistente(EmergenciaId id) {
@@ -83,5 +98,4 @@ public class EmergenciaController {
 			return true;
 		}
 	}
-
 }

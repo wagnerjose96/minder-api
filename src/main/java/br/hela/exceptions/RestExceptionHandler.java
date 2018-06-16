@@ -1,7 +1,6 @@
 package br.hela.exceptions;
 
 import java.nio.file.AccessDeniedException;
-import java.sql.SQLException;
 import java.util.concurrent.TimeoutException;
 import org.hibernate.cfg.NotYetImplementedException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,7 +24,7 @@ public class RestExceptionHandler {
 	public @ResponseBody ResponseEntity<?> allExceptions(Exception message) throws Exception {
 		HttpStatus status = HttpStatus.INTERNAL_SERVER_ERROR;
 		String type = "Generic Error";
-		String developerMessage = "Erro vindo da exceção generica - Verificar console";
+		String developerMessage = "Falha interna no servidor";
 		CriarErrorDetail errorDetail = gerarErro(type, status.value(), message.getMessage(), developerMessage);
 		service.salvar(errorDetail);
 		return new ResponseEntity<>(errorDetail, status);
@@ -36,8 +35,9 @@ public class RestExceptionHandler {
 	public @ResponseBody ResponseEntity<?> requestTimeout(TimeoutException message) {
 		HttpStatus status = HttpStatus.REQUEST_TIMEOUT;
 		String type = "Request Timeout";
+		String developerMessage = "Tempo de requisição esgotado";
 		CriarErrorDetail errorDetail = gerarErro(type, status.value(), message.getMessage(),
-				message.getClass().getName());
+				developerMessage);
 		service.salvar(errorDetail);
 		return new ResponseEntity<>(errorDetail, status);
 	}
@@ -47,8 +47,9 @@ public class RestExceptionHandler {
 	public @ResponseBody ResponseEntity<?> unsupportedMediaType(UnsupportedMediaTypeStatusException message) {
 		HttpStatus status = HttpStatus.UNSUPPORTED_MEDIA_TYPE;
 		String type = "Unsupported media type";
+		String developerMessage = "Mídia não suportada";
 		CriarErrorDetail errorDetail = gerarErro(type, status.value(), message.getMessage(),
-				message.getClass().getName());
+				developerMessage);
 		service.salvar(errorDetail);
 		return new ResponseEntity<>(errorDetail, status);
 	}
@@ -57,9 +58,10 @@ public class RestExceptionHandler {
 	@ExceptionHandler({ MethodNotAllowedException.class })
 	public @ResponseBody ResponseEntity<?> methodNotAllowed(MethodNotAllowedException message) {
 		HttpStatus status = HttpStatus.METHOD_NOT_ALLOWED;
-		String type = "Método não implementado";
+		String type = "Method not allowed";
+		String developerMessage = "Método não permitido";
 		CriarErrorDetail errorDetail = gerarErro(type, status.value(), message.getMessage(),
-				message.getClass().getName());
+				developerMessage);
 		service.salvar(errorDetail);
 		return new ResponseEntity<>(errorDetail, status);
 	}
@@ -69,19 +71,9 @@ public class RestExceptionHandler {
 	public @ResponseBody ResponseEntity<?> handleNullPointerException(NullPointerException message) {
 		HttpStatus status = HttpStatus.NOT_FOUND;
 		String type = "Not found";
+		String developerMessage = "Recurso não encontrado";
 		CriarErrorDetail errorDetail = gerarErro(type, status.value(), message.getMessage(),
-				message.getClass().getName());
-		service.salvar(errorDetail);
-		return new ResponseEntity<>(errorDetail, status);
-	}
-
-	@ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-	@ExceptionHandler({ SQLException.class })
-	public @ResponseBody ResponseEntity<?> handleSQLException(InternalError message) {
-		HttpStatus status = HttpStatus.INTERNAL_SERVER_ERROR;
-		String type = "Internal Server Error";
-		CriarErrorDetail errorDetail = gerarErro(type, status.value(), message.getMessage(),
-				message.getClass().getName());
+				developerMessage);
 		service.salvar(errorDetail);
 		return new ResponseEntity<>(errorDetail, status);
 	}
@@ -91,8 +83,9 @@ public class RestExceptionHandler {
 	public @ResponseBody ResponseEntity<?> handleForbidden(Exception message) {
 		HttpStatus status = HttpStatus.FORBIDDEN;
 		String type = "Forbidden";
+		String developerMessage = "Token incorreto";
 		CriarErrorDetail errorDetail = gerarErro(type, status.value(), message.getMessage(),
-				message.getClass().getName());
+				developerMessage);
 		service.salvar(errorDetail);
 		return new ResponseEntity<>(errorDetail, status);
 	}
@@ -102,8 +95,9 @@ public class RestExceptionHandler {
 	public @ResponseBody ResponseEntity<?> handleNotImplemented(NotYetImplementedException message) {
 		HttpStatus status = HttpStatus.NOT_IMPLEMENTED;
 		String type = "Not implemented";
+		String developerMessage = "Método não implementado";
 		CriarErrorDetail errorDetail = gerarErro(type, status.value(), message.getMessage(),
-				message.getClass().getName());
+				developerMessage);
 		service.salvar(errorDetail);
 		return new ResponseEntity<>(errorDetail, status);
 	}
@@ -113,18 +107,19 @@ public class RestExceptionHandler {
 	public @ResponseBody ResponseEntity<?> handleBadHttpRequest(BadHttpRequest message) {
 		HttpStatus status = HttpStatus.BAD_REQUEST;
 		String type = "Bad request";
+		String developerMessage = "Requisição incorreta";
 		CriarErrorDetail errorDetail = gerarErro(type, status.value(), message.getMessage(),
-				message.getClass().getName());
+				developerMessage);
 		service.salvar(errorDetail);
 		return new ResponseEntity<>(errorDetail, status);
 	}
 
 	private CriarErrorDetail gerarErro(String type, int status, String message, String developerMessage) {
 		CriarErrorDetail errorDetail = new CriarErrorDetail();
-		errorDetail.setType("Generic Error");
+		errorDetail.setType(type);
 		errorDetail.setHttpStatus(status);
 		errorDetail.setError(message);
-		errorDetail.setDeveloperMessage("Erro vindo da exceção generica - Verificar console");
+		errorDetail.setDeveloperMessage(developerMessage);
 		return errorDetail;
 	}
 }

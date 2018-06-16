@@ -1,9 +1,5 @@
 package br.hela.alarme;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.ResultSet;
-import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -15,14 +11,17 @@ import br.hela.alarme.AlarmeId;
 import br.hela.alarme.comandos.BuscarAlarme;
 import br.hela.alarme.comandos.CriarAlarme;
 import br.hela.alarme.comandos.EditarAlarme;
-import br.hela.medicamento.Medicamento;
-import br.hela.medicamento.MedicamentoId;
+import br.hela.medicamento.MedicamentoService;
+import br.hela.medicamento.comandos.BuscarMedicamento;
 
 @Service
 @Transactional
 public class AlarmeService {
 	@Autowired
 	private AlarmeRepository repo;
+	
+	@Autowired
+	private MedicamentoService medService;
 
 	public Optional<AlarmeId> salvar(CriarAlarme comando) {
 		Alarme novo = repo.save(new Alarme(comando));
@@ -30,28 +29,23 @@ public class AlarmeService {
 	}
 
 	public Optional<BuscarAlarme> encontrar(AlarmeId alarmeId) throws Exception {
-		BuscarAlarme alarme = new BuscarAlarme(repo.findById(alarmeId).get());
-		ResultSet rs = executeQuery(alarmeId.toString());
-		Medicamento med = medicamento(rs, alarmeId.toString());
-		if (med.getAtivo() != 0) {
-			alarme.setMedicamento(med);
-		}
-		return Optional.of(alarme);
+		Alarme alarme = repo.findById(alarmeId).get();
+		BuscarAlarme resultado = new BuscarAlarme(alarme);
+		Optional<BuscarMedicamento> medicamento = medService.encontrar(alarme.getIdMedicamento());
+		resultado.setMedicamento(medicamento.get());
+		return Optional.of(resultado);
 	}
 
 	public Optional<List<BuscarAlarme>> encontrar() throws Exception {
-		List<BuscarAlarme> rsAlarmes = new ArrayList<>();
+		List<BuscarAlarme> resultados = new ArrayList<>();
 		List<Alarme> alarmes = repo.findAll();
 		for (Alarme alarme : alarmes) {
-			ResultSet rs = executeQuery(alarme.getId().toString());
 			BuscarAlarme nova = new BuscarAlarme(alarme);
-			Medicamento med = medicamento(rs, alarme.getId().toString());
-			if (med.getAtivo() != 0) {
-				nova.setMedicamento(med);
-			}
-			rsAlarmes.add(nova);
+			Optional<BuscarMedicamento> medicamento = medService.encontrar(alarme.getIdMedicamento());
+			nova.setMedicamento(medicamento.get());
+			resultados.add(nova);
 		}
-		return Optional.of(rsAlarmes);
+		return Optional.of(resultados);
 	}
 
 	public Optional<AlarmeId> alterar(EditarAlarme comando) {
@@ -64,44 +58,12 @@ public class AlarmeService {
 		}
 		return Optional.empty();
 	}
-	
-	public Optional<String> deletar(AlarmeId id){
-		if(repo.findById(id).isPresent()) {
+
+	public Optional<String> deletar(AlarmeId id) {
+		if (repo.findById(id).isPresent()) {
 			repo.deleteById(id);
 			return Optional.of("Alarme " + id + " deletado com sucesso");
 		}
 		return Optional.empty();
-	}
-
-	private Medicamento medicamento(ResultSet rs, String id) throws Exception {
-		Medicamento med = new Medicamento();
-		while (rs.next()) {
-			String idAlarme = rs.getString("id");
-			if (id.equals(idAlarme)) {
-				med.setIdMedicamento(new MedicamentoId(rs.getString("id_medicamento")));
-				med.setNomeMedicamento(rs.getString("nome_medicamento"));
-				med.setComposicao(rs.getString("composicao"));
-				med.setAtivo(rs.getInt("ativo"));
-			}
-		}
-		return med;
-	}
-
-	private Statement connect() throws Exception {
-		Class.forName("org.postgresql.Driver");
-		Connection con = DriverManager
-				.getConnection("jdbc:postgresql://localhost:5432/escoladeti2018", "postgres", "11223344");
-		Statement stmt = con.createStatement();
-		return stmt;
-	}
-
-	private ResultSet executeQuery(String id) throws Exception {
-		Statement stmt = connect();
-		String query = "select c.id, c.id_medicamento, a.nome_medicamento, "
-				+ "a.composicao, a.id_medicamento, a.ativo from medicamento a "
-				+ "inner join alarme c on c.id_medicamento = a.id_medicamento " 
-				+ "group by c.id, a.id_medicamento having c.id = '" + id + "'";
-		ResultSet rs = stmt.executeQuery(query);
-		return rs;
 	}
 }

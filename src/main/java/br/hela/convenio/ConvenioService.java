@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import br.hela.convenio.Convenio;
 import br.hela.convenio.ConvenioId;
 import br.hela.convenio.ConvenioRepository;
+import br.hela.convenio.comandos.BuscarConvenio;
 import br.hela.convenio.comandos.CriarConvenio;
 import br.hela.convenio.comandos.EditarConvenio;
 
@@ -23,20 +24,22 @@ public class ConvenioService {
 		return Optional.of(novo.getId());
 	}
 
-	public Optional<Convenio> encontrar(ConvenioId id) {
+	public Optional<BuscarConvenio> encontrar(ConvenioId id) {
 		Convenio convenio = convenioRepo.findById(id).get();
+		BuscarConvenio resultado = new BuscarConvenio();
 		if (convenio.getAtivo() == 1) {
-			return Optional.of(convenio);
+			resultado = new BuscarConvenio(convenio);
 		}
-		return Optional.empty();
+		return Optional.of(resultado);
 	}
 
-	public Optional<List<Convenio>> encontrar() {
-		List<Convenio> resultados = new ArrayList<>();
+	public Optional<List<BuscarConvenio>> encontrar() {
+		List<BuscarConvenio> resultados = new ArrayList<>();
 		List<Convenio> convenios = convenioRepo.findAll();
 		for (Convenio convenio : convenios) {
 			if (convenio.getAtivo() == 1) {
-				resultados.add(convenio);
+				BuscarConvenio nova = new BuscarConvenio(convenio);
+				resultados.add(nova);
 			}
 		}
 		return Optional.of(resultados);

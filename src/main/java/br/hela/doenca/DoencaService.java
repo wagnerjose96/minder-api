@@ -1,17 +1,12 @@
 package br.hela.doenca;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.ResultSet;
-import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import br.hela.doenca.Doenca;
 import br.hela.doenca.DoencaId;
 import br.hela.doenca.doenca_medicamento.Doenca_Medicamento;
@@ -19,15 +14,24 @@ import br.hela.doenca.doenca_medicamento.Doenca_Medicamento_Service;
 import br.hela.doenca.comandos.BuscarDoenca;
 import br.hela.doenca.comandos.CriarDoenca;
 import br.hela.doenca.comandos.EditarDoenca;
-import br.hela.medicamento.Medicamento;
 import br.hela.medicamento.MedicamentoId;
 import br.hela.medicamento.MedicamentoService;
+import br.hela.medicamento.comandos.BuscarMedicamento;
 
 @Service
 @Transactional
 public class DoencaService {
+	private String sql = "select c.id_doenca, a.nome_medicamento, "
+			+ "a.composicao, a.id_medicamento, a.ativo from medicamento a "
+			+ "inner join doenca_medicamento b on a.id_medicamento = b.id_medicamento "
+			+ "inner join doenca c on b.id_doenca = c.id_doenca "
+			+ "group by c.id_doenca, a.id_medicamento having c.id_doenca = ?";
+	
 	@Autowired
 	private DoencaRepository doencaRepo;
+	
+	@Autowired
+	private JdbcTemplate jdbcTemplate;
 
 	@Autowired
 	private Doenca_Medicamento_Service service;
@@ -37,7 +41,7 @@ public class DoencaService {
 
 	public Optional<DoencaId> salvar(CriarDoenca comando) throws NullPointerException {
 		Doenca novo = doencaRepo.save(new Doenca(comando));
-		for (MedicamentoId id_medicamento : comando.getId_medicamentos()) {
+		for (MedicamentoId id_medicamento : comando.getIdMedicamentos()) {
 			do {
 				if (verificaMedicamentoExistente(id_medicamento)) {
 					Doenca_Medicamento doencaMedicamento = new Doenca_Medicamento();
@@ -45,16 +49,15 @@ public class DoencaService {
 					doencaMedicamento.setIdMedicamento(id_medicamento);
 					service.salvar(doencaMedicamento);
 				}
-			} while (verificarMedicamentoÚnico(id_medicamento, comando.getId_medicamentos()));
+			} while (verificarMedicamentoÚnico(id_medicamento, comando.getIdMedicamentos()));
 		}
 		return Optional.of(novo.getIdDoenca());
 	}
 
 	public Optional<BuscarDoenca> encontrar(DoencaId doencaId) throws Exception {
-		ResultSet rs = executeQuery(doencaId.toString());
+		List<BuscarMedicamento> medicamentos = executeQuery(doencaId.toString(), sql);
 		BuscarDoenca doenca = new BuscarDoenca(doencaRepo.findById(doencaId).get());
-		String id = doencaId.toString();
-		doenca.setMedicamentos(medicamentos(rs, id));
+		doenca.setMedicamentos(medicamentos);
 		return Optional.of(doenca);
 	}
 
@@ -62,9 +65,9 @@ public class DoencaService {
 		List<Doenca> doencas = doencaRepo.findAll();
 		List<BuscarDoenca> rsDoencas = new ArrayList<>();
 		for (Doenca doenca : doencas) {
-			ResultSet rs = executeQuery(doenca.getIdDoenca().toString());
+			List<BuscarMedicamento> medicamentos = executeQuery(doenca.getIdDoenca().toString(), sql);
 			BuscarDoenca nova = new BuscarDoenca(doenca);
-			nova.setMedicamentos(medicamentos(rs, doenca.getIdDoenca().toString()));
+			nova.setMedicamentos(medicamentos);
 			rsDoencas.add(nova);
 		}
 		return Optional.of(rsDoencas);
@@ -76,7 +79,7 @@ public class DoencaService {
 			Doenca doenca = optional.get();
 			doenca.apply(comando);
 			doencaRepo.save(doenca);
-			for (MedicamentoId id_medicamento : comando.getId_medicamentos()) {
+			for (MedicamentoId id_medicamento : comando.getIdMedicamentos()) {
 				if (verificaMedicamentoExistente(id_medicamento)) {
 					Doenca_Medicamento doencaMedicamento = new Doenca_Medicamento();
 					doencaMedicamento.setIdDoenca(comando.getIdDoenca());
@@ -89,6 +92,21 @@ public class DoencaService {
 		return Optional.empty();
 	}
 
+	private List<BuscarMedicamento> executeQuery(String id, String sql) {
+		List<BuscarMedicamento> medicamentos = jdbcTemplate.query(sql, new Object[] { id }, (rs, rowNum) -> {
+			BuscarMedicamento med = new BuscarMedicamento();
+			String idDoenca = rs.getString("id_doenca");
+			if (id.equals(idDoenca)) {
+				med.setIdMedicamento(new MedicamentoId(rs.getString("id_medicamento")));
+				med.setNomeMedicamento(rs.getString("nome_medicamento"));
+				med.setComposicao(rs.getString("composicao"));
+				med.setAtivo(rs.getInt("ativo"));
+			}
+			return med;
+		});
+		return medicamentos;
+	}
+	
 	private boolean verificaMedicamentoExistente(MedicamentoId id) {
 		if (!medicamentoService.encontrar(id).isPresent()) {
 			return false;
@@ -97,47 +115,13 @@ public class DoencaService {
 		}
 	}
 
-	private List<Medicamento> medicamentos(ResultSet rs, String id) throws Exception {
-		List<Medicamento> meds = new ArrayList<>();
-		while (rs.next()) {
-			String idDoenca = rs.getString("id_doenca");
-			if (id.equals(idDoenca)) {
-				Medicamento med = new Medicamento();
-				med.setIdMedicamento(new MedicamentoId(rs.getString("id_medicamento")));
-				med.setNomeMedicamento(rs.getString("nome_medicamento"));
-				med.setComposicao(rs.getString("composicao"));
-				med.setAtivo(rs.getInt("ativo"));
-				meds.add(med);
-			}
-		}
-		return meds;
-	}
-
-	private Statement connect() throws Exception {
-		Class.forName("org.postgresql.Driver");
-		Connection con = DriverManager
-				.getConnection("jdbc:postgresql://localhost:5432/escoladeti2018", "postgres", "11223344");
-		Statement stmt = con.createStatement();
-		return stmt;
-	}
-
-	private boolean verificarMedicamentoÚnico(MedicamentoId id_medicamento, List<MedicamentoId> list) {
+	private boolean verificarMedicamentoÚnico(MedicamentoId idMedicamento, List<MedicamentoId> list) {
 		for (MedicamentoId medicamentoId : list) {
-			if (medicamentoId.equals(id_medicamento)) {
+			if (medicamentoId.equals(idMedicamento)) {
 				return false;
 			}
 		}
 		return true;
 	}
 
-	private ResultSet executeQuery(String id) throws Exception {
-		Statement stmt = connect();
-		String query = "select c.id_doenca, a.nome_medicamento, "
-				+ "a.composicao, a.id_medicamento, a.ativo from medicamento a "
-				+ "inner join doenca_medicamento b on a.id_medicamento = b.id_medicamento "
-				+ "inner join doenca c on b.id_doenca = c.id_doenca "
-				+ "group by c.id_doenca, a.id_medicamento having c.id_doenca = '" + id + "'";
-		ResultSet rs = stmt.executeQuery(query);
-		return rs;
-	}
 }
