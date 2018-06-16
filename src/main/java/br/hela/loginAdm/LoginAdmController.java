@@ -8,9 +8,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import br.hela.loginAdm.comandos.LogarAdm;
 import br.hela.security.JWTUtil;
-import springfox.documentation.annotations.ApiIgnore;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 
-@ApiIgnore
+@Api("Basic Login Admin Controller")
 @RestController
 @RequestMapping("/loginAdm")
 public class LoginAdmController {
@@ -18,6 +19,7 @@ public class LoginAdmController {
 	@Autowired
 	private LoginAdmService service;
 
+	@ApiOperation("Efetue o login de um usuário admin")
 	@PostMapping
 	public ResponseEntity<String> loginPorNomeDeUsuario(@RequestBody LogarAdm comando) throws NullPointerException {
 		if (service.consultarUsuario(comando)) {

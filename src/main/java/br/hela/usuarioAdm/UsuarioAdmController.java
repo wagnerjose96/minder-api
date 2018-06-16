@@ -23,9 +23,10 @@ import br.hela.usuarioAdm.UsuarioAdmService;
 import br.hela.usuarioAdm.comandos.BuscarUsuarioAdm;
 import br.hela.usuarioAdm.comandos.CriarUsuarioAdm;
 import br.hela.usuarioAdm.comandos.EditarUsuarioAdm;
-import springfox.documentation.annotations.ApiIgnore;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 
-@ApiIgnore
+@Api("Basic Usuário Admin Controller")
 @RestController
 @RequestMapping("/adm")
 public class UsuarioAdmController {
@@ -35,6 +36,7 @@ public class UsuarioAdmController {
 	@Autowired
 	private AutenticaAdm autentica;
 
+	@ApiOperation("Busque todos os usuários admin")
 	@GetMapping
 	public ResponseEntity<List<BuscarUsuarioAdm>> getUsuarioAdmins(@RequestHeader String token)
 			throws SQLException, AccessDeniedException {
@@ -45,6 +47,7 @@ public class UsuarioAdmController {
 		throw new AccessDeniedException("Acesso negado");
 	}
 
+	@ApiOperation("Busque um usuário admin pelo ID")
 	@GetMapping("/{id}")
 	public ResponseEntity<BuscarUsuarioAdm> getUsuarioAdminId(@PathVariable UsuarioAdmId id, @RequestHeader String token)
 			throws NullPointerException, SQLException, AccessDeniedException {
@@ -58,6 +61,7 @@ public class UsuarioAdmController {
 		throw new AccessDeniedException("Acesso negado");
 	}
 
+	@ApiOperation("Delete um usuário admin pelo ID")
 	@DeleteMapping("/{id}")
 	public ResponseEntity<Optional<String>> deleteUsuarioAdmin(@PathVariable UsuarioAdmId id,
 			@RequestHeader String token) throws NullPointerException, AccessDeniedException, SQLException, Exception {
@@ -71,6 +75,7 @@ public class UsuarioAdmController {
 		throw new AccessDeniedException("Acesso negado");
 	}
 
+	@ApiOperation("Cadastre um novo usuário admin")
 	@PostMapping
 	public ResponseEntity<String> postUsuarioAdmin(@RequestBody CriarUsuarioAdm comando) throws Exception {
 		Optional<UsuarioAdmId> optionalUsuarioAdminId = service.salvar(comando);
@@ -82,6 +87,7 @@ public class UsuarioAdmController {
 		throw new Exception("O administrador não foi salvo devido a um erro interno");
 	}
 
+	@ApiOperation("Altere um usuário admin")
 	@PutMapping
 	public ResponseEntity<String> putUsuarioAdmin(@RequestHeader String token, @RequestBody EditarUsuarioAdm comando)
 			throws NullPointerException, Exception, SQLException, AccessDeniedException {
