@@ -1,9 +1,10 @@
 package br.hela.usuario.comandos;
 
-import java.util.Date;
+import java.sql.Date;
 import br.hela.endereco.comandos.CriarEndereco;
 import br.hela.sangue.SangueId;
 import br.hela.sexo.SexoId;
+import br.hela.telefone.comandos.CriarTelefone;
 import lombok.Data;
 
 @Data
@@ -14,7 +15,7 @@ public class CriarUsuario {
 	private String nome;
 	private SangueId idSangue;
 	private CriarEndereco endereco;
-	private int telefone;
+	private CriarTelefone telefone;
 	private Date dataNascimento;
 	private SexoId idSexo;
 	private String imagem;

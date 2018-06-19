@@ -5,41 +5,41 @@
 	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd
         http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
 
-	<changeSet id="create_table_contato" author="camila.morais">
-		<createTable tableName="contato">
+	<changeSet id="create_table_telefone" author="larissa.andrade">
+		<createTable tableName="telefone">
 			<column name="id" type="${TYPE_ID}">
-				<constraints nullable="false" primaryKey="true"
-					primaryKeyName="PK_CONTATO" />
+				<constraints nullable="false" primaryKey="true" primaryKeyName="PK_TELEFONE"/>
 			</column>
-			<column name="nome" type="${TYPE_DESCRICAO}">
+			<column name="ddd" type="${TYPE_NUMBER}">
 				<constraints nullable="false" />
 			</column>
-			<column name="id_telefone" type="${TYPE_ID}">
-				<constraints nullable="false"
-				foreignKeyName="FK_CONTATO_TELEFONE" references="telefone(id)" />
-			</column>
+			<column name="numero" type="${TYPE_NUMBER}">
+				<constraints nullable="false" />
+			</column>						
 		</createTable>
 	</changeSet>
-
-
-	<changeSet id="create_table_contato_aud" author="camila.morais">
-		<createTable tableName="contato_aud">
+	
+	<changeSet id="create_table_telefone_aud" author="larissa.andrade">
+		<createTable tableName="telefone_aud">
 			<column name="id" type="${TYPE_ID}">
 				<constraints nullable="false" />
 			</column>
-			<column name="nome" type="${TYPE_DESCRICAO}">
-				<constraints nullable="true" />
+			<column name="ddd" type="${TYPE_NUMBER}">
+				<constraints nullable="false" />
 			</column>
+			<column name="numero" type="${TYPE_NUMBER}">
+				<constraints nullable="false" />
+			</column>							
 			<column name="rev" type="${TYPE_NUMBER}">
 				<constraints nullable="false" referencedTableName="revinfo"
-					referencedColumnNames="rev" foreignKeyName="FK_CONTATO_REVINFO" />
+					referencedColumnNames="rev" foreignKeyName="telefone_revinfo_fk" />
 			</column>
 			<column name="revtype" type="${TYPE_NUMBER}">
 				<constraints nullable="false" />
 			</column>
 		</createTable>
-		<addPrimaryKey constraintName="PK_CONTATO_AUD"
-			tableName="contato_aud" columnNames="id, rev" />
+		<addPrimaryKey constraintName="telefone_aud_pkey"
+			tableName="telefone_aud" columnNames="id, rev" />
 	</changeSet>
-
+	
 </databaseChangeLog>

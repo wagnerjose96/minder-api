@@ -29,8 +29,9 @@ public class ConvenioService {
 		BuscarConvenio resultado = new BuscarConvenio();
 		if (convenio.getAtivo() == 1) {
 			resultado = new BuscarConvenio(convenio);
+			return Optional.of(resultado);
 		}
-		return Optional.of(resultado);
+		return Optional.empty();
 	}
 
 	public Optional<List<BuscarConvenio>> encontrar() {

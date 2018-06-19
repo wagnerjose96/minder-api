@@ -1,6 +1,7 @@
 package br.hela.usuario.comandos;
 
 import br.hela.endereco.comandos.EditarEndereco;
+import br.hela.telefone.comandos.EditarTelefone;
 import br.hela.usuario.UsuarioId;
 import lombok.Data;
 
@@ -10,6 +11,6 @@ public class EditarUsuario {
 	private String senha;
 	private String nome;
 	private EditarEndereco endereco;
-	private int telefone;
+	private EditarTelefone telefone;
 	private String imagem;
 }

@@ -19,7 +19,7 @@ public class LoginAdmController {
 	@Autowired
 	private LoginAdmService service;
 
-	@ApiOperation("Efetue o login de um usuário admin")
+	@ApiOperation("Efetue o login de um administrador")
 	@PostMapping
 	public ResponseEntity<String> loginPorNomeDeUsuario(@RequestBody LogarAdm comando) throws NullPointerException {
 		if (service.consultarUsuario(comando)) {

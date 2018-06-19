@@ -1,10 +1,10 @@
 package br.hela.contato.comandos;
 
+import br.hela.telefone.comandos.CriarTelefone;
 import lombok.Data;
 
 @Data
 public class CriarContato {
 	private String nome;
-	private int ddd;
-	private int numero;
+	private CriarTelefone telefone;
 }
