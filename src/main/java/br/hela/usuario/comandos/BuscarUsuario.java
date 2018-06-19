@@ -1,6 +1,6 @@
 package br.hela.usuario.comandos;
 
-import java.text.SimpleDateFormat;
+import br.hela.ConverterData;
 import br.hela.endereco.comandos.BuscarEndereco;
 import br.hela.sangue.comandos.BuscarSangue;
 import br.hela.sexo.comandos.BuscarSexo;
@@ -22,24 +22,18 @@ public class BuscarUsuario {
 	private String dataNascimento;
 	private BuscarSexo sexo;
 	private String imagem;
-	
+
 	public BuscarUsuario(Usuario comandos) {
 		this.id = comandos.getId();
 		this.username = comandos.getNome_usuario();
 		this.email = comandos.getEmail();
 		this.senha = comandos.getSenha();
 		this.nome = comandos.getNome_completo();
-		Long dataLong = comandos.getData_nascimento().getTime(); //pega os milessegundos;
-		this.dataNascimento = converterData(dataLong);
+		Long dataLong = comandos.getData_nascimento().getTime(); // pega os milessegundos;
+		this.dataNascimento = ConverterData.converterData(dataLong);
 		this.imagem = comandos.getImagem_usuario();
 	}
-	
-	private String converterData(Long data) {
-		SimpleDateFormat formato = new SimpleDateFormat("dd-MM-yyyy");
-		String dataFormatada = formato.format(data);
-		return dataFormatada;
-	}
-	
+
 	public BuscarUsuario() {
 	}
 }

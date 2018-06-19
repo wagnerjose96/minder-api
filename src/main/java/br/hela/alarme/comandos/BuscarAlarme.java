@@ -1,6 +1,6 @@
 package br.hela.alarme.comandos;
 
-import java.text.SimpleDateFormat;
+import br.hela.ConverterData;
 import br.hela.alarme.Alarme;
 import br.hela.alarme.AlarmeId;
 import br.hela.medicamento.comandos.BuscarMedicamento;
@@ -19,18 +19,12 @@ public class BuscarAlarme {
 	public BuscarAlarme(Alarme comandos) {
 		this.id = comandos.getId();
 		Long dataLongInicio = comandos.getDataInicio().getTime(); // pega os milessegundos;
-		this.dataInicio = converterData(dataLongInicio);
+		this.dataInicio = ConverterData.converterData(dataLongInicio);
 		Long dataLongFim = comandos.getDataFim().getTime(); // pega os milessegundos;
-		this.dataFim = converterData(dataLongFim);
+		this.dataFim = ConverterData.converterData(dataLongFim);
 		this.quantidade = comandos.getQuantidade();
 		this.descricao = comandos.getDescricao();
 		this.periodicidade = comandos.getPeriodicidade();
-	}
-
-	private String converterData(Long data) {
-		SimpleDateFormat formato = new SimpleDateFormat("dd-MM-yyyy");
-		String dataFormatada = formato.format(data);
-		return dataFormatada;
 	}
 
 	public BuscarAlarme() {
