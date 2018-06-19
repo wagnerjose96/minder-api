@@ -10,6 +10,8 @@ import org.springframework.transaction.annotation.Transactional;
 import br.hela.emergencia.comandos.BuscarEmergencia;
 import br.hela.emergencia.comandos.CriarEmergencia;
 import br.hela.emergencia.comandos.EditarEmergencia;
+import br.hela.telefone.TelefoneId;
+import br.hela.telefone.comandos.BuscarTelefone;
 import br.hela.contato.ContatoId;
 import br.hela.contato.comandos.BuscarContato;
 
@@ -19,10 +21,12 @@ public class EmergenciaService {
 	@Autowired
 	private JdbcTemplate jdbcTemplate;
 
-	private String sql = "select e.id_emergencia, c.id, c.nome, " + "c.ddd, c.numero from contato c "
-			+ "inner join contato_emergencia b on c.id = b.id_contato "
-			+ "inner join emergencia e on b.id_emergencia = e.id_emergencia "
-			+ "group by e.id_emergencia, c.id having e.id_emergencia = ? ";
+	private String sql = "select e.id_emergencia, b.id_contato, c.id, c.nome, t.ddd, t.numero, t.id as id_telefone "
+			+ "from emergencia e "
+			+ "inner join contato_emergencia b on e.id_emergencia = b.id_emergencia "
+			+ "inner join contato c on c.id = b.id_contato "
+			+ "inner join telefone t on c.id_telefone = t.id "
+			+ "group by e.id_emergencia, c.id, b.id_contato, t.id having e.id_emergencia = ? ";
 
 	@Autowired
 	private EmergenciaRepository repo;
@@ -66,12 +70,15 @@ public class EmergenciaService {
 	private List<BuscarContato> executeQuery(String id, String sql) {
 		List<BuscarContato> contatos = jdbcTemplate.query(sql, new Object[] { id }, (rs, rowNum) -> {
 			BuscarContato contato = new BuscarContato();
+			BuscarTelefone telefone = new BuscarTelefone();
 			String idEmergencia = rs.getString("id_emergencia");
 			if (id.equals(idEmergencia)) {
 				contato.setId(new ContatoId(rs.getString("id")));
 				contato.setNome(rs.getString("nome"));
-				contato.setDdd(rs.getInt("ddd"));
-				contato.setNumero(rs.getInt("numero"));
+				telefone.setId(new TelefoneId(rs.getString("id_telefone")));
+				telefone.setDdd(rs.getInt("ddd"));
+				telefone.setNumero(rs.getInt("numero"));
+				contato.setTelefone(telefone);
 			}
 			return contato;
 		});

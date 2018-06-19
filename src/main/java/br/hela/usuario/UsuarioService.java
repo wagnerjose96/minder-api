@@ -13,6 +13,9 @@ import br.hela.sangue.SangueService;
 import br.hela.sangue.comandos.BuscarSangue;
 import br.hela.sexo.SexoService;
 import br.hela.sexo.comandos.BuscarSexo;
+import br.hela.telefone.TelefoneId;
+import br.hela.telefone.TelefoneService;
+import br.hela.telefone.comandos.BuscarTelefone;
 import br.hela.usuario.comandos.BuscarUsuario;
 import br.hela.usuario.comandos.CriarUsuario;
 import br.hela.usuario.comandos.EditarUsuario;
@@ -24,6 +27,9 @@ public class UsuarioService {
 	private UsuarioRepository repo;
 
 	@Autowired
+	private TelefoneService telefoneService;
+
+	@Autowired
 	private EnderecoService enderecoService;
 
 	@Autowired
@@ -33,10 +39,12 @@ public class UsuarioService {
 	private SexoService sexoService;
 
 	public Optional<UsuarioId> salvar(CriarUsuario comando) {
-		if (comando.getEndereco() != null) {
+		if (comando.getEndereco() != null && comando.getTelefone() != null) {
+			TelefoneId idTelefone = telefoneService.salvar(comando.getTelefone()).get();
 			EnderecoId idEndereco = enderecoService.salvar(comando.getEndereco()).get();
 			Usuario novo = new Usuario(comando);
 			novo.setIdEndereco(idEndereco);
+			novo.setIdTelefone(idTelefone);
 			repo.save(novo);
 			return Optional.of(novo.getId());
 		}
@@ -51,11 +59,14 @@ public class UsuarioService {
 			Optional<BuscarSangue> sangue = sangueService.encontrar(usuario.getIdSangue());
 			Optional<BuscarEndereco> endereco = enderecoService.encontrar(usuario.getIdEndereco());
 			Optional<BuscarSexo> sexo = sexoService.encontrar(usuario.getIdSexo());
+			Optional<BuscarTelefone> telefone = telefoneService.encontrar(usuario.getIdTelefone());
 			resultado.setSexo(sexo.get());
 			resultado.setSangue(sangue.get());
 			resultado.setEndereco(endereco.get());
+			resultado.setTelefone(telefone.get());
+			return Optional.of(resultado);
 		}
-		return Optional.of(resultado);
+		return Optional.empty();
 	}
 
 	public Optional<List<BuscarUsuario>> encontrar() {
@@ -67,9 +78,11 @@ public class UsuarioService {
 				Optional<BuscarSangue> sangue = sangueService.encontrar(usuario.getIdSangue());
 				Optional<BuscarEndereco> endereco = enderecoService.encontrar(usuario.getIdEndereco());
 				Optional<BuscarSexo> sexo = sexoService.encontrar(usuario.getIdSexo());
+				Optional<BuscarTelefone> telefone = telefoneService.encontrar(usuario.getIdTelefone());
 				user.setSexo(sexo.get());
 				user.setSangue(sangue.get());
 				user.setEndereco(endereco.get());
+				user.setTelefone(telefone.get());
 				resultados.add(user);
 			}
 		}
@@ -88,6 +101,8 @@ public class UsuarioService {
 		if (optional.isPresent()) {
 			if (comando.getEndereco() != null)
 				enderecoService.alterar(comando.getEndereco()).get();
+			if (comando.getTelefone() != null)
+				telefoneService.alterar(comando.getTelefone()).get();
 			Usuario user = optional.get();
 			user.apply(comando);
 			repo.save(user);

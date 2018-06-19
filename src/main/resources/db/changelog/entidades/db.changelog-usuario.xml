@@ -33,8 +33,9 @@
 				<constraints nullable="true" 
 				foreignKeyName="FK_USUARIO_ENDERECO" references="endereco(id)" />
 			</column>
-			<column name="telefone" type="${TYPE_NUMBER}">
-				<constraints nullable="false" />
+			<column name="id_telefone" type="${TYPE_ID}">
+				<constraints nullable="true"
+					foreignKeyName="FK_USUARIO_TELEFONE" references="telefone(id)" />
 			</column>
 			<column name="data_nascimento" type="${TYPE_DATA}">
 				<constraints nullable="false" />
@@ -68,9 +69,6 @@
 				<constraints nullable="false" />
 			</column>
 			<column name="senha" type="${TYPE_DESCRICAO}">
-				<constraints nullable="false" />
-			</column>
-			<column name="telefone" type="${TYPE_NUMBER}">
 				<constraints nullable="false" />
 			</column>
 			<column name="data_nascimento" type="${TYPE_DATA}">

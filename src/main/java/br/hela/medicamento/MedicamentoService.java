@@ -26,8 +26,9 @@ public class MedicamentoService {
 		BuscarMedicamento resultado = new BuscarMedicamento();
 		if (medicamento.getAtivo() == 1) {
 			resultado = new BuscarMedicamento(medicamento);
+			return Optional.of(resultado);
 		}
-		return Optional.of(resultado);
+		return Optional.empty();
 	}
 
 	public Optional<List<BuscarMedicamento>> encontrar() {
