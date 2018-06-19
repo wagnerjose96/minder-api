@@ -8,10 +8,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import br.hela.loginAdm.comandos.LogarAdm;
 import br.hela.security.JWTUtil;
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import springfox.documentation.annotations.ApiIgnore;
 
-@ApiIgnore
+@Api("Basic Login Admin Controller")
 @RestController
 @RequestMapping("/loginAdm")
 public class LoginAdmController {

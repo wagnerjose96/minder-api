@@ -13,22 +13,22 @@
 					primaryKeyName="PK_ENDERECO" />	
 			</column>
 			<column name="rua" type="${TYPE_DESCRICAO}">
-				<constraints nullable="true" />
+				<constraints nullable="false" />
 			</column>
 			<column name="bairro" type="${TYPE_DESCRICAO}">
-				<constraints nullable="true" />
+				<constraints nullable="false" />
 			</column>
 			<column name="cidade" type="${TYPE_DESCRICAO}">
-				<constraints nullable="true" />
+				<constraints nullable="false" />
 			</column>
 			<column name="estado" type="${TYPE_DESCRICAO}">
-				<constraints nullable="true" />
+				<constraints nullable="false" />
 			</column>
 			<column name="complemento" type="${TYPE_DESCRICAO}">
 				<constraints nullable="true" />
 			</column>
 			<column name="numero" type="${TYPE_NUMBER}">
-				<constraints nullable="true" />
+				<constraints nullable="false" />
 			</column>
 		</createTable>
 	</changeSet>

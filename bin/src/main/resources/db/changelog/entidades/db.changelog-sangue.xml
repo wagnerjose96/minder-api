@@ -11,7 +11,7 @@
 				<constraints nullable="false" primaryKey="true" primaryKeyName="PK_SANGUE"/>
 			</column>
 			<column name="sangue" type="${TYPE_SANGUE}">
-				<constraints nullable="false" unique="true" />
+				<constraints nullable="false" />
 			</column>						
 		</createTable>
 	</changeSet>
@@ -22,7 +22,7 @@
 				<constraints nullable="false"/>
 			</column>
 			<column name="sangue" type="${TYPE_SANGUE}">
-				<constraints nullable="false" unique="true" />
+				<constraints nullable="false" />
 			</column>						
 			<column name="rev" type="${TYPE_NUMBER}">
 				<constraints nullable="false" referencedTableName="revinfo"
