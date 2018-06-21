@@ -1,6 +1,7 @@
 package br.hela.esqueciSenha;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -12,6 +13,7 @@ import io.swagger.annotations.ApiOperation;
 @Api("Basic Senha Controller")
 @RestController
 @RequestMapping("/senha")
+@CrossOrigin
 public class SenhaController {
 	@Autowired
 	private SenhaService service;

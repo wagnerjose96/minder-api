@@ -2,6 +2,7 @@ package br.hela.loginAdm;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -14,6 +15,7 @@ import io.swagger.annotations.ApiOperation;
 @Api("Basic Login Admin Controller")
 @RestController
 @RequestMapping("/loginAdm")
+@CrossOrigin
 public class LoginAdmController {
 
 	@Autowired
