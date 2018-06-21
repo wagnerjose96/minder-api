@@ -31,6 +31,8 @@ import io.swagger.annotations.ApiOperation;
 @RequestMapping("/usuarios")
 @CrossOrigin
 public class UsuarioController {
+	private static final String ACESSONEGADO = "Acesso negado"; 
+
 	@Autowired
 	private UsuarioService service;
 
@@ -43,18 +45,18 @@ public class UsuarioController {
 	@ApiOperation("Busque todos os usuários")
 	@GetMapping
 	public ResponseEntity<List<BuscarUsuario>> getUsuarios(@RequestHeader String token)
-			throws SQLException, AccessDeniedException {
+			throws Exception {
 		if (autenticaAdm.autenticaRequisicao(token)) {
 			Optional<List<BuscarUsuario>> optionalUsuarios = service.encontrar();
 			return ResponseEntity.ok(optionalUsuarios.get());
 		}
-		throw new AccessDeniedException("Acesso negado");
+		throw new AccessDeniedException(ACESSONEGADO);
 	}
 
 	@ApiOperation("Busque um usuário pelo ID")
 	@GetMapping("/{id}")
 	public ResponseEntity<BuscarUsuario> getUsuarioPorId(@PathVariable UsuarioId id)
-			throws SQLException, Exception, NullPointerException {
+			throws Exception {
 		if (verificaUsuarioExistente(id)) {
 			Optional<BuscarUsuario> optionalUsuario = service.encontrar(id);
 			return ResponseEntity.ok(optionalUsuario.get());
@@ -65,7 +67,7 @@ public class UsuarioController {
 	@ApiOperation("Delete um usuário pelo ID")
 	@DeleteMapping("/{id}")
 	public ResponseEntity<Optional<String>> deletarUsuario(@PathVariable UsuarioId id, @RequestHeader String token)
-			throws SQLException, NullPointerException, Exception, AccessDeniedException {
+			throws Exception {
 		if (autentica.autenticaRequisicao(token)) {
 			if (verificaUsuarioExistente(id)) {
 				Optional<String> optionalUsuario = service.deletar(id);
@@ -73,7 +75,7 @@ public class UsuarioController {
 			}
 			throw new NullPointerException("O usuário a deletar não existe no banco de dados");
 		}
-		throw new AccessDeniedException("Acesso negado");
+		throw new AccessDeniedException(ACESSONEGADO);
 	}
 
 	@ApiOperation("Cadastre um novo usuário")
@@ -85,13 +87,13 @@ public class UsuarioController {
 					.buildAndExpand(optionalUsuarioId.get()).toUri();
 			return ResponseEntity.created(location).body("O usuário foi cadastrado com sucesso");
 		}
-		throw new Exception("O usuário não foi salvo devido a um erro interno");
+		throw new SQLException("O usuário não foi salvo devido a um erro interno");
 	}
 
 	@ApiOperation("Altere um usuário")
 	@PutMapping
 	public ResponseEntity<String> putMedicamento(@RequestBody EditarUsuario comando, @RequestHeader String token)
-			throws NullPointerException, Exception, SQLException, AccessDeniedException {
+			throws Exception {
 		if (autentica.autenticaRequisicao(token)) {
 			if (!verificaUsuarioExistente(comando.getId())) {
 				throw new NullPointerException("O usuário a ser alterado não existe no banco de dados");
@@ -102,13 +104,13 @@ public class UsuarioController {
 						.buildAndExpand(optionalUsuarioId.get()).toUri();
 				return ResponseEntity.created(location).body("O usuário foi alterado com sucesso");
 			} else {
-				throw new InternalError("Ocorreu um erro interno durante a alteração do usuário");
+				throw new SQLException("Ocorreu um erro interno durante a alteração do usuário");
 			}
 		}
-		throw new AccessDeniedException("Acesso negado");
+		throw new AccessDeniedException(ACESSONEGADO);
 	}
 
-	private boolean verificaUsuarioExistente(UsuarioId id) {
+	private boolean verificaUsuarioExistente(UsuarioId id) throws Exception {
 		if (!service.encontrar(id).isPresent()) {
 			return false;
 		} else {

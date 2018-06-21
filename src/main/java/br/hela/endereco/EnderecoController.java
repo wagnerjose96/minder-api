@@ -29,6 +29,8 @@ import io.swagger.annotations.ApiOperation;
 @RequestMapping("/enderecos")
 @CrossOrigin
 public class EnderecoController {
+	private static final String ACESSONEGADO = "Acesso negado";
+
 	@Autowired
 	private EnderecoService enderecoService;
 
@@ -37,15 +39,14 @@ public class EnderecoController {
 
 	@ApiOperation("Busque todos os endereços")
 	@GetMapping
-	public ResponseEntity<Optional<List<BuscarEndereco>>> getenderecos() throws Exception, SQLException {
+	public ResponseEntity<Optional<List<BuscarEndereco>>> getenderecos() throws Exception {
 		Optional<List<BuscarEndereco>> optionalenderecos = enderecoService.encontrar();
 		return ResponseEntity.ok(optionalenderecos);
 	}
 
 	@ApiOperation("Busque o endereço pelo ID")
 	@GetMapping("/{id}")
-	public ResponseEntity<BuscarEndereco> getenderecoPorId(@PathVariable EnderecoId id)
-			throws NullPointerException, Exception, SQLException {
+	public ResponseEntity<BuscarEndereco> getenderecoPorId(@PathVariable EnderecoId id) throws Exception {
 		Optional<BuscarEndereco> optionalendereco = enderecoService.encontrar(id);
 		if (verificaEnderecoExistente(id)) {
 			return ResponseEntity.ok(optionalendereco.get());
@@ -56,7 +57,7 @@ public class EnderecoController {
 	@ApiOperation("Cadastre um novo endereço")
 	@PostMapping
 	public ResponseEntity<String> postendereco(@RequestBody CriarEndereco comando, @RequestHeader String token)
-			throws Exception, AccessDeniedException {
+			throws Exception {
 		if (autentica.autenticaRequisicao(token)) {
 			Optional<EnderecoId> optionalenderecoId = enderecoService.salvar(comando);
 			if (optionalenderecoId.isPresent()) {
@@ -64,15 +65,15 @@ public class EnderecoController {
 						.buildAndExpand(optionalenderecoId.get()).toUri();
 				return ResponseEntity.created(location).body("O endereço foi cadastrado com sucesso");
 			}
-			throw new Exception("O endereço não foi salvo devido a um erro interno");
+			throw new SQLException("O endereço não foi salvo devido a um erro interno");
 		}
-		throw new AccessDeniedException("Acesso negado");
+		throw new AccessDeniedException(ACESSONEGADO);
 	}
 
 	@ApiOperation("Altere um endereço")
 	@PutMapping
 	public ResponseEntity<String> putendereco(@RequestBody EditarEndereco comando, @RequestHeader String token)
-			throws SQLException, NullPointerException, Exception, AccessDeniedException {
+			throws Exception {
 		if (autentica.autenticaRequisicao(token)) {
 			if (!verificaEnderecoExistente(comando.getId())) {
 				throw new NullPointerException("O endereço a ser alterado não existe no banco de dados");
@@ -87,7 +88,7 @@ public class EnderecoController {
 				throw new SQLException("Ocorreu um erro interno durante a alteração do endereço");
 			}
 		}
-		throw new AccessDeniedException("Acesso negado");
+		throw new AccessDeniedException(ACESSONEGADO);
 	}
 
 	private boolean verificaEnderecoExistente(EnderecoId id) throws Exception {

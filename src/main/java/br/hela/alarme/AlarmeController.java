@@ -35,18 +35,19 @@ public class AlarmeController {
 
 	@Autowired
 	private AutenticaRequisicao autentica;
+	
+	private static final String ACESSONEGADO = "Acesso negado";
 
 	@ApiOperation("Busque todos os alarmes")
 	@GetMapping
-	public ResponseEntity<List<BuscarAlarme>> getAlarmes() throws SQLException, Exception {
+	public ResponseEntity<List<BuscarAlarme>> getAlarmes() throws Exception {
 		Optional<List<BuscarAlarme>> optionalAlarmes = alarmeService.encontrar();
 		return ResponseEntity.ok(optionalAlarmes.get());
 	}
 
 	@ApiOperation("Busque o alarme pelo ID")
 	@GetMapping("/{id}")
-	public ResponseEntity<BuscarAlarme> getAlarmePorId(@PathVariable AlarmeId id)
-			throws SQLException, NullPointerException, Exception {
+	public ResponseEntity<BuscarAlarme> getAlarmePorId(@PathVariable AlarmeId id) throws Exception {
 		Optional<BuscarAlarme> optionalAlarme = alarmeService.encontrar(id);
 		if (verificaAlarmeExistente(id)) {
 			return ResponseEntity.ok(optionalAlarme.get());
@@ -57,7 +58,7 @@ public class AlarmeController {
 	@ApiOperation("Cadastre um novo alarme")
 	@PostMapping
 	public ResponseEntity<String> postAlarme(@RequestBody CriarAlarme comando, @RequestHeader String token)
-			throws Exception, AccessDeniedException {
+			throws Exception {
 		if (autentica.autenticaRequisicao(token)) {
 			Optional<AlarmeId> optionalAlarmeId = alarmeService.salvar(comando);
 			if (optionalAlarmeId.isPresent()) {
@@ -65,15 +66,15 @@ public class AlarmeController {
 						.buildAndExpand(optionalAlarmeId.get()).toUri();
 				return ResponseEntity.created(location).body("Alarme cadastrado com sucesso");
 			}
-			throw new Exception("O alarme não foi salvo devido a um erro interno");
+			throw new SQLException("O alarme não foi salvo devido a um erro interno");
 		}
-		throw new AccessDeniedException("Acesso negado");
+		throw new AccessDeniedException(ACESSONEGADO);
 	}
 
 	@ApiOperation("Altere um alarme")
 	@PutMapping
 	public ResponseEntity<String> putAlarme(@RequestBody EditarAlarme comando, @RequestHeader String token)
-			throws SQLException, NullPointerException, Exception, AccessDeniedException {
+			throws Exception {
 		if (autentica.autenticaRequisicao(token)) {
 			if (!verificaAlarmeExistente(comando.getId())) {
 				throw new NullPointerException("O alarme a ser alterado não existe no banco de dados");
@@ -84,16 +85,16 @@ public class AlarmeController {
 						.buildAndExpand(optionalAlarmeId.get()).toUri();
 				return ResponseEntity.created(location).body("Alarme alterado com sucesso");
 			} else {
-				throw new SQLException("Erro interno durante a alteração do alarme");
+				throw new SQLException("Ocorreu um erro interno durante a alteração do alarme");
 			}
 		}
-		throw new AccessDeniedException("Acesso negado");
+		throw new AccessDeniedException(ACESSONEGADO);
 	}
 
 	@ApiOperation("Delete um alarme pelo ID")
 	@DeleteMapping("/{id}")
 	public ResponseEntity<Optional<String>> deleteAlarme(@PathVariable AlarmeId id, @RequestHeader String token)
-			throws SQLException, NullPointerException, Exception, AccessDeniedException {
+			throws Exception {
 		if (autentica.autenticaRequisicao(token)) {
 			if (!verificaAlarmeExistente(id)) {
 				throw new NullPointerException("O alarme a ser deletado não existe no banco de dados");
@@ -101,7 +102,7 @@ public class AlarmeController {
 			Optional<String> resultado = alarmeService.deletar(id);
 			return ResponseEntity.ok(resultado);
 		}
-		throw new AccessDeniedException("Acesso negado");
+		throw new AccessDeniedException(ACESSONEGADO);
 	}
 
 	private boolean verificaAlarmeExistente(AlarmeId id) throws Exception {

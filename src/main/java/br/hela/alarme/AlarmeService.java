@@ -19,7 +19,7 @@ import br.hela.medicamento.comandos.BuscarMedicamento;
 public class AlarmeService {
 	@Autowired
 	private AlarmeRepository repo;
-	
+
 	@Autowired
 	private MedicamentoService medService;
 
@@ -28,7 +28,7 @@ public class AlarmeService {
 		return Optional.of(novo.getId());
 	}
 
-	public Optional<BuscarAlarme> encontrar(AlarmeId alarmeId) throws Exception {
+	public Optional<BuscarAlarme> encontrar(AlarmeId alarmeId) {
 		Alarme alarme = repo.findById(alarmeId).get();
 		BuscarAlarme resultado = new BuscarAlarme(alarme);
 		Optional<BuscarMedicamento> medicamento = medService.encontrar(alarme.getIdMedicamento());
@@ -36,7 +36,7 @@ public class AlarmeService {
 		return Optional.of(resultado);
 	}
 
-	public Optional<List<BuscarAlarme>> encontrar() throws Exception {
+	public Optional<List<BuscarAlarme>> encontrar() {
 		List<BuscarAlarme> resultados = new ArrayList<>();
 		List<Alarme> alarmes = repo.findAll();
 		for (Alarme alarme : alarmes) {

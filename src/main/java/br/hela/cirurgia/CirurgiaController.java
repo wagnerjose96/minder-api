@@ -29,6 +29,8 @@ import io.swagger.annotations.ApiOperation;
 @RequestMapping("/cirurgias")
 @CrossOrigin
 public class CirurgiaController {
+	private static final String ACESSONEGADO = "Acesso negado";
+
 	@Autowired
 	private CirurgiaService cirurgiaService;
 
@@ -37,15 +39,14 @@ public class CirurgiaController {
 
 	@ApiOperation("Busque todas as cirurgias")
 	@GetMapping
-	public ResponseEntity<List<BuscarCirurgia>> getCirurgias() throws SQLException, Exception {
+	public ResponseEntity<List<BuscarCirurgia>> getCirurgias() throws Exception {
 		Optional<List<BuscarCirurgia>> optionalCirurgias = cirurgiaService.encontrar();
 		return ResponseEntity.ok(optionalCirurgias.get());
 	}
 
 	@ApiOperation("Busque uma cirurgia pelo ID")
 	@GetMapping("/{id}")
-	public ResponseEntity<BuscarCirurgia> getCirurgiaPorId(@PathVariable CirurgiaId id)
-			throws SQLException, NullPointerException, Exception {
+	public ResponseEntity<BuscarCirurgia> getCirurgiaPorId(@PathVariable CirurgiaId id) throws Exception {
 		Optional<BuscarCirurgia> optionalCirurgia = cirurgiaService.encontrar(id);
 		if (verificaCirurgiaExistente(id)) {
 			return ResponseEntity.ok(optionalCirurgia.get());
@@ -56,7 +57,7 @@ public class CirurgiaController {
 	@ApiOperation("Cadastre uma nova cirurgia")
 	@PostMapping
 	public ResponseEntity<String> postCirurgia(@RequestBody CriarCirurgia comando, @RequestHeader String token)
-			throws Exception, AccessDeniedException {
+			throws Exception {
 		if (autentica.autenticaRequisicao(token)) {
 			Optional<CirurgiaId> optionalCirurgiaId = cirurgiaService.salvar(comando);
 			if (optionalCirurgiaId.isPresent()) {
@@ -64,15 +65,15 @@ public class CirurgiaController {
 						.buildAndExpand(optionalCirurgiaId.get()).toUri();
 				return ResponseEntity.created(location).body("A cirurgia foi cadastrada com sucesso");
 			}
-			throw new Exception("A cirurgia não foi salva devido a um erro interno");
+			throw new SQLException("A cirurgia não foi salva devido a um erro interno");
 		}
-		throw new AccessDeniedException("Acesso negado");
+		throw new AccessDeniedException(ACESSONEGADO);
 	}
 
 	@ApiOperation("Altere uma cirurgia")
 	@PutMapping
 	public ResponseEntity<String> putCirurgia(@RequestBody EditarCirurgia comando, @RequestHeader String token)
-			throws SQLException, NullPointerException, Exception, AccessDeniedException {
+			throws Exception {
 		if (autentica.autenticaRequisicao(token)) {
 			if (!verificaCirurgiaExistente(comando.getIdCirurgia())) {
 				throw new NullPointerException("A cirurgia a ser alterada não existe no banco de dados");
@@ -86,7 +87,7 @@ public class CirurgiaController {
 				throw new SQLException("Ocorreu um erro interno durante a alteração do cirurgia");
 			}
 		}
-		throw new AccessDeniedException("Acesso negado");
+		throw new AccessDeniedException(ACESSONEGADO);
 	}
 
 	private boolean verificaCirurgiaExistente(CirurgiaId id) throws Exception {

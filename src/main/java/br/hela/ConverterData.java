@@ -10,8 +10,8 @@ public class ConverterData {
 		SimpleDateFormat formato = new SimpleDateFormat("dd-MM-yyyy");
 		return formato.format(data);
 	}
-	
+
 	private ConverterData() {
-		
+
 	}
 }

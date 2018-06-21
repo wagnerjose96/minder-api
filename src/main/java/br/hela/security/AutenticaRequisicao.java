@@ -52,5 +52,9 @@ public class AutenticaRequisicao {
 			return user.get(0).getId();
 		return null;
 	}
+	
+	private AutenticaRequisicao() {
+
+	}
 
 }

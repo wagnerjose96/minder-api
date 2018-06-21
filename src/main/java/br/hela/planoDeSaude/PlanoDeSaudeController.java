@@ -32,6 +32,8 @@ import io.swagger.annotations.ApiOperation;
 @RequestMapping("/planos")
 @CrossOrigin
 public class PlanoDeSaudeController {
+	private static final String ACESSONEGADO = "Acesso negado";
+
 	@Autowired
 	private PlanoDeSaudeService service;
 
@@ -40,15 +42,14 @@ public class PlanoDeSaudeController {
 
 	@ApiOperation("Busque todos os planos de saúde")
 	@GetMapping
-	public ResponseEntity<List<BuscarPlanoDeSaude>> getPlanoDeSaudes() throws Exception, SQLException {
+	public ResponseEntity<List<BuscarPlanoDeSaude>> getPlanoDeSaudes() throws Exception {
 		Optional<List<BuscarPlanoDeSaude>> optionalPlanoDeSaude = service.encontrar();
 		return ResponseEntity.ok(optionalPlanoDeSaude.get());
 	}
 
 	@ApiOperation("Busque o plano de saúde pelo ID")
 	@GetMapping("/{id}")
-	public ResponseEntity<BuscarPlanoDeSaude> getPlanoDeSaudePorId(@PathVariable PlanoDeSaudeId id)
-			throws NullPointerException, Exception, SQLException {
+	public ResponseEntity<BuscarPlanoDeSaude> getPlanoDeSaudePorId(@PathVariable PlanoDeSaudeId id) throws Exception {
 		Optional<BuscarPlanoDeSaude> optionalPlanoDeSaude = service.encontrar(id);
 		if (verificaPlanoDeSaudeExistente(id)) {
 			return ResponseEntity.ok(optionalPlanoDeSaude.get());
@@ -59,7 +60,7 @@ public class PlanoDeSaudeController {
 	@ApiOperation("Cadastre um novo plano de saúde")
 	@PostMapping
 	public ResponseEntity<String> postPlanoDeSaude(@RequestBody CriarPlanoDeSaude comando, @RequestHeader String token)
-			throws Exception, AccessDeniedException {
+			throws Exception {
 		if (autentica.autenticaRequisicao(token)) {
 			Optional<PlanoDeSaudeId> optionalPlanoDeSaudeId = service.salvar(comando);
 			if (optionalPlanoDeSaudeId.isPresent()) {
@@ -67,15 +68,15 @@ public class PlanoDeSaudeController {
 						.buildAndExpand(optionalPlanoDeSaudeId.get()).toUri();
 				return ResponseEntity.created(location).body("O plano de saúde foi cadastrado com sucesso");
 			}
-			throw new Exception("O plano de saúde não foi salvo devido a um erro interno");
+			throw new SQLException("O plano de saúde não foi salvo devido a um erro interno");
 		}
-		throw new AccessDeniedException("Acesso negado");
+		throw new AccessDeniedException(ACESSONEGADO);
 	}
 
 	@ApiOperation("Altere um plano de saúde")
 	@PutMapping
 	public ResponseEntity<String> putPlanoDeSaude(@RequestBody EditarPlanoDeSaude comando, @RequestHeader String token)
-			throws SQLException, NullPointerException, Exception, AccessDeniedException {
+			throws Exception {
 		if (autentica.autenticaRequisicao(token)) {
 			if (!verificaPlanoDeSaudeExistente(comando.getId())) {
 				throw new NullPointerException("O plano de saúde a ser alterado não existe no banco de dados");
@@ -90,13 +91,13 @@ public class PlanoDeSaudeController {
 				throw new SQLException("Ocorreu um erro interno durante a alteração do plano de saúde");
 			}
 		}
-		throw new AccessDeniedException("Acesso negado");
+		throw new AccessDeniedException(ACESSONEGADO);
 	}
 
 	@ApiOperation("Delete um plano de saúde pelo ID")
 	@DeleteMapping("/{id}")
 	public ResponseEntity<Optional<String>> deletePlanoDeSaude(@PathVariable PlanoDeSaudeId id,
-			@RequestHeader String token) throws NullPointerException, Exception, AccessDeniedException, SQLException {
+			@RequestHeader String token) throws Exception {
 		if (autentica.autenticaRequisicao(token)) {
 			if (!verificaPlanoDeSaudeExistente(id)) {
 				throw new NullPointerException("O plano de saúde a ser deletado não existe no banco de dados");
@@ -104,7 +105,7 @@ public class PlanoDeSaudeController {
 			Optional<String> resultado = service.deletar(id);
 			return ResponseEntity.ok(resultado);
 		}
-		throw new AccessDeniedException("Acesso negado");
+		throw new AccessDeniedException(ACESSONEGADO);
 	}
 
 	private boolean verificaPlanoDeSaudeExistente(PlanoDeSaudeId id) throws Exception {

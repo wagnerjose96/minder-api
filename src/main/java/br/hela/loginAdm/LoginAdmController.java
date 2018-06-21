@@ -23,7 +23,7 @@ public class LoginAdmController {
 
 	@ApiOperation("Efetue o login de um administrador")
 	@PostMapping
-	public ResponseEntity<String> loginPorNomeDeUsuario(@RequestBody LogarAdm comando) throws NullPointerException {
+	public ResponseEntity<String> loginPorNomeDeUsuario(@RequestBody LogarAdm comando) throws Exception {
 		if (service.consultarUsuario(comando)) {
 			String token = JWTUtil.create(comando.getUsername());
 			return ResponseEntity.ok().body(token);

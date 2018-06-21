@@ -39,7 +39,7 @@ public class DoencaService {
 	@Autowired
 	private MedicamentoService medicamentoService;
 
-	public Optional<DoencaId> salvar(CriarDoenca comando) throws NullPointerException {
+	public Optional<DoencaId> salvar(CriarDoenca comando) {
 		Doenca novo = doencaRepo.save(new Doenca(comando));
 		for (MedicamentoId id_medicamento : comando.getIdMedicamentos()) {
 			do {
@@ -54,7 +54,7 @@ public class DoencaService {
 		return Optional.of(novo.getIdDoenca());
 	}
 
-	public Optional<BuscarDoenca> encontrar(DoencaId doencaId) throws Exception {
+	public Optional<BuscarDoenca> encontrar(DoencaId doencaId) {
 		List<BuscarMedicamento> medicamentos = executeQuery(doencaId.toString(), sql);
 		BuscarDoenca doenca = new BuscarDoenca(doencaRepo.findById(doencaId).get());
 		doenca.setMedicamentos(medicamentos);

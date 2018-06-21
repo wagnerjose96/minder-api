@@ -8,5 +8,5 @@ public class EditarEmergencia {
 	private EmergenciaId id;
 	private int ataqueConvulsivos;
 	private String problemasCardiacos;
-	public int doadorDeOrgaos;
+	private int doadorDeOrgaos;
 }

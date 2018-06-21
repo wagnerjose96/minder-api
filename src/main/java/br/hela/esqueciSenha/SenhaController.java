@@ -20,7 +20,7 @@ public class SenhaController {
 
 	@ApiOperation(value = "Crie uma senha aleatória para um usuário")
 	@PutMapping
-	public String putUSenha(@RequestBody GerarSenha comando) throws NullPointerException {
+	public String putUSenha(@RequestBody GerarSenha comando) throws Exception {
 		String senhaGerada = service.gerarSenhaAleatoria(comando);
 		if (senhaGerada != null)
 			return "Nova senha -> " + senhaGerada + ": criada com sucesso";

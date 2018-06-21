@@ -35,7 +35,7 @@ public class PlanoDeSaudeService {
 		return Optional.of(novo.getId());
 	}
 
-	public Optional<BuscarPlanoDeSaude> encontrar(PlanoDeSaudeId planoId) throws Exception {
+	public Optional<BuscarPlanoDeSaude> encontrar(PlanoDeSaudeId planoId) {
 		PlanoDeSaude plano = repo.findById(planoId).get();
 		BuscarPlanoDeSaude resultado = new BuscarPlanoDeSaude(plano);
 		Optional<BuscarConvenio> convenio = convService.encontrar(plano.getIdConvenio());
@@ -43,7 +43,7 @@ public class PlanoDeSaudeService {
 		return Optional.of(resultado);
 	}
 
-	public Optional<List<BuscarPlanoDeSaude>> encontrar() throws Exception {
+	public Optional<List<BuscarPlanoDeSaude>> encontrar() {
 		List<BuscarPlanoDeSaude> rsPlanos = new ArrayList<>();
 		List<PlanoDeSaude> planos = repo.findAll();
 		for (PlanoDeSaude plano : planos) {

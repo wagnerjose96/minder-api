@@ -35,7 +35,7 @@ public class CirurgiaService {
 	@Autowired
 	private MedicamentoService medicamentoService;
 
-	public Optional<CirurgiaId> salvar(CriarCirurgia comando) throws NullPointerException {
+	public Optional<CirurgiaId> salvar(CriarCirurgia comando) {
 		Cirurgia novo = cirurgiaRepo.save(new Cirurgia(comando));
 		for (MedicamentoId id_medicamento : comando.getId_medicamentos()) {
 			do {
@@ -50,14 +50,14 @@ public class CirurgiaService {
 		return Optional.of(novo.getIdCirurgia());
 	}
 
-	public Optional<BuscarCirurgia> encontrar(CirurgiaId cirurgiaId) throws Exception {
+	public Optional<BuscarCirurgia> encontrar(CirurgiaId cirurgiaId) {
 		List<BuscarMedicamento> medicamentos = executeQuery(cirurgiaId.toString(), sql);
 		BuscarCirurgia cirurgia = new BuscarCirurgia(cirurgiaRepo.findById(cirurgiaId).get());
 		cirurgia.setMedicamentos(medicamentos);
 		return Optional.of(cirurgia);
 	}
 
-	public Optional<List<BuscarCirurgia>> encontrar() throws Exception {
+	public Optional<List<BuscarCirurgia>> encontrar() {
 		List<Cirurgia> cirurgias = cirurgiaRepo.findAll();
 		List<BuscarCirurgia> rsCirurgias = new ArrayList<>();
 		for (Cirurgia cirurgia : cirurgias) {

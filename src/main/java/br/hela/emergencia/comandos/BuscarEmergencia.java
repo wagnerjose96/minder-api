@@ -14,8 +14,8 @@ public class BuscarEmergencia {
 	private EmergenciaId id;
 	private int ataqueConvulsivos;
 	private String problemasCardiacos;
-	public int doadorDeOrgaos;
-	public UsuarioId idUsuario;
+	private int doadorDeOrgaos;
+	private UsuarioId idUsuario;
 	private List<BuscarContato> contatos = new ArrayList<>();
 
 	public BuscarEmergencia(Emergencia comandos) {

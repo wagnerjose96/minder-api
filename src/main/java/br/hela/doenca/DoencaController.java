@@ -29,6 +29,8 @@ import io.swagger.annotations.ApiOperation;
 @RequestMapping("/doencas")
 @CrossOrigin
 public class DoencaController {
+	private static final String ACESSONEGADO = "Acesso negado";
+
 	@Autowired
 	private DoencaService doencaService;
 	@Autowired
@@ -36,14 +38,14 @@ public class DoencaController {
 
 	@ApiOperation("Busque todas as doenças")
 	@GetMapping
-	public ResponseEntity<List<BuscarDoenca>> getDoencas() throws Exception, SQLException {
+	public ResponseEntity<List<BuscarDoenca>> getDoencas() throws Exception {
 		Optional<List<BuscarDoenca>> optionalDoencas = doencaService.encontrar();
 		return ResponseEntity.ok(optionalDoencas.get());
 	}
 
 	@ApiOperation("Busque uma doença pelo ID")
 	@GetMapping("/{id}")
-	public ResponseEntity<BuscarDoenca> getDoencaPorId(@PathVariable DoencaId id) throws Exception, SQLException {
+	public ResponseEntity<BuscarDoenca> getDoencaPorId(@PathVariable DoencaId id) throws Exception {
 		Optional<BuscarDoenca> optionalDoenca = doencaService.encontrar(id);
 		if (verificaDoencaExistente(id)) {
 			return ResponseEntity.ok(optionalDoenca.get());
@@ -54,7 +56,7 @@ public class DoencaController {
 	@ApiOperation("Cadastre uma nova doença")
 	@PostMapping
 	public ResponseEntity<String> postDoenca(@RequestBody CriarDoenca comando, @RequestHeader String token)
-			throws Exception, AccessDeniedException {
+			throws Exception {
 		if (autentica.autenticaRequisicao(token)) {
 			Optional<DoencaId> optionalDoencaId = doencaService.salvar(comando);
 			if (optionalDoencaId.isPresent()) {
@@ -62,15 +64,15 @@ public class DoencaController {
 						.buildAndExpand(optionalDoencaId.get()).toUri();
 				return ResponseEntity.created(location).body("A doença foi cadastrada com sucesso");
 			}
-			throw new Exception("A doença não foi salva devido a um erro interno");
+			throw new SQLException("A doença não foi salva devido a um erro interno");
 		}
-		throw new AccessDeniedException("Acesso negado");
+		throw new AccessDeniedException(ACESSONEGADO);
 	}
 
 	@ApiOperation("Altere uma doença")
 	@PutMapping
 	public ResponseEntity<String> putDoenca(@RequestBody EditarDoenca comando, @RequestHeader String token)
-			throws SQLException, NullPointerException, Exception, AccessDeniedException {
+			throws Exception {
 		if (autentica.autenticaRequisicao(token)) {
 			if (!verificaDoencaExistente(comando.getIdDoenca())) {
 				throw new NullPointerException("A doença a ser alterada não existe no banco de dados");
@@ -84,7 +86,7 @@ public class DoencaController {
 				throw new SQLException("Ocorreu um erro interno durante a alteração da doença");
 			}
 		}
-		throw new AccessDeniedException("Acesso negado");
+		throw new AccessDeniedException(ACESSONEGADO);
 	}
 
 	private boolean verificaDoencaExistente(DoencaId id) throws Exception {

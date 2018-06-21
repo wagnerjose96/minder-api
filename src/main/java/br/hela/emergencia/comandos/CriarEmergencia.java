@@ -7,6 +7,6 @@ import lombok.Data;
 public class CriarEmergencia {
 	private int ataqueConvulsivos;
 	private String problemasCardiacos;
-	public int doadorDeOrgaos;
+	private int doadorDeOrgaos;
 	private UsuarioId idUsuario;
 }

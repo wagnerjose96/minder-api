@@ -30,6 +30,7 @@ import io.swagger.annotations.ApiOperation;
 @RequestMapping("/contatos")
 @CrossOrigin
 public class ContatoController {
+	private static final String ACESSONEGADO = "Acesso negado";
 
 	@Autowired
 	private ContatoService contatoService;
@@ -39,26 +40,25 @@ public class ContatoController {
 
 	@ApiOperation("Busque todos os contatos")
 	@GetMapping
-	public ResponseEntity<List<BuscarContato>> getContatos() throws SQLException, Exception {
+	public ResponseEntity<List<BuscarContato>> getContatos() throws Exception {
 		Optional<List<BuscarContato>> optionalContatos = contatoService.encontrar();
 		return ResponseEntity.ok(optionalContatos.get());
 	}
 
 	@ApiOperation("Busque o contato pelo ID")
 	@GetMapping("/{id}")
-	public ResponseEntity<BuscarContato> getContatoPorId(@PathVariable ContatoId id)
-			throws SQLException, NullPointerException, Exception {
-			Optional<BuscarContato> optionalContato = contatoService.encontrar(id);
-			if (verificaContatoExistente(id)) {
-				return ResponseEntity.ok(optionalContato.get());
-			}
-			throw new NullPointerException("O contato procurado não existe no banco de dados");
+	public ResponseEntity<BuscarContato> getContatoPorId(@PathVariable ContatoId id) throws Exception {
+		Optional<BuscarContato> optionalContato = contatoService.encontrar(id);
+		if (verificaContatoExistente(id)) {
+			return ResponseEntity.ok(optionalContato.get());
+		}
+		throw new NullPointerException("O contato procurado não existe no banco de dados");
 	}
 
 	@ApiOperation("Cadastre um novo contato")
 	@PostMapping
 	public ResponseEntity<String> postContato(@RequestBody CriarContato comando, @RequestHeader String token)
-			throws Exception, AccessDeniedException {
+			throws Exception {
 		if (autentica.autenticaRequisicao(token)) {
 			Optional<ContatoId> optionalContatoId = contatoService.salvar(comando, autentica.idUser(token));
 			if (optionalContatoId.isPresent()) {
@@ -66,15 +66,15 @@ public class ContatoController {
 						.buildAndExpand(optionalContatoId.get()).toUri();
 				return ResponseEntity.created(location).body("O contato foi cadastrado com sucesso");
 			}
-			throw new Exception("O contato não foi salvo devido a um erro interno");
+			throw new SQLException("O contato não foi salvo devido a um erro interno");
 		}
-		throw new AccessDeniedException("Acesso negado");
+		throw new AccessDeniedException(ACESSONEGADO);
 	}
 
 	@ApiOperation("Altere um contato")
 	@PutMapping
 	public ResponseEntity<String> putContato(@RequestBody EditarContato comando, @RequestHeader String token)
-			throws SQLException, NullPointerException, Exception, AccessDeniedException {
+			throws Exception {
 		if (autentica.autenticaRequisicao(token)) {
 			if (!verificaContatoExistente(comando.getId())) {
 				throw new NullPointerException("O contato a ser alterado não existe no banco de dados");
@@ -89,13 +89,13 @@ public class ContatoController {
 				throw new SQLException("Ocorreu um erro interno durante a alteração do contato");
 			}
 		}
-		throw new AccessDeniedException("Acesso negado");
+		throw new AccessDeniedException(ACESSONEGADO);
 	}
 
 	@ApiOperation("Delete um contato pelo ID")
 	@DeleteMapping("/{id}")
 	public ResponseEntity<Optional<String>> deletarContato(@PathVariable ContatoId id, @RequestHeader String token)
-			throws SQLException, NullPointerException, Exception, AccessDeniedException {
+			throws Exception {
 		if (autentica.autenticaRequisicao(token)) {
 
 			if (verificaContatoExistente(id)) {
@@ -104,7 +104,7 @@ public class ContatoController {
 			}
 			throw new NullPointerException("O contato a deletar não existe no banco de dados");
 		}
-		throw new AccessDeniedException("Acesso negado");
+		throw new AccessDeniedException(ACESSONEGADO);
 	}
 
 	private boolean verificaContatoExistente(ContatoId id) throws Exception {

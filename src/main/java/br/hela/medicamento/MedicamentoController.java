@@ -30,6 +30,8 @@ import io.swagger.annotations.ApiOperation;
 @RequestMapping("/medicamentos")
 @CrossOrigin
 public class MedicamentoController {
+	private static final String ACESSONEGADO = "Acesso negado";
+
 	@Autowired
 	private MedicamentoService service;
 
@@ -38,15 +40,14 @@ public class MedicamentoController {
 
 	@ApiOperation("Busque todos os medicamentos")
 	@GetMapping
-	public ResponseEntity<List<BuscarMedicamento>> getMedicamento() throws SQLException, Exception {
+	public ResponseEntity<List<BuscarMedicamento>> getMedicamento() throws Exception {
 		Optional<List<BuscarMedicamento>> optionalMedicamentos = service.encontrar();
 		return ResponseEntity.ok(optionalMedicamentos.get());
 	}
 
 	@ApiOperation("Busque um medicamento pelo ID")
 	@GetMapping("/{id}")
-	public ResponseEntity<BuscarMedicamento> getMedicamentoPorId(@PathVariable MedicamentoId id)
-			throws SQLException, Exception, NullPointerException {
+	public ResponseEntity<BuscarMedicamento> getMedicamentoPorId(@PathVariable MedicamentoId id) throws Exception {
 		if (verificaMedicamentoExistente(id)) {
 			Optional<BuscarMedicamento> optionalMedicamento = service.encontrar(id);
 			return ResponseEntity.ok(optionalMedicamento.get());
@@ -57,7 +58,7 @@ public class MedicamentoController {
 	@ApiOperation("Delete um medicamento pelo ID")
 	@DeleteMapping("/{id}")
 	public ResponseEntity<Optional<String>> deletarMedicamento(@PathVariable MedicamentoId id,
-			@RequestHeader String token) throws SQLException, NullPointerException, Exception, AccessDeniedException {
+			@RequestHeader String token) throws Exception {
 		if (autentica.autenticaRequisicao(token)) {
 			if (verificaMedicamentoExistente(id)) {
 				Optional<String> optionalMedicamento = service.deletar(id);
@@ -65,13 +66,13 @@ public class MedicamentoController {
 			}
 			throw new NullPointerException("O medicamento a deletar não existe no banco de dados");
 		}
-		throw new AccessDeniedException("Acesso negado");
+		throw new AccessDeniedException(ACESSONEGADO);
 	}
 
 	@ApiOperation("Cadastre um novo medicamento")
 	@PostMapping
 	public ResponseEntity<String> postMedicamento(@RequestBody CriarMedicamento comando, @RequestHeader String token)
-			throws Exception, AccessDeniedException {
+			throws Exception {
 		if (autentica.autenticaRequisicao(token)) {
 			Optional<MedicamentoId> optionalMedicamentoId = service.salvar(comando);
 			if (optionalMedicamentoId.isPresent()) {
@@ -79,15 +80,15 @@ public class MedicamentoController {
 						.buildAndExpand(optionalMedicamentoId.get()).toUri();
 				return ResponseEntity.created(location).body("O medicamento foi cadastrado com sucesso");
 			}
-			throw new Exception("O medicamento não foi salvo devido a um erro interno");
+			throw new SQLException("O medicamento não foi salvo devido a um erro interno");
 		}
-		throw new AccessDeniedException("Acesso negado");
+		throw new AccessDeniedException(ACESSONEGADO);
 	}
 
 	@ApiOperation("Altere um medicamento")
 	@PutMapping
-	public ResponseEntity<String> putMedicamento(@RequestBody EditarMedicamento comando,
-			@RequestHeader String token) throws NullPointerException, Exception, SQLException, AccessDeniedException {
+	public ResponseEntity<String> putMedicamento(@RequestBody EditarMedicamento comando, @RequestHeader String token)
+			throws Exception {
 		if (autentica.autenticaRequisicao(token)) {
 			if (!verificaMedicamentoExistente(comando.getIdMedicamento())) {
 				throw new NullPointerException("O medicamento a ser alterado não existe no banco de dados");
@@ -98,13 +99,13 @@ public class MedicamentoController {
 						.buildAndExpand(optionalMedicamentoId.get()).toUri();
 				return ResponseEntity.created(location).body("O medicamento foi alterado com sucesso");
 			} else {
-				throw new InternalError("Ocorreu um erro interno durante a alteração do medicamento");
+				throw new SQLException("Ocorreu um erro interno durante a alteração do medicamento");
 			}
 		}
-		throw new AccessDeniedException("Acesso negado");
+		throw new AccessDeniedException(ACESSONEGADO);
 	}
 
-	private boolean verificaMedicamentoExistente(MedicamentoId id) {
+	private boolean verificaMedicamentoExistente(MedicamentoId id) throws Exception {
 		if (!service.encontrar(id).isPresent()) {
 			return false;
 		} else {

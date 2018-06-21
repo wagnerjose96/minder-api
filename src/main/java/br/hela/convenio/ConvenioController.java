@@ -32,6 +32,8 @@ import io.swagger.annotations.ApiOperation;
 @RequestMapping("/convenios")
 @CrossOrigin
 public class ConvenioController {
+	private static final String ACESSONEGADO = "Acesso negado";
+
 	@Autowired
 	private ConvenioService service;
 
@@ -40,7 +42,7 @@ public class ConvenioController {
 
 	@ApiOperation("Busque todos os convênios")
 	@GetMapping
-	public ResponseEntity<List<BuscarConvenio>> getConvenio() throws SQLException, Exception {
+	public ResponseEntity<List<BuscarConvenio>> getConvenio() throws Exception {
 			Optional<List<BuscarConvenio>> optionalConvenios = service.encontrar();
 			return ResponseEntity.ok(optionalConvenios.get());
 	}
@@ -48,7 +50,7 @@ public class ConvenioController {
 	@ApiOperation("Busque um convênio pelo ID")
 	@GetMapping("/{id}")
 	public ResponseEntity<BuscarConvenio> getConvenioPorId(@PathVariable ConvenioId id)
-			throws SQLException, NullPointerException, Exception {
+			throws Exception {
 			if (verificaConvenioExistente(id)) {
 				Optional<BuscarConvenio> optionalConvenio = service.encontrar(id);
 				return ResponseEntity.ok(optionalConvenio.get());
@@ -59,7 +61,7 @@ public class ConvenioController {
 	@ApiOperation("Delete um convênio pelo ID")
 	@DeleteMapping("/{id}")
 	public ResponseEntity<Optional<String>> deletarConvenio(@PathVariable ConvenioId id, @RequestHeader String token)
-			throws SQLException, NullPointerException, Exception, AccessDeniedException {
+			throws Exception {
 		if (autentica.autenticaRequisicao(token)) {
 			if (verificaConvenioExistente(id)) {
 				Optional<String> optionalConvenio = service.deletar(id);
@@ -67,13 +69,13 @@ public class ConvenioController {
 			}
 			throw new NullPointerException("O convênio a deletar não existe no banco de dados");
 		}
-		throw new AccessDeniedException("Acesso negado");
+		throw new AccessDeniedException(ACESSONEGADO);
 	}
 
 	@ApiOperation(value = "Cadastre um novo convênio")
 	@PostMapping
 	public ResponseEntity<String> postConvenio(@RequestBody CriarConvenio comando, @RequestHeader String token)
-			throws Exception, AccessDeniedException {
+			throws Exception {
 		if (autentica.autenticaRequisicao(token)) {
 			Optional<ConvenioId> optionalConvenioId = service.salvar(comando);
 			if (optionalConvenioId.isPresent()) {
@@ -81,15 +83,15 @@ public class ConvenioController {
 						.buildAndExpand(optionalConvenioId.get()).toUri();
 				return ResponseEntity.created(location).body("O convênio foi cadastrado com sucesso");
 			}
-			throw new Exception("O convênio não foi salvo devido a um erro interno");
+			throw new SQLException("O convênio não foi salvo devido a um erro interno");
 		}
-		throw new AccessDeniedException("Acesso negado");
+		throw new AccessDeniedException(ACESSONEGADO);
 	}
 
 	@ApiOperation(value = "Altere um convênio")
 	@PutMapping
 	public ResponseEntity<String> putConvenioContinuo(@RequestBody EditarConvenio comando, @RequestHeader String token)
-			throws SQLException, NullPointerException, Exception, AccessDeniedException {
+			throws Exception {
 		if (autentica.autenticaRequisicao(token)) {
 			if (!verificaConvenioExistente(comando.getId())) {
 				throw new NullPointerException("O convênio a ser alterado não existe no banco de dados");
@@ -100,13 +102,13 @@ public class ConvenioController {
 						.buildAndExpand(optionalConvenioId.get()).toUri();
 				return ResponseEntity.created(location).body("O convênio foi alterado com sucesso");
 			} else {
-				throw new InternalError("Ocorreu um erro interno durante a alteração do convênio");
+				throw new SQLException("Ocorreu um erro interno durante a alteração do convênio");
 			}
 		}
-		throw new AccessDeniedException("Acesso negado");
+		throw new AccessDeniedException(ACESSONEGADO);
 	}
 
-	private boolean verificaConvenioExistente(ConvenioId id) {
+	private boolean verificaConvenioExistente(ConvenioId id) throws Exception {
 		if (!service.encontrar(id).isPresent()) {
 			return false;
 		} else {

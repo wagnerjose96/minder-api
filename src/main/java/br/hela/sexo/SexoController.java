@@ -29,6 +29,8 @@ import io.swagger.annotations.ApiOperation;
 @RequestMapping("/generos")
 @CrossOrigin
 public class SexoController {
+	private static final String ACESSONEGADO = "Acesso negado";
+
 	@Autowired
 	private SexoService service;
 
@@ -37,15 +39,14 @@ public class SexoController {
 
 	@ApiOperation("Busque todos os genêros")
 	@GetMapping
-	public ResponseEntity<List<BuscarSexo>> getSexo() throws SQLException, Exception {
+	public ResponseEntity<List<BuscarSexo>> getSexo() throws Exception {
 		Optional<List<BuscarSexo>> optionalGeneros = service.encontrar();
 		return ResponseEntity.ok(optionalGeneros.get());
 	}
 
 	@ApiOperation("Busque um genêro pelo ID")
 	@GetMapping("/{id}")
-	public ResponseEntity<BuscarSexo> getSexoPorId(@PathVariable SexoId id)
-			throws SQLException, Exception, NullPointerException {
+	public ResponseEntity<BuscarSexo> getSexoPorId(@PathVariable SexoId id) throws Exception {
 		if (verificaSexoExistente(id)) {
 			Optional<BuscarSexo> optionalGenero = service.encontrar(id);
 			return ResponseEntity.ok(optionalGenero.get());
@@ -56,7 +57,7 @@ public class SexoController {
 	@ApiOperation("Cadastre um novo genêro")
 	@PostMapping
 	public ResponseEntity<String> postSexo(@RequestBody CriarSexo comando, @RequestHeader String token)
-			throws Exception, AccessDeniedException {
+			throws Exception {
 		if (autentica.autenticaRequisicao(token)) {
 			Optional<SexoId> optionalGeneroId = service.salvar(comando);
 			if (optionalGeneroId.isPresent()) {
@@ -64,15 +65,15 @@ public class SexoController {
 						.buildAndExpand(optionalGeneroId.get()).toUri();
 				return ResponseEntity.created(location).body("O genêro foi cadastrado com sucesso");
 			}
-			throw new Exception("O genêro não foi salvo devido a um erro interno");
+			throw new SQLException("O genêro não foi salvo devido a um erro interno");
 		}
-		throw new AccessDeniedException("Acesso negado");
+		throw new AccessDeniedException(ACESSONEGADO);
 	}
 
 	@ApiOperation("Altere um genêro")
 	@PutMapping
 	public ResponseEntity<String> putSexo(@RequestBody EditarSexo comando, @RequestHeader String token)
-			throws NullPointerException, Exception, SQLException, AccessDeniedException {
+			throws Exception {
 		if (autentica.autenticaRequisicao(token)) {
 			if (!verificaSexoExistente(comando.getIdSexo())) {
 				throw new NullPointerException("O genêro a ser alterado não existe no banco de dados");
@@ -83,13 +84,13 @@ public class SexoController {
 						.buildAndExpand(optionalSexoId.get()).toUri();
 				return ResponseEntity.created(location).body("O genêro foi alterado com sucesso");
 			} else {
-				throw new InternalError("Ocorreu um erro interno durante a alteração do genêro");
+				throw new SQLException("Ocorreu um erro interno durante a alteração do genêro");
 			}
 		}
-		throw new AccessDeniedException("Acesso negado");
+		throw new AccessDeniedException(ACESSONEGADO);
 	}
 
-	private boolean verificaSexoExistente(SexoId id) {
+	private boolean verificaSexoExistente(SexoId id) throws Exception {
 		if (!service.encontrar(id).isPresent()) {
 			return false;
 		} else {

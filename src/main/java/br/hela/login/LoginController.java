@@ -1,6 +1,5 @@
 package br.hela.login;
 
-import java.sql.SQLException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -18,18 +17,17 @@ import io.swagger.annotations.ApiOperation;
 @RequestMapping("/login")
 @CrossOrigin
 public class LoginController {
-	
+
 	@Autowired
 	private LoginService service;
-	
+
 	@ApiOperation("Efetue o login de um usuário")
 	@PostMapping
-	public ResponseEntity<String> loginPorNomeDeUsuario(@RequestBody LogarUsuario comando) 
-			throws SQLException, NullPointerException {
+	public ResponseEntity<String> loginPorNomeDeUsuario(@RequestBody LogarUsuario comando) throws Exception {
 		String username = comando.getIdentificador();
-		if(username.indexOf("@") > 0 && username.indexOf(".com") > -1 && username.indexOf("@.com") == -1){ 
+		if (username.indexOf("@") > -1 && username.indexOf(".com") > -1 && username.indexOf("@.com") == -1) {
 			if (service.consultarEmail(comando)) {
-				String token = JWTUtil.create(comando.getIdentificador());				
+				String token = JWTUtil.create(comando.getIdentificador());
 				return ResponseEntity.ok().body(token);
 			}
 			throw new NullPointerException("Login não realizado! Favor conferir os dados digitados");

@@ -32,6 +32,8 @@ import io.swagger.annotations.ApiOperation;
 @RequestMapping("/adm")
 @CrossOrigin
 public class UsuarioAdmController {
+	private static final String ACESSONEGADO = "Acesso negado";
+
 	@Autowired
 	private UsuarioAdmService service;
 
@@ -40,19 +42,18 @@ public class UsuarioAdmController {
 
 	@ApiOperation("Busque todos os usuários admin")
 	@GetMapping
-	public ResponseEntity<List<BuscarUsuarioAdm>> getUsuarioAdmins(@RequestHeader String token)
-			throws SQLException, AccessDeniedException {
+	public ResponseEntity<List<BuscarUsuarioAdm>> getUsuarioAdmins(@RequestHeader String token) throws Exception {
 		if (autentica.autenticaRequisicao(token)) {
 			Optional<List<BuscarUsuarioAdm>> optionalUsuarioAdmin = service.encontrar();
 			return ResponseEntity.ok(optionalUsuarioAdmin.get());
 		}
-		throw new AccessDeniedException("Acesso negado");
+		throw new AccessDeniedException(ACESSONEGADO);
 	}
 
 	@ApiOperation("Busque um usuário admin pelo ID")
 	@GetMapping("/{id}")
-	public ResponseEntity<BuscarUsuarioAdm> getUsuarioAdminId(@PathVariable UsuarioAdmId id, @RequestHeader String token)
-			throws NullPointerException, SQLException, AccessDeniedException {
+	public ResponseEntity<BuscarUsuarioAdm> getUsuarioAdminId(@PathVariable UsuarioAdmId id,
+			@RequestHeader String token) throws Exception {
 		if (autentica.autenticaRequisicao(token)) {
 			if (verificaUsuarioAdminExistente(id)) {
 				Optional<BuscarUsuarioAdm> optionalUsuarioAdmin = service.encontrar(id);
@@ -60,13 +61,13 @@ public class UsuarioAdmController {
 			}
 			throw new NullPointerException("O administrador procurado não existe no banco de dados");
 		}
-		throw new AccessDeniedException("Acesso negado");
+		throw new AccessDeniedException(ACESSONEGADO);
 	}
 
 	@ApiOperation("Delete um usuário admin pelo ID")
 	@DeleteMapping("/{id}")
 	public ResponseEntity<Optional<String>> deleteUsuarioAdmin(@PathVariable UsuarioAdmId id,
-			@RequestHeader String token) throws NullPointerException, AccessDeniedException, SQLException, Exception {
+			@RequestHeader String token) throws Exception {
 		if (autentica.autenticaRequisicao(token)) {
 			if (verificaUsuarioAdminExistente(id)) {
 				Optional<String> resultado = service.deletar(id);
@@ -74,7 +75,7 @@ public class UsuarioAdmController {
 			}
 			throw new NullPointerException("O administrador a deletar não existe no banco de dados");
 		}
-		throw new AccessDeniedException("Acesso negado");
+		throw new AccessDeniedException(ACESSONEGADO);
 	}
 
 	@ApiOperation("Cadastre um novo usuário admin")
@@ -86,13 +87,13 @@ public class UsuarioAdmController {
 					.buildAndExpand(optionalUsuarioAdminId.get()).toUri();
 			return ResponseEntity.created(location).body("O administrador foi cadastrado com sucesso");
 		}
-		throw new Exception("O administrador não foi salvo devido a um erro interno");
+		throw new SQLException("O administrador não foi salvo devido a um erro interno");
 	}
 
 	@ApiOperation("Altere um usuário admin")
 	@PutMapping
 	public ResponseEntity<String> putUsuarioAdmin(@RequestHeader String token, @RequestBody EditarUsuarioAdm comando)
-			throws NullPointerException, Exception, SQLException, AccessDeniedException {
+			throws Exception {
 		if (autentica.autenticaRequisicao(token)) {
 			if (!verificaUsuarioAdminExistente(comando.getId())) {
 				throw new NullPointerException("O administrador a ser alterado não existe no banco de dados");
@@ -103,13 +104,13 @@ public class UsuarioAdmController {
 						.buildAndExpand(optionalUsuarioAdminId.get()).toUri();
 				return ResponseEntity.created(location).body("O administrador foi alterado com sucesso");
 			} else {
-				throw new InternalError("Ocorreu um erro interno durante a alteração do administrador");
+				throw new SQLException("Ocorreu um erro interno durante a alteração do administrador");
 			}
 		}
-		throw new AccessDeniedException("Acesso negado");
+		throw new AccessDeniedException(ACESSONEGADO);
 	}
 
-	private boolean verificaUsuarioAdminExistente(UsuarioAdmId id) {
+	private boolean verificaUsuarioAdminExistente(UsuarioAdmId id) throws Exception {
 		if (!service.encontrar(id).isPresent()) {
 			return false;
 		} else {

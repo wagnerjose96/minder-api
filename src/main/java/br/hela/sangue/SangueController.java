@@ -29,6 +29,8 @@ import io.swagger.annotations.ApiOperation;
 @RequestMapping("/sangues")
 @CrossOrigin
 public class SangueController {
+	private static final String ACESSONEGADO = "Acesso negado";
+
 	@Autowired
 	private SangueService service;
 
@@ -37,15 +39,14 @@ public class SangueController {
 
 	@ApiOperation("Busque todos os tipos sanguíneos")
 	@GetMapping
-	public ResponseEntity<List<BuscarSangue>> getSangue() throws SQLException, Exception {
+	public ResponseEntity<List<BuscarSangue>> getSangue() throws Exception {
 		Optional<List<BuscarSangue>> optionalSangues = service.encontrar();
 		return ResponseEntity.ok(optionalSangues.get());
 	}
 
 	@ApiOperation("Busque um tipo sanguíneo pelo ID")
 	@GetMapping("/{id}")
-	public ResponseEntity<BuscarSangue> getSanguePorId(@PathVariable SangueId id)
-			throws SQLException, Exception, NullPointerException {
+	public ResponseEntity<BuscarSangue> getSanguePorId(@PathVariable SangueId id) throws Exception {
 		if (verificaSangueExistente(id)) {
 			Optional<BuscarSangue> optionalSangue = service.encontrar(id);
 			return ResponseEntity.ok(optionalSangue.get());
@@ -56,7 +57,7 @@ public class SangueController {
 	@ApiOperation("Cadastre um tipo sanguíneo")
 	@PostMapping
 	public ResponseEntity<String> postSangue(@RequestBody CriarSangue comando, @RequestHeader String token)
-			throws Exception, AccessDeniedException {
+			throws Exception {
 		if (autentica.autenticaRequisicao(token)) {
 			Optional<SangueId> optionalSangueId = service.salvar(comando);
 			if (optionalSangueId.isPresent()) {
@@ -64,15 +65,15 @@ public class SangueController {
 						.buildAndExpand(optionalSangueId.get()).toUri();
 				return ResponseEntity.created(location).body("O tipo sanguíneo foi cadastrado com sucesso");
 			}
-			throw new Exception("O tipo sanguíneo não foi salvo devido a um erro interno");
+			throw new SQLException("O tipo sanguíneo não foi salvo devido a um erro interno");
 		}
-		throw new AccessDeniedException("Acesso negado");
+		throw new AccessDeniedException(ACESSONEGADO);
 	}
 
 	@ApiOperation("Altere um tipo sanguíneo")
 	@PutMapping
-	public ResponseEntity<String> putMedicamentoContinuo(@RequestBody EditarSangue comando,
-			@RequestHeader String token) throws NullPointerException, Exception, SQLException, AccessDeniedException {
+	public ResponseEntity<String> putMedicamentoContinuo(@RequestBody EditarSangue comando, @RequestHeader String token)
+			throws Exception {
 		if (autentica.autenticaRequisicao(token)) {
 			if (!verificaSangueExistente(comando.getIdSangue())) {
 				throw new NullPointerException("O tipo sanguíneo a ser alterado não existe no banco de dados");
@@ -83,13 +84,13 @@ public class SangueController {
 						.buildAndExpand(optionalSangueId.get()).toUri();
 				return ResponseEntity.created(location).body("O tipo sanguíneo foi alterado com sucesso");
 			} else {
-				throw new InternalError("Ocorreu um erro interno durante a alteração do tipo sanguíneo");
+				throw new SQLException("Ocorreu um erro interno durante a alteração do tipo sanguíneo");
 			}
 		}
-		throw new AccessDeniedException("Acesso negado");
+		throw new AccessDeniedException(ACESSONEGADO);
 	}
 
-	private boolean verificaSangueExistente(SangueId id) {
+	private boolean verificaSangueExistente(SangueId id) throws Exception {
 		if (!service.encontrar(id).isPresent()) {
 			return false;
 		} else {

@@ -38,7 +38,7 @@ public class AlergiaService {
 	@Autowired
 	private MedicamentoService medicamentoService;
 
-	public Optional<AlergiaId> salvar(CriarAlergia comando) throws NullPointerException {
+	public Optional<AlergiaId> salvar(CriarAlergia comando) {
 		Alergia novo = repo.save(new Alergia(comando));
 		for (MedicamentoId id_medicamento : comando.getId_medicamentos()) {
 			do {
@@ -53,14 +53,14 @@ public class AlergiaService {
 		return Optional.of(novo.getIdAlergia());
 	}
 
-	public Optional<BuscarAlergia> encontrar(AlergiaId alergiaId) throws Exception {
+	public Optional<BuscarAlergia> encontrar(AlergiaId alergiaId) {
 		List<BuscarMedicamento> medicamentos = executeQuery(alergiaId.toString(), sql);
 		BuscarAlergia alergia = new BuscarAlergia(repo.findById(alergiaId).get());
 		alergia.setMedicamentos(medicamentos);
 		return Optional.of(alergia);
 	}
 
-	public Optional<List<BuscarAlergia>> encontrar() throws Exception {
+	public Optional<List<BuscarAlergia>> encontrar() {
 		List<Alergia> alergias = repo.findAll();
 		List<BuscarAlergia> rsAlergias = new ArrayList<>();
 		for (Alergia alergia : alergias) {

@@ -46,7 +46,7 @@ public class SenhaService {
 			senha += carct[j];
 		}
 		List<GerarSenha> usuario = consultarId(comando);
-		if (usuario.size() > 0 && usuario.get(0).getAtivo() == 1) {
+		if (usuario.isEmpty() && usuario.get(0).getAtivo() == 1) {
 			Optional<Usuario> optional = repo.findById(usuario.get(0).getId());
 			if (optional.isPresent()) {
 				Usuario user = optional.get();

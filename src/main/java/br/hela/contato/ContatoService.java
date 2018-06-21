@@ -60,7 +60,7 @@ public class ContatoService {
 		return Optional.empty();
 	}
 
-	public Optional<BuscarContato> encontrar(ContatoId contatoId) throws Exception {
+	public Optional<BuscarContato> encontrar(ContatoId contatoId) {
 		Contato contato = repo.findById(contatoId).get();
 		BuscarContato resultado = new BuscarContato(contato);
 		Optional<BuscarTelefone> telefone = telefoneService.encontrar(contato.getIdTelefone());
@@ -68,7 +68,7 @@ public class ContatoService {
 		return Optional.of(resultado);
 	}
 
-	public Optional<List<BuscarContato>> encontrar() throws Exception {
+	public Optional<List<BuscarContato>> encontrar() {
 		List<Contato> contatos = repo.findAll();
 		List<BuscarContato> resultados = new ArrayList<>();
 		for (Contato contato : contatos) {
