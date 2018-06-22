@@ -42,28 +42,30 @@ public class ConvenioController {
 
 	@ApiOperation("Busque todos os convênios")
 	@GetMapping
-	public ResponseEntity<List<BuscarConvenio>> getConvenio() throws Exception {
-			Optional<List<BuscarConvenio>> optionalConvenios = service.encontrar();
+	public ResponseEntity<List<BuscarConvenio>> getConvenio() {
+		Optional<List<BuscarConvenio>> optionalConvenios = service.encontrar();
+		if (optionalConvenios.isPresent()) {
 			return ResponseEntity.ok(optionalConvenios.get());
+		}
+		return ResponseEntity.notFound().build();
 	}
 
 	@ApiOperation("Busque um convênio pelo ID")
 	@GetMapping("/{id}")
-	public ResponseEntity<BuscarConvenio> getConvenioPorId(@PathVariable ConvenioId id)
-			throws Exception {
-			if (verificaConvenioExistente(id)) {
-				Optional<BuscarConvenio> optionalConvenio = service.encontrar(id);
-				return ResponseEntity.ok(optionalConvenio.get());
-			}
-			throw new NullPointerException("O convênio procurado não existe no banco de dados");
+	public ResponseEntity<BuscarConvenio> getConvenioPorId(@PathVariable ConvenioId id) {
+		Optional<BuscarConvenio> optionalConvenio = service.encontrar(id);
+		if (optionalConvenio.isPresent()) {
+			return ResponseEntity.ok(optionalConvenio.get());
+		}
+		throw new NullPointerException("O convênio procurado não existe no banco de dados");
 	}
 
 	@ApiOperation("Delete um convênio pelo ID")
 	@DeleteMapping("/{id}")
 	public ResponseEntity<Optional<String>> deletarConvenio(@PathVariable ConvenioId id, @RequestHeader String token)
-			throws Exception {
+			throws AccessDeniedException {
 		if (autentica.autenticaRequisicao(token)) {
-			if (verificaConvenioExistente(id)) {
+			if (service.encontrar(id).isPresent()) {
 				Optional<String> optionalConvenio = service.deletar(id);
 				return ResponseEntity.ok(optionalConvenio);
 			}
@@ -75,7 +77,7 @@ public class ConvenioController {
 	@ApiOperation(value = "Cadastre um novo convênio")
 	@PostMapping
 	public ResponseEntity<String> postConvenio(@RequestBody CriarConvenio comando, @RequestHeader String token)
-			throws Exception {
+			throws AccessDeniedException, SQLException {
 		if (autentica.autenticaRequisicao(token)) {
 			Optional<ConvenioId> optionalConvenioId = service.salvar(comando);
 			if (optionalConvenioId.isPresent()) {
@@ -90,10 +92,10 @@ public class ConvenioController {
 
 	@ApiOperation(value = "Altere um convênio")
 	@PutMapping
-	public ResponseEntity<String> putConvenioContinuo(@RequestBody EditarConvenio comando, @RequestHeader String token)
-			throws Exception {
+	public ResponseEntity<String> putConvenio(@RequestBody EditarConvenio comando, @RequestHeader String token)
+			throws AccessDeniedException, SQLException {
 		if (autentica.autenticaRequisicao(token)) {
-			if (!verificaConvenioExistente(comando.getId())) {
+			if (!service.encontrar(comando.getId()).isPresent()) {
 				throw new NullPointerException("O convênio a ser alterado não existe no banco de dados");
 			}
 			Optional<ConvenioId> optionalConvenioId = service.alterar(comando);
@@ -106,14 +108,6 @@ public class ConvenioController {
 			}
 		}
 		throw new AccessDeniedException(ACESSONEGADO);
-	}
-
-	private boolean verificaConvenioExistente(ConvenioId id) throws Exception {
-		if (!service.encontrar(id).isPresent()) {
-			return false;
-		} else {
-			return true;
-		}
 	}
 
 }

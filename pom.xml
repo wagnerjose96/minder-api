@@ -170,7 +170,9 @@
 				<activeByDefault>true</activeByDefault>
 			</activation>
 			<properties>
-				<sonar.host.url>http://localhost:9000</sonar.host.url>
+				<sonar.host.url>
+					http://ip172-18-0-7-bcmf4he08n7000efackg-9000.direct.labs.play-with-docker.com/
+				</sonar.host.url>
 			</properties>
 		</profile>
 	</profiles>

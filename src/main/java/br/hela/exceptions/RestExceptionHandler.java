@@ -21,7 +21,7 @@ public class RestExceptionHandler {
 	private ErrorDetailService service;
 
 	@ExceptionHandler({ Exception.class })
-	public @ResponseBody ResponseEntity<?> allExceptions(Exception message) throws Exception {
+	public @ResponseBody ResponseEntity<Object> allExceptions(Exception message) {
 		HttpStatus status = HttpStatus.INTERNAL_SERVER_ERROR;
 		String type = "Generic Error";
 		String developerMessage = "Falha interna no servidor";
@@ -32,7 +32,7 @@ public class RestExceptionHandler {
 
 	@ResponseStatus(code = HttpStatus.REQUEST_TIMEOUT)
 	@ExceptionHandler({ TimeoutException.class })
-	public @ResponseBody ResponseEntity<?> requestTimeout(TimeoutException message) {
+	public @ResponseBody ResponseEntity<Object> requestTimeout(TimeoutException message) {
 		HttpStatus status = HttpStatus.REQUEST_TIMEOUT;
 		String type = "Request Timeout";
 		String developerMessage = "Tempo de requisição esgotado";
@@ -44,7 +44,7 @@ public class RestExceptionHandler {
 
 	@ResponseStatus(code = HttpStatus.UNSUPPORTED_MEDIA_TYPE)
 	@ExceptionHandler({ UnsupportedMediaTypeStatusException.class })
-	public @ResponseBody ResponseEntity<?> unsupportedMediaType(UnsupportedMediaTypeStatusException message) {
+	public @ResponseBody ResponseEntity<Object> unsupportedMediaType(UnsupportedMediaTypeStatusException message) {
 		HttpStatus status = HttpStatus.UNSUPPORTED_MEDIA_TYPE;
 		String type = "Unsupported media type";
 		String developerMessage = "Mídia não suportada";
@@ -56,7 +56,7 @@ public class RestExceptionHandler {
 
 	@ResponseStatus(code = HttpStatus.METHOD_NOT_ALLOWED)
 	@ExceptionHandler({ MethodNotAllowedException.class })
-	public @ResponseBody ResponseEntity<?> methodNotAllowed(MethodNotAllowedException message) {
+	public @ResponseBody ResponseEntity<Object> methodNotAllowed(MethodNotAllowedException message) {
 		HttpStatus status = HttpStatus.METHOD_NOT_ALLOWED;
 		String type = "Method not allowed";
 		String developerMessage = "Método não permitido";
@@ -68,7 +68,7 @@ public class RestExceptionHandler {
 
 	@ResponseStatus(code = HttpStatus.NOT_FOUND)
 	@ExceptionHandler({ NullPointerException.class })
-	public @ResponseBody ResponseEntity<?> handleNullPointerException(NullPointerException message) {
+	public @ResponseBody ResponseEntity<Object> handleNullPointerException(NullPointerException message) {
 		HttpStatus status = HttpStatus.NOT_FOUND;
 		String type = "Not found";
 		String developerMessage = "Recurso não encontrado";
@@ -80,7 +80,7 @@ public class RestExceptionHandler {
 
 	@ResponseStatus(HttpStatus.FORBIDDEN)
 	@ExceptionHandler({ AccessDeniedException.class })
-	public @ResponseBody ResponseEntity<?> handleForbidden(Exception message) {
+	public @ResponseBody ResponseEntity<Object> handleForbidden(Exception message) {
 		HttpStatus status = HttpStatus.FORBIDDEN;
 		String type = "Forbidden";
 		String developerMessage = "Token incorreto";
@@ -92,7 +92,7 @@ public class RestExceptionHandler {
 
 	@ResponseStatus(HttpStatus.NOT_IMPLEMENTED)
 	@ExceptionHandler({ NotYetImplementedException.class })
-	public @ResponseBody ResponseEntity<?> handleNotImplemented(NotYetImplementedException message) {
+	public @ResponseBody ResponseEntity<Object> handleNotImplemented(NotYetImplementedException message) {
 		HttpStatus status = HttpStatus.NOT_IMPLEMENTED;
 		String type = "Not implemented";
 		String developerMessage = "Método não implementado";
@@ -104,7 +104,7 @@ public class RestExceptionHandler {
 
 	@ResponseStatus(HttpStatus.BAD_REQUEST)
 	@ExceptionHandler({ BadHttpRequest.class })
-	public @ResponseBody ResponseEntity<?> handleBadHttpRequest(BadHttpRequest message) {
+	public @ResponseBody ResponseEntity<Object> handleBadHttpRequest(BadHttpRequest message) {
 		HttpStatus status = HttpStatus.BAD_REQUEST;
 		String type = "Bad request";
 		String developerMessage = "Requisição incorreta";

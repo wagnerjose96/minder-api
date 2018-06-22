@@ -22,9 +22,12 @@ public class EnderecoService {
 	}
 
 	public Optional<BuscarEndereco> encontrar(EnderecoId id) {
-		Endereco endereco = repo.findById(id).get();
-		BuscarEndereco resultado = new BuscarEndereco(endereco);
-		return Optional.of(resultado);
+		Optional<Endereco> endereco = repo.findById(id);
+		if (endereco.isPresent()) {
+			BuscarEndereco resultado = new BuscarEndereco(endereco.get());
+			return Optional.of(resultado);
+		}
+		return Optional.empty();
 	}
 
 	public Optional<List<BuscarEndereco>> encontrar() {

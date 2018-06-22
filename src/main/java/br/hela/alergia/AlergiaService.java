@@ -23,12 +23,13 @@ import br.hela.medicamento.comandos.BuscarMedicamento;
 public class AlergiaService {
 	@Autowired
 	private JdbcTemplate jdbcTemplate;
-	
-	private String sql = "select c.id, a.nome_medicamento, " + "a.composicao, a.id_medicamento, a.ativo from medicamento a "
+
+	private String sql = "select c.id, a.nome_medicamento, "
+			+ "a.composicao, a.id_medicamento, a.ativo from medicamento a "
 			+ "inner join alergia_medicamento b on a.id_medicamento = b.id_medicamento "
-			+ "inner join alergia c on b.id_alergia = c.id "
-			+ "group by c.id, a.id_medicamento having c.id = ? " + "order by c.tipo_alergia";
-	
+			+ "inner join alergia c on b.id_alergia = c.id " + "group by c.id, a.id_medicamento having c.id = ? "
+			+ "order by c.tipo_alergia";
+
 	@Autowired
 	private AlergiaRepository repo;
 
@@ -42,7 +43,7 @@ public class AlergiaService {
 		Alergia novo = repo.save(new Alergia(comando));
 		for (MedicamentoId id_medicamento : comando.getId_medicamentos()) {
 			do {
-				if (verificaMedicamentoExistente(id_medicamento)) {
+				if (medicamentoService.encontrar(id_medicamento).isPresent()) {
 					Alergia_Medicamento alergiaMedicamento = new Alergia_Medicamento();
 					alergiaMedicamento.setIdAlergia(novo.getIdAlergia());
 					alergiaMedicamento.setIdMedicamento(id_medicamento);
@@ -55,9 +56,13 @@ public class AlergiaService {
 
 	public Optional<BuscarAlergia> encontrar(AlergiaId alergiaId) {
 		List<BuscarMedicamento> medicamentos = executeQuery(alergiaId.toString(), sql);
-		BuscarAlergia alergia = new BuscarAlergia(repo.findById(alergiaId).get());
-		alergia.setMedicamentos(medicamentos);
-		return Optional.of(alergia);
+		Optional<Alergia> result = repo.findById(alergiaId);
+		if (result.isPresent()) {
+			BuscarAlergia resultado = new BuscarAlergia(result.get());
+			resultado.setMedicamentos(medicamentos);
+			return Optional.of(resultado);
+		}
+		return Optional.empty();
 	}
 
 	public Optional<List<BuscarAlergia>> encontrar() {
@@ -79,7 +84,7 @@ public class AlergiaService {
 			alergia.apply(comando);
 			repo.save(alergia);
 			for (MedicamentoId id_medicamento : comando.getId_medicamentos()) {
-				if (verificaMedicamentoExistente(id_medicamento)) {
+				if (medicamentoService.encontrar(id_medicamento).isPresent()) {
 					Alergia_Medicamento alergiaMedicamento = new Alergia_Medicamento();
 					alergiaMedicamento.setIdAlergia(comando.getIdAlergia());
 					alergiaMedicamento.setIdMedicamento(id_medicamento);
@@ -91,14 +96,6 @@ public class AlergiaService {
 		return Optional.empty();
 	}
 
-	private boolean verificaMedicamentoExistente(MedicamentoId id) {
-		if (!medicamentoService.encontrar(id).isPresent()) {
-			return false;
-		} else {
-			return true;
-		}
-	}
-
 	private boolean verificarMedicamentoÚnico(MedicamentoId id_medicamento, List<MedicamentoId> list) {
 		for (MedicamentoId medicamentoId : list) {
 			if (medicamentoId.equals(id_medicamento)) {
@@ -107,9 +104,9 @@ public class AlergiaService {
 		}
 		return true;
 	}
-	
+
 	private List<BuscarMedicamento> executeQuery(String id, String sql) {
-		List<BuscarMedicamento> medicamentos = jdbcTemplate.query(sql, new Object[] { id }, (rs, rowNum) -> {
+		return jdbcTemplate.query(sql, new Object[] { id }, (rs, rowNum) -> {
 			BuscarMedicamento med = new BuscarMedicamento();
 			String idAlergia = rs.getString("id");
 			if (id.equals(idAlergia)) {
@@ -120,6 +117,5 @@ public class AlergiaService {
 			}
 			return med;
 		});
-		return medicamentos;
 	}
 }

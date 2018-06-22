@@ -22,10 +22,8 @@ public class EmergenciaService {
 	private JdbcTemplate jdbcTemplate;
 
 	private String sql = "select e.id_emergencia, b.id_contato, c.id, c.nome, t.ddd, t.numero, t.id as id_telefone "
-			+ "from emergencia e "
-			+ "inner join contato_emergencia b on e.id_emergencia = b.id_emergencia "
-			+ "inner join contato c on c.id = b.id_contato "
-			+ "inner join telefone t on c.id_telefone = t.id "
+			+ "from emergencia e " + "inner join contato_emergencia b on e.id_emergencia = b.id_emergencia "
+			+ "inner join contato c on c.id = b.id_contato " + "inner join telefone t on c.id_telefone = t.id "
 			+ "group by e.id_emergencia, c.id, b.id_contato, t.id having e.id_emergencia = ? ";
 
 	@Autowired
@@ -38,10 +36,13 @@ public class EmergenciaService {
 
 	public Optional<BuscarEmergencia> encontrar(EmergenciaId id) {
 		List<BuscarContato> contatos = executeQuery(id.toString(), sql);
-		Emergencia emergencia = repo.findById(id).get();
-		BuscarEmergencia resultado = new BuscarEmergencia(emergencia);
-		resultado.setContatos(contatos);
-		return Optional.of(resultado);
+		Optional<Emergencia> emergencia = repo.findById(id);
+		if (emergencia.isPresent()) {
+			BuscarEmergencia resultado = new BuscarEmergencia(emergencia.get());
+			resultado.setContatos(contatos);
+			return Optional.of(resultado);
+		}
+		return Optional.empty();
 	}
 
 	public Optional<List<BuscarEmergencia>> encontrar() {
@@ -68,7 +69,7 @@ public class EmergenciaService {
 	}
 
 	private List<BuscarContato> executeQuery(String id, String sql) {
-		List<BuscarContato> contatos = jdbcTemplate.query(sql, new Object[] { id }, (rs, rowNum) -> {
+		return jdbcTemplate.query(sql, new Object[] { id }, (rs, rowNum) -> {
 			BuscarContato contato = new BuscarContato();
 			BuscarTelefone telefone = new BuscarTelefone();
 			String idEmergencia = rs.getString("id_emergencia");
@@ -82,6 +83,5 @@ public class EmergenciaService {
 			}
 			return contato;
 		});
-		return contatos;
 	}
 }

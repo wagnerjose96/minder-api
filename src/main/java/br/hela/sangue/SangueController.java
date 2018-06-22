@@ -39,16 +39,19 @@ public class SangueController {
 
 	@ApiOperation("Busque todos os tipos sanguíneos")
 	@GetMapping
-	public ResponseEntity<List<BuscarSangue>> getSangue() throws Exception {
+	public ResponseEntity<List<BuscarSangue>> getSangue() {
 		Optional<List<BuscarSangue>> optionalSangues = service.encontrar();
-		return ResponseEntity.ok(optionalSangues.get());
+		if (optionalSangues.isPresent()) {
+			return ResponseEntity.ok(optionalSangues.get());
+		}
+		return ResponseEntity.notFound().build();
 	}
 
 	@ApiOperation("Busque um tipo sanguíneo pelo ID")
 	@GetMapping("/{id}")
-	public ResponseEntity<BuscarSangue> getSanguePorId(@PathVariable SangueId id) throws Exception {
-		if (verificaSangueExistente(id)) {
-			Optional<BuscarSangue> optionalSangue = service.encontrar(id);
+	public ResponseEntity<BuscarSangue> getSanguePorId(@PathVariable SangueId id) {
+		Optional<BuscarSangue> optionalSangue = service.encontrar(id);
+		if (optionalSangue.isPresent()) {
 			return ResponseEntity.ok(optionalSangue.get());
 		}
 		throw new NullPointerException("O tipo sanguíneo procurado não existe no banco de dados");
@@ -57,7 +60,7 @@ public class SangueController {
 	@ApiOperation("Cadastre um tipo sanguíneo")
 	@PostMapping
 	public ResponseEntity<String> postSangue(@RequestBody CriarSangue comando, @RequestHeader String token)
-			throws Exception {
+			throws SQLException, AccessDeniedException {
 		if (autentica.autenticaRequisicao(token)) {
 			Optional<SangueId> optionalSangueId = service.salvar(comando);
 			if (optionalSangueId.isPresent()) {
@@ -73,9 +76,9 @@ public class SangueController {
 	@ApiOperation("Altere um tipo sanguíneo")
 	@PutMapping
 	public ResponseEntity<String> putMedicamentoContinuo(@RequestBody EditarSangue comando, @RequestHeader String token)
-			throws Exception {
+			throws SQLException, AccessDeniedException {
 		if (autentica.autenticaRequisicao(token)) {
-			if (!verificaSangueExistente(comando.getIdSangue())) {
+			if (!service.encontrar(comando.getIdSangue()).isPresent()) {
 				throw new NullPointerException("O tipo sanguíneo a ser alterado não existe no banco de dados");
 			}
 			Optional<SangueId> optionalSangueId = service.alterar(comando);
@@ -90,11 +93,4 @@ public class SangueController {
 		throw new AccessDeniedException(ACESSONEGADO);
 	}
 
-	private boolean verificaSangueExistente(SangueId id) throws Exception {
-		if (!service.encontrar(id).isPresent()) {
-			return false;
-		} else {
-			return true;
-		}
-	}
 }

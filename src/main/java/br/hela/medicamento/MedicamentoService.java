@@ -22,11 +22,12 @@ public class MedicamentoService {
 	}
 
 	public Optional<BuscarMedicamento> encontrar(MedicamentoId id) {
-		Medicamento medicamento = medicamentoRepo.findById(id).get();
-		BuscarMedicamento resultado = new BuscarMedicamento();
-		if (medicamento.getAtivo() == 1) {
-			resultado = new BuscarMedicamento(medicamento);
-			return Optional.of(resultado);
+		Optional<Medicamento> medicamento = medicamentoRepo.findById(id);
+		if (medicamento.isPresent()) {
+			if (medicamento.get().getAtivo() == 1) {
+				BuscarMedicamento resultado = new BuscarMedicamento(medicamento.get());
+				return Optional.of(resultado);
+			}
 		}
 		return Optional.empty();
 	}
@@ -44,10 +45,13 @@ public class MedicamentoService {
 	}
 
 	public Optional<String> deletar(MedicamentoId id) {
-		Medicamento medicamento = medicamentoRepo.findById(id).get();
-		medicamento.setAtivo(0);
-		medicamentoRepo.save(medicamento);
-		return Optional.of("Medicamento -> " + id + ": deletado com sucesso");
+		Optional<Medicamento> medicamento = medicamentoRepo.findById(id);
+		if (medicamento.isPresent()) {
+			medicamento.get().setAtivo(0);
+			medicamentoRepo.save(medicamento.get());
+			return Optional.of("Medicamento -> " + id + ": deletado com sucesso");
+		}
+		return Optional.empty();
 	}
 
 	public Optional<MedicamentoId> alterar(EditarMedicamento comando) {

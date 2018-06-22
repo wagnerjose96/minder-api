@@ -21,11 +21,12 @@ import br.hela.medicamento.comandos.BuscarMedicamento;
 public class CirurgiaService {
 	@Autowired
 	private JdbcTemplate jdbcTemplate;
-	
-	private String sql = "select c.id, a.nome_medicamento, " + "a.composicao, a.id_medicamento, a.ativo from medicamento a "
+
+	private String sql = "select c.id, a.nome_medicamento, "
+			+ "a.composicao, a.id_medicamento, a.ativo from medicamento a "
 			+ "inner join cirurgia_medicamento b on a.id_medicamento = b.id_medicamento "
 			+ "inner join cirurgia c on b.id_cirurgia = c.id group by c.id, a.id_medicamento having c.id = ?";
-	
+
 	@Autowired
 	private CirurgiaRepository cirurgiaRepo;
 
@@ -39,7 +40,7 @@ public class CirurgiaService {
 		Cirurgia novo = cirurgiaRepo.save(new Cirurgia(comando));
 		for (MedicamentoId id_medicamento : comando.getId_medicamentos()) {
 			do {
-				if (verificaMedicamentoExistente(id_medicamento)) {
+				if (medicamentoService.encontrar(id_medicamento).isPresent()) {
 					Cirurgia_Medicamento cirurgiaMedicamento = new Cirurgia_Medicamento();
 					cirurgiaMedicamento.setIdCirurgia(novo.getIdCirurgia());
 					cirurgiaMedicamento.setIdMedicamento(id_medicamento);
@@ -52,9 +53,13 @@ public class CirurgiaService {
 
 	public Optional<BuscarCirurgia> encontrar(CirurgiaId cirurgiaId) {
 		List<BuscarMedicamento> medicamentos = executeQuery(cirurgiaId.toString(), sql);
-		BuscarCirurgia cirurgia = new BuscarCirurgia(cirurgiaRepo.findById(cirurgiaId).get());
-		cirurgia.setMedicamentos(medicamentos);
-		return Optional.of(cirurgia);
+		Optional<Cirurgia> result = cirurgiaRepo.findById(cirurgiaId);
+		if (result.isPresent()) {
+			BuscarCirurgia resultado = new BuscarCirurgia(result.get());
+			resultado.setMedicamentos(medicamentos);
+			return Optional.of(resultado);
+		}
+		return Optional.empty();
 	}
 
 	public Optional<List<BuscarCirurgia>> encontrar() {
@@ -76,7 +81,7 @@ public class CirurgiaService {
 			cirurgia.apply(comando);
 			cirurgiaRepo.save(cirurgia);
 			for (MedicamentoId id_medicamento : comando.getId_medicamentos()) {
-				if (verificaMedicamentoExistente(id_medicamento)) {
+				if (medicamentoService.encontrar(id_medicamento).isPresent()) {
 					Cirurgia_Medicamento cirurgiaMedicamento = new Cirurgia_Medicamento();
 					cirurgiaMedicamento.setIdCirurgia(comando.getIdCirurgia());
 					cirurgiaMedicamento.setIdMedicamento(id_medicamento);
@@ -88,14 +93,6 @@ public class CirurgiaService {
 		return Optional.empty();
 	}
 
-	private boolean verificaMedicamentoExistente(MedicamentoId id) {
-		if (!medicamentoService.encontrar(id).isPresent()) {
-			return false;
-		} else {
-			return true;
-		}
-	}
-
 	private boolean verificarMedicamentoÚnico(MedicamentoId id_medicamento, List<MedicamentoId> list) {
 		for (MedicamentoId medicamentoId : list) {
 			if (medicamentoId.equals(id_medicamento)) {
@@ -104,9 +101,9 @@ public class CirurgiaService {
 		}
 		return true;
 	}
-	
+
 	private List<BuscarMedicamento> executeQuery(String id, String sql) {
-		List<BuscarMedicamento> medicamentos = jdbcTemplate.query(sql, new Object[] { id }, (rs, rowNum) -> {
+		return jdbcTemplate.query(sql, new Object[] { id }, (rs, rowNum) -> {
 			BuscarMedicamento med = new BuscarMedicamento();
 			String idCirurgia = rs.getString("id");
 			if (id.equals(idCirurgia)) {
@@ -117,7 +114,6 @@ public class CirurgiaService {
 			}
 			return med;
 		});
-		return medicamentos;
 	}
 
 }

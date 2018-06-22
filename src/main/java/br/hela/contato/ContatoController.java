@@ -40,16 +40,19 @@ public class ContatoController {
 
 	@ApiOperation("Busque todos os contatos")
 	@GetMapping
-	public ResponseEntity<List<BuscarContato>> getContatos() throws Exception {
+	public ResponseEntity<List<BuscarContato>> getContatos() {
 		Optional<List<BuscarContato>> optionalContatos = contatoService.encontrar();
-		return ResponseEntity.ok(optionalContatos.get());
+		if (optionalContatos.isPresent()) {
+			return ResponseEntity.ok(optionalContatos.get());
+		}
+		return ResponseEntity.notFound().build();
 	}
 
 	@ApiOperation("Busque o contato pelo ID")
 	@GetMapping("/{id}")
-	public ResponseEntity<BuscarContato> getContatoPorId(@PathVariable ContatoId id) throws Exception {
+	public ResponseEntity<BuscarContato> getContatoPorId(@PathVariable ContatoId id) {
 		Optional<BuscarContato> optionalContato = contatoService.encontrar(id);
-		if (verificaContatoExistente(id)) {
+		if (optionalContato.isPresent()) {
 			return ResponseEntity.ok(optionalContato.get());
 		}
 		throw new NullPointerException("O contato procurado não existe no banco de dados");
@@ -58,7 +61,7 @@ public class ContatoController {
 	@ApiOperation("Cadastre um novo contato")
 	@PostMapping
 	public ResponseEntity<String> postContato(@RequestBody CriarContato comando, @RequestHeader String token)
-			throws Exception {
+			throws SQLException, AccessDeniedException {
 		if (autentica.autenticaRequisicao(token)) {
 			Optional<ContatoId> optionalContatoId = contatoService.salvar(comando, autentica.idUser(token));
 			if (optionalContatoId.isPresent()) {
@@ -74,9 +77,9 @@ public class ContatoController {
 	@ApiOperation("Altere um contato")
 	@PutMapping
 	public ResponseEntity<String> putContato(@RequestBody EditarContato comando, @RequestHeader String token)
-			throws Exception {
+			throws AccessDeniedException, SQLException {
 		if (autentica.autenticaRequisicao(token)) {
-			if (!verificaContatoExistente(comando.getId())) {
+			if (!contatoService.encontrar(comando.getId()).isPresent()) {
 				throw new NullPointerException("O contato a ser alterado não existe no banco de dados");
 			}
 
@@ -94,25 +97,15 @@ public class ContatoController {
 
 	@ApiOperation("Delete um contato pelo ID")
 	@DeleteMapping("/{id}")
-	public ResponseEntity<Optional<String>> deletarContato(@PathVariable ContatoId id, @RequestHeader String token)
-			throws Exception {
+	public ResponseEntity<Optional<String>> deletarContato(@PathVariable ContatoId id, @RequestHeader String token) throws AccessDeniedException {
 		if (autentica.autenticaRequisicao(token)) {
-
-			if (verificaContatoExistente(id)) {
+			if (contatoService.encontrar(id).isPresent()) {
 				Optional<String> optionalContato = contatoService.deletar(id, autentica.idUser(token));
 				return ResponseEntity.ok(optionalContato);
 			}
 			throw new NullPointerException("O contato a deletar não existe no banco de dados");
 		}
 		throw new AccessDeniedException(ACESSONEGADO);
-	}
-
-	private boolean verificaContatoExistente(ContatoId id) throws Exception {
-		if (!contatoService.encontrar(id).isPresent()) {
-			return false;
-		} else {
-			return true;
-		}
 	}
 
 }

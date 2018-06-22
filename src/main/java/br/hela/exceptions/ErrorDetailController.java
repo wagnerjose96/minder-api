@@ -20,23 +20,19 @@ public class ErrorDetailController {
 	@GetMapping
 	public ResponseEntity<List<ErrorDetail>> getErrorDetail() {
 		Optional<List<ErrorDetail>> optionalError = service.encontrar();
-		return ResponseEntity.ok(optionalError.get());
+		if (optionalError.isPresent()) {
+			return ResponseEntity.ok(optionalError.get());
+		}
+		return ResponseEntity.notFound().build();
 	}
 
 	@GetMapping("/{id}")
-	public ResponseEntity<ErrorDetail> getErrorDetailPorId(@PathVariable ErrorDetailId id) throws NullPointerException {
+	public ResponseEntity<ErrorDetail> getErrorDetailPorId(@PathVariable ErrorDetailId id) {
 		Optional<ErrorDetail> optionalError = service.encontrar(id);
-		if (verificaErrorExistente(id)) {
+		if (optionalError.isPresent()) {
 			return ResponseEntity.ok(optionalError.get());
 		}
 		throw new NullPointerException("A Exceção buscada não existe no banco de dados");
 	}
 
-	private boolean verificaErrorExistente(ErrorDetailId id) {
-		if (!service.encontrar(id).isPresent()) {
-			return false;
-		} else {
-			return true;
-		}
-	}
 }

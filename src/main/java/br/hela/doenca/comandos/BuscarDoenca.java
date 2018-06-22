@@ -18,7 +18,7 @@ public class BuscarDoenca {
 	public BuscarDoenca(Doenca comandos) {
 		this.idDoenca = comandos.getIdDoenca();
 		this.nomeDoenca = comandos.getNomeDoenca();
-		Long dataLong = comandos.getDataDescoberta().getTime(); // pega os milessegundos;
+		Long dataLong = comandos.getDataDescoberta().getTime();
 		this.dataDescoberta = ConverterData.converterData(dataLong);
 	}
 

@@ -39,16 +39,19 @@ public class CirurgiaController {
 
 	@ApiOperation("Busque todas as cirurgias")
 	@GetMapping
-	public ResponseEntity<List<BuscarCirurgia>> getCirurgias() throws Exception {
+	public ResponseEntity<List<BuscarCirurgia>> getCirurgias() {
 		Optional<List<BuscarCirurgia>> optionalCirurgias = cirurgiaService.encontrar();
-		return ResponseEntity.ok(optionalCirurgias.get());
+		if (optionalCirurgias.isPresent()) {
+			return ResponseEntity.ok(optionalCirurgias.get());
+		}
+		return ResponseEntity.notFound().build();
 	}
 
 	@ApiOperation("Busque uma cirurgia pelo ID")
 	@GetMapping("/{id}")
-	public ResponseEntity<BuscarCirurgia> getCirurgiaPorId(@PathVariable CirurgiaId id) throws Exception {
+	public ResponseEntity<BuscarCirurgia> getCirurgiaPorId(@PathVariable CirurgiaId id) {
 		Optional<BuscarCirurgia> optionalCirurgia = cirurgiaService.encontrar(id);
-		if (verificaCirurgiaExistente(id)) {
+		if (optionalCirurgia.isPresent()) {
 			return ResponseEntity.ok(optionalCirurgia.get());
 		}
 		throw new NullPointerException("A cirurgia procurada não existe no banco de dados");
@@ -57,7 +60,7 @@ public class CirurgiaController {
 	@ApiOperation("Cadastre uma nova cirurgia")
 	@PostMapping
 	public ResponseEntity<String> postCirurgia(@RequestBody CriarCirurgia comando, @RequestHeader String token)
-			throws Exception {
+			throws SQLException, AccessDeniedException {
 		if (autentica.autenticaRequisicao(token)) {
 			Optional<CirurgiaId> optionalCirurgiaId = cirurgiaService.salvar(comando);
 			if (optionalCirurgiaId.isPresent()) {
@@ -73,9 +76,9 @@ public class CirurgiaController {
 	@ApiOperation("Altere uma cirurgia")
 	@PutMapping
 	public ResponseEntity<String> putCirurgia(@RequestBody EditarCirurgia comando, @RequestHeader String token)
-			throws Exception {
+			throws SQLException, AccessDeniedException {
 		if (autentica.autenticaRequisicao(token)) {
-			if (!verificaCirurgiaExistente(comando.getIdCirurgia())) {
+			if (!cirurgiaService.encontrar(comando.getIdCirurgia()).isPresent()) {
 				throw new NullPointerException("A cirurgia a ser alterada não existe no banco de dados");
 			}
 			Optional<CirurgiaId> optionalCirurgiaId = cirurgiaService.alterar(comando);
@@ -88,14 +91,6 @@ public class CirurgiaController {
 			}
 		}
 		throw new AccessDeniedException(ACESSONEGADO);
-	}
-
-	private boolean verificaCirurgiaExistente(CirurgiaId id) throws Exception {
-		if (!cirurgiaService.encontrar(id).isPresent()) {
-			return false;
-		} else {
-			return true;
-		}
 	}
 
 }

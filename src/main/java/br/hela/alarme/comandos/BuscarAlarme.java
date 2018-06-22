@@ -18,9 +18,9 @@ public class BuscarAlarme {
 
 	public BuscarAlarme(Alarme comandos) {
 		this.id = comandos.getId();
-		Long dataLongInicio = comandos.getDataInicio().getTime(); // pega os milessegundos;
+		Long dataLongInicio = comandos.getDataInicio().getTime();
 		this.dataInicio = ConverterData.converterData(dataLongInicio);
-		Long dataLongFim = comandos.getDataFim().getTime(); // pega os milessegundos;
+		Long dataLongFim = comandos.getDataFim().getTime();
 		this.dataFim = ConverterData.converterData(dataLongFim);
 		this.quantidade = comandos.getQuantidade();
 		this.descricao = comandos.getDescricao();

@@ -42,10 +42,14 @@ public class UsuarioAdmController {
 
 	@ApiOperation("Busque todos os usuários admin")
 	@GetMapping
-	public ResponseEntity<List<BuscarUsuarioAdm>> getUsuarioAdmins(@RequestHeader String token) throws Exception {
+	public ResponseEntity<List<BuscarUsuarioAdm>> getUsuarioAdmins(@RequestHeader String token)
+			throws AccessDeniedException {
 		if (autentica.autenticaRequisicao(token)) {
 			Optional<List<BuscarUsuarioAdm>> optionalUsuarioAdmin = service.encontrar();
-			return ResponseEntity.ok(optionalUsuarioAdmin.get());
+			if (optionalUsuarioAdmin.isPresent()) {
+				return ResponseEntity.ok(optionalUsuarioAdmin.get());
+			}
+			return ResponseEntity.notFound().build();
 		}
 		throw new AccessDeniedException(ACESSONEGADO);
 	}
@@ -53,10 +57,10 @@ public class UsuarioAdmController {
 	@ApiOperation("Busque um usuário admin pelo ID")
 	@GetMapping("/{id}")
 	public ResponseEntity<BuscarUsuarioAdm> getUsuarioAdminId(@PathVariable UsuarioAdmId id,
-			@RequestHeader String token) throws Exception {
+			@RequestHeader String token) throws AccessDeniedException {
 		if (autentica.autenticaRequisicao(token)) {
-			if (verificaUsuarioAdminExistente(id)) {
-				Optional<BuscarUsuarioAdm> optionalUsuarioAdmin = service.encontrar(id);
+			Optional<BuscarUsuarioAdm> optionalUsuarioAdmin = service.encontrar(id);
+			if (optionalUsuarioAdmin.isPresent()) {
 				return ResponseEntity.ok(optionalUsuarioAdmin.get());
 			}
 			throw new NullPointerException("O administrador procurado não existe no banco de dados");
@@ -67,9 +71,9 @@ public class UsuarioAdmController {
 	@ApiOperation("Delete um usuário admin pelo ID")
 	@DeleteMapping("/{id}")
 	public ResponseEntity<Optional<String>> deleteUsuarioAdmin(@PathVariable UsuarioAdmId id,
-			@RequestHeader String token) throws Exception {
+			@RequestHeader String token) throws AccessDeniedException {
 		if (autentica.autenticaRequisicao(token)) {
-			if (verificaUsuarioAdminExistente(id)) {
+			if (service.encontrar(id).isPresent()) {
 				Optional<String> resultado = service.deletar(id);
 				return ResponseEntity.ok(resultado);
 			}
@@ -80,7 +84,7 @@ public class UsuarioAdmController {
 
 	@ApiOperation("Cadastre um novo usuário admin")
 	@PostMapping
-	public ResponseEntity<String> postUsuarioAdmin(@RequestBody CriarUsuarioAdm comando) throws Exception {
+	public ResponseEntity<String> postUsuarioAdmin(@RequestBody CriarUsuarioAdm comando) throws SQLException {
 		Optional<UsuarioAdmId> optionalUsuarioAdminId = service.salvar(comando);
 		if (optionalUsuarioAdminId.isPresent()) {
 			URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
@@ -93,9 +97,9 @@ public class UsuarioAdmController {
 	@ApiOperation("Altere um usuário admin")
 	@PutMapping
 	public ResponseEntity<String> putUsuarioAdmin(@RequestHeader String token, @RequestBody EditarUsuarioAdm comando)
-			throws Exception {
+			throws AccessDeniedException, SQLException {
 		if (autentica.autenticaRequisicao(token)) {
-			if (!verificaUsuarioAdminExistente(comando.getId())) {
+			if (!service.encontrar(comando.getId()).isPresent()) {
 				throw new NullPointerException("O administrador a ser alterado não existe no banco de dados");
 			}
 			Optional<UsuarioAdmId> optionalUsuarioAdminId = service.alterar(comando);
@@ -109,13 +113,4 @@ public class UsuarioAdmController {
 		}
 		throw new AccessDeniedException(ACESSONEGADO);
 	}
-
-	private boolean verificaUsuarioAdminExistente(UsuarioAdmId id) throws Exception {
-		if (!service.encontrar(id).isPresent()) {
-			return false;
-		} else {
-			return true;
-		}
-	}
-
 }

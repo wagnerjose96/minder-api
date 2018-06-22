@@ -25,9 +25,12 @@ public class UsuarioAdmService {
 	}
 
 	public Optional<BuscarUsuarioAdm> encontrar(UsuarioAdmId id) {
-		UsuarioAdm adm = repo.findById(id).get();
-		BuscarUsuarioAdm resultado = new BuscarUsuarioAdm(adm);
-		return Optional.of(resultado);
+		Optional<UsuarioAdm> adm = repo.findById(id);
+		if (adm.isPresent()) {
+			BuscarUsuarioAdm resultado = new BuscarUsuarioAdm(adm.get());
+			return Optional.of(resultado);
+		}
+		return Optional.empty();
 	}
 
 	public Optional<List<BuscarUsuarioAdm>> encontrar() {
@@ -41,9 +44,12 @@ public class UsuarioAdmService {
 	}
 
 	public Optional<String> deletar(UsuarioAdmId id) {
-		UsuarioAdm usuario = repo.findById(id).get();
-		repo.delete(usuario);
-		return Optional.of("Usuário -> " + id + ": deletado com sucesso");
+		Optional<UsuarioAdm> usuario = repo.findById(id);
+		if (usuario.isPresent()) {
+			repo.delete(usuario.get());
+			return Optional.of("Usuário -> " + id + ": deletado com sucesso");
+		}
+		return Optional.empty();
 	}
 
 	public Optional<UsuarioAdmId> alterar(EditarUsuarioAdm comando) {

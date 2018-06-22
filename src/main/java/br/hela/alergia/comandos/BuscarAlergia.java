@@ -21,7 +21,7 @@ public class BuscarAlergia {
 		this.idAlergia = comando.getIdAlergia();
 		this.tipoAlergia = comando.getTipoAlergia();
 		this.localAfetado = comando.getLocalAfetado();
-		Long dataLong = comando.getDataDescoberta().getTime(); // pega os milessegundos;
+		Long dataLong = comando.getDataDescoberta().getTime();
 		this.dataDescoberta = ConverterData.converterData(dataLong);
 		this.efeitos = comando.getEfeitos();
 	}

@@ -29,7 +29,7 @@ public class BuscarUsuario {
 		this.email = comandos.getEmail();
 		this.senha = comandos.getSenha();
 		this.nome = comandos.getNome_completo();
-		Long dataLong = comandos.getData_nascimento().getTime(); // pega os milessegundos;
+		Long dataLong = comandos.getData_nascimento().getTime();
 		this.dataNascimento = ConverterData.converterData(dataLong);
 		this.imagem = comandos.getImagem_usuario();
 	}

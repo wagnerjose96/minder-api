@@ -29,11 +29,16 @@ public class AlarmeService {
 	}
 
 	public Optional<BuscarAlarme> encontrar(AlarmeId alarmeId) {
-		Alarme alarme = repo.findById(alarmeId).get();
-		BuscarAlarme resultado = new BuscarAlarme(alarme);
-		Optional<BuscarMedicamento> medicamento = medService.encontrar(alarme.getIdMedicamento());
-		resultado.setMedicamento(medicamento.get());
-		return Optional.of(resultado);
+		Optional<Alarme> result = repo.findById(alarmeId);
+		if (result.isPresent()) {
+			BuscarAlarme resultado = new BuscarAlarme(result.get());
+			Optional<BuscarMedicamento> medicamento = medService.encontrar(result.get().getIdMedicamento());
+			if (medicamento.isPresent())
+				resultado.setMedicamento(medicamento.get());
+
+			return Optional.of(resultado);
+		}
+		return Optional.empty();
 	}
 
 	public Optional<List<BuscarAlarme>> encontrar() {
@@ -42,7 +47,8 @@ public class AlarmeService {
 		for (Alarme alarme : alarmes) {
 			BuscarAlarme nova = new BuscarAlarme(alarme);
 			Optional<BuscarMedicamento> medicamento = medService.encontrar(alarme.getIdMedicamento());
-			nova.setMedicamento(medicamento.get());
+			if (medicamento.isPresent())
+				nova.setMedicamento(medicamento.get());
 			resultados.add(nova);
 		}
 		return Optional.of(resultados);

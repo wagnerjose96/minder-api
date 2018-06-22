@@ -20,7 +20,7 @@ public class BuscarCirurgia {
 	public BuscarCirurgia(Cirurgia comando) {
 		this.idCirurgia = comando.getIdCirurgia();
 		this.tipoCirurgia = comando.getTipoCirurgia();
-		Long dataLong = comando.getDataCirurgia().getTime(); // pega os milessegundos;
+		Long dataLong = comando.getDataCirurgia().getTime();
 		this.dataCirurgia = ConverterData.converterData(dataLong);
 		this.clinicaResponsavel = comando.getClinicaResponsavel();
 		this.medicoResponsavel = comando.getMedicoResponsavel();

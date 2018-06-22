@@ -22,10 +22,12 @@ public class SexoService {
 	}
 
 	public Optional<BuscarSexo> encontrar(SexoId id) {
-		Sexo genero = repo.findById(id).get();
-		BuscarSexo resultado = new BuscarSexo();
-		resultado = new BuscarSexo(genero);
-		return Optional.of(resultado);
+		Optional<Sexo> genero = repo.findById(id);
+		if (genero.isPresent()) {
+			BuscarSexo resultado = new BuscarSexo(genero.get());
+			return Optional.of(resultado);
+		}
+		return Optional.empty();
 	}
 
 	public Optional<List<BuscarSexo>> encontrar() {

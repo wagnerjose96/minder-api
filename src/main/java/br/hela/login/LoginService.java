@@ -33,9 +33,7 @@ public class LoginService {
 					}
 					return usuario;
 				});
-		if (user.size() == 1)
-			return true;
-		return false;
+		return user.size() == 1;
 	}
 
 	public boolean consultarEmail(LogarUsuario comando) {
@@ -51,9 +49,7 @@ public class LoginService {
 			}
 			return usuario;
 		});
-		if (user.size() == 1)
-			return true;
-		return false;
+		return user.size() == 1;
 	}
 
 }

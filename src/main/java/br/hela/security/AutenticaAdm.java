@@ -1,6 +1,5 @@
 package br.hela.security;
 
-import java.nio.file.AccessDeniedException;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -14,8 +13,8 @@ public class AutenticaAdm {
 
 	private String sql = "select nome_usuario from usuario_adm where nome_usuario = ?";
 
-	public boolean autenticaRequisicao(String token) throws AccessDeniedException {
-		String identificador = JWTUtil.getUsername(token); // pegou o username do token
+	public boolean autenticaRequisicao(String token) {
+		String identificador = JWTUtil.getUsername(token);
 		LogarAdm usuario = new LogarAdm();
 		List<LogarAdm> user = jdbcTemplate.query(sql, new Object[] { identificador }, (rs, rowNum) -> {
 			String nomeUsuario = rs.getString("nome_usuario");
@@ -24,12 +23,10 @@ public class AutenticaAdm {
 			}
 			return usuario;
 		});
-		if (user.size() == 1)
-			return true;
-		return false;
+		return user.size() == 1;
 	}
-	
+
 	private AutenticaAdm() {
-		
+
 	}
 }

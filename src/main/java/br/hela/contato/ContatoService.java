@@ -46,26 +46,33 @@ public class ContatoService {
 
 	public Optional<ContatoId> salvar(CriarContato comando, UsuarioId id) {
 		if (comando.getTelefone() != null) {
-			TelefoneId idTelefone = telefoneService.salvar(comando.getTelefone()).get();
-			Contato novo = new Contato(comando);
-			novo.setIdTelefone(idTelefone);
-			repo.save(novo);
-			Contato_Emergencia contatoEmergencia = new Contato_Emergencia();
-			List<BuscarEmergencia> emergencia = executeQuery(id.toString(), sql);
-			contatoEmergencia.setIdEmergencia(emergencia.get(0).getId());
-			contatoEmergencia.setIdContato(novo.getId());
-			repoContatoEmergencia.save(contatoEmergencia);
-			return Optional.of(novo.getId());
+			Optional<TelefoneId> idTelefone = telefoneService.salvar(comando.getTelefone());
+			if (idTelefone.isPresent()) {
+				Contato novo = new Contato(comando);
+				novo.setIdTelefone(idTelefone.get());
+				repo.save(novo);
+				Contato_Emergencia contatoEmergencia = new Contato_Emergencia();
+				List<BuscarEmergencia> emergencia = executeQuery(id.toString(), sql);
+				contatoEmergencia.setIdEmergencia(emergencia.get(0).getId());
+				contatoEmergencia.setIdContato(novo.getId());
+				repoContatoEmergencia.save(contatoEmergencia);
+				return Optional.of(novo.getId());
+			}
 		}
 		return Optional.empty();
 	}
 
 	public Optional<BuscarContato> encontrar(ContatoId contatoId) {
-		Contato contato = repo.findById(contatoId).get();
-		BuscarContato resultado = new BuscarContato(contato);
-		Optional<BuscarTelefone> telefone = telefoneService.encontrar(contato.getIdTelefone());
-		resultado.setTelefone(telefone.get());
-		return Optional.of(resultado);
+		Optional<Contato> contato = repo.findById(contatoId);
+		if (contato.isPresent()) {
+			BuscarContato resultado = new BuscarContato(contato.get());
+			Optional<BuscarTelefone> telefone = telefoneService.encontrar(contato.get().getIdTelefone());
+			if (telefone.isPresent()) {
+				resultado.setTelefone(telefone.get());
+				return Optional.of(resultado);
+			}
+		}
+		return Optional.empty();
 	}
 
 	public Optional<List<BuscarContato>> encontrar() {
@@ -74,8 +81,10 @@ public class ContatoService {
 		for (Contato contato : contatos) {
 			BuscarContato nova = new BuscarContato(contato);
 			Optional<BuscarTelefone> telefone = telefoneService.encontrar(contato.getIdTelefone());
-			nova.setTelefone(telefone.get());
-			resultados.add(nova);
+			if (telefone.isPresent()) {
+				nova.setTelefone(telefone.get());
+				resultados.add(nova);
+			}
 		}
 		return Optional.of(resultados);
 	}
@@ -84,7 +93,7 @@ public class ContatoService {
 		Optional<Contato> optional = repo.findById(comando.getId());
 		if (optional.isPresent()) {
 			if (comando.getTelefone() != null)
-				telefoneService.alterar(comando.getTelefone()).get();
+				telefoneService.alterar(comando.getTelefone());
 			Contato contato = optional.get();
 			contato.apply(comando);
 			repo.save(contato);
@@ -99,15 +108,18 @@ public class ContatoService {
 			Contato_Emergencia_Id idContatoEmergencia = buscaId(idEmergencia.toString(), id.toString(),
 					sqlContatoEmergencia).get(0).getId();
 			repoContatoEmergencia.deleteById(idContatoEmergencia);
-			telefoneService.deletar(repo.findById(id).get().getIdTelefone());
-			repo.deleteById(id);
-			return Optional.of("Contato " + id + " deletado com sucesso");
+			Optional<Contato> contato = repo.findById(id);
+			if (contato.isPresent()) {
+				telefoneService.deletar(contato.get().getIdTelefone());
+				repo.deleteById(id);
+				return Optional.of("Contato " + id + " deletado com sucesso");
+			}
 		}
 		return Optional.empty();
 	}
 
 	private List<BuscarEmergencia> executeQuery(String id, String sql) {
-		List<BuscarEmergencia> emergencias = jdbcTemplate.query(sql, new Object[] { id }, (rs, rowNum) -> {
+		return jdbcTemplate.query(sql, new Object[] { id }, (rs, rowNum) -> {
 			BuscarEmergencia emer = new BuscarEmergencia();
 			String idUsuario = rs.getString("id_usuario");
 			if (id.equals(idUsuario) && rs.getInt("ativo") != 0) {
@@ -115,20 +127,17 @@ public class ContatoService {
 			}
 			return emer;
 		});
-		return emergencias;
 	}
 
 	private List<Contato_Emergencia> buscaId(String idEmergencia, String idContato, String sql) {
-		List<Contato_Emergencia> emergencias = jdbcTemplate.query(sql, new Object[] { idEmergencia, idContato },
-				(rs, rowNum) -> {
-					Contato_Emergencia emer = new Contato_Emergencia();
-					String emergencia = rs.getString("id_emergencia");
-					String contato = rs.getString("id_contato");
-					if (emergencia.equals(idEmergencia) && contato.equals(idContato)) {
-						emer.setId(new Contato_Emergencia_Id(rs.getString("id")));
-					}
-					return emer;
-				});
-		return emergencias;
+		return jdbcTemplate.query(sql, new Object[] { idEmergencia, idContato }, (rs, rowNum) -> {
+			Contato_Emergencia emer = new Contato_Emergencia();
+			String emergencia = rs.getString("id_emergencia");
+			String contato = rs.getString("id_contato");
+			if (emergencia.equals(idEmergencia) && contato.equals(idContato)) {
+				emer.setId(new Contato_Emergencia_Id(rs.getString("id")));
+			}
+			return emer;
+		});
 	}
 }

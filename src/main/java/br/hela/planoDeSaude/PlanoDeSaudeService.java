@@ -36,11 +36,16 @@ public class PlanoDeSaudeService {
 	}
 
 	public Optional<BuscarPlanoDeSaude> encontrar(PlanoDeSaudeId planoId) {
-		PlanoDeSaude plano = repo.findById(planoId).get();
-		BuscarPlanoDeSaude resultado = new BuscarPlanoDeSaude(plano);
-		Optional<BuscarConvenio> convenio = convService.encontrar(plano.getIdConvenio());
-		resultado.setConvenio(convenio.get());
-		return Optional.of(resultado);
+		Optional<PlanoDeSaude> plano = repo.findById(planoId);
+		if (plano.isPresent()) {
+			BuscarPlanoDeSaude resultado = new BuscarPlanoDeSaude(plano.get());
+			Optional<BuscarConvenio> convenio = convService.encontrar(plano.get().getIdConvenio());
+			if (convenio.isPresent()) {
+				resultado.setConvenio(convenio.get());
+				return Optional.of(resultado);
+			}
+		}
+		return Optional.empty();
 	}
 
 	public Optional<List<BuscarPlanoDeSaude>> encontrar() {
@@ -49,8 +54,10 @@ public class PlanoDeSaudeService {
 		for (PlanoDeSaude plano : planos) {
 			Optional<BuscarConvenio> convenio = convService.encontrar(plano.getIdConvenio());
 			BuscarPlanoDeSaude nova = new BuscarPlanoDeSaude(plano);
-			nova.setConvenio(convenio.get());
-			rsPlanos.add(nova);
+			if (convenio.isPresent()) {
+				nova.setConvenio(convenio.get());
+				rsPlanos.add(nova);
+			}
 		}
 		return Optional.of(rsPlanos);
 	}

@@ -39,16 +39,19 @@ public class SexoController {
 
 	@ApiOperation("Busque todos os genêros")
 	@GetMapping
-	public ResponseEntity<List<BuscarSexo>> getSexo() throws Exception {
+	public ResponseEntity<List<BuscarSexo>> getSexo() {
 		Optional<List<BuscarSexo>> optionalGeneros = service.encontrar();
-		return ResponseEntity.ok(optionalGeneros.get());
+		if (optionalGeneros.isPresent()) {
+			return ResponseEntity.ok(optionalGeneros.get());
+		}
+		return ResponseEntity.notFound().build();
 	}
 
 	@ApiOperation("Busque um genêro pelo ID")
 	@GetMapping("/{id}")
-	public ResponseEntity<BuscarSexo> getSexoPorId(@PathVariable SexoId id) throws Exception {
-		if (verificaSexoExistente(id)) {
-			Optional<BuscarSexo> optionalGenero = service.encontrar(id);
+	public ResponseEntity<BuscarSexo> getSexoPorId(@PathVariable SexoId id) {
+		Optional<BuscarSexo> optionalGenero = service.encontrar(id);
+		if (optionalGenero.isPresent()) {
 			return ResponseEntity.ok(optionalGenero.get());
 		}
 		throw new NullPointerException("O genêro procurado não existe no banco de dados");
@@ -57,7 +60,7 @@ public class SexoController {
 	@ApiOperation("Cadastre um novo genêro")
 	@PostMapping
 	public ResponseEntity<String> postSexo(@RequestBody CriarSexo comando, @RequestHeader String token)
-			throws Exception {
+			throws SQLException, AccessDeniedException {
 		if (autentica.autenticaRequisicao(token)) {
 			Optional<SexoId> optionalGeneroId = service.salvar(comando);
 			if (optionalGeneroId.isPresent()) {
@@ -73,9 +76,9 @@ public class SexoController {
 	@ApiOperation("Altere um genêro")
 	@PutMapping
 	public ResponseEntity<String> putSexo(@RequestBody EditarSexo comando, @RequestHeader String token)
-			throws Exception {
+			throws SQLException, AccessDeniedException {
 		if (autentica.autenticaRequisicao(token)) {
-			if (!verificaSexoExistente(comando.getIdSexo())) {
+			if (!service.encontrar(comando.getIdSexo()).isPresent()) {
 				throw new NullPointerException("O genêro a ser alterado não existe no banco de dados");
 			}
 			Optional<SexoId> optionalSexoId = service.alterar(comando);
@@ -88,13 +91,5 @@ public class SexoController {
 			}
 		}
 		throw new AccessDeniedException(ACESSONEGADO);
-	}
-
-	private boolean verificaSexoExistente(SexoId id) throws Exception {
-		if (!service.encontrar(id).isPresent()) {
-			return false;
-		} else {
-			return true;
-		}
 	}
 }

@@ -39,16 +39,19 @@ public class AlergiaController {
 
 	@ApiOperation("Busque todas as alergias")
 	@GetMapping
-	public ResponseEntity<List<BuscarAlergia>> getAlergias() throws Exception {
+	public ResponseEntity<List<BuscarAlergia>> getAlergias() {
 		Optional<List<BuscarAlergia>> optionalAlergias = alergiaService.encontrar();
-		return ResponseEntity.ok(optionalAlergias.get());
+		if (optionalAlergias.isPresent()) {
+			return ResponseEntity.ok(optionalAlergias.get());
+		}
+		return ResponseEntity.notFound().build();
 	}
 
 	@ApiOperation("Busque a alergia pelo ID")
 	@GetMapping("/{id}")
-	public ResponseEntity<BuscarAlergia> getAlergiaPorId(@PathVariable AlergiaId id) throws Exception {
+	public ResponseEntity<BuscarAlergia> getAlergiaPorId(@PathVariable AlergiaId id) {
 		Optional<BuscarAlergia> optionalAlergia = alergiaService.encontrar(id);
-		if (verificaAlergiaExistente(id)) {
+		if (optionalAlergia.isPresent()) {
 			return ResponseEntity.ok(optionalAlergia.get());
 		}
 		throw new NullPointerException("A alergia procurada não existe no banco de dados");
@@ -57,7 +60,7 @@ public class AlergiaController {
 	@ApiOperation("Cadastre uma nova alergia")
 	@PostMapping
 	public ResponseEntity<String> postAlergia(@RequestBody CriarAlergia comando, @RequestHeader String token)
-			throws Exception {
+			throws SQLException, AccessDeniedException {
 		if (autentica.autenticaRequisicao(token)) {
 			Optional<AlergiaId> optionalAlergiaId = alergiaService.salvar(comando);
 			if (optionalAlergiaId.isPresent()) {
@@ -73,10 +76,9 @@ public class AlergiaController {
 	@ApiOperation("Altere uma alergia")
 	@PutMapping
 	public ResponseEntity<String> putAlergia(@RequestBody EditarAlergia comando, @RequestHeader String token)
-			throws Exception {
+			throws SQLException, AccessDeniedException {
 		if (autentica.autenticaRequisicao(token)) {
-
-			if (!verificaAlergiaExistente(comando.getIdAlergia())) {
+			if (!alergiaService.encontrar(comando.getIdAlergia()).isPresent()) {
 				throw new NullPointerException("A alergia a ser alterada não existe no banco de dados");
 			}
 			Optional<AlergiaId> optionalAlergiaId = alergiaService.alterar(comando);
@@ -89,14 +91,6 @@ public class AlergiaController {
 			}
 		}
 		throw new AccessDeniedException(ACESSONEGADO);
-	}
-
-	private boolean verificaAlergiaExistente(AlergiaId id) throws Exception {
-		if (!alergiaService.encontrar(id).isPresent()) {
-			return false;
-		} else {
-			return true;
-		}
 	}
 
 }

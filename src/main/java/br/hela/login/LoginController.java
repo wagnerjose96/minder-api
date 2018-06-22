@@ -23,7 +23,7 @@ public class LoginController {
 
 	@ApiOperation("Efetue o login de um usuário")
 	@PostMapping
-	public ResponseEntity<String> loginPorNomeDeUsuario(@RequestBody LogarUsuario comando) throws Exception {
+	public ResponseEntity<String> loginPorNomeDeUsuario(@RequestBody LogarUsuario comando) {
 		String username = comando.getIdentificador();
 		if (username.indexOf("@") > -1 && username.indexOf(".com") > -1 && username.indexOf("@.com") == -1) {
 			if (service.consultarEmail(comando)) {

@@ -39,16 +39,16 @@ public class EnderecoController {
 
 	@ApiOperation("Busque todos os endereços")
 	@GetMapping
-	public ResponseEntity<Optional<List<BuscarEndereco>>> getenderecos() throws Exception {
+	public ResponseEntity<Optional<List<BuscarEndereco>>> getenderecos() {
 		Optional<List<BuscarEndereco>> optionalenderecos = enderecoService.encontrar();
 		return ResponseEntity.ok(optionalenderecos);
 	}
 
 	@ApiOperation("Busque o endereço pelo ID")
 	@GetMapping("/{id}")
-	public ResponseEntity<BuscarEndereco> getenderecoPorId(@PathVariable EnderecoId id) throws Exception {
+	public ResponseEntity<BuscarEndereco> getenderecoPorId(@PathVariable EnderecoId id) {
 		Optional<BuscarEndereco> optionalendereco = enderecoService.encontrar(id);
-		if (verificaEnderecoExistente(id)) {
+		if (optionalendereco.isPresent()) {
 			return ResponseEntity.ok(optionalendereco.get());
 		}
 		throw new NullPointerException("O endereço procurado não existe no banco de dados");
@@ -57,7 +57,7 @@ public class EnderecoController {
 	@ApiOperation("Cadastre um novo endereço")
 	@PostMapping
 	public ResponseEntity<String> postendereco(@RequestBody CriarEndereco comando, @RequestHeader String token)
-			throws Exception {
+			throws SQLException, AccessDeniedException {
 		if (autentica.autenticaRequisicao(token)) {
 			Optional<EnderecoId> optionalenderecoId = enderecoService.salvar(comando);
 			if (optionalenderecoId.isPresent()) {
@@ -73,12 +73,11 @@ public class EnderecoController {
 	@ApiOperation("Altere um endereço")
 	@PutMapping
 	public ResponseEntity<String> putendereco(@RequestBody EditarEndereco comando, @RequestHeader String token)
-			throws Exception {
+			throws AccessDeniedException, SQLException {
 		if (autentica.autenticaRequisicao(token)) {
-			if (!verificaEnderecoExistente(comando.getId())) {
+			if (!enderecoService.encontrar(comando.getId()).isPresent()) {
 				throw new NullPointerException("O endereço a ser alterado não existe no banco de dados");
 			}
-
 			Optional<EnderecoId> optionalenderecoId = enderecoService.alterar(comando);
 			if (optionalenderecoId.isPresent()) {
 				URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
@@ -90,13 +89,4 @@ public class EnderecoController {
 		}
 		throw new AccessDeniedException(ACESSONEGADO);
 	}
-
-	private boolean verificaEnderecoExistente(EnderecoId id) throws Exception {
-		if (!enderecoService.encontrar(id).isPresent()) {
-			return false;
-		} else {
-			return true;
-		}
-	}
-
 }

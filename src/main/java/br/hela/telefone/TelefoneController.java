@@ -29,7 +29,7 @@ import io.swagger.annotations.ApiOperation;
 @RequestMapping("/telefones")
 @CrossOrigin
 public class TelefoneController {
-	private static final String ACESSONEGADO = "Acesso negado"; 
+	private static final String ACESSONEGADO = "Acesso negado";
 
 	@Autowired
 	private TelefoneService service;
@@ -39,17 +39,19 @@ public class TelefoneController {
 
 	@ApiOperation("Busque todos os telefones")
 	@GetMapping
-	public ResponseEntity<List<BuscarTelefone>> getTelefone() throws Exception {
+	public ResponseEntity<List<BuscarTelefone>> getTelefone() {
 		Optional<List<BuscarTelefone>> optionalTelefones = service.encontrar();
-		return ResponseEntity.ok(optionalTelefones.get());
+		if (optionalTelefones.isPresent()) {
+			return ResponseEntity.ok(optionalTelefones.get());
+		}
+		return ResponseEntity.notFound().build();
 	}
 
 	@ApiOperation("Busque um telefone pelo ID")
 	@GetMapping("/{id}")
-	public ResponseEntity<BuscarTelefone> getTelefonePorId(@PathVariable TelefoneId id)
-			throws Exception {
-		if (verificaTelefoneExistente(id)) {
-			Optional<BuscarTelefone> optionalTelefone = service.encontrar(id);
+	public ResponseEntity<BuscarTelefone> getTelefonePorId(@PathVariable TelefoneId id) {
+		Optional<BuscarTelefone> optionalTelefone = service.encontrar(id);
+		if (optionalTelefone.isPresent()) {
 			return ResponseEntity.ok(optionalTelefone.get());
 		}
 		throw new NullPointerException("O telefone procurado não existe no banco de dados");
@@ -58,7 +60,7 @@ public class TelefoneController {
 	@ApiOperation("Cadastre um novo telefone")
 	@PostMapping
 	public ResponseEntity<String> postTelefone(@RequestBody CriarTelefone comando, @RequestHeader String token)
-			throws Exception {
+			throws SQLException, AccessDeniedException {
 		if (autentica.autenticaRequisicao(token)) {
 			Optional<TelefoneId> optionalTelefoneId = service.salvar(comando);
 			if (optionalTelefoneId.isPresent()) {
@@ -74,9 +76,9 @@ public class TelefoneController {
 	@ApiOperation("Altere um telefone")
 	@PutMapping
 	public ResponseEntity<String> putTelefone(@RequestBody EditarTelefone comando, @RequestHeader String token)
-			throws Exception {
+			throws SQLException, AccessDeniedException {
 		if (autentica.autenticaRequisicao(token)) {
-			if (!verificaTelefoneExistente(comando.getId())) {
+			if (!service.encontrar(comando.getId()).isPresent()) {
 				throw new NullPointerException("O telefone a ser alterado não existe no banco de dados");
 			}
 			Optional<TelefoneId> optionalTelefoneId = service.alterar(comando);
@@ -89,13 +91,5 @@ public class TelefoneController {
 			}
 		}
 		throw new AccessDeniedException(ACESSONEGADO);
-	}
-
-	private boolean verificaTelefoneExistente(TelefoneId id) throws Exception {
-		if (!service.encontrar(id).isPresent()) {
-			return false;
-		} else {
-			return true;
-		}
 	}
 }

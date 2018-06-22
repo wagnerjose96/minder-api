@@ -40,16 +40,19 @@ public class EmergenciaController {
 
 	@ApiOperation("Busque todas as emergencias")
 	@GetMapping
-	public ResponseEntity<List<BuscarEmergencia>> getEmergencias() throws Exception {
+	public ResponseEntity<List<BuscarEmergencia>> getEmergencias() {
 		Optional<List<BuscarEmergencia>> optionalEmergencias = service.encontrar();
-		return ResponseEntity.ok(optionalEmergencias.get());
+		if (optionalEmergencias.isPresent()) {
+			return ResponseEntity.ok(optionalEmergencias.get());
+		}
+		return ResponseEntity.notFound().build();
 	}
 
 	@ApiOperation("Busque uma emergência pelo ID")
 	@GetMapping("/{id}")
-	public ResponseEntity<BuscarEmergencia> getEmergenciaPorId(@PathVariable EmergenciaId id) throws Exception {
-		if (verificaEmergenciaExistente(id)) {
-			Optional<BuscarEmergencia> optionalEmergencia = service.encontrar(id);
+	public ResponseEntity<BuscarEmergencia> getEmergenciaPorId(@PathVariable EmergenciaId id) {
+		Optional<BuscarEmergencia> optionalEmergencia = service.encontrar(id);
+		if (optionalEmergencia.isPresent()) {
 			return ResponseEntity.ok(optionalEmergencia.get());
 		}
 		throw new NullPointerException("A emergência procurada não existe no banco de dados");
@@ -58,7 +61,7 @@ public class EmergenciaController {
 	@ApiOperation("Cadastre uma nova emergência")
 	@PostMapping
 	public ResponseEntity<String> postEmergencia(@RequestBody CriarEmergencia comando, @RequestHeader String token)
-			throws Exception {
+			throws SQLException, AccessDeniedException {
 		if (autentica.autenticaRequisicao(token)) {
 			UsuarioId id = autentica.idUser(token);
 			comando.setIdUsuario(id);
@@ -76,9 +79,9 @@ public class EmergenciaController {
 	@ApiOperation("Altere uma emergência")
 	@PutMapping
 	public ResponseEntity<String> putEmergencia(@RequestBody EditarEmergencia comando, @RequestHeader String token)
-			throws Exception {
+			throws AccessDeniedException, SQLException {
 		if (autentica.autenticaRequisicao(token)) {
-			if (!verificaEmergenciaExistente(comando.getId())) {
+			if (!service.encontrar(comando.getId()).isPresent()) {
 				throw new NullPointerException("A emergência a ser alterada não existe no banco de dados");
 			}
 			Optional<EmergenciaId> optionalEmergenciaId = service.alterar(comando);
@@ -93,11 +96,4 @@ public class EmergenciaController {
 		throw new AccessDeniedException(ACESSONEGADO);
 	}
 
-	private boolean verificaEmergenciaExistente(EmergenciaId id) throws Exception {
-		if (!service.encontrar(id).isPresent()) {
-			return false;
-		} else {
-			return true;
-		}
-	}
 }

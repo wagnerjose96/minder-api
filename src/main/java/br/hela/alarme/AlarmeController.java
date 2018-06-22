@@ -35,21 +35,24 @@ public class AlarmeController {
 
 	@Autowired
 	private AutenticaRequisicao autentica;
-	
+
 	private static final String ACESSONEGADO = "Acesso negado";
 
 	@ApiOperation("Busque todos os alarmes")
 	@GetMapping
-	public ResponseEntity<List<BuscarAlarme>> getAlarmes() throws Exception {
+	public ResponseEntity<List<BuscarAlarme>> getAlarmes() {
 		Optional<List<BuscarAlarme>> optionalAlarmes = alarmeService.encontrar();
-		return ResponseEntity.ok(optionalAlarmes.get());
+		if (optionalAlarmes.isPresent()) {
+			return ResponseEntity.ok(optionalAlarmes.get());
+		}
+		return ResponseEntity.notFound().build();
 	}
 
 	@ApiOperation("Busque o alarme pelo ID")
 	@GetMapping("/{id}")
-	public ResponseEntity<BuscarAlarme> getAlarmePorId(@PathVariable AlarmeId id) throws Exception {
+	public ResponseEntity<BuscarAlarme> getAlarmePorId(@PathVariable AlarmeId id) {
 		Optional<BuscarAlarme> optionalAlarme = alarmeService.encontrar(id);
-		if (verificaAlarmeExistente(id)) {
+		if (optionalAlarme.isPresent()) {
 			return ResponseEntity.ok(optionalAlarme.get());
 		}
 		throw new NullPointerException("O alarme procurado não existe no banco de dados");
@@ -58,7 +61,7 @@ public class AlarmeController {
 	@ApiOperation("Cadastre um novo alarme")
 	@PostMapping
 	public ResponseEntity<String> postAlarme(@RequestBody CriarAlarme comando, @RequestHeader String token)
-			throws Exception {
+			throws AccessDeniedException, SQLException {
 		if (autentica.autenticaRequisicao(token)) {
 			Optional<AlarmeId> optionalAlarmeId = alarmeService.salvar(comando);
 			if (optionalAlarmeId.isPresent()) {
@@ -74,9 +77,9 @@ public class AlarmeController {
 	@ApiOperation("Altere um alarme")
 	@PutMapping
 	public ResponseEntity<String> putAlarme(@RequestBody EditarAlarme comando, @RequestHeader String token)
-			throws Exception {
+			throws SQLException, AccessDeniedException {
 		if (autentica.autenticaRequisicao(token)) {
-			if (!verificaAlarmeExistente(comando.getId())) {
+			if (!alarmeService.encontrar(comando.getId()).isPresent()) {
 				throw new NullPointerException("O alarme a ser alterado não existe no banco de dados");
 			}
 			Optional<AlarmeId> optionalAlarmeId = alarmeService.alterar(comando);
@@ -94,9 +97,9 @@ public class AlarmeController {
 	@ApiOperation("Delete um alarme pelo ID")
 	@DeleteMapping("/{id}")
 	public ResponseEntity<Optional<String>> deleteAlarme(@PathVariable AlarmeId id, @RequestHeader String token)
-			throws Exception {
+			throws AccessDeniedException {
 		if (autentica.autenticaRequisicao(token)) {
-			if (!verificaAlarmeExistente(id)) {
+			if (!alarmeService.encontrar(id).isPresent()) {
 				throw new NullPointerException("O alarme a ser deletado não existe no banco de dados");
 			}
 			Optional<String> resultado = alarmeService.deletar(id);
@@ -105,11 +108,4 @@ public class AlarmeController {
 		throw new AccessDeniedException(ACESSONEGADO);
 	}
 
-	private boolean verificaAlarmeExistente(AlarmeId id) throws Exception {
-		if (!alarmeService.encontrar(id).isPresent()) {
-			return false;
-		} else {
-			return true;
-		}
-	}
 }

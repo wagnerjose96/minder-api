@@ -33,21 +33,25 @@ public class DoencaController {
 
 	@Autowired
 	private DoencaService doencaService;
+	
 	@Autowired
 	private AutenticaRequisicao autentica;
 
 	@ApiOperation("Busque todas as doenças")
 	@GetMapping
-	public ResponseEntity<List<BuscarDoenca>> getDoencas() throws Exception {
+	public ResponseEntity<List<BuscarDoenca>> getDoencas() {
 		Optional<List<BuscarDoenca>> optionalDoencas = doencaService.encontrar();
-		return ResponseEntity.ok(optionalDoencas.get());
+		if (optionalDoencas.isPresent()) {
+			return ResponseEntity.ok(optionalDoencas.get());
+		}
+		return ResponseEntity.notFound().build();
 	}
 
 	@ApiOperation("Busque uma doença pelo ID")
 	@GetMapping("/{id}")
-	public ResponseEntity<BuscarDoenca> getDoencaPorId(@PathVariable DoencaId id) throws Exception {
+	public ResponseEntity<BuscarDoenca> getDoencaPorId(@PathVariable DoencaId id) {
 		Optional<BuscarDoenca> optionalDoenca = doencaService.encontrar(id);
-		if (verificaDoencaExistente(id)) {
+		if (optionalDoenca.isPresent()) {
 			return ResponseEntity.ok(optionalDoenca.get());
 		}
 		throw new NullPointerException("A doença procurada não existe no banco de dados");
@@ -56,7 +60,7 @@ public class DoencaController {
 	@ApiOperation("Cadastre uma nova doença")
 	@PostMapping
 	public ResponseEntity<String> postDoenca(@RequestBody CriarDoenca comando, @RequestHeader String token)
-			throws Exception {
+			throws AccessDeniedException, SQLException {
 		if (autentica.autenticaRequisicao(token)) {
 			Optional<DoencaId> optionalDoencaId = doencaService.salvar(comando);
 			if (optionalDoencaId.isPresent()) {
@@ -71,10 +75,9 @@ public class DoencaController {
 
 	@ApiOperation("Altere uma doença")
 	@PutMapping
-	public ResponseEntity<String> putDoenca(@RequestBody EditarDoenca comando, @RequestHeader String token)
-			throws Exception {
+	public ResponseEntity<String> putDoenca(@RequestBody EditarDoenca comando, @RequestHeader String token) throws AccessDeniedException, SQLException {
 		if (autentica.autenticaRequisicao(token)) {
-			if (!verificaDoencaExistente(comando.getIdDoenca())) {
+			if (!doencaService.encontrar(comando.getIdDoenca()).isPresent()) {
 				throw new NullPointerException("A doença a ser alterada não existe no banco de dados");
 			}
 			Optional<DoencaId> optionalDoencaId = doencaService.alterar(comando);
@@ -89,11 +92,4 @@ public class DoencaController {
 		throw new AccessDeniedException(ACESSONEGADO);
 	}
 
-	private boolean verificaDoencaExistente(DoencaId id) throws Exception {
-		if (!doencaService.encontrar(id).isPresent()) {
-			return false;
-		} else {
-			return true;
-		}
-	}
 }

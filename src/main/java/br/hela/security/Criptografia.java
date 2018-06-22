@@ -9,18 +9,18 @@ import org.springframework.stereotype.Component;
 public class Criptografia {
 	public static String criptografa(String senha) {
 		String senhaCriptografada = null;
+		MessageDigest digest;
 		try {
-			MessageDigest digest = MessageDigest.getInstance("MD5");
+			digest = MessageDigest.getInstance("MD5");
 			digest.update(senha.getBytes(), 0, senha.length());
 			senhaCriptografada = new BigInteger(1, digest.digest()).toString(16);
-		} catch (NoSuchAlgorithmException ns) {
-			ns.printStackTrace();
+		} catch (NoSuchAlgorithmException e) {
+			e.getMessage();
 		}
 		return senhaCriptografada;
 	}
 
 	private Criptografia() {
-
 	}
 
 }
