@@ -12,9 +12,9 @@ import br.hela.contato.ContatoId;
 import br.hela.contato.comandos.BuscarContato;
 import br.hela.contato.comandos.CriarContato;
 import br.hela.contato.comandos.EditarContato;
-import br.hela.contato.contato_emergencia.Contato_Emergencia;
-import br.hela.contato.contato_emergencia.Contato_Emergencia_Id;
-import br.hela.contato.contato_emergencia.Contato_Emergencia_Repository;
+import br.hela.contato.contato_emergencia.ContatoEmergencia;
+import br.hela.contato.contato_emergencia.ContatoEmergenciaId;
+import br.hela.contato.contato_emergencia.ContatoEmergenciaRepository;
 import br.hela.emergencia.EmergenciaId;
 import br.hela.emergencia.comandos.BuscarEmergencia;
 import br.hela.telefone.TelefoneId;
@@ -32,7 +32,7 @@ public class ContatoService {
 	private TelefoneService telefoneService;
 
 	@Autowired
-	private Contato_Emergencia_Repository repoContatoEmergencia;
+	private ContatoEmergenciaRepository repoContatoEmergencia;
 
 	@Autowired
 	private JdbcTemplate jdbcTemplate;
@@ -51,7 +51,7 @@ public class ContatoService {
 				Contato novo = new Contato(comando);
 				novo.setIdTelefone(idTelefone.get());
 				repo.save(novo);
-				Contato_Emergencia contatoEmergencia = new Contato_Emergencia();
+				ContatoEmergencia contatoEmergencia = new ContatoEmergencia();
 				List<BuscarEmergencia> emergencia = executeQuery(id.toString(), sql);
 				contatoEmergencia.setIdEmergencia(emergencia.get(0).getId());
 				contatoEmergencia.setIdContato(novo.getId());
@@ -105,7 +105,7 @@ public class ContatoService {
 	public Optional<String> deletar(ContatoId id, UsuarioId idUsuario) {
 		if (repo.findById(id).isPresent()) {
 			EmergenciaId idEmergencia = executeQuery(idUsuario.toString(), sql).get(0).getId();
-			Contato_Emergencia_Id idContatoEmergencia = buscaId(idEmergencia.toString(), id.toString(),
+			ContatoEmergenciaId idContatoEmergencia = buscaId(idEmergencia.toString(), id.toString(),
 					sqlContatoEmergencia).get(0).getId();
 			repoContatoEmergencia.deleteById(idContatoEmergencia);
 			Optional<Contato> contato = repo.findById(id);
@@ -129,13 +129,13 @@ public class ContatoService {
 		});
 	}
 
-	private List<Contato_Emergencia> buscaId(String idEmergencia, String idContato, String sql) {
+	private List<ContatoEmergencia> buscaId(String idEmergencia, String idContato, String sql) {
 		return jdbcTemplate.query(sql, new Object[] { idEmergencia, idContato }, (rs, rowNum) -> {
-			Contato_Emergencia emer = new Contato_Emergencia();
+			ContatoEmergencia emer = new ContatoEmergencia();
 			String emergencia = rs.getString("id_emergencia");
 			String contato = rs.getString("id_contato");
 			if (emergencia.equals(idEmergencia) && contato.equals(idContato)) {
-				emer.setId(new Contato_Emergencia_Id(rs.getString("id")));
+				emer.setId(new ContatoEmergenciaId(rs.getString("id")));
 			}
 			return emer;
 		});

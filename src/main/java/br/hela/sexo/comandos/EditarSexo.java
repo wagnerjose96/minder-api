@@ -5,6 +5,6 @@ import lombok.Data;
 
 @Data
 public class EditarSexo {
-	private SexoId idSexo;
-	private String sexo;
+	private SexoId idGenero;
+	private String genero;
 }

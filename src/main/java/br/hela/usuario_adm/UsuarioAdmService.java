@@ -1,4 +1,4 @@
-package br.hela.usuarioAdm;
+package br.hela.usuario_adm;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -6,12 +6,13 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import br.hela.usuarioAdm.UsuarioAdm;
-import br.hela.usuarioAdm.UsuarioAdmId;
-import br.hela.usuarioAdm.UsuarioAdmRepository;
-import br.hela.usuarioAdm.comandos.BuscarUsuarioAdm;
-import br.hela.usuarioAdm.comandos.CriarUsuarioAdm;
-import br.hela.usuarioAdm.comandos.EditarUsuarioAdm;
+
+import br.hela.usuario_adm.UsuarioAdm;
+import br.hela.usuario_adm.UsuarioAdmId;
+import br.hela.usuario_adm.UsuarioAdmRepository;
+import br.hela.usuario_adm.comandos.BuscarUsuarioAdm;
+import br.hela.usuario_adm.comandos.CriarUsuarioAdm;
+import br.hela.usuario_adm.comandos.EditarUsuarioAdm;
 
 @Service
 @Transactional

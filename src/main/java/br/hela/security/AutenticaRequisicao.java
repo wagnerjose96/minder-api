@@ -16,16 +16,18 @@ public class AutenticaRequisicao {
 	private String sql = "select nome_usuario, email, ativo from usuario where nome_usuario = ? or email = ?";
 	private String idUser = "select id, nome_usuario, email from usuario where nome_usuario = ? or email = ?";
 
+	private static final String COLUNAUSERNAME = "nome_usuario";
+			
 	public boolean autenticaRequisicao(String token) {
 		String identificador = JWTUtil.getUsername(token);
 		LogarUsuario usuario = new LogarUsuario();
 		List<LogarUsuario> user = jdbcTemplate.query(sql, new Object[] { identificador, identificador },
 				(rs, rowNum) -> {
 					String email = rs.getString("email");
-					String nomeUsuario = rs.getString("nome_usuario");
+					String nomeUsuario = rs.getString(COLUNAUSERNAME);
 					if (email.equals(identificador) || nomeUsuario.equals(identificador) && rs.getInt("ativo") != 0
 							&& JWTUtil.tokenValido(token)) {
-						usuario.setIdentificador(rs.getString("nome_usuario"));
+						usuario.setIdentificador(rs.getString(COLUNAUSERNAME));
 					}
 					return usuario;
 				});
@@ -38,7 +40,7 @@ public class AutenticaRequisicao {
 		List<IdentificarUsuario> user = jdbcTemplate.query(idUser, new Object[] { identificador, identificador },
 				(rs, rowNum) -> {
 					String email = rs.getString("email");
-					String nomeUsuario = rs.getString("nome_usuario");
+					String nomeUsuario = rs.getString(COLUNAUSERNAME);
 					if (email.equals(identificador) || nomeUsuario.equals(identificador)) {
 						usuario.setId(new UsuarioId(rs.getString("id")));
 					}

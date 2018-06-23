@@ -6,11 +6,11 @@ import org.springframework.stereotype.Service;
 
 @Service
 @Transactional
-public class Cirurgia_Medicamento_Service {
+public class CirurgiaMedicamentoService {
 	@Autowired
-	private Cirurgia_Medicamento_Repository repo;
+	private CirurgiaMedicamentoRepository repo;
 
-	public void salvar(Cirurgia_Medicamento novoCirurgiaMedicamento) {
+	public void salvar(CirurgiaMedicamento novoCirurgiaMedicamento) {
 		repo.save(novoCirurgiaMedicamento);
 	}
 }

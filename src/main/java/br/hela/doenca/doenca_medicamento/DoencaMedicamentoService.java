@@ -7,15 +7,15 @@ import org.springframework.stereotype.Service;
 
 @Service
 @Transactional
-public class Doenca_Medicamento_Service {
+public class DoencaMedicamentoService {
 	@Autowired
-	private Doenca_Medicamento_Repository repo;
+	private DoencaMedicamentoRepository repo;
 
-	public void salvar(Doenca_Medicamento novoDoencaMedicamento) {
+	public void salvar(DoencaMedicamento novoDoencaMedicamento) {
 		repo.save(novoDoencaMedicamento);
 	}
 
-	public List<Doenca_Medicamento> encontrar() {
+	public List<DoencaMedicamento> encontrar() {
 		return repo.findAll();
 	}
 }

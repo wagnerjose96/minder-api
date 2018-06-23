@@ -1,6 +1,6 @@
-package br.hela.usuarioAdm.comandos;
+package br.hela.usuario_adm.comandos;
 
-import br.hela.usuarioAdm.UsuarioAdmId;
+import br.hela.usuario_adm.UsuarioAdmId;
 import lombok.Data;
 
 @Data

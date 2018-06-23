@@ -23,11 +23,9 @@ public class MedicamentoService {
 
 	public Optional<BuscarMedicamento> encontrar(MedicamentoId id) {
 		Optional<Medicamento> medicamento = medicamentoRepo.findById(id);
-		if (medicamento.isPresent()) {
-			if (medicamento.get().getAtivo() == 1) {
-				BuscarMedicamento resultado = new BuscarMedicamento(medicamento.get());
-				return Optional.of(resultado);
-			}
+		if (medicamento.isPresent() && medicamento.get().getAtivo() == 1) {
+			BuscarMedicamento resultado = new BuscarMedicamento(medicamento.get());
+			return Optional.of(resultado);
 		}
 		return Optional.empty();
 	}

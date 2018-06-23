@@ -43,9 +43,9 @@ public class EnderecoService {
 	public Optional<EnderecoId> alterar(EditarEndereco comando) {
 		Optional<Endereco> optional = repo.findById(comando.getId());
 		if (optional.isPresent()) {
-			Endereco Endereco = optional.get();
-			Endereco.apply(comando);
-			repo.save(Endereco);
+			Endereco endereco = optional.get();
+			endereco.apply(comando);
+			repo.save(endereco);
 			return Optional.of(comando.getId());
 		}
 		return Optional.empty();

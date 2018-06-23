@@ -4,14 +4,14 @@ import javax.persistence.Embeddable;
 import br.hela.BaseId;
 
 @Embeddable
-public class Alergia_Medicamento_Id extends BaseId {
+public class AlergiaMedicamentoId extends BaseId {
 	private static final long serialVersionUID = 8965550305250511524L;
 
-	public Alergia_Medicamento_Id() {
+	public AlergiaMedicamentoId() {
 		super();
 	}
 
-	public Alergia_Medicamento_Id(String value) {
+	public AlergiaMedicamentoId(String value) {
 		super(value);
 	}
 }

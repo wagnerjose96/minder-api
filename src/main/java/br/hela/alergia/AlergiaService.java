@@ -9,8 +9,8 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 import br.hela.alergia.Alergia;
 import br.hela.alergia.AlergiaId;
-import br.hela.alergia.alergia_medicamento.Alergia_Medicamento;
-import br.hela.alergia.alergia_medicamento.Alergia_Medicamento_Service;
+import br.hela.alergia.alergia_medicamento.AlergiaMedicamento;
+import br.hela.alergia.alergia_medicamento.AlergiaMedicamentoService;
 import br.hela.alergia.comandos.BuscarAlergia;
 import br.hela.alergia.comandos.CriarAlergia;
 import br.hela.alergia.comandos.EditarAlergia;
@@ -34,22 +34,22 @@ public class AlergiaService {
 	private AlergiaRepository repo;
 
 	@Autowired
-	private Alergia_Medicamento_Service service;
+	private AlergiaMedicamentoService service;
 
 	@Autowired
 	private MedicamentoService medicamentoService;
 
 	public Optional<AlergiaId> salvar(CriarAlergia comando) {
 		Alergia novo = repo.save(new Alergia(comando));
-		for (MedicamentoId id_medicamento : comando.getId_medicamentos()) {
+		for (MedicamentoId idMedicamento : comando.getIdMedicamentos()) {
 			do {
-				if (medicamentoService.encontrar(id_medicamento).isPresent()) {
-					Alergia_Medicamento alergiaMedicamento = new Alergia_Medicamento();
+				if (medicamentoService.encontrar(idMedicamento).isPresent()) {
+					AlergiaMedicamento alergiaMedicamento = new AlergiaMedicamento();
 					alergiaMedicamento.setIdAlergia(novo.getIdAlergia());
-					alergiaMedicamento.setIdMedicamento(id_medicamento);
+					alergiaMedicamento.setIdMedicamento(idMedicamento);
 					service.salvar(alergiaMedicamento);
 				}
-			} while (verificarMedicamentoÚnico(id_medicamento, comando.getId_medicamentos()));
+			} while (verificarMedicamento(idMedicamento, comando.getIdMedicamentos()));
 		}
 		return Optional.of(novo.getIdAlergia());
 	}
@@ -83,11 +83,11 @@ public class AlergiaService {
 			Alergia alergia = optional.get();
 			alergia.apply(comando);
 			repo.save(alergia);
-			for (MedicamentoId id_medicamento : comando.getId_medicamentos()) {
-				if (medicamentoService.encontrar(id_medicamento).isPresent()) {
-					Alergia_Medicamento alergiaMedicamento = new Alergia_Medicamento();
+			for (MedicamentoId idMedicamento : comando.getIdMedicamentos()) {
+				if (medicamentoService.encontrar(idMedicamento).isPresent()) {
+					AlergiaMedicamento alergiaMedicamento = new AlergiaMedicamento();
 					alergiaMedicamento.setIdAlergia(comando.getIdAlergia());
-					alergiaMedicamento.setIdMedicamento(id_medicamento);
+					alergiaMedicamento.setIdMedicamento(idMedicamento);
 					service.salvar(alergiaMedicamento);
 				}
 			}
@@ -96,9 +96,9 @@ public class AlergiaService {
 		return Optional.empty();
 	}
 
-	private boolean verificarMedicamentoÚnico(MedicamentoId id_medicamento, List<MedicamentoId> list) {
+	private boolean verificarMedicamento(MedicamentoId idMedicamento, List<MedicamentoId> list) {
 		for (MedicamentoId medicamentoId : list) {
-			if (medicamentoId.equals(id_medicamento)) {
+			if (medicamentoId.equals(idMedicamento)) {
 				return false;
 			}
 		}

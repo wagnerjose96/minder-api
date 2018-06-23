@@ -18,18 +18,20 @@ public class LoginService {
 			+ "where nome_usuario = ? and senha = ?";
 
 	private String sqlEmail = "select email, senha, ativo from usuario " + "where email = ? and senha = ?";
+	
+	private static final String COLUNASENHA = "senha";
 
 	public boolean consultarUsuario(LogarUsuario comando) {
 		String senha = Criptografia.criptografa(comando.getSenha());
-		String nome_usuario = comando.getIdentificador();
+		String username = comando.getIdentificador();
 		LogarUsuario usuario = new LogarUsuario();
-		List<LogarUsuario> user = jdbcTemplate.query(sqlNomeUsuario, new Object[] { nome_usuario, senha },
+		List<LogarUsuario> user = jdbcTemplate.query(sqlNomeUsuario, new Object[] { username, senha },
 				(rs, rowNum) -> {
-					String senhaUsuario = rs.getString("senha");
+					String senhaUsuario = rs.getString(COLUNASENHA);
 					String nomeUsuario = rs.getString("nome_usuario");
-					if (senhaUsuario.equals(senha) && nomeUsuario.equals(nome_usuario) && rs.getInt("ativo") != 0) {
+					if (senhaUsuario.equals(senha) && nomeUsuario.equals(username) && rs.getInt("ativo") != 0) {
 						usuario.setIdentificador(rs.getString("nome_usuario"));
-						usuario.setSenha(rs.getString("senha"));
+						usuario.setSenha(rs.getString(COLUNASENHA));
 					}
 					return usuario;
 				});
@@ -41,11 +43,11 @@ public class LoginService {
 		String email = comando.getIdentificador();
 		LogarUsuario usuario = new LogarUsuario();
 		List<LogarUsuario> user = jdbcTemplate.query(sqlEmail, new Object[] { email, senha }, (rs, rowNum) -> {
-			String senhaUsuario = rs.getString("senha");
+			String senhaUsuario = rs.getString(COLUNASENHA);
 			String emailUsuario = rs.getString("email");
 			if (senhaUsuario.equals(senha) && emailUsuario.equals(email) && rs.getInt("ativo") != 0) {
 				usuario.setIdentificador(rs.getString("email"));
-				usuario.setSenha(rs.getString("senha"));
+				usuario.setSenha(rs.getString(COLUNASENHA));
 			}
 			return usuario;
 		});

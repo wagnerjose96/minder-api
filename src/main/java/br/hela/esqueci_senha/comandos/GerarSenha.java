@@ -1,4 +1,4 @@
-package br.hela.esqueciSenha.comandos;
+package br.hela.esqueci_senha.comandos;
 
 import br.hela.usuario.UsuarioId;
 import lombok.Data;

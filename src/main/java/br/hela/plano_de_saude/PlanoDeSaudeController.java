@@ -1,4 +1,4 @@
-package br.hela.planoDeSaude;
+package br.hela.plano_de_saude;
 
 import java.net.URI;
 import java.nio.file.AccessDeniedException;
@@ -18,11 +18,12 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
-import br.hela.planoDeSaude.PlanoDeSaudeId;
-import br.hela.planoDeSaude.PlanoDeSaudeService;
-import br.hela.planoDeSaude.comandos.BuscarPlanoDeSaude;
-import br.hela.planoDeSaude.comandos.CriarPlanoDeSaude;
-import br.hela.planoDeSaude.comandos.EditarPlanoDeSaude;
+
+import br.hela.plano_de_saude.PlanoDeSaudeId;
+import br.hela.plano_de_saude.PlanoDeSaudeService;
+import br.hela.plano_de_saude.comandos.BuscarPlanoDeSaude;
+import br.hela.plano_de_saude.comandos.CriarPlanoDeSaude;
+import br.hela.plano_de_saude.comandos.EditarPlanoDeSaude;
 import br.hela.security.AutenticaRequisicao;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;

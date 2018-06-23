@@ -1,4 +1,4 @@
-package br.hela.planoDeSaude;
+package br.hela.plano_de_saude;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 

@@ -7,15 +7,15 @@ import org.springframework.stereotype.Service;
 
 @Service
 @Transactional
-public class Contato_Emergencia_Service {
+public class ContatoEmergenciaService {
 	@Autowired
-	private Contato_Emergencia_Repository repo;
+	private ContatoEmergenciaRepository repo;
 
-	public void salvar(Contato_Emergencia novoContatoEmergencia) {
+	public void salvar(ContatoEmergencia novoContatoEmergencia) {
 		repo.save(novoContatoEmergencia);
 	}
 
-	public List<Contato_Emergencia> encontrar() {
+	public List<ContatoEmergencia> encontrar() {
 		return repo.findAll();
 	}
 }

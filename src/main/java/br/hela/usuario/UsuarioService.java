@@ -55,20 +55,18 @@ public class UsuarioService {
 
 	public Optional<BuscarUsuario> encontrar(UsuarioId id) {
 		Optional<Usuario> usuario = repo.findById(id);
-		if (usuario.isPresent()) {
-			if (usuario.get().getAtivo() == 1) {
-				BuscarUsuario resultado = new BuscarUsuario(usuario.get());
-				Optional<BuscarSangue> sangue = sangueService.encontrar(usuario.get().getIdSangue());
-				Optional<BuscarEndereco> endereco = enderecoService.encontrar(usuario.get().getIdEndereco());
-				Optional<BuscarSexo> sexo = sexoService.encontrar(usuario.get().getIdSexo());
-				Optional<BuscarTelefone> telefone = telefoneService.encontrar(usuario.get().getIdTelefone());
-				if (sangue.isPresent() && endereco.isPresent() && sexo.isPresent() && telefone.isPresent()) {
-					resultado.setSexo(sexo.get());
-					resultado.setSangue(sangue.get());
-					resultado.setEndereco(endereco.get());
-					resultado.setTelefone(telefone.get());
-					return Optional.of(resultado);
-				}
+		if (usuario.isPresent() && usuario.get().getAtivo() == 1) {
+			BuscarUsuario resultado = new BuscarUsuario(usuario.get());
+			Optional<BuscarSangue> sangue = sangueService.encontrar(usuario.get().getIdSangue());
+			Optional<BuscarEndereco> endereco = enderecoService.encontrar(usuario.get().getIdEndereco());
+			Optional<BuscarSexo> sexo = sexoService.encontrar(usuario.get().getIdSexo());
+			Optional<BuscarTelefone> telefone = telefoneService.encontrar(usuario.get().getIdTelefone());
+			if (sangue.isPresent() && endereco.isPresent() && sexo.isPresent() && telefone.isPresent()) {
+				resultado.setSexo(sexo.get());
+				resultado.setSangue(sangue.get());
+				resultado.setEndereco(endereco.get());
+				resultado.setTelefone(telefone.get());
+				return Optional.of(resultado);
 			}
 		}
 		return Optional.empty();

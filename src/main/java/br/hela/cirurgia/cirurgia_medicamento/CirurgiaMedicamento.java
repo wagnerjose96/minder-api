@@ -10,16 +10,16 @@ import lombok.Data;
 
 @Entity
 @Data
-public class Cirurgia_Medicamento {
+public class CirurgiaMedicamento {
 	@EmbeddedId
 	@AttributeOverride(name = "value", column = @Column(name = "id"))
-	private Cirurgia_Medicamento_Id id;
+	private CirurgiaMedicamentoId id;
 	@AttributeOverride(name = "value", column = @Column(name = "id_cirurgia"))
 	private CirurgiaId idCirurgia;
 	@AttributeOverride(name = "value", column = @Column(name = "id_medicamento"))
 	private MedicamentoId idMedicamento;
 
-	public Cirurgia_Medicamento() {
-		this.id = new Cirurgia_Medicamento_Id();
+	public CirurgiaMedicamento() {
+		this.id = new CirurgiaMedicamentoId();
 	}
 }

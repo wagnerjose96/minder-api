@@ -1,4 +1,4 @@
-package br.hela.planoDeSaude;
+package br.hela.plano_de_saude;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -9,9 +9,9 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 import br.hela.convenio.ConvenioService;
 import br.hela.convenio.comandos.BuscarConvenio;
-import br.hela.planoDeSaude.comandos.BuscarPlanoDeSaude;
-import br.hela.planoDeSaude.comandos.CriarPlanoDeSaude;
-import br.hela.planoDeSaude.comandos.EditarPlanoDeSaude;
+import br.hela.plano_de_saude.comandos.BuscarPlanoDeSaude;
+import br.hela.plano_de_saude.comandos.CriarPlanoDeSaude;
+import br.hela.plano_de_saude.comandos.EditarPlanoDeSaude;
 
 @Service
 @Transactional

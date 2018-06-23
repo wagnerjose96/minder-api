@@ -1,4 +1,4 @@
-package br.hela.usuarioAdm;
+package br.hela.usuario_adm;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 

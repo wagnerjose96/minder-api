@@ -1,4 +1,4 @@
-package br.hela.usuarioAdm.comandos;
+package br.hela.usuario_adm.comandos;
 
 import lombok.Data;
 

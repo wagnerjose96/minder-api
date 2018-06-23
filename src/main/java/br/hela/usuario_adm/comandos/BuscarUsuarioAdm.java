@@ -1,7 +1,7 @@
-package br.hela.usuarioAdm.comandos;
+package br.hela.usuario_adm.comandos;
 
-import br.hela.usuarioAdm.UsuarioAdm;
-import br.hela.usuarioAdm.UsuarioAdmId;
+import br.hela.usuario_adm.UsuarioAdm;
+import br.hela.usuario_adm.UsuarioAdmId;
 import lombok.Data;
 
 @Data
@@ -15,7 +15,7 @@ public class BuscarUsuarioAdm {
 
 	public BuscarUsuarioAdm(UsuarioAdm comandos) {
 		 this.id = comandos.getId();
-		 this.username = comandos.getNome_usuario();
+		 this.username = comandos.getNomeUsuario();
 		 this.senha = comandos.getSenha();
 	}
 }

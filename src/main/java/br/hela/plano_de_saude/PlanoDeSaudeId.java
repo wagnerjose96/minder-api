@@ -1,4 +1,4 @@
-package br.hela.planoDeSaude;
+package br.hela.plano_de_saude;
 
 import javax.persistence.Embeddable;
 import br.hela.BaseId;

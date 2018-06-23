@@ -1,4 +1,4 @@
-package br.hela.usuarioAdm;
+package br.hela.usuario_adm;
 
 import java.net.URI;
 import java.nio.file.AccessDeniedException;
@@ -19,11 +19,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import br.hela.security.AutenticaAdm;
-import br.hela.usuarioAdm.UsuarioAdmId;
-import br.hela.usuarioAdm.UsuarioAdmService;
-import br.hela.usuarioAdm.comandos.BuscarUsuarioAdm;
-import br.hela.usuarioAdm.comandos.CriarUsuarioAdm;
-import br.hela.usuarioAdm.comandos.EditarUsuarioAdm;
+import br.hela.usuario_adm.UsuarioAdmId;
+import br.hela.usuario_adm.UsuarioAdmService;
+import br.hela.usuario_adm.comandos.BuscarUsuarioAdm;
+import br.hela.usuario_adm.comandos.CriarUsuarioAdm;
+import br.hela.usuario_adm.comandos.EditarUsuarioAdm;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 

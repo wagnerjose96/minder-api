@@ -1,12 +1,15 @@
-package br.hela.esqueciSenha;
+package br.hela.esqueci_senha;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Random;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import br.hela.esqueciSenha.comandos.GerarSenha;
+
+import br.hela.esqueci_senha.comandos.GerarSenha;
 import br.hela.usuario.Usuario;
 import br.hela.usuario.UsuarioId;
 import br.hela.usuario.UsuarioRepository;
@@ -41,23 +44,24 @@ public class SenhaService {
 				"i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z", "A", "B", "C",
 				"D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X",
 				"Y", "Z" };
-		String senha = null;
+		StringBuilder senha = new StringBuilder();
+		Random r = new Random();
 		for (int x = 0; x < 6; x++) {
-			int j = (int) (Math.random() * carct.length);
-			senha += carct[j];
+			int j = (r.nextInt(62));
+			senha.append(carct[j]);
 		}
 		List<GerarSenha> usuario = consultarId(comando);
-		if (usuario.isEmpty() && usuario.get(0).getAtivo() == 1) {
+		if (usuario.get(0).getAtivo() == 1) {
 			Optional<Usuario> optional = repo.findById(usuario.get(0).getId());
 			if (optional.isPresent()) {
 				Usuario user = optional.get();
-				comando.setSenha(senha);
+				comando.setSenha(senha.toString());
 				user.applySenha(comando);
 				repo.save(user);
 			}
-			return senha;
+			return senha.toString();
 		}
-		return senha;
+		return senha.toString();
 	}
 
 }

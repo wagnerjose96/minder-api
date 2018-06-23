@@ -1,4 +1,4 @@
-package br.hela.planoDeSaude;
+package br.hela.plano_de_saude;
 
 import javax.persistence.AttributeOverride;
 import javax.persistence.Column;
@@ -6,8 +6,8 @@ import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import org.hibernate.envers.Audited;
 import br.hela.convenio.ConvenioId;
-import br.hela.planoDeSaude.comandos.CriarPlanoDeSaude;
-import br.hela.planoDeSaude.comandos.EditarPlanoDeSaude;
+import br.hela.plano_de_saude.comandos.CriarPlanoDeSaude;
+import br.hela.plano_de_saude.comandos.EditarPlanoDeSaude;
 import lombok.AccessLevel;
 import lombok.Data;
 import lombok.EqualsAndHashCode;

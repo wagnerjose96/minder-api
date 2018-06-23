@@ -7,8 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import br.hela.cirurgia.cirurgia_medicamento.Cirurgia_Medicamento;
-import br.hela.cirurgia.cirurgia_medicamento.Cirurgia_Medicamento_Service;
+import br.hela.cirurgia.cirurgia_medicamento.CirurgiaMedicamento;
+import br.hela.cirurgia.cirurgia_medicamento.CirurgiaMedicamentoService;
 import br.hela.cirurgia.comandos.BuscarCirurgia;
 import br.hela.cirurgia.comandos.CriarCirurgia;
 import br.hela.cirurgia.comandos.EditarCirurgia;
@@ -31,22 +31,22 @@ public class CirurgiaService {
 	private CirurgiaRepository cirurgiaRepo;
 
 	@Autowired
-	private Cirurgia_Medicamento_Service service;
+	private CirurgiaMedicamentoService service;
 
 	@Autowired
 	private MedicamentoService medicamentoService;
 
 	public Optional<CirurgiaId> salvar(CriarCirurgia comando) {
 		Cirurgia novo = cirurgiaRepo.save(new Cirurgia(comando));
-		for (MedicamentoId id_medicamento : comando.getId_medicamentos()) {
+		for (MedicamentoId idMedicamento : comando.getIdMedicamentos()) {
 			do {
-				if (medicamentoService.encontrar(id_medicamento).isPresent()) {
-					Cirurgia_Medicamento cirurgiaMedicamento = new Cirurgia_Medicamento();
+				if (medicamentoService.encontrar(idMedicamento).isPresent()) {
+					CirurgiaMedicamento cirurgiaMedicamento = new CirurgiaMedicamento();
 					cirurgiaMedicamento.setIdCirurgia(novo.getIdCirurgia());
-					cirurgiaMedicamento.setIdMedicamento(id_medicamento);
+					cirurgiaMedicamento.setIdMedicamento(idMedicamento);
 					service.salvar(cirurgiaMedicamento);
 				}
-			} while (verificarMedicamentoÚnico(id_medicamento, comando.getId_medicamentos()));
+			} while (verificarMedicamento(idMedicamento, comando.getIdMedicamentos()));
 		}
 		return Optional.of(novo.getIdCirurgia());
 	}
@@ -80,11 +80,11 @@ public class CirurgiaService {
 			Cirurgia cirurgia = optional.get();
 			cirurgia.apply(comando);
 			cirurgiaRepo.save(cirurgia);
-			for (MedicamentoId id_medicamento : comando.getId_medicamentos()) {
-				if (medicamentoService.encontrar(id_medicamento).isPresent()) {
-					Cirurgia_Medicamento cirurgiaMedicamento = new Cirurgia_Medicamento();
+			for (MedicamentoId idMedicamento : comando.getIdMedicamentos()) {
+				if (medicamentoService.encontrar(idMedicamento).isPresent()) {
+					CirurgiaMedicamento cirurgiaMedicamento = new CirurgiaMedicamento();
 					cirurgiaMedicamento.setIdCirurgia(comando.getIdCirurgia());
-					cirurgiaMedicamento.setIdMedicamento(id_medicamento);
+					cirurgiaMedicamento.setIdMedicamento(idMedicamento);
 					service.salvar(cirurgiaMedicamento);
 				}
 			}
@@ -93,9 +93,9 @@ public class CirurgiaService {
 		return Optional.empty();
 	}
 
-	private boolean verificarMedicamentoÚnico(MedicamentoId id_medicamento, List<MedicamentoId> list) {
+	private boolean verificarMedicamento(MedicamentoId idMedicamento, List<MedicamentoId> list) {
 		for (MedicamentoId medicamentoId : list) {
-			if (medicamentoId.equals(id_medicamento)) {
+			if (medicamentoId.equals(idMedicamento)) {
 				return false;
 			}
 		}

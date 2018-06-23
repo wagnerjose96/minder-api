@@ -26,11 +26,9 @@ public class ConvenioService {
 
 	public Optional<BuscarConvenio> encontrar(ConvenioId id) {
 		Optional<Convenio> convenio = convenioRepo.findById(id);
-		if (convenio.isPresent()) {
-			if (convenio.get().getAtivo() == 1) {
-				BuscarConvenio resultado = new BuscarConvenio(convenio.get());
-				return Optional.of(resultado);
-			}
+		if (convenio.isPresent() && convenio.get().getAtivo() == 1) {
+			BuscarConvenio resultado = new BuscarConvenio(convenio.get());
+			return Optional.of(resultado);
 		}
 		return Optional.empty();
 	}

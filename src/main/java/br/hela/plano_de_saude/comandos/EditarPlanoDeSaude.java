@@ -1,9 +1,9 @@
-package br.hela.planoDeSaude.comandos;
+package br.hela.plano_de_saude.comandos;
 
 import javax.persistence.AttributeOverride;
 import javax.persistence.Column;
 import br.hela.convenio.ConvenioId;
-import br.hela.planoDeSaude.PlanoDeSaudeId;
+import br.hela.plano_de_saude.PlanoDeSaudeId;
 import lombok.Data;
 
 @Data

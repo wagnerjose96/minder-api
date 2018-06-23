@@ -1,4 +1,4 @@
-package br.hela.planoDeSaude.comandos;
+package br.hela.plano_de_saude.comandos;
 
 import javax.persistence.AttributeOverride;
 import javax.persistence.Column;

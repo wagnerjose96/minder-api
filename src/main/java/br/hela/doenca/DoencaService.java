@@ -9,8 +9,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import br.hela.doenca.Doenca;
 import br.hela.doenca.DoencaId;
-import br.hela.doenca.doenca_medicamento.Doenca_Medicamento;
-import br.hela.doenca.doenca_medicamento.Doenca_Medicamento_Service;
+import br.hela.doenca.doenca_medicamento.DoencaMedicamento;
+import br.hela.doenca.doenca_medicamento.DoencaMedicamentoService;
 import br.hela.doenca.comandos.BuscarDoenca;
 import br.hela.doenca.comandos.CriarDoenca;
 import br.hela.doenca.comandos.EditarDoenca;
@@ -34,22 +34,22 @@ public class DoencaService {
 	private JdbcTemplate jdbcTemplate;
 
 	@Autowired
-	private Doenca_Medicamento_Service service;
+	private DoencaMedicamentoService service;
 
 	@Autowired
 	private MedicamentoService medicamentoService;
 
 	public Optional<DoencaId> salvar(CriarDoenca comando) {
 		Doenca novo = doencaRepo.save(new Doenca(comando));
-		for (MedicamentoId id_medicamento : comando.getIdMedicamentos()) {
+		for (MedicamentoId idMedicamento : comando.getIdMedicamentos()) {
 			do {
-				if (medicamentoService.encontrar(id_medicamento).isPresent()) {
-					Doenca_Medicamento doencaMedicamento = new Doenca_Medicamento();
+				if (medicamentoService.encontrar(idMedicamento).isPresent()) {
+					DoencaMedicamento doencaMedicamento = new DoencaMedicamento();
 					doencaMedicamento.setIdDoenca(novo.getIdDoenca());
-					doencaMedicamento.setIdMedicamento(id_medicamento);
+					doencaMedicamento.setIdMedicamento(idMedicamento);
 					service.salvar(doencaMedicamento);
 				}
-			} while (verificarMedicamentoÚnico(id_medicamento, comando.getIdMedicamentos()));
+			} while (verificarMedicamento(idMedicamento, comando.getIdMedicamentos()));
 		}
 		return Optional.of(novo.getIdDoenca());
 	}
@@ -83,11 +83,11 @@ public class DoencaService {
 			Doenca doenca = optional.get();
 			doenca.apply(comando);
 			doencaRepo.save(doenca);
-			for (MedicamentoId id_medicamento : comando.getIdMedicamentos()) {
-				if (medicamentoService.encontrar(id_medicamento).isPresent()) {
-					Doenca_Medicamento doencaMedicamento = new Doenca_Medicamento();
+			for (MedicamentoId idMedicamento : comando.getIdMedicamentos()) {
+				if (medicamentoService.encontrar(idMedicamento).isPresent()) {
+					DoencaMedicamento doencaMedicamento = new DoencaMedicamento();
 					doencaMedicamento.setIdDoenca(comando.getIdDoenca());
-					doencaMedicamento.setIdMedicamento(id_medicamento);
+					doencaMedicamento.setIdMedicamento(idMedicamento);
 					service.salvar(doencaMedicamento);
 				}
 			}
@@ -110,7 +110,7 @@ public class DoencaService {
 		});
 	}
 
-	private boolean verificarMedicamentoÚnico(MedicamentoId idMedicamento, List<MedicamentoId> list) {
+	private boolean verificarMedicamento(MedicamentoId idMedicamento, List<MedicamentoId> list) {
 		for (MedicamentoId medicamentoId : list) {
 			if (medicamentoId.equals(idMedicamento)) {
 				return false;

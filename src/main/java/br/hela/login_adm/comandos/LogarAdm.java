@@ -1,4 +1,4 @@
-package br.hela.loginAdm.comandos;
+package br.hela.login_adm.comandos;
 
 import lombok.Data;
 

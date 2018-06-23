@@ -25,7 +25,7 @@ public class LoginController {
 	@PostMapping
 	public ResponseEntity<String> loginPorNomeDeUsuario(@RequestBody LogarUsuario comando) {
 		String username = comando.getIdentificador();
-		if (username.indexOf("@") > -1 && username.indexOf(".com") > -1 && username.indexOf("@.com") == -1) {
+		if (username.indexOf('@') > -1 && username.indexOf(".com") > -1 && username.indexOf("@.com") == -1) {
 			if (service.consultarEmail(comando)) {
 				String token = JWTUtil.create(comando.getIdentificador());
 				return ResponseEntity.ok().body(token);

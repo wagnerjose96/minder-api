@@ -4,5 +4,5 @@ import lombok.Data;
 
 @Data
 public class CriarSexo {
-	private String sexo;
+	private String genero;
 }

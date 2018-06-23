@@ -4,7 +4,8 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
-import br.hela.loginAdm.comandos.LogarAdm;
+
+import br.hela.login_adm.comandos.LogarAdm;
 
 @Component
 public class AutenticaAdm {
