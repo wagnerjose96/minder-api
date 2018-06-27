@@ -13,6 +13,7 @@ import br.hela.alarme.comandos.CriarAlarme;
 import br.hela.alarme.comandos.EditarAlarme;
 import br.hela.medicamento.MedicamentoService;
 import br.hela.medicamento.comandos.BuscarMedicamento;
+import br.hela.usuario.UsuarioId;
 
 @Service
 @Transactional
@@ -23,8 +24,8 @@ public class AlarmeService {
 	@Autowired
 	private MedicamentoService medService;
 
-	public Optional<AlarmeId> salvar(CriarAlarme comando) {
-		Alarme novo = repo.save(new Alarme(comando));
+	public Optional<AlarmeId> salvar(CriarAlarme comando, UsuarioId id) {
+		Alarme novo = repo.save(new Alarme(comando, id));
 		return Optional.of(novo.getId());
 	}
 
@@ -41,15 +42,17 @@ public class AlarmeService {
 		return Optional.empty();
 	}
 
-	public Optional<List<BuscarAlarme>> encontrar() {
+	public Optional<List<BuscarAlarme>> encontrar(UsuarioId id) {
 		List<BuscarAlarme> resultados = new ArrayList<>();
 		List<Alarme> alarmes = repo.findAll();
 		for (Alarme alarme : alarmes) {
-			BuscarAlarme nova = new BuscarAlarme(alarme);
-			Optional<BuscarMedicamento> medicamento = medService.encontrar(alarme.getIdMedicamento());
-			if (medicamento.isPresent())
-				nova.setMedicamento(medicamento.get());
-			resultados.add(nova);
+			if(id.toString().equals(alarme.getIdUsuario().toString())) {
+				BuscarAlarme nova = new BuscarAlarme(alarme);
+				Optional<BuscarMedicamento> medicamento = medService.encontrar(alarme.getIdMedicamento());
+				if (medicamento.isPresent())
+					nova.setMedicamento(medicamento.get());
+				resultados.add(nova);
+			}
 		}
 		return Optional.of(resultados);
 	}

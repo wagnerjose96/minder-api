@@ -23,6 +23,7 @@
 	<include file="db/changelog/entidades/db.changelog-sangue.xml" />
 	<include file="db/changelog/entidades/db.changelog-sexo.xml" />
 	<include file="db/changelog/entidades/db.changelog-endereco.xml" />
+	<include file="db/changelog/entidades/db.changelog-telefone.xml" />
 	<include file="db/changelog/entidades/db.changelog-usuario_adm.xml" />
 	<include file="db/changelog/entidades/db.changelog-usuario.xml" />
 	<include file="db/changelog/entidades/db.changelog-medicamento.xml" />

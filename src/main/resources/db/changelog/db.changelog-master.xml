@@ -45,4 +45,10 @@
 	<include file="db/changelog/associações/db.changelog-cirurgia_medicamento.xml" />
 	<include file="db/changelog/associações/db.changelog-contato_emergencia.xml" />
 	
+		<!-- Carregando alterações no banco de dados -->
+	
+	<include file="db/changelog/alterações/db.changelog-alarme-usuario.xml" />
+	
+	
+	
 </databaseChangeLog>

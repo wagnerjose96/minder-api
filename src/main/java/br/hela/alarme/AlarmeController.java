@@ -40,22 +40,29 @@ public class AlarmeController {
 
 	@ApiOperation("Busque todos os alarmes")
 	@GetMapping
-	public ResponseEntity<List<BuscarAlarme>> getAlarmes() {
-		Optional<List<BuscarAlarme>> optionalAlarmes = alarmeService.encontrar();
-		if (optionalAlarmes.isPresent()) {
-			return ResponseEntity.ok(optionalAlarmes.get());
+	public ResponseEntity<List<BuscarAlarme>> getAlarmes(@RequestHeader String token) throws AccessDeniedException {
+		if (autentica.autenticaRequisicao(token)) {
+			Optional<List<BuscarAlarme>> optionalAlarmes = alarmeService.encontrar(autentica.idUser(token));
+			if (optionalAlarmes.isPresent()) {
+				return ResponseEntity.ok(optionalAlarmes.get());
+			}
+			return ResponseEntity.notFound().build();
 		}
-		return ResponseEntity.notFound().build();
+		throw new AccessDeniedException(ACESSONEGADO);
 	}
 
 	@ApiOperation("Busque o alarme pelo ID")
 	@GetMapping("/{id}")
-	public ResponseEntity<BuscarAlarme> getAlarmePorId(@PathVariable AlarmeId id) {
-		Optional<BuscarAlarme> optionalAlarme = alarmeService.encontrar(id);
-		if (optionalAlarme.isPresent()) {
-			return ResponseEntity.ok(optionalAlarme.get());
+	public ResponseEntity<BuscarAlarme> getAlarmePorId(@PathVariable AlarmeId id, @RequestHeader String token) throws AccessDeniedException {
+		if (autentica.autenticaRequisicao(token)) {
+			Optional<BuscarAlarme> optionalAlarme = alarmeService.encontrar(id);
+			if (optionalAlarme.isPresent()) {
+				return ResponseEntity.ok(optionalAlarme.get());
+			}
+			throw new NullPointerException("O alarme procurado não existe no banco de dados");
 		}
-		throw new NullPointerException("O alarme procurado não existe no banco de dados");
+		throw new AccessDeniedException(ACESSONEGADO);
+		
 	}
 
 	@ApiOperation("Cadastre um novo alarme")
@@ -63,7 +70,7 @@ public class AlarmeController {
 	public ResponseEntity<String> postAlarme(@RequestBody CriarAlarme comando, @RequestHeader String token)
 			throws AccessDeniedException, SQLException {
 		if (autentica.autenticaRequisicao(token)) {
-			Optional<AlarmeId> optionalAlarmeId = alarmeService.salvar(comando);
+			Optional<AlarmeId> optionalAlarmeId = alarmeService.salvar(comando, autentica.idUser(token));
 			if (optionalAlarmeId.isPresent()) {
 				URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
 						.buildAndExpand(optionalAlarmeId.get()).toUri();
