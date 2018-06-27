@@ -20,7 +20,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import br.hela.sangue.comandos.BuscarSangue;
 import br.hela.sangue.comandos.CriarSangue;
 import br.hela.sangue.comandos.EditarSangue;
-import br.hela.security.AutenticaAdm;
+import br.hela.security.Autentica;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 
@@ -35,7 +35,7 @@ public class SangueController {
 	private SangueService service;
 
 	@Autowired
-	private AutenticaAdm autentica;
+	private Autentica autentica;
 
 	@ApiOperation("Busque todos os tipos sanguíneos")
 	@GetMapping
@@ -61,7 +61,7 @@ public class SangueController {
 	@PostMapping
 	public ResponseEntity<String> postSangue(@RequestBody CriarSangue comando, @RequestHeader String token)
 			throws SQLException, AccessDeniedException {
-		if (autentica.autenticaRequisicao(token)) {
+		if (autentica.autenticaRequisicaoAdm(token)) {
 			Optional<SangueId> optionalSangueId = service.salvar(comando);
 			if (optionalSangueId.isPresent()) {
 				URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
@@ -77,7 +77,7 @@ public class SangueController {
 	@PutMapping
 	public ResponseEntity<String> putMedicamentoContinuo(@RequestBody EditarSangue comando, @RequestHeader String token)
 			throws SQLException, AccessDeniedException {
-		if (autentica.autenticaRequisicao(token)) {
+		if (autentica.autenticaRequisicaoAdm(token)) {
 			if (!service.encontrar(comando.getIdSangue()).isPresent()) {
 				throw new NullPointerException("O tipo sanguíneo a ser alterado não existe no banco de dados");
 			}

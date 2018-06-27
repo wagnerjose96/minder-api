@@ -23,7 +23,7 @@ import br.hela.convenio.ConvenioService;
 import br.hela.convenio.comandos.BuscarConvenio;
 import br.hela.convenio.comandos.CriarConvenio;
 import br.hela.convenio.comandos.EditarConvenio;
-import br.hela.security.AutenticaAdm;
+import br.hela.security.Autentica;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 
@@ -38,7 +38,7 @@ public class ConvenioController {
 	private ConvenioService service;
 
 	@Autowired
-	private AutenticaAdm autentica;
+	private Autentica autentica;
 
 	@ApiOperation("Busque todos os convênios")
 	@GetMapping

@@ -20,7 +20,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import br.hela.alergia.comandos.BuscarAlergia;
 import br.hela.alergia.comandos.CriarAlergia;
 import br.hela.alergia.comandos.EditarAlergia;
-import br.hela.security.AutenticaRequisicao;
+import br.hela.security.Autentica;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 
@@ -35,7 +35,7 @@ public class AlergiaController {
 	private AlergiaService alergiaService;
 
 	@Autowired
-	private AutenticaRequisicao autentica;
+	private Autentica autentica;
 
 	@ApiOperation("Busque todas as alergias")
 	@GetMapping

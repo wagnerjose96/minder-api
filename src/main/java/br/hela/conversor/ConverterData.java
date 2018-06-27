@@ -1,4 +1,4 @@
-package br.hela;
+package br.hela.conversor;
 
 import java.text.SimpleDateFormat;
 import org.springframework.stereotype.Component;

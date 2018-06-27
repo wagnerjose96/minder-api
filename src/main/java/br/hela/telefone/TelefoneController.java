@@ -20,7 +20,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import br.hela.telefone.comandos.BuscarTelefone;
 import br.hela.telefone.comandos.CriarTelefone;
 import br.hela.telefone.comandos.EditarTelefone;
-import br.hela.security.AutenticaRequisicao;
+import br.hela.security.Autentica;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 
@@ -35,7 +35,7 @@ public class TelefoneController {
 	private TelefoneService service;
 
 	@Autowired
-	private AutenticaRequisicao autentica;
+	private Autentica autentica;
 
 	@ApiOperation("Busque todos os telefones")
 	@GetMapping

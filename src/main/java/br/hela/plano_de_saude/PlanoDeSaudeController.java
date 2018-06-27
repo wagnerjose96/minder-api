@@ -24,7 +24,7 @@ import br.hela.plano_de_saude.PlanoDeSaudeService;
 import br.hela.plano_de_saude.comandos.BuscarPlanoDeSaude;
 import br.hela.plano_de_saude.comandos.CriarPlanoDeSaude;
 import br.hela.plano_de_saude.comandos.EditarPlanoDeSaude;
-import br.hela.security.AutenticaRequisicao;
+import br.hela.security.Autentica;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 
@@ -39,7 +39,7 @@ public class PlanoDeSaudeController {
 	private PlanoDeSaudeService service;
 
 	@Autowired
-	private AutenticaRequisicao autentica;
+	private Autentica autentica;
 
 	@ApiOperation("Busque todos os planos de saúde")
 	@GetMapping

@@ -20,7 +20,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import br.hela.sexo.comandos.BuscarSexo;
 import br.hela.sexo.comandos.CriarSexo;
 import br.hela.sexo.comandos.EditarSexo;
-import br.hela.security.AutenticaAdm;
+import br.hela.security.Autentica;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 
@@ -35,7 +35,7 @@ public class SexoController {
 	private SexoService service;
 
 	@Autowired
-	private AutenticaAdm autentica;
+	private Autentica autentica;
 
 	@ApiOperation("Busque todos os genêros")
 	@GetMapping
@@ -61,7 +61,7 @@ public class SexoController {
 	@PostMapping
 	public ResponseEntity<String> postSexo(@RequestBody CriarSexo comando, @RequestHeader String token)
 			throws SQLException, AccessDeniedException {
-		if (autentica.autenticaRequisicao(token)) {
+		if (autentica.autenticaRequisicaoAdm(token)) {
 			Optional<SexoId> optionalGeneroId = service.salvar(comando);
 			if (optionalGeneroId.isPresent()) {
 				URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
@@ -77,7 +77,7 @@ public class SexoController {
 	@PutMapping
 	public ResponseEntity<String> putSexo(@RequestBody EditarSexo comando, @RequestHeader String token)
 			throws SQLException, AccessDeniedException {
-		if (autentica.autenticaRequisicao(token)) {
+		if (autentica.autenticaRequisicaoAdm(token)) {
 			if (!service.encontrar(comando.getId()).isPresent()) {
 				throw new NullPointerException("O genêro a ser alterado não existe no banco de dados");
 			}

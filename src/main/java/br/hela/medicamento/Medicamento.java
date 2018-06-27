@@ -1,5 +1,7 @@
 package br.hela.medicamento;
 
+import java.util.List;
+
 import javax.persistence.AttributeOverride;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
@@ -39,5 +41,14 @@ public class Medicamento {
 		this.idMedicamento = comando.getIdMedicamento();
 		this.nomeMedicamento = comando.getNomeMedicamento();
 		this.composicao = comando.getComposicao();
+	}
+	
+	public static boolean verificarMedicamento(MedicamentoId idMedicamento, List<MedicamentoId> list) {
+		for (MedicamentoId medicamentoId : list) {
+			if (medicamentoId.equals(idMedicamento)) {
+				return false;
+			}
+		}
+		return true;
 	}
 }

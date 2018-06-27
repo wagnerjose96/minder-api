@@ -8,12 +8,12 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import br.hela.VerificarMedicamento;
 import br.hela.cirurgia.cirurgia_medicamento.CirurgiaMedicamento;
 import br.hela.cirurgia.cirurgia_medicamento.CirurgiaMedicamentoService;
 import br.hela.cirurgia.comandos.BuscarCirurgia;
 import br.hela.cirurgia.comandos.CriarCirurgia;
 import br.hela.cirurgia.comandos.EditarCirurgia;
+import br.hela.medicamento.Medicamento;
 import br.hela.medicamento.MedicamentoId;
 import br.hela.medicamento.MedicamentoService;
 import br.hela.medicamento.comandos.BuscarMedicamento;
@@ -49,7 +49,7 @@ public class CirurgiaService {
 					cirurgiaMedicamento.setIdMedicamento(idMedicamento);
 					service.salvar(cirurgiaMedicamento);
 				}
-			} while (VerificarMedicamento.verificarMedicamento(idMedicamento, comando.getIdMedicamentos()));
+			} while (Medicamento.verificarMedicamento(idMedicamento, comando.getIdMedicamentos()));
 		}
 		return Optional.of(novo.getIdCirurgia());
 	}

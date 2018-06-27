@@ -21,8 +21,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import br.hela.usuario.comandos.BuscarUsuario;
 import br.hela.usuario.comandos.EditarUsuario;
 import br.hela.usuario.comandos.CriarUsuario;
-import br.hela.security.AutenticaAdm;
-import br.hela.security.AutenticaRequisicao;
+import br.hela.security.Autentica;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 
@@ -37,15 +36,12 @@ public class UsuarioController {
 	private UsuarioService service;
 
 	@Autowired
-	private AutenticaRequisicao autentica;
-
-	@Autowired
-	private AutenticaAdm autenticaAdm;
+	private Autentica autentica;
 
 	@ApiOperation("Busque todos os usuários")
 	@GetMapping
 	public ResponseEntity<List<BuscarUsuario>> getUsuarios(@RequestHeader String token) throws AccessDeniedException {
-		if (autenticaAdm.autenticaRequisicao(token)) {
+		if (autentica.autenticaRequisicaoAdm(token)) {
 			Optional<List<BuscarUsuario>> optionalUsuarios = service.encontrar();
 			if (optionalUsuarios.isPresent()) {
 				return ResponseEntity.ok(optionalUsuarios.get());

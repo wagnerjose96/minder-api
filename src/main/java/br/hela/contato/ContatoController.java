@@ -21,7 +21,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import br.hela.contato.comandos.BuscarContato;
 import br.hela.contato.comandos.CriarContato;
 import br.hela.contato.comandos.EditarContato;
-import br.hela.security.AutenticaRequisicao;
+import br.hela.security.Autentica;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 
@@ -36,7 +36,7 @@ public class ContatoController {
 	private ContatoService contatoService;
 
 	@Autowired
-	private AutenticaRequisicao autentica;
+	private Autentica autentica;
 
 	@ApiOperation("Busque todos os contatos")
 	@GetMapping

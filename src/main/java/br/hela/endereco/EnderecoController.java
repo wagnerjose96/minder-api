@@ -20,7 +20,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import br.hela.endereco.comandos.BuscarEndereco;
 import br.hela.endereco.comandos.CriarEndereco;
 import br.hela.endereco.comandos.EditarEndereco;
-import br.hela.security.AutenticaRequisicao;
+import br.hela.security.Autentica;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 
@@ -35,7 +35,7 @@ public class EnderecoController {
 	private EnderecoService enderecoService;
 
 	@Autowired
-	private AutenticaRequisicao autentica;
+	private Autentica autentica;
 
 	@ApiOperation("Busque todos os endereços")
 	@GetMapping

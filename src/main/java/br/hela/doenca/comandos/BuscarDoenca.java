@@ -2,7 +2,8 @@ package br.hela.doenca.comandos;
 
 import java.util.ArrayList;
 import java.util.List;
-import br.hela.ConverterData;
+
+import br.hela.conversor.ConverterData;
 import br.hela.doenca.Doenca;
 import br.hela.doenca.DoencaId;
 import br.hela.medicamento.comandos.BuscarMedicamento;

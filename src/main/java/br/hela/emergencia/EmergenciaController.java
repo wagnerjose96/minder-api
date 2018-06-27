@@ -20,7 +20,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import br.hela.emergencia.comandos.BuscarEmergencia;
 import br.hela.emergencia.comandos.CriarEmergencia;
 import br.hela.emergencia.comandos.EditarEmergencia;
-import br.hela.security.AutenticaRequisicao;
+import br.hela.security.Autentica;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 
@@ -35,7 +35,7 @@ public class EmergenciaController {
 	private EmergenciaService service;
 
 	@Autowired
-	private AutenticaRequisicao autentica;
+	private Autentica autentica;
 
 	@ApiOperation("Busque todas as emergencias")
 	@GetMapping

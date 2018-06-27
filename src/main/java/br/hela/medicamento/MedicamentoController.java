@@ -21,7 +21,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import br.hela.medicamento.comandos.BuscarMedicamento;
 import br.hela.medicamento.comandos.CriarMedicamento;
 import br.hela.medicamento.comandos.EditarMedicamento;
-import br.hela.security.AutenticaAdm;
+import br.hela.security.Autentica;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 
@@ -36,7 +36,7 @@ public class MedicamentoController {
 	private MedicamentoService service;
 
 	@Autowired
-	private AutenticaAdm autentica;
+	private Autentica autentica;
 
 	@ApiOperation("Busque todos os medicamentos")
 	@GetMapping
@@ -62,7 +62,7 @@ public class MedicamentoController {
 	@DeleteMapping("/{id}")
 	public ResponseEntity<Optional<String>> deletarMedicamento(@PathVariable MedicamentoId id,
 			@RequestHeader String token) throws AccessDeniedException {
-		if (autentica.autenticaRequisicao(token)) {
+		if (autentica.autenticaRequisicaoAdm(token)) {
 			if (service.encontrar().isPresent()) {
 				Optional<String> optionalMedicamento = service.deletar(id);
 				return ResponseEntity.ok(optionalMedicamento);
@@ -76,7 +76,7 @@ public class MedicamentoController {
 	@PostMapping
 	public ResponseEntity<String> postMedicamento(@RequestBody CriarMedicamento comando, @RequestHeader String token)
 			throws AccessDeniedException, SQLException {
-		if (autentica.autenticaRequisicao(token)) {
+		if (autentica.autenticaRequisicaoAdm(token)) {
 			Optional<MedicamentoId> optionalMedicamentoId = service.salvar(comando);
 			if (optionalMedicamentoId.isPresent()) {
 				URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
@@ -92,7 +92,7 @@ public class MedicamentoController {
 	@PutMapping
 	public ResponseEntity<String> putMedicamento(@RequestBody EditarMedicamento comando, @RequestHeader String token)
 			throws AccessDeniedException, SQLException {
-		if (autentica.autenticaRequisicao(token)) {
+		if (autentica.autenticaRequisicaoAdm(token)) {
 			if (!service.encontrar(comando.getIdMedicamento()).isPresent()) {
 				throw new NullPointerException("O medicamento a ser alterado não existe no banco de dados");
 			}

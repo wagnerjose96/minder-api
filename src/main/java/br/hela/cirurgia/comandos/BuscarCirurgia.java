@@ -2,9 +2,10 @@ package br.hela.cirurgia.comandos;
 
 import java.util.ArrayList;
 import java.util.List;
-import br.hela.ConverterData;
+
 import br.hela.cirurgia.Cirurgia;
 import br.hela.cirurgia.CirurgiaId;
+import br.hela.conversor.ConverterData;
 import br.hela.medicamento.comandos.BuscarMedicamento;
 import lombok.Data;
 

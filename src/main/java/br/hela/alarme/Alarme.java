@@ -17,7 +17,7 @@ import lombok.Setter;
 
 @Entity
 @Audited
-@EqualsAndHashCode(exclude={"idMedicamento", "dataInicio", "dataFim", "quantidade", "descricao", "periodicidade", "idUsuario"})
+@EqualsAndHashCode(exclude={"idMedicamento", "dataInicio", "dataFim", "quantidade", "descricao", "periodicidade"})
 @Data
 public class Alarme {
 	@EmbeddedId

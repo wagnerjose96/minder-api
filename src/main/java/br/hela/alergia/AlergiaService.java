@@ -8,7 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 
-import br.hela.VerificarMedicamento;
 import br.hela.alergia.Alergia;
 import br.hela.alergia.AlergiaId;
 import br.hela.alergia.alergia_medicamento.AlergiaMedicamento;
@@ -16,6 +15,7 @@ import br.hela.alergia.alergia_medicamento.AlergiaMedicamentoService;
 import br.hela.alergia.comandos.BuscarAlergia;
 import br.hela.alergia.comandos.CriarAlergia;
 import br.hela.alergia.comandos.EditarAlergia;
+import br.hela.medicamento.Medicamento;
 import br.hela.medicamento.MedicamentoId;
 import br.hela.medicamento.MedicamentoService;
 import br.hela.medicamento.comandos.BuscarMedicamento;
@@ -52,7 +52,7 @@ public class AlergiaService {
 					alergiaMedicamento.setIdMedicamento(idMedicamento);
 					service.salvar(alergiaMedicamento);
 				}
-			} while (VerificarMedicamento.verificarMedicamento(idMedicamento, comando.getIdMedicamentos()));
+			} while (Medicamento.verificarMedicamento(idMedicamento, comando.getIdMedicamentos()));
 		}
 		return Optional.of(novo.getIdAlergia());
 	}

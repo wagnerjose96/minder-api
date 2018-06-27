@@ -1,8 +1,8 @@
 package br.hela.alarme.comandos;
 
-import br.hela.ConverterData;
 import br.hela.alarme.Alarme;
 import br.hela.alarme.AlarmeId;
+import br.hela.conversor.ConverterData;
 import br.hela.medicamento.comandos.BuscarMedicamento;
 import lombok.Data;
 

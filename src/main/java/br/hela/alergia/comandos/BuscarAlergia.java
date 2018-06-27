@@ -2,9 +2,10 @@ package br.hela.alergia.comandos;
 
 import java.util.ArrayList;
 import java.util.List;
-import br.hela.ConverterData;
+
 import br.hela.alergia.Alergia;
 import br.hela.alergia.AlergiaId;
+import br.hela.conversor.ConverterData;
 import br.hela.medicamento.comandos.BuscarMedicamento;
 import lombok.Data;
 

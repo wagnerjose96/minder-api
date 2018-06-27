@@ -6,6 +6,7 @@ import java.util.Optional;
 import javax.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
 import br.hela.alarme.Alarme;
 import br.hela.alarme.AlarmeId;
 import br.hela.alarme.comandos.BuscarAlarme;
@@ -46,7 +47,7 @@ public class AlarmeService {
 		List<BuscarAlarme> resultados = new ArrayList<>();
 		List<Alarme> alarmes = repo.findAll();
 		for (Alarme alarme : alarmes) {
-			if(id.toString().equals(alarme.getIdUsuario().toString())) {
+			if(alarme.getIdUsuario().toString().equals(id.toString())) {
 				BuscarAlarme nova = new BuscarAlarme(alarme);
 				Optional<BuscarMedicamento> medicamento = medService.encontrar(alarme.getIdMedicamento());
 				if (medicamento.isPresent())

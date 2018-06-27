@@ -1,6 +1,6 @@
 package br.hela.usuario.comandos;
 
-import br.hela.ConverterData;
+import br.hela.conversor.ConverterData;
 import br.hela.endereco.comandos.BuscarEndereco;
 import br.hela.sangue.comandos.BuscarSangue;
 import br.hela.sexo.comandos.BuscarSexo;

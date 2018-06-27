@@ -18,7 +18,8 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
-import br.hela.security.AutenticaAdm;
+
+import br.hela.security.Autentica;
 import br.hela.usuario_adm.UsuarioAdmId;
 import br.hela.usuario_adm.UsuarioAdmService;
 import br.hela.usuario_adm.comandos.BuscarUsuarioAdm;
@@ -38,13 +39,13 @@ public class UsuarioAdmController {
 	private UsuarioAdmService service;
 
 	@Autowired
-	private AutenticaAdm autentica;
+	private Autentica autentica;
 
 	@ApiOperation("Busque todos os usuários admin")
 	@GetMapping
 	public ResponseEntity<List<BuscarUsuarioAdm>> getUsuarioAdmins(@RequestHeader String token)
 			throws AccessDeniedException {
-		if (autentica.autenticaRequisicao(token)) {
+		if (autentica.autenticaRequisicaoAdm(token)) {
 			Optional<List<BuscarUsuarioAdm>> optionalUsuarioAdmin = service.encontrar();
 			if (optionalUsuarioAdmin.isPresent()) {
 				return ResponseEntity.ok(optionalUsuarioAdmin.get());
