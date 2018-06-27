@@ -7,6 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import br.hela.VerificarMedicamento;
 import br.hela.doenca.Doenca;
 import br.hela.doenca.DoencaId;
 import br.hela.doenca.doenca_medicamento.DoencaMedicamento;
@@ -17,6 +19,7 @@ import br.hela.doenca.comandos.EditarDoenca;
 import br.hela.medicamento.MedicamentoId;
 import br.hela.medicamento.MedicamentoService;
 import br.hela.medicamento.comandos.BuscarMedicamento;
+import br.hela.usuario.UsuarioId;
 
 @Service
 @Transactional
@@ -39,8 +42,8 @@ public class DoencaService {
 	@Autowired
 	private MedicamentoService medicamentoService;
 
-	public Optional<DoencaId> salvar(CriarDoenca comando) {
-		Doenca novo = doencaRepo.save(new Doenca(comando));
+	public Optional<DoencaId> salvar(CriarDoenca comando, UsuarioId id) {
+		Doenca novo = doencaRepo.save(new Doenca(comando, id));
 		for (MedicamentoId idMedicamento : comando.getIdMedicamentos()) {
 			do {
 				if (medicamentoService.encontrar(idMedicamento).isPresent()) {
@@ -49,7 +52,7 @@ public class DoencaService {
 					doencaMedicamento.setIdMedicamento(idMedicamento);
 					service.salvar(doencaMedicamento);
 				}
-			} while (verificarMedicamento(idMedicamento, comando.getIdMedicamentos()));
+			} while (VerificarMedicamento.verificarMedicamento(idMedicamento, comando.getIdMedicamentos()));
 		}
 		return Optional.of(novo.getIdDoenca());
 	}
@@ -65,14 +68,16 @@ public class DoencaService {
 		return Optional.empty();
 	}
 
-	public Optional<List<BuscarDoenca>> encontrar() {
+	public Optional<List<BuscarDoenca>> encontrar(UsuarioId id) {
 		List<Doenca> doencas = doencaRepo.findAll();
 		List<BuscarDoenca> rsDoencas = new ArrayList<>();
 		for (Doenca doenca : doencas) {
-			List<BuscarMedicamento> medicamentos = executeQuery(doenca.getIdDoenca().toString(), sql);
-			BuscarDoenca nova = new BuscarDoenca(doenca);
-			nova.setMedicamentos(medicamentos);
-			rsDoencas.add(nova);
+			if (id.toString().equals(doenca.getIdUsuario().toString())) {
+				List<BuscarMedicamento> medicamentos = executeQuery(doenca.getIdDoenca().toString(), sql);
+				BuscarDoenca nova = new BuscarDoenca(doenca);
+				nova.setMedicamentos(medicamentos);
+				rsDoencas.add(nova);
+			}
 		}
 		return Optional.of(rsDoencas);
 	}
@@ -108,15 +113,6 @@ public class DoencaService {
 			}
 			return med;
 		});
-	}
-
-	private boolean verificarMedicamento(MedicamentoId idMedicamento, List<MedicamentoId> list) {
-		for (MedicamentoId medicamentoId : list) {
-			if (medicamentoId.equals(idMedicamento)) {
-				return false;
-			}
-		}
-		return true;
 	}
 
 }

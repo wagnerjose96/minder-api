@@ -43,22 +43,30 @@ public class PlanoDeSaudeController {
 
 	@ApiOperation("Busque todos os planos de saúde")
 	@GetMapping
-	public ResponseEntity<List<BuscarPlanoDeSaude>> getPlanoDeSaudes() {
-		Optional<List<BuscarPlanoDeSaude>> optionalPlanoDeSaude = service.encontrar();
-		if (optionalPlanoDeSaude.isPresent()) {
-			return ResponseEntity.ok(optionalPlanoDeSaude.get());
+	public ResponseEntity<List<BuscarPlanoDeSaude>> getPlanoDeSaudes(@RequestHeader String token)
+			throws AccessDeniedException {
+		if (autentica.autenticaRequisicao(token)) {
+			Optional<List<BuscarPlanoDeSaude>> optionalPlanoDeSaude = service.encontrar(autentica.idUser(token));
+			if (optionalPlanoDeSaude.isPresent()) {
+				return ResponseEntity.ok(optionalPlanoDeSaude.get());
+			}
+			return ResponseEntity.notFound().build();
 		}
-		return ResponseEntity.notFound().build();
+		throw new AccessDeniedException(ACESSONEGADO);
 	}
 
 	@ApiOperation("Busque o plano de saúde pelo ID")
 	@GetMapping("/{id}")
-	public ResponseEntity<BuscarPlanoDeSaude> getPlanoDeSaudePorId(@PathVariable PlanoDeSaudeId id) {
-		Optional<BuscarPlanoDeSaude> optionalPlanoDeSaude = service.encontrar(id);
-		if (optionalPlanoDeSaude.isPresent()) {
-			return ResponseEntity.ok(optionalPlanoDeSaude.get());
+	public ResponseEntity<BuscarPlanoDeSaude> getPlanoDeSaudePorId(@PathVariable PlanoDeSaudeId id,
+			@RequestHeader String token) throws AccessDeniedException {
+		if (autentica.autenticaRequisicao(token)) {
+			Optional<BuscarPlanoDeSaude> optionalPlanoDeSaude = service.encontrar(id);
+			if (optionalPlanoDeSaude.isPresent()) {
+				return ResponseEntity.ok(optionalPlanoDeSaude.get());
+			}
+			throw new NullPointerException("O plano de saúde procurado não existe no banco de dados");
 		}
-		throw new NullPointerException("O plano de saúde procurado não existe no banco de dados");
+		throw new AccessDeniedException(ACESSONEGADO);
 	}
 
 	@ApiOperation("Cadastre um novo plano de saúde")
@@ -66,7 +74,7 @@ public class PlanoDeSaudeController {
 	public ResponseEntity<String> postPlanoDeSaude(@RequestBody CriarPlanoDeSaude comando, @RequestHeader String token)
 			throws AccessDeniedException, SQLException {
 		if (autentica.autenticaRequisicao(token)) {
-			Optional<PlanoDeSaudeId> optionalPlanoDeSaudeId = service.salvar(comando);
+			Optional<PlanoDeSaudeId> optionalPlanoDeSaudeId = service.salvar(comando, autentica.idUser(token));
 			if (optionalPlanoDeSaudeId.isPresent()) {
 				URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
 						.buildAndExpand(optionalPlanoDeSaudeId.get()).toUri();

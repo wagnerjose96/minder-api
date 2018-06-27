@@ -78,7 +78,7 @@ public class SexoController {
 	public ResponseEntity<String> putSexo(@RequestBody EditarSexo comando, @RequestHeader String token)
 			throws SQLException, AccessDeniedException {
 		if (autentica.autenticaRequisicao(token)) {
-			if (!service.encontrar(comando.getIdGenero()).isPresent()) {
+			if (!service.encontrar(comando.getId()).isPresent()) {
 				throw new NullPointerException("O genêro a ser alterado não existe no banco de dados");
 			}
 			Optional<SexoId> optionalSexoId = service.alterar(comando);

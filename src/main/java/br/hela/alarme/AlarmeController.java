@@ -53,7 +53,8 @@ public class AlarmeController {
 
 	@ApiOperation("Busque o alarme pelo ID")
 	@GetMapping("/{id}")
-	public ResponseEntity<BuscarAlarme> getAlarmePorId(@PathVariable AlarmeId id, @RequestHeader String token) throws AccessDeniedException {
+	public ResponseEntity<BuscarAlarme> getAlarmePorId(@PathVariable AlarmeId id, @RequestHeader String token)
+			throws AccessDeniedException {
 		if (autentica.autenticaRequisicao(token)) {
 			Optional<BuscarAlarme> optionalAlarme = alarmeService.encontrar(id);
 			if (optionalAlarme.isPresent()) {
@@ -62,7 +63,6 @@ public class AlarmeController {
 			throw new NullPointerException("O alarme procurado não existe no banco de dados");
 		}
 		throw new AccessDeniedException(ACESSONEGADO);
-		
 	}
 
 	@ApiOperation("Cadastre um novo alarme")

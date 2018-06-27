@@ -47,8 +47,10 @@
 	
 		<!-- Carregando alterações no banco de dados -->
 	
-	<include file="db/changelog/alterações/db.changelog-alarme-usuario.xml" />
-	
-	
+	<include file="db/changelog/alterações/db.changelog-alarme_usuario.xml" />
+	<include file="db/changelog/alterações/db.changelog-alergia_usuario.xml" />
+	<include file="db/changelog/alterações/db.changelog-cirurgia_usuario.xml" />
+	<include file="db/changelog/alterações/db.changelog-doenca_usuario.xml" />
+	<include file="db/changelog/alterações/db.changelog-plano_de_saude_usuario.xml" />
 	
 </databaseChangeLog>

@@ -33,28 +33,35 @@ public class DoencaController {
 
 	@Autowired
 	private DoencaService doencaService;
-	
+
 	@Autowired
 	private AutenticaRequisicao autentica;
 
 	@ApiOperation("Busque todas as doenças")
 	@GetMapping
-	public ResponseEntity<List<BuscarDoenca>> getDoencas() {
-		Optional<List<BuscarDoenca>> optionalDoencas = doencaService.encontrar();
-		if (optionalDoencas.isPresent()) {
-			return ResponseEntity.ok(optionalDoencas.get());
+	public ResponseEntity<List<BuscarDoenca>> getDoencas(@RequestHeader String token) throws AccessDeniedException {
+		if (autentica.autenticaRequisicao(token)) {
+			Optional<List<BuscarDoenca>> optionalDoencas = doencaService.encontrar(autentica.idUser(token));
+			if (optionalDoencas.isPresent()) {
+				return ResponseEntity.ok(optionalDoencas.get());
+			}
+			return ResponseEntity.notFound().build();
 		}
-		return ResponseEntity.notFound().build();
+		throw new AccessDeniedException(ACESSONEGADO);
 	}
 
 	@ApiOperation("Busque uma doença pelo ID")
 	@GetMapping("/{id}")
-	public ResponseEntity<BuscarDoenca> getDoencaPorId(@PathVariable DoencaId id) {
-		Optional<BuscarDoenca> optionalDoenca = doencaService.encontrar(id);
-		if (optionalDoenca.isPresent()) {
-			return ResponseEntity.ok(optionalDoenca.get());
+	public ResponseEntity<BuscarDoenca> getDoencaPorId(@PathVariable DoencaId id, @RequestHeader String token)
+			throws AccessDeniedException {
+		if (autentica.autenticaRequisicao(token)) {
+			Optional<BuscarDoenca> optionalDoenca = doencaService.encontrar(id);
+			if (optionalDoenca.isPresent()) {
+				return ResponseEntity.ok(optionalDoenca.get());
+			}
+			throw new NullPointerException("A doença procurada não existe no banco de dados");
 		}
-		throw new NullPointerException("A doença procurada não existe no banco de dados");
+		throw new AccessDeniedException(ACESSONEGADO);
 	}
 
 	@ApiOperation("Cadastre uma nova doença")
@@ -62,7 +69,7 @@ public class DoencaController {
 	public ResponseEntity<String> postDoenca(@RequestBody CriarDoenca comando, @RequestHeader String token)
 			throws AccessDeniedException, SQLException {
 		if (autentica.autenticaRequisicao(token)) {
-			Optional<DoencaId> optionalDoencaId = doencaService.salvar(comando);
+			Optional<DoencaId> optionalDoencaId = doencaService.salvar(comando, autentica.idUser(token));
 			if (optionalDoencaId.isPresent()) {
 				URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
 						.buildAndExpand(optionalDoencaId.get()).toUri();
@@ -75,7 +82,8 @@ public class DoencaController {
 
 	@ApiOperation("Altere uma doença")
 	@PutMapping
-	public ResponseEntity<String> putDoenca(@RequestBody EditarDoenca comando, @RequestHeader String token) throws AccessDeniedException, SQLException {
+	public ResponseEntity<String> putDoenca(@RequestBody EditarDoenca comando, @RequestHeader String token)
+			throws AccessDeniedException, SQLException {
 		if (autentica.autenticaRequisicao(token)) {
 			if (!doencaService.encontrar(comando.getIdDoenca()).isPresent()) {
 				throw new NullPointerException("A doença a ser alterada não existe no banco de dados");

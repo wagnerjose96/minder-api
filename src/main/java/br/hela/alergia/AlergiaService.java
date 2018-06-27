@@ -7,6 +7,8 @@ import javax.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
+
+import br.hela.VerificarMedicamento;
 import br.hela.alergia.Alergia;
 import br.hela.alergia.AlergiaId;
 import br.hela.alergia.alergia_medicamento.AlergiaMedicamento;
@@ -17,6 +19,7 @@ import br.hela.alergia.comandos.EditarAlergia;
 import br.hela.medicamento.MedicamentoId;
 import br.hela.medicamento.MedicamentoService;
 import br.hela.medicamento.comandos.BuscarMedicamento;
+import br.hela.usuario.UsuarioId;
 
 @Service
 @Transactional
@@ -39,8 +42,8 @@ public class AlergiaService {
 	@Autowired
 	private MedicamentoService medicamentoService;
 
-	public Optional<AlergiaId> salvar(CriarAlergia comando) {
-		Alergia novo = repo.save(new Alergia(comando));
+	public Optional<AlergiaId> salvar(CriarAlergia comando, UsuarioId id) {
+		Alergia novo = repo.save(new Alergia(comando, id));
 		for (MedicamentoId idMedicamento : comando.getIdMedicamentos()) {
 			do {
 				if (medicamentoService.encontrar(idMedicamento).isPresent()) {
@@ -49,7 +52,7 @@ public class AlergiaService {
 					alergiaMedicamento.setIdMedicamento(idMedicamento);
 					service.salvar(alergiaMedicamento);
 				}
-			} while (verificarMedicamento(idMedicamento, comando.getIdMedicamentos()));
+			} while (VerificarMedicamento.verificarMedicamento(idMedicamento, comando.getIdMedicamentos()));
 		}
 		return Optional.of(novo.getIdAlergia());
 	}
@@ -65,14 +68,16 @@ public class AlergiaService {
 		return Optional.empty();
 	}
 
-	public Optional<List<BuscarAlergia>> encontrar() {
+	public Optional<List<BuscarAlergia>> encontrar(UsuarioId id) {
 		List<Alergia> alergias = repo.findAll();
 		List<BuscarAlergia> rsAlergias = new ArrayList<>();
 		for (Alergia alergia : alergias) {
-			List<BuscarMedicamento> medicamentos = executeQuery(alergia.getIdAlergia().toString(), sql);
-			BuscarAlergia nova = new BuscarAlergia(alergia);
-			nova.setMedicamentos(medicamentos);
-			rsAlergias.add(nova);
+			if (id.toString().equals(alergia.getIdUsuario().toString())) {
+				List<BuscarMedicamento> medicamentos = executeQuery(alergia.getIdAlergia().toString(), sql);
+				BuscarAlergia nova = new BuscarAlergia(alergia);
+				nova.setMedicamentos(medicamentos);
+				rsAlergias.add(nova);
+			}
 		}
 		return Optional.of(rsAlergias);
 	}
@@ -94,15 +99,6 @@ public class AlergiaService {
 			return Optional.of(comando.getIdAlergia());
 		}
 		return Optional.empty();
-	}
-
-	private boolean verificarMedicamento(MedicamentoId idMedicamento, List<MedicamentoId> list) {
-		for (MedicamentoId medicamentoId : list) {
-			if (medicamentoId.equals(idMedicamento)) {
-				return false;
-			}
-		}
-		return true;
 	}
 
 	private List<BuscarMedicamento> executeQuery(String id, String sql) {

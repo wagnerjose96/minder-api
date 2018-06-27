@@ -41,12 +41,12 @@ public class SexoService {
 	}
 
 	public Optional<SexoId> alterar(EditarSexo comando) {
-		Optional<Sexo> optional = repo.findById(comando.getIdGenero());
+		Optional<Sexo> optional = repo.findById(comando.getId());
 		if (optional.isPresent()) {
 			Sexo genero = optional.get();
 			genero.apply(comando);
 			repo.save(genero);
-			return Optional.of(comando.getIdGenero());
+			return Optional.of(comando.getId());
 		}
 		return Optional.empty();
 	}

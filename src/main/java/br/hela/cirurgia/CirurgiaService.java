@@ -7,6 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import br.hela.VerificarMedicamento;
 import br.hela.cirurgia.cirurgia_medicamento.CirurgiaMedicamento;
 import br.hela.cirurgia.cirurgia_medicamento.CirurgiaMedicamentoService;
 import br.hela.cirurgia.comandos.BuscarCirurgia;
@@ -15,6 +17,7 @@ import br.hela.cirurgia.comandos.EditarCirurgia;
 import br.hela.medicamento.MedicamentoId;
 import br.hela.medicamento.MedicamentoService;
 import br.hela.medicamento.comandos.BuscarMedicamento;
+import br.hela.usuario.UsuarioId;
 
 @Service
 @Transactional
@@ -36,8 +39,8 @@ public class CirurgiaService {
 	@Autowired
 	private MedicamentoService medicamentoService;
 
-	public Optional<CirurgiaId> salvar(CriarCirurgia comando) {
-		Cirurgia novo = cirurgiaRepo.save(new Cirurgia(comando));
+	public Optional<CirurgiaId> salvar(CriarCirurgia comando, UsuarioId id) {
+		Cirurgia novo = cirurgiaRepo.save(new Cirurgia(comando, id));
 		for (MedicamentoId idMedicamento : comando.getIdMedicamentos()) {
 			do {
 				if (medicamentoService.encontrar(idMedicamento).isPresent()) {
@@ -46,7 +49,7 @@ public class CirurgiaService {
 					cirurgiaMedicamento.setIdMedicamento(idMedicamento);
 					service.salvar(cirurgiaMedicamento);
 				}
-			} while (verificarMedicamento(idMedicamento, comando.getIdMedicamentos()));
+			} while (VerificarMedicamento.verificarMedicamento(idMedicamento, comando.getIdMedicamentos()));
 		}
 		return Optional.of(novo.getIdCirurgia());
 	}
@@ -62,14 +65,16 @@ public class CirurgiaService {
 		return Optional.empty();
 	}
 
-	public Optional<List<BuscarCirurgia>> encontrar() {
+	public Optional<List<BuscarCirurgia>> encontrar(UsuarioId id) {
 		List<Cirurgia> cirurgias = cirurgiaRepo.findAll();
 		List<BuscarCirurgia> rsCirurgias = new ArrayList<>();
 		for (Cirurgia cirurgia : cirurgias) {
-			List<BuscarMedicamento> medicamentos = executeQuery(cirurgia.getIdCirurgia().toString(), sql);
-			BuscarCirurgia nova = new BuscarCirurgia(cirurgia);
-			nova.setMedicamentos(medicamentos);
-			rsCirurgias.add(nova);
+			if (id.toString().equals(cirurgia.getIdUsuario().toString())) {
+				List<BuscarMedicamento> medicamentos = executeQuery(cirurgia.getIdCirurgia().toString(), sql);
+				BuscarCirurgia nova = new BuscarCirurgia(cirurgia);
+				nova.setMedicamentos(medicamentos);
+				rsCirurgias.add(nova);
+			}
 		}
 		return Optional.of(rsCirurgias);
 	}
@@ -91,15 +96,6 @@ public class CirurgiaService {
 			return Optional.of(comando.getIdCirurgia());
 		}
 		return Optional.empty();
-	}
-
-	private boolean verificarMedicamento(MedicamentoId idMedicamento, List<MedicamentoId> list) {
-		for (MedicamentoId medicamentoId : list) {
-			if (medicamentoId.equals(idMedicamento)) {
-				return false;
-			}
-		}
-		return true;
 	}
 
 	private List<BuscarMedicamento> executeQuery(String id, String sql) {

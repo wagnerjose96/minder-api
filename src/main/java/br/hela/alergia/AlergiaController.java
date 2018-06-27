@@ -39,22 +39,29 @@ public class AlergiaController {
 
 	@ApiOperation("Busque todas as alergias")
 	@GetMapping
-	public ResponseEntity<List<BuscarAlergia>> getAlergias() {
-		Optional<List<BuscarAlergia>> optionalAlergias = alergiaService.encontrar();
-		if (optionalAlergias.isPresent()) {
-			return ResponseEntity.ok(optionalAlergias.get());
+	public ResponseEntity<List<BuscarAlergia>> getAlergias(@RequestHeader String token) throws AccessDeniedException {
+		if (autentica.autenticaRequisicao(token)) {
+			Optional<List<BuscarAlergia>> optionalAlergias = alergiaService.encontrar(autentica.idUser(token));
+			if (optionalAlergias.isPresent()) {
+				return ResponseEntity.ok(optionalAlergias.get());
+			}
+			return ResponseEntity.notFound().build();
 		}
-		return ResponseEntity.notFound().build();
+		throw new AccessDeniedException(ACESSONEGADO);
 	}
 
 	@ApiOperation("Busque a alergia pelo ID")
 	@GetMapping("/{id}")
-	public ResponseEntity<BuscarAlergia> getAlergiaPorId(@PathVariable AlergiaId id) {
-		Optional<BuscarAlergia> optionalAlergia = alergiaService.encontrar(id);
-		if (optionalAlergia.isPresent()) {
-			return ResponseEntity.ok(optionalAlergia.get());
+	public ResponseEntity<BuscarAlergia> getAlergiaPorId(@PathVariable AlergiaId id, @RequestHeader String token)
+			throws AccessDeniedException {
+		if (autentica.autenticaRequisicao(token)) {
+			Optional<BuscarAlergia> optionalAlergia = alergiaService.encontrar(id);
+			if (optionalAlergia.isPresent()) {
+				return ResponseEntity.ok(optionalAlergia.get());
+			}
+			throw new NullPointerException("A alergia procurada não existe no banco de dados");
 		}
-		throw new NullPointerException("A alergia procurada não existe no banco de dados");
+		throw new AccessDeniedException(ACESSONEGADO);
 	}
 
 	@ApiOperation("Cadastre uma nova alergia")
@@ -62,7 +69,7 @@ public class AlergiaController {
 	public ResponseEntity<String> postAlergia(@RequestBody CriarAlergia comando, @RequestHeader String token)
 			throws SQLException, AccessDeniedException {
 		if (autentica.autenticaRequisicao(token)) {
-			Optional<AlergiaId> optionalAlergiaId = alergiaService.salvar(comando);
+			Optional<AlergiaId> optionalAlergiaId = alergiaService.salvar(comando, autentica.idUser(token));
 			if (optionalAlergiaId.isPresent()) {
 				URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
 						.buildAndExpand(optionalAlergiaId.get()).toUri();

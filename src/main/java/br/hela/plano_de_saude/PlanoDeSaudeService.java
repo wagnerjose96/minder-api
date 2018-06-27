@@ -12,6 +12,7 @@ import br.hela.convenio.comandos.BuscarConvenio;
 import br.hela.plano_de_saude.comandos.BuscarPlanoDeSaude;
 import br.hela.plano_de_saude.comandos.CriarPlanoDeSaude;
 import br.hela.plano_de_saude.comandos.EditarPlanoDeSaude;
+import br.hela.usuario.UsuarioId;
 
 @Service
 @Transactional
@@ -30,8 +31,8 @@ public class PlanoDeSaudeService {
 		return Optional.of("Plano de saúde ==> " + id + " deletado com sucesso!");
 	}
 
-	public Optional<PlanoDeSaudeId> salvar(CriarPlanoDeSaude comando) {
-		PlanoDeSaude novo = repo.save(new PlanoDeSaude(comando));
+	public Optional<PlanoDeSaudeId> salvar(CriarPlanoDeSaude comando, UsuarioId id) {
+		PlanoDeSaude novo = repo.save(new PlanoDeSaude(comando, id));
 		return Optional.of(novo.getId());
 	}
 
@@ -48,15 +49,17 @@ public class PlanoDeSaudeService {
 		return Optional.empty();
 	}
 
-	public Optional<List<BuscarPlanoDeSaude>> encontrar() {
+	public Optional<List<BuscarPlanoDeSaude>> encontrar(UsuarioId id) {
 		List<BuscarPlanoDeSaude> rsPlanos = new ArrayList<>();
 		List<PlanoDeSaude> planos = repo.findAll();
 		for (PlanoDeSaude plano : planos) {
-			Optional<BuscarConvenio> convenio = convService.encontrar(plano.getIdConvenio());
-			BuscarPlanoDeSaude nova = new BuscarPlanoDeSaude(plano);
-			if (convenio.isPresent()) {
-				nova.setConvenio(convenio.get());
-				rsPlanos.add(nova);
+			if (id.toString().equals(plano.getIdUsuario().toString())) {
+				Optional<BuscarConvenio> convenio = convService.encontrar(plano.getIdConvenio());
+				BuscarPlanoDeSaude nova = new BuscarPlanoDeSaude(plano);
+				if (convenio.isPresent()) {
+					nova.setConvenio(convenio.get());
+					rsPlanos.add(nova);
+				}
 			}
 		}
 		return Optional.of(rsPlanos);

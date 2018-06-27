@@ -39,22 +39,29 @@ public class CirurgiaController {
 
 	@ApiOperation("Busque todas as cirurgias")
 	@GetMapping
-	public ResponseEntity<List<BuscarCirurgia>> getCirurgias() {
-		Optional<List<BuscarCirurgia>> optionalCirurgias = cirurgiaService.encontrar();
-		if (optionalCirurgias.isPresent()) {
-			return ResponseEntity.ok(optionalCirurgias.get());
+	public ResponseEntity<List<BuscarCirurgia>> getCirurgias(@RequestHeader String token) throws AccessDeniedException {
+		if (autentica.autenticaRequisicao(token)) {
+			Optional<List<BuscarCirurgia>> optionalCirurgias = cirurgiaService.encontrar(autentica.idUser(token));
+			if (optionalCirurgias.isPresent()) {
+				return ResponseEntity.ok(optionalCirurgias.get());
+			}
+			return ResponseEntity.notFound().build();
 		}
-		return ResponseEntity.notFound().build();
+		throw new AccessDeniedException(ACESSONEGADO);
 	}
 
 	@ApiOperation("Busque uma cirurgia pelo ID")
 	@GetMapping("/{id}")
-	public ResponseEntity<BuscarCirurgia> getCirurgiaPorId(@PathVariable CirurgiaId id) {
-		Optional<BuscarCirurgia> optionalCirurgia = cirurgiaService.encontrar(id);
-		if (optionalCirurgia.isPresent()) {
-			return ResponseEntity.ok(optionalCirurgia.get());
+	public ResponseEntity<BuscarCirurgia> getCirurgiaPorId(@PathVariable CirurgiaId id, @RequestHeader String token)
+			throws AccessDeniedException {
+		if (autentica.autenticaRequisicao(token)) {
+			Optional<BuscarCirurgia> optionalCirurgia = cirurgiaService.encontrar(id);
+			if (optionalCirurgia.isPresent()) {
+				return ResponseEntity.ok(optionalCirurgia.get());
+			}
+			throw new NullPointerException("A cirurgia procurada não existe no banco de dados");
 		}
-		throw new NullPointerException("A cirurgia procurada não existe no banco de dados");
+		throw new AccessDeniedException(ACESSONEGADO);
 	}
 
 	@ApiOperation("Cadastre uma nova cirurgia")
@@ -62,7 +69,7 @@ public class CirurgiaController {
 	public ResponseEntity<String> postCirurgia(@RequestBody CriarCirurgia comando, @RequestHeader String token)
 			throws SQLException, AccessDeniedException {
 		if (autentica.autenticaRequisicao(token)) {
-			Optional<CirurgiaId> optionalCirurgiaId = cirurgiaService.salvar(comando);
+			Optional<CirurgiaId> optionalCirurgiaId = cirurgiaService.salvar(comando, autentica.idUser(token));
 			if (optionalCirurgiaId.isPresent()) {
 				URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
 						.buildAndExpand(optionalCirurgiaId.get()).toUri();

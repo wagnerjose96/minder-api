@@ -21,7 +21,6 @@ import br.hela.emergencia.comandos.BuscarEmergencia;
 import br.hela.emergencia.comandos.CriarEmergencia;
 import br.hela.emergencia.comandos.EditarEmergencia;
 import br.hela.security.AutenticaRequisicao;
-import br.hela.usuario.UsuarioId;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 
@@ -40,22 +39,30 @@ public class EmergenciaController {
 
 	@ApiOperation("Busque todas as emergencias")
 	@GetMapping
-	public ResponseEntity<List<BuscarEmergencia>> getEmergencias() {
-		Optional<List<BuscarEmergencia>> optionalEmergencias = service.encontrar();
-		if (optionalEmergencias.isPresent()) {
-			return ResponseEntity.ok(optionalEmergencias.get());
+	public ResponseEntity<List<BuscarEmergencia>> getEmergencias(@RequestHeader String token)
+			throws AccessDeniedException {
+		if (autentica.autenticaRequisicao(token)) {
+			Optional<List<BuscarEmergencia>> optionalEmergencias = service.encontrar(autentica.idUser(token));
+			if (optionalEmergencias.isPresent()) {
+				return ResponseEntity.ok(optionalEmergencias.get());
+			}
+			return ResponseEntity.notFound().build();
 		}
-		return ResponseEntity.notFound().build();
+		throw new AccessDeniedException(ACESSONEGADO);
 	}
 
 	@ApiOperation("Busque uma emergência pelo ID")
 	@GetMapping("/{id}")
-	public ResponseEntity<BuscarEmergencia> getEmergenciaPorId(@PathVariable EmergenciaId id) {
-		Optional<BuscarEmergencia> optionalEmergencia = service.encontrar(id);
-		if (optionalEmergencia.isPresent()) {
-			return ResponseEntity.ok(optionalEmergencia.get());
+	public ResponseEntity<BuscarEmergencia> getEmergenciaPorId(@PathVariable EmergenciaId id,
+			@RequestHeader String token) throws AccessDeniedException {
+		if (autentica.autenticaRequisicao(token)) {
+			Optional<BuscarEmergencia> optionalEmergencia = service.encontrar(id, autentica.idUser(token));
+			if (optionalEmergencia.isPresent()) {
+				return ResponseEntity.ok(optionalEmergencia.get());
+			}
+			throw new NullPointerException("A emergência procurada não existe no banco de dados");
 		}
-		throw new NullPointerException("A emergência procurada não existe no banco de dados");
+		throw new AccessDeniedException(ACESSONEGADO);
 	}
 
 	@ApiOperation("Cadastre uma nova emergência")
@@ -63,9 +70,7 @@ public class EmergenciaController {
 	public ResponseEntity<String> postEmergencia(@RequestBody CriarEmergencia comando, @RequestHeader String token)
 			throws SQLException, AccessDeniedException {
 		if (autentica.autenticaRequisicao(token)) {
-			UsuarioId id = autentica.idUser(token);
-			comando.setIdUsuario(id);
-			Optional<EmergenciaId> optionalEmergenciaId = service.salvar(comando);
+			Optional<EmergenciaId> optionalEmergenciaId = service.salvar(comando, autentica.idUser(token));
 			if (optionalEmergenciaId.isPresent()) {
 				URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
 						.buildAndExpand(optionalEmergenciaId.get()).toUri();
@@ -81,7 +86,7 @@ public class EmergenciaController {
 	public ResponseEntity<String> putEmergencia(@RequestBody EditarEmergencia comando, @RequestHeader String token)
 			throws AccessDeniedException, SQLException {
 		if (autentica.autenticaRequisicao(token)) {
-			if (!service.encontrar(comando.getId()).isPresent()) {
+			if (!service.encontrar(comando.getId(), autentica.idUser(token)).isPresent()) {
 				throw new NullPointerException("A emergência a ser alterada não existe no banco de dados");
 			}
 			Optional<EmergenciaId> optionalEmergenciaId = service.alterar(comando);

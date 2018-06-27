@@ -1,7 +1,6 @@
 package br.hela;
 
 import java.text.SimpleDateFormat;
-
 import org.springframework.stereotype.Component;
 
 @Component
