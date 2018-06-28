@@ -31,10 +31,10 @@ public class PerguntaRespostaUsuarioService {
 		return Optional.of(novo.getId());
 	}
 
-	public Optional<BuscarPerguntaRespostaUsuario> encontrar(PerguntaRespostaUsuarioId id, UsuarioId idUser) {
+	public Optional<BuscarPerguntaRespostaUsuario> encontrar(PerguntaRespostaUsuarioId id) {
 		Optional<PerguntaRespostaUsuario> perguntaResposta = repo.findById(id);
 		if (perguntaResposta.isPresent()) {
-			return Optional.of(construir(idUser, perguntaResposta.get()));
+			return Optional.of(construir(perguntaResposta.get()));
 		}
 		return Optional.empty();
 	}
@@ -44,13 +44,13 @@ public class PerguntaRespostaUsuarioService {
 		List<PerguntaRespostaUsuario> perguntaRespostas = repo.findAll();
 		for (PerguntaRespostaUsuario perguntaResposta : perguntaRespostas) {
 			if (id.toString().equals(perguntaResposta.getIdUsuario().toString())) {
-				resultados.add(construir(id, perguntaResposta));
+				resultados.add(construir(perguntaResposta));
 			}
 		}
 		return Optional.of(resultados);
 	}
 
-	private BuscarPerguntaRespostaUsuario construir(UsuarioId id, PerguntaRespostaUsuario resultado) {
+	private BuscarPerguntaRespostaUsuario construir(PerguntaRespostaUsuario resultado) {
 		BuscarPerguntaRespostaUsuario result = new BuscarPerguntaRespostaUsuario(resultado);
 		Optional<BuscarPergunta> pergunta = perguntaService.encontrar(resultado.getIdPergunta());
 		Optional<BuscarResposta> resposta = respostaService.encontrar(resultado.getIdResposta());

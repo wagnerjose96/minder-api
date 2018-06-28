@@ -55,7 +55,7 @@ public class PerguntaRespostaUsuarioController {
 	public ResponseEntity<BuscarPerguntaRespostaUsuario> getPerguntaPorId(@PathVariable PerguntaRespostaUsuarioId id,
 			@RequestHeader String token) throws AccessDeniedException {
 		if (autentica.autenticaRequisicao(token)) {
-			Optional<BuscarPerguntaRespostaUsuario> optionalPergunta = service.encontrar(id, autentica.idUser(token));
+			Optional<BuscarPerguntaRespostaUsuario> optionalPergunta = service.encontrar(id);
 			if (optionalPergunta.isPresent()) {
 				return ResponseEntity.ok(optionalPergunta.get());
 			}
