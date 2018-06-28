@@ -59,7 +59,7 @@ public class PerguntaRespostaUsuarioController {
 			if (optionalPergunta.isPresent()) {
 				return ResponseEntity.ok(optionalPergunta.get());
 			}
-			throw new NullPointerException("A pergunta procurada não existe no banco de dados");
+			throw new NullPointerException("A pergunta de notificação procurada não existe no banco de dados");
 		}
 		throw new AccessDeniedException(ACESSONEGADO);
 	}
@@ -73,9 +73,9 @@ public class PerguntaRespostaUsuarioController {
 			if (optionalPerguntaId.isPresent()) {
 				URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
 						.buildAndExpand(optionalPerguntaId.get()).toUri();
-				return ResponseEntity.created(location).body("A pergunta foi cadastrada com sucesso");
+				return ResponseEntity.created(location).body("A  pergunta de notificação foi respondida com sucesso");
 			}
-			throw new SQLException("A pergunta não foi salva devido a um erro interno");
+			throw new SQLException("A  pergunta de notificação não foi respondida devido a um erro interno");
 		}
 		throw new AccessDeniedException(ACESSONEGADO);
 	}
