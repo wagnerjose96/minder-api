@@ -15,24 +15,25 @@ import lombok.Setter;
 @Entity
 @Audited
 @Data
-@EqualsAndHashCode(exclude = { "sexo" })
+@EqualsAndHashCode(exclude = { "genero" })
 public class Sexo {
 	@EmbeddedId
 	@AttributeOverride(name = "value", column = @Column(name = "id_sexo"))
 	@Setter(AccessLevel.NONE)
-	private SexoId idSexo;
-	private String sexo;
+	private SexoId idGenero;
+	@Column(name = "sexo")
+	private String genero;
 
 	public Sexo() {
 	}
 
 	public Sexo(CriarSexo comando) {
-		this.idSexo = new SexoId();
-		this.sexo = comando.getSexo();
+		this.idGenero = new SexoId();
+		this.genero = comando.getSexo();
 	}
 
 	public void apply(EditarSexo comando) {
-		this.idSexo = comando.getIdSexo();
-		this.sexo = comando.getSexo();
+		this.idGenero = comando.getId();
+		this.genero = comando.getSexo();
 	}
 }

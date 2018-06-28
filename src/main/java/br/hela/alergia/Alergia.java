@@ -8,6 +8,7 @@ import javax.persistence.Entity;
 import org.hibernate.envers.Audited;
 import br.hela.alergia.comandos.CriarAlergia;
 import br.hela.alergia.comandos.EditarAlergia;
+import br.hela.usuario.UsuarioId;
 import lombok.AccessLevel;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -26,16 +27,19 @@ public class Alergia {
 	private String localAfetado;
 	private Date dataDescoberta;
 	private String efeitos;
+	@AttributeOverride(name = "value", column = @Column(name = "id_usuario"))
+	private UsuarioId idUsuario;
 
 	public Alergia() {
 	}
 	
-	public Alergia(CriarAlergia comandos) {
+	public Alergia(CriarAlergia comandos, UsuarioId id) {
 		this.idAlergia = new AlergiaId();
 		this.tipoAlergia = comandos.getTipoAlergia();
 		this.localAfetado = comandos.getLocalAfetado();
 		this.dataDescoberta = comandos.getDataDescoberta();
 		this.efeitos = comandos.getEfeitos();
+		this.idUsuario = id;
 	}
 
 	public void apply(EditarAlergia comando) {

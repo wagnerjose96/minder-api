@@ -2,9 +2,10 @@ package br.hela.alergia.comandos;
 
 import java.util.ArrayList;
 import java.util.List;
-import br.hela.ConverterData;
+
 import br.hela.alergia.Alergia;
 import br.hela.alergia.AlergiaId;
+import br.hela.conversor.ConverterData;
 import br.hela.medicamento.comandos.BuscarMedicamento;
 import lombok.Data;
 
@@ -21,7 +22,7 @@ public class BuscarAlergia {
 		this.idAlergia = comando.getIdAlergia();
 		this.tipoAlergia = comando.getTipoAlergia();
 		this.localAfetado = comando.getLocalAfetado();
-		Long dataLong = comando.getDataDescoberta().getTime(); // pega os milessegundos;
+		Long dataLong = comando.getDataDescoberta().getTime();
 		this.dataDescoberta = ConverterData.converterData(dataLong);
 		this.efeitos = comando.getEfeitos();
 	}

@@ -22,10 +22,12 @@ public class TelefoneService {
 	}
 
 	public Optional<BuscarTelefone> encontrar(TelefoneId id) {
-		Telefone plano = repo.findById(id).get();
-		BuscarTelefone resultado = new BuscarTelefone();
-		resultado = new BuscarTelefone(plano);
-		return Optional.of(resultado);
+		Optional<Telefone> plano = repo.findById(id);
+		if (plano.isPresent()) {
+			BuscarTelefone resultado = new BuscarTelefone(plano.get());
+			return Optional.of(resultado);
+		}
+		return Optional.empty();
 	}
 
 	public Optional<List<BuscarTelefone>> encontrar() {

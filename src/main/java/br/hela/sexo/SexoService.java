@@ -18,14 +18,16 @@ public class SexoService {
 
 	public Optional<SexoId> salvar(CriarSexo comando) {
 		Sexo novo = repo.save(new Sexo(comando));
-		return Optional.of(novo.getIdSexo());
+		return Optional.of(novo.getIdGenero());
 	}
 
 	public Optional<BuscarSexo> encontrar(SexoId id) {
-		Sexo genero = repo.findById(id).get();
-		BuscarSexo resultado = new BuscarSexo();
-		resultado = new BuscarSexo(genero);
-		return Optional.of(resultado);
+		Optional<Sexo> genero = repo.findById(id);
+		if (genero.isPresent()) {
+			BuscarSexo resultado = new BuscarSexo(genero.get());
+			return Optional.of(resultado);
+		}
+		return Optional.empty();
 	}
 
 	public Optional<List<BuscarSexo>> encontrar() {
@@ -39,12 +41,12 @@ public class SexoService {
 	}
 
 	public Optional<SexoId> alterar(EditarSexo comando) {
-		Optional<Sexo> optional = repo.findById(comando.getIdSexo());
+		Optional<Sexo> optional = repo.findById(comando.getId());
 		if (optional.isPresent()) {
 			Sexo genero = optional.get();
 			genero.apply(comando);
 			repo.save(genero);
-			return Optional.of(comando.getIdSexo());
+			return Optional.of(comando.getId());
 		}
 		return Optional.empty();
 	}

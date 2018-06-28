@@ -1,6 +1,6 @@
 package br.hela.usuario.comandos;
 
-import br.hela.ConverterData;
+import br.hela.conversor.ConverterData;
 import br.hela.endereco.comandos.BuscarEndereco;
 import br.hela.sangue.comandos.BuscarSangue;
 import br.hela.sexo.comandos.BuscarSexo;
@@ -25,13 +25,13 @@ public class BuscarUsuario {
 
 	public BuscarUsuario(Usuario comandos) {
 		this.id = comandos.getId();
-		this.username = comandos.getNome_usuario();
+		this.username = comandos.getNomeUsuario();
 		this.email = comandos.getEmail();
 		this.senha = comandos.getSenha();
-		this.nome = comandos.getNome_completo();
-		Long dataLong = comandos.getData_nascimento().getTime(); // pega os milessegundos;
+		this.nome = comandos.getNomeCompleto();
+		Long dataLong = comandos.getDataNascimento().getTime();
 		this.dataNascimento = ConverterData.converterData(dataLong);
-		this.imagem = comandos.getImagem_usuario();
+		this.imagem = comandos.getImagemUsuario();
 	}
 
 	public BuscarUsuario() {

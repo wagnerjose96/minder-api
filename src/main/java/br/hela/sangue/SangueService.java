@@ -22,9 +22,12 @@ public class SangueService {
 	}
 
 	public Optional<BuscarSangue> encontrar(SangueId id) {
-		Sangue sangue = repo.findById(id).get();
-		BuscarSangue resultado = new BuscarSangue(sangue);
-		return Optional.of(resultado);
+		Optional<Sangue> sangue = repo.findById(id);
+		if (sangue.isPresent()) {
+			BuscarSangue resultado = new BuscarSangue(sangue.get());
+			return Optional.of(resultado);
+		}
+		return Optional.empty();
 	}
 
 	public Optional<List<BuscarSangue>> encontrar() {

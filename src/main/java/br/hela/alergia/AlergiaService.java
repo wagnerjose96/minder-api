@@ -7,67 +7,77 @@ import javax.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
+
 import br.hela.alergia.Alergia;
 import br.hela.alergia.AlergiaId;
-import br.hela.alergia.alergia_medicamento.Alergia_Medicamento;
-import br.hela.alergia.alergia_medicamento.Alergia_Medicamento_Service;
+import br.hela.alergia.alergia_medicamento.AlergiaMedicamento;
+import br.hela.alergia.alergia_medicamento.AlergiaMedicamentoService;
 import br.hela.alergia.comandos.BuscarAlergia;
 import br.hela.alergia.comandos.CriarAlergia;
 import br.hela.alergia.comandos.EditarAlergia;
+import br.hela.medicamento.Medicamento;
 import br.hela.medicamento.MedicamentoId;
 import br.hela.medicamento.MedicamentoService;
 import br.hela.medicamento.comandos.BuscarMedicamento;
+import br.hela.usuario.UsuarioId;
 
 @Service
 @Transactional
 public class AlergiaService {
 	@Autowired
 	private JdbcTemplate jdbcTemplate;
-	
-	private String sql = "select c.id, a.nome_medicamento, " + "a.composicao, a.id_medicamento, a.ativo from medicamento a "
+
+	private String sql = "select c.id, a.nome_medicamento, "
+			+ "a.composicao, a.id_medicamento, a.ativo from medicamento a "
 			+ "inner join alergia_medicamento b on a.id_medicamento = b.id_medicamento "
-			+ "inner join alergia c on b.id_alergia = c.id "
-			+ "group by c.id, a.id_medicamento having c.id = ? " + "order by c.tipo_alergia";
-	
+			+ "inner join alergia c on b.id_alergia = c.id " + "group by c.id, a.id_medicamento having c.id = ? "
+			+ "order by c.tipo_alergia";
+
 	@Autowired
 	private AlergiaRepository repo;
 
 	@Autowired
-	private Alergia_Medicamento_Service service;
+	private AlergiaMedicamentoService service;
 
 	@Autowired
 	private MedicamentoService medicamentoService;
 
-	public Optional<AlergiaId> salvar(CriarAlergia comando) throws NullPointerException {
-		Alergia novo = repo.save(new Alergia(comando));
-		for (MedicamentoId id_medicamento : comando.getId_medicamentos()) {
+	public Optional<AlergiaId> salvar(CriarAlergia comando, UsuarioId id) {
+		Alergia novo = repo.save(new Alergia(comando, id));
+		for (MedicamentoId idMedicamento : comando.getIdMedicamentos()) {
 			do {
-				if (verificaMedicamentoExistente(id_medicamento)) {
-					Alergia_Medicamento alergiaMedicamento = new Alergia_Medicamento();
+				if (medicamentoService.encontrar(idMedicamento).isPresent()) {
+					AlergiaMedicamento alergiaMedicamento = new AlergiaMedicamento();
 					alergiaMedicamento.setIdAlergia(novo.getIdAlergia());
-					alergiaMedicamento.setIdMedicamento(id_medicamento);
+					alergiaMedicamento.setIdMedicamento(idMedicamento);
 					service.salvar(alergiaMedicamento);
 				}
-			} while (verificarMedicamentoÚnico(id_medicamento, comando.getId_medicamentos()));
+			} while (Medicamento.verificarMedicamento(idMedicamento, comando.getIdMedicamentos()));
 		}
 		return Optional.of(novo.getIdAlergia());
 	}
 
-	public Optional<BuscarAlergia> encontrar(AlergiaId alergiaId) throws Exception {
+	public Optional<BuscarAlergia> encontrar(AlergiaId alergiaId) {
 		List<BuscarMedicamento> medicamentos = executeQuery(alergiaId.toString(), sql);
-		BuscarAlergia alergia = new BuscarAlergia(repo.findById(alergiaId).get());
-		alergia.setMedicamentos(medicamentos);
-		return Optional.of(alergia);
+		Optional<Alergia> result = repo.findById(alergiaId);
+		if (result.isPresent()) {
+			BuscarAlergia resultado = new BuscarAlergia(result.get());
+			resultado.setMedicamentos(medicamentos);
+			return Optional.of(resultado);
+		}
+		return Optional.empty();
 	}
 
-	public Optional<List<BuscarAlergia>> encontrar() throws Exception {
+	public Optional<List<BuscarAlergia>> encontrar(UsuarioId id) {
 		List<Alergia> alergias = repo.findAll();
 		List<BuscarAlergia> rsAlergias = new ArrayList<>();
 		for (Alergia alergia : alergias) {
-			List<BuscarMedicamento> medicamentos = executeQuery(alergia.getIdAlergia().toString(), sql);
-			BuscarAlergia nova = new BuscarAlergia(alergia);
-			nova.setMedicamentos(medicamentos);
-			rsAlergias.add(nova);
+			if (id.toString().equals(alergia.getIdUsuario().toString())) {
+				List<BuscarMedicamento> medicamentos = executeQuery(alergia.getIdAlergia().toString(), sql);
+				BuscarAlergia nova = new BuscarAlergia(alergia);
+				nova.setMedicamentos(medicamentos);
+				rsAlergias.add(nova);
+			}
 		}
 		return Optional.of(rsAlergias);
 	}
@@ -78,11 +88,11 @@ public class AlergiaService {
 			Alergia alergia = optional.get();
 			alergia.apply(comando);
 			repo.save(alergia);
-			for (MedicamentoId id_medicamento : comando.getId_medicamentos()) {
-				if (verificaMedicamentoExistente(id_medicamento)) {
-					Alergia_Medicamento alergiaMedicamento = new Alergia_Medicamento();
+			for (MedicamentoId idMedicamento : comando.getIdMedicamentos()) {
+				if (medicamentoService.encontrar(idMedicamento).isPresent()) {
+					AlergiaMedicamento alergiaMedicamento = new AlergiaMedicamento();
 					alergiaMedicamento.setIdAlergia(comando.getIdAlergia());
-					alergiaMedicamento.setIdMedicamento(id_medicamento);
+					alergiaMedicamento.setIdMedicamento(idMedicamento);
 					service.salvar(alergiaMedicamento);
 				}
 			}
@@ -91,25 +101,8 @@ public class AlergiaService {
 		return Optional.empty();
 	}
 
-	private boolean verificaMedicamentoExistente(MedicamentoId id) {
-		if (!medicamentoService.encontrar(id).isPresent()) {
-			return false;
-		} else {
-			return true;
-		}
-	}
-
-	private boolean verificarMedicamentoÚnico(MedicamentoId id_medicamento, List<MedicamentoId> list) {
-		for (MedicamentoId medicamentoId : list) {
-			if (medicamentoId.equals(id_medicamento)) {
-				return false;
-			}
-		}
-		return true;
-	}
-	
 	private List<BuscarMedicamento> executeQuery(String id, String sql) {
-		List<BuscarMedicamento> medicamentos = jdbcTemplate.query(sql, new Object[] { id }, (rs, rowNum) -> {
+		return jdbcTemplate.query(sql, new Object[] { id }, (rs, rowNum) -> {
 			BuscarMedicamento med = new BuscarMedicamento();
 			String idAlergia = rs.getString("id");
 			if (id.equals(idAlergia)) {
@@ -120,6 +113,5 @@ public class AlergiaService {
 			}
 			return med;
 		});
-		return medicamentos;
 	}
 }

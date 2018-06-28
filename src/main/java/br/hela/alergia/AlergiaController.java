@@ -20,7 +20,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import br.hela.alergia.comandos.BuscarAlergia;
 import br.hela.alergia.comandos.CriarAlergia;
 import br.hela.alergia.comandos.EditarAlergia;
-import br.hela.security.AutenticaRequisicao;
+import br.hela.security.Autentica;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 
@@ -29,53 +29,63 @@ import io.swagger.annotations.ApiOperation;
 @RequestMapping("/alergias")
 @CrossOrigin
 public class AlergiaController {
+	private static final String ACESSONEGADO = "Acesso negado";
+
 	@Autowired
 	private AlergiaService alergiaService;
 
 	@Autowired
-	private AutenticaRequisicao autentica;
+	private Autentica autentica;
 
 	@ApiOperation("Busque todas as alergias")
 	@GetMapping
-	public ResponseEntity<List<BuscarAlergia>> getAlergias() throws SQLException, Exception {
-		Optional<List<BuscarAlergia>> optionalAlergias = alergiaService.encontrar();
-		return ResponseEntity.ok(optionalAlergias.get());
+	public ResponseEntity<List<BuscarAlergia>> getAlergias(@RequestHeader String token) throws AccessDeniedException {
+		if (autentica.autenticaRequisicao(token)) {
+			Optional<List<BuscarAlergia>> optionalAlergias = alergiaService.encontrar(autentica.idUser(token));
+			if (optionalAlergias.isPresent()) {
+				return ResponseEntity.ok(optionalAlergias.get());
+			}
+			return ResponseEntity.notFound().build();
+		}
+		throw new AccessDeniedException(ACESSONEGADO);
 	}
 
 	@ApiOperation("Busque a alergia pelo ID")
 	@GetMapping("/{id}")
-	public ResponseEntity<BuscarAlergia> getAlergiaPorId(@PathVariable AlergiaId id)
-			throws SQLException, NullPointerException, Exception {
-		Optional<BuscarAlergia> optionalAlergia = alergiaService.encontrar(id);
-		if (verificaAlergiaExistente(id)) {
-			return ResponseEntity.ok(optionalAlergia.get());
+	public ResponseEntity<BuscarAlergia> getAlergiaPorId(@PathVariable AlergiaId id, @RequestHeader String token)
+			throws AccessDeniedException {
+		if (autentica.autenticaRequisicao(token)) {
+			Optional<BuscarAlergia> optionalAlergia = alergiaService.encontrar(id);
+			if (optionalAlergia.isPresent()) {
+				return ResponseEntity.ok(optionalAlergia.get());
+			}
+			throw new NullPointerException("A alergia procurada não existe no banco de dados");
 		}
-		throw new NullPointerException("A alergia procurada não existe no banco de dados");
+		throw new AccessDeniedException(ACESSONEGADO);
 	}
 
 	@ApiOperation("Cadastre uma nova alergia")
 	@PostMapping
 	public ResponseEntity<String> postAlergia(@RequestBody CriarAlergia comando, @RequestHeader String token)
-			throws Exception, AccessDeniedException {
+			throws SQLException, AccessDeniedException {
 		if (autentica.autenticaRequisicao(token)) {
-			Optional<AlergiaId> optionalAlergiaId = alergiaService.salvar(comando);
+			Optional<AlergiaId> optionalAlergiaId = alergiaService.salvar(comando, autentica.idUser(token));
 			if (optionalAlergiaId.isPresent()) {
 				URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
 						.buildAndExpand(optionalAlergiaId.get()).toUri();
 				return ResponseEntity.created(location).body("A alergia foi cadastrada com sucesso");
 			}
-			throw new Exception("A alergia não foi salva devido a um erro interno");
+			throw new SQLException("A alergia não foi salva devido a um erro interno");
 		}
-		throw new AccessDeniedException("Acesso negado");
+		throw new AccessDeniedException(ACESSONEGADO);
 	}
 
 	@ApiOperation("Altere uma alergia")
 	@PutMapping
 	public ResponseEntity<String> putAlergia(@RequestBody EditarAlergia comando, @RequestHeader String token)
-			throws SQLException, NullPointerException, Exception, AccessDeniedException {
+			throws SQLException, AccessDeniedException {
 		if (autentica.autenticaRequisicao(token)) {
-
-			if (!verificaAlergiaExistente(comando.getIdAlergia())) {
+			if (!alergiaService.encontrar(comando.getIdAlergia()).isPresent()) {
 				throw new NullPointerException("A alergia a ser alterada não existe no banco de dados");
 			}
 			Optional<AlergiaId> optionalAlergiaId = alergiaService.alterar(comando);
@@ -87,15 +97,7 @@ public class AlergiaController {
 				throw new SQLException("Ocorreu um erro interno durante a alteração da alergia");
 			}
 		}
-		throw new AccessDeniedException("Acesso negado");
-	}
-
-	private boolean verificaAlergiaExistente(AlergiaId id) throws Exception {
-		if (!alergiaService.encontrar(id).isPresent()) {
-			return false;
-		} else {
-			return true;
-		}
+		throw new AccessDeniedException(ACESSONEGADO);
 	}
 
 }

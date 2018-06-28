@@ -9,7 +9,7 @@ public class BuscarMedicamento {
 	private MedicamentoId idMedicamento;
 	private String nomeMedicamento;
 	private String composicao;
-	public int ativo;
+	private int ativo;
 	
 	public BuscarMedicamento(Medicamento comandos) {
 		this.idMedicamento = comandos.getIdMedicamento();

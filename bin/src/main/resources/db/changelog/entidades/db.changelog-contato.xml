@@ -14,11 +14,9 @@
 			<column name="nome" type="${TYPE_DESCRICAO}">
 				<constraints nullable="false" />
 			</column>
-			<column name="ddd" type="${TYPE_NUMBER}">
-				<constraints nullable="false" />
-			</column>
-			<column name="numero" type="${TYPE_NUMBER}">
-				<constraints nullable="false" />
+			<column name="id_telefone" type="${TYPE_ID}">
+				<constraints nullable="false"
+				foreignKeyName="FK_CONTATO_TELEFONE" references="telefone(id)" />
 			</column>
 		</createTable>
 	</changeSet>
@@ -30,12 +28,6 @@
 				<constraints nullable="false" />
 			</column>
 			<column name="nome" type="${TYPE_DESCRICAO}">
-				<constraints nullable="true" />
-			</column>
-			<column name="ddd" type="${TYPE_NUMBER}">
-				<constraints nullable="true" />
-			</column>
-			<column name="numero" type="${TYPE_NUMBER}">
 				<constraints nullable="true" />
 			</column>
 			<column name="rev" type="${TYPE_NUMBER}">

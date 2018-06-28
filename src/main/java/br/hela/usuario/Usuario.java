@@ -7,7 +7,7 @@ import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import org.hibernate.envers.Audited;
 import br.hela.endereco.EnderecoId;
-import br.hela.esqueciSenha.comandos.GerarSenha;
+import br.hela.esqueci_senha.comandos.GerarSenha;
 import br.hela.sangue.SangueId;
 import br.hela.security.Criptografia;
 import br.hela.sexo.SexoId;
@@ -22,15 +22,17 @@ import lombok.Setter;
 @Entity
 @Audited
 @Data
-@EqualsAndHashCode(exclude = { "nome_completo", "nome_usuario", "email", "senha", "idSangue", "idEndereco",
-		"idTelefone", "data_nascimento", "idSexo", "imagem_usuario", "ativo" })
+@EqualsAndHashCode(exclude = { "nomeCompleto", "nomeUsuario", "email", "senha", "idSangue", "idEndereco",
+		"idTelefone", "dataNascimento", "idSexo", "imagemUsuario", "ativo" })
 public class Usuario {
 	@EmbeddedId
 	@AttributeOverride(name = "value", column = @Column(name = "id"))
 	@Setter(AccessLevel.NONE)
 	private UsuarioId id;
-	private String nome_completo;
-	private String nome_usuario;
+	@Column(name = "nome_completo")
+	private String nomeCompleto;
+	@Column(name = "nome_usuario")
+	private String nomeUsuario;
 	private String senha;
 	private String email;
 	@AttributeOverride(name = "value", column = @Column(name = "id_sangue"))
@@ -39,10 +41,12 @@ public class Usuario {
 	private EnderecoId idEndereco;
 	@AttributeOverride(name = "value", column = @Column(name = "id_telefone"))
 	private TelefoneId idTelefone;
-	private Date data_nascimento;
+	@Column(name = "data_nascimento")
+	private Date dataNascimento;
 	@AttributeOverride(name = "value", column = @Column(name = "id_sexo"))
 	private SexoId idSexo;
-	private String imagem_usuario;
+	@Column(name = "imagem_usuario")
+	private String imagemUsuario;
 	private int ativo;
 
 	public Usuario() {
@@ -50,22 +54,22 @@ public class Usuario {
 
 	public Usuario(CriarUsuario comando) {
 		this.id = new UsuarioId();
-		this.nome_completo = comando.getNome();
-		this.nome_usuario = comando.getUsername();
+		this.nomeCompleto = comando.getNome();
+		this.nomeUsuario = comando.getUsername();
 		this.email = comando.getEmail();
 		this.senha = Criptografia.criptografa(comando.getSenha());
 		this.idSangue = comando.getIdSangue();
-		this.data_nascimento = comando.getDataNascimento();
+		this.dataNascimento = comando.getDataNascimento();
 		this.idSexo = comando.getIdSexo();
-		this.imagem_usuario = comando.getImagem();
+		this.imagemUsuario = comando.getImagem();
 		this.ativo = 1;
 	}
 
 	public void apply(EditarUsuario comando) {
 		this.id = comando.getId();
-		this.nome_completo = comando.getNome();
+		this.nomeCompleto = comando.getNome();
 		this.senha = Criptografia.criptografa(comando.getSenha());
-		this.imagem_usuario = comando.getImagem();
+		this.imagemUsuario = comando.getImagem();
 	}
 
 	public void applySenha(GerarSenha comando) {

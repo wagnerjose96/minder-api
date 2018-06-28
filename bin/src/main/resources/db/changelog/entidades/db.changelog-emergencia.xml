@@ -20,7 +20,7 @@
 				<constraints nullable="true" />
 			</column>
 			<column name="id_usuario" type="${TYPE_ID}">
-				<constraints nullable="false"
+				<constraints nullable="false" unique="true"
 					foreignKeyName="FK_EMERGENCIA_USUARIO" references="usuario(id)" />
 			</column>				
 		</createTable>

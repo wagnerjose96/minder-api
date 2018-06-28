@@ -25,10 +25,9 @@ public class ConvenioService {
 	}
 
 	public Optional<BuscarConvenio> encontrar(ConvenioId id) {
-		Convenio convenio = convenioRepo.findById(id).get();
-		BuscarConvenio resultado = new BuscarConvenio();
-		if (convenio.getAtivo() == 1) {
-			resultado = new BuscarConvenio(convenio);
+		Optional<Convenio> convenio = convenioRepo.findById(id);
+		if (convenio.isPresent() && convenio.get().getAtivo() == 1) {
+			BuscarConvenio resultado = new BuscarConvenio(convenio.get());
 			return Optional.of(resultado);
 		}
 		return Optional.empty();
@@ -47,10 +46,13 @@ public class ConvenioService {
 	}
 
 	public Optional<String> deletar(ConvenioId id) {
-		Convenio convenio = convenioRepo.findById(id).get();
-		convenio.setAtivo(0);
-		convenioRepo.save(convenio);
-		return Optional.of("Convênio -> " + id + ": deletado com sucesso");
+		Optional<Convenio> convenio = convenioRepo.findById(id);
+		if (convenio.isPresent()) {
+			convenio.get().setAtivo(0);
+			convenioRepo.save(convenio.get());
+			return Optional.of("Convênio -> " + id + ": deletado com sucesso");
+		}
+		return Optional.empty();
 	}
 
 	public Optional<ConvenioId> alterar(EditarConvenio comando) {

@@ -6,6 +6,7 @@ import java.util.Optional;
 import javax.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
 import br.hela.alarme.Alarme;
 import br.hela.alarme.AlarmeId;
 import br.hela.alarme.comandos.BuscarAlarme;
@@ -13,37 +14,46 @@ import br.hela.alarme.comandos.CriarAlarme;
 import br.hela.alarme.comandos.EditarAlarme;
 import br.hela.medicamento.MedicamentoService;
 import br.hela.medicamento.comandos.BuscarMedicamento;
+import br.hela.usuario.UsuarioId;
 
 @Service
 @Transactional
 public class AlarmeService {
 	@Autowired
 	private AlarmeRepository repo;
-	
+
 	@Autowired
 	private MedicamentoService medService;
 
-	public Optional<AlarmeId> salvar(CriarAlarme comando) {
-		Alarme novo = repo.save(new Alarme(comando));
+	public Optional<AlarmeId> salvar(CriarAlarme comando, UsuarioId id) {
+		Alarme novo = repo.save(new Alarme(comando, id));
 		return Optional.of(novo.getId());
 	}
 
-	public Optional<BuscarAlarme> encontrar(AlarmeId alarmeId) throws Exception {
-		Alarme alarme = repo.findById(alarmeId).get();
-		BuscarAlarme resultado = new BuscarAlarme(alarme);
-		Optional<BuscarMedicamento> medicamento = medService.encontrar(alarme.getIdMedicamento());
-		resultado.setMedicamento(medicamento.get());
-		return Optional.of(resultado);
+	public Optional<BuscarAlarme> encontrar(AlarmeId alarmeId) {
+		Optional<Alarme> result = repo.findById(alarmeId);
+		if (result.isPresent()) {
+			BuscarAlarme resultado = new BuscarAlarme(result.get());
+			Optional<BuscarMedicamento> medicamento = medService.encontrar(result.get().getIdMedicamento());
+			if (medicamento.isPresent())
+				resultado.setMedicamento(medicamento.get());
+
+			return Optional.of(resultado);
+		}
+		return Optional.empty();
 	}
 
-	public Optional<List<BuscarAlarme>> encontrar() throws Exception {
+	public Optional<List<BuscarAlarme>> encontrar(UsuarioId id) {
 		List<BuscarAlarme> resultados = new ArrayList<>();
 		List<Alarme> alarmes = repo.findAll();
 		for (Alarme alarme : alarmes) {
-			BuscarAlarme nova = new BuscarAlarme(alarme);
-			Optional<BuscarMedicamento> medicamento = medService.encontrar(alarme.getIdMedicamento());
-			nova.setMedicamento(medicamento.get());
-			resultados.add(nova);
+			if(alarme.getIdUsuario().toString().equals(id.toString())) {
+				BuscarAlarme nova = new BuscarAlarme(alarme);
+				Optional<BuscarMedicamento> medicamento = medService.encontrar(alarme.getIdMedicamento());
+				if (medicamento.isPresent())
+					nova.setMedicamento(medicamento.get());
+				resultados.add(nova);
+			}
 		}
 		return Optional.of(resultados);
 	}

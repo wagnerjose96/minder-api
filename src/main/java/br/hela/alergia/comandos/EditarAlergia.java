@@ -14,6 +14,6 @@ public class EditarAlergia {
 	private String localAfetado;
 	private Date dataDescoberta;
 	private String efeitos;
-	private List<MedicamentoId> id_medicamentos = new ArrayList<MedicamentoId>();
+	private List<MedicamentoId> idMedicamentos = new ArrayList<>();
 
 }

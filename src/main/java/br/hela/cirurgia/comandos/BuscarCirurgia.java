@@ -2,9 +2,10 @@ package br.hela.cirurgia.comandos;
 
 import java.util.ArrayList;
 import java.util.List;
-import br.hela.ConverterData;
+
 import br.hela.cirurgia.Cirurgia;
 import br.hela.cirurgia.CirurgiaId;
+import br.hela.conversor.ConverterData;
 import br.hela.medicamento.comandos.BuscarMedicamento;
 import lombok.Data;
 
@@ -20,7 +21,7 @@ public class BuscarCirurgia {
 	public BuscarCirurgia(Cirurgia comando) {
 		this.idCirurgia = comando.getIdCirurgia();
 		this.tipoCirurgia = comando.getTipoCirurgia();
-		Long dataLong = comando.getDataCirurgia().getTime(); // pega os milessegundos;
+		Long dataLong = comando.getDataCirurgia().getTime();
 		this.dataCirurgia = ConverterData.converterData(dataLong);
 		this.clinicaResponsavel = comando.getClinicaResponsavel();
 		this.medicoResponsavel = comando.getMedicoResponsavel();

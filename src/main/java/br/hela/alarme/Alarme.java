@@ -9,6 +9,7 @@ import org.hibernate.envers.Audited;
 import br.hela.alarme.comandos.CriarAlarme;
 import br.hela.alarme.comandos.EditarAlarme;
 import br.hela.medicamento.MedicamentoId;
+import br.hela.usuario.UsuarioId;
 import lombok.AccessLevel;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -25,6 +26,8 @@ public class Alarme {
 	private AlarmeId id;
 	@AttributeOverride(name = "value", column = @Column(name = "id_medicamento"))
 	private MedicamentoId idMedicamento;
+	@AttributeOverride(name = "value", column = @Column(name = "id_usuario"))
+	private UsuarioId idUsuario;
 	private Date dataInicio;
 	private Date dataFim;
 	private String quantidade;
@@ -34,7 +37,7 @@ public class Alarme {
 	public Alarme() {
 	}
 
-	public Alarme(CriarAlarme comando) {
+	public Alarme(CriarAlarme comando, UsuarioId id) {
 		this.id = new AlarmeId();
 		this.idMedicamento = comando.getIdMedicamento();
 		this.dataInicio = comando.getDataInicio();
@@ -42,6 +45,7 @@ public class Alarme {
 		this.quantidade = comando.getQuantidade();
 		this.descricao = comando.getDescricao();
 		this.periodicidade = comando.getPeriodicidade();
+		this.idUsuario = id;
 	}
 
 	public void apply(EditarAlarme comando) {

@@ -12,5 +12,5 @@ public class EditarDoenca {
 	private DoencaId idDoenca;
 	private String nomeDoenca;
 	private Date dataDescoberta;
-	private List<MedicamentoId> idMedicamentos = new ArrayList<MedicamentoId>();
+	private List<MedicamentoId> idMedicamentos = new ArrayList<>();
 }

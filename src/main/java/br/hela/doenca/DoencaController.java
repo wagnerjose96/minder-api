@@ -20,7 +20,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import br.hela.doenca.comandos.BuscarDoenca;
 import br.hela.doenca.comandos.CriarDoenca;
 import br.hela.doenca.comandos.EditarDoenca;
-import br.hela.security.AutenticaRequisicao;
+import br.hela.security.Autentica;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 
@@ -29,50 +29,63 @@ import io.swagger.annotations.ApiOperation;
 @RequestMapping("/doencas")
 @CrossOrigin
 public class DoencaController {
+	private static final String ACESSONEGADO = "Acesso negado";
+
 	@Autowired
 	private DoencaService doencaService;
+
 	@Autowired
-	private AutenticaRequisicao autentica;
+	private Autentica autentica;
 
 	@ApiOperation("Busque todas as doenças")
 	@GetMapping
-	public ResponseEntity<List<BuscarDoenca>> getDoencas() throws Exception, SQLException {
-		Optional<List<BuscarDoenca>> optionalDoencas = doencaService.encontrar();
-		return ResponseEntity.ok(optionalDoencas.get());
+	public ResponseEntity<List<BuscarDoenca>> getDoencas(@RequestHeader String token) throws AccessDeniedException {
+		if (autentica.autenticaRequisicao(token)) {
+			Optional<List<BuscarDoenca>> optionalDoencas = doencaService.encontrar(autentica.idUser(token));
+			if (optionalDoencas.isPresent()) {
+				return ResponseEntity.ok(optionalDoencas.get());
+			}
+			return ResponseEntity.notFound().build();
+		}
+		throw new AccessDeniedException(ACESSONEGADO);
 	}
 
 	@ApiOperation("Busque uma doença pelo ID")
 	@GetMapping("/{id}")
-	public ResponseEntity<BuscarDoenca> getDoencaPorId(@PathVariable DoencaId id) throws Exception, SQLException {
-		Optional<BuscarDoenca> optionalDoenca = doencaService.encontrar(id);
-		if (verificaDoencaExistente(id)) {
-			return ResponseEntity.ok(optionalDoenca.get());
+	public ResponseEntity<BuscarDoenca> getDoencaPorId(@PathVariable DoencaId id, @RequestHeader String token)
+			throws AccessDeniedException {
+		if (autentica.autenticaRequisicao(token)) {
+			Optional<BuscarDoenca> optionalDoenca = doencaService.encontrar(id);
+			if (optionalDoenca.isPresent()) {
+				return ResponseEntity.ok(optionalDoenca.get());
+			}
+			throw new NullPointerException("A doença procurada não existe no banco de dados");
 		}
-		throw new NullPointerException("A doença procurada não existe no banco de dados");
+		throw new AccessDeniedException(ACESSONEGADO);
 	}
 
 	@ApiOperation("Cadastre uma nova doença")
 	@PostMapping
 	public ResponseEntity<String> postDoenca(@RequestBody CriarDoenca comando, @RequestHeader String token)
-			throws Exception, AccessDeniedException {
+			throws AccessDeniedException, SQLException {
 		if (autentica.autenticaRequisicao(token)) {
-			Optional<DoencaId> optionalDoencaId = doencaService.salvar(comando);
+			Optional<DoencaId> optionalDoencaId = doencaService.salvar(comando, autentica.idUser(token));
 			if (optionalDoencaId.isPresent()) {
 				URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
 						.buildAndExpand(optionalDoencaId.get()).toUri();
 				return ResponseEntity.created(location).body("A doença foi cadastrada com sucesso");
 			}
-			throw new Exception("A doença não foi salva devido a um erro interno");
+			throw new SQLException("A doença não foi salva devido a um erro interno");
 		}
-		throw new AccessDeniedException("Acesso negado");
+		throw new AccessDeniedException(ACESSONEGADO);
 	}
 
 	@ApiOperation("Altere uma doença")
 	@PutMapping
 	public ResponseEntity<String> putDoenca(@RequestBody EditarDoenca comando, @RequestHeader String token)
-			throws SQLException, NullPointerException, Exception, AccessDeniedException {
+			throws AccessDeniedException, SQLException {
 		if (autentica.autenticaRequisicao(token)) {
-			if (!verificaDoencaExistente(comando.getIdDoenca())) {
+			if (!doencaService.encontrar(comando.getIdDoenca()).isPresent()) {
 				throw new NullPointerException("A doença a ser alterada não existe no banco de dados");
 			}
 			Optional<DoencaId> optionalDoencaId = doencaService.alterar(comando);
@@ -84,14 +97,7 @@ public class DoencaController {
 				throw new SQLException("Ocorreu um erro interno durante a alteração da doença");
 			}
 		}
-		throw new AccessDeniedException("Acesso negado");
+		throw new AccessDeniedException(ACESSONEGADO);
 	}
 
-	private boolean verificaDoencaExistente(DoencaId id) throws Exception {
-		if (!doencaService.encontrar(id).isPresent()) {
-			return false;
-		} else {
-			return true;
-		}
-	}
 }

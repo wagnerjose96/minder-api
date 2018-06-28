@@ -12,5 +12,5 @@ public class CriarCirurgia {
 	private Date dataCirurgia;
 	private String clinicaResponsavel;
 	private String medicoResponsavel;
-	private List<MedicamentoId> id_medicamentos = new ArrayList<MedicamentoId>();
+	private List<MedicamentoId> idMedicamentos = new ArrayList<>();
 }

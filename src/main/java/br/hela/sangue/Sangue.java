@@ -15,24 +15,25 @@ import lombok.Setter;
 @Entity
 @Audited
 @Data
-@EqualsAndHashCode(exclude = { "sangue" })
+@EqualsAndHashCode(exclude = { "tipoSanguineo" })
 public class Sangue {
 	@EmbeddedId
 	@AttributeOverride(name = "value", column = @Column(name = "id_sangue"))
 	@Setter(AccessLevel.NONE)
 	private SangueId idSangue;
-	private String sangue;
+	@Column(name = "sangue")
+	private String tipoSanguineo;
 
 	public Sangue() {
 	}
 
 	public Sangue(CriarSangue comando) {
 		this.idSangue = new SangueId();
-		this.sangue = comando.getSangue();
+		this.tipoSanguineo = comando.getSangue();
 	}
 
 	public void apply(EditarSangue comando) {
 		this.idSangue = comando.getIdSangue();
-		this.sangue = comando.getSangue();
+		this.tipoSanguineo = comando.getSangue();
 	}
 }

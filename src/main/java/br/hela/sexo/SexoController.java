@@ -20,7 +20,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import br.hela.sexo.comandos.BuscarSexo;
 import br.hela.sexo.comandos.CriarSexo;
 import br.hela.sexo.comandos.EditarSexo;
-import br.hela.security.AutenticaAdm;
+import br.hela.security.Autentica;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 
@@ -29,25 +29,29 @@ import io.swagger.annotations.ApiOperation;
 @RequestMapping("/generos")
 @CrossOrigin
 public class SexoController {
+	private static final String ACESSONEGADO = "Acesso negado";
+
 	@Autowired
 	private SexoService service;
 
 	@Autowired
-	private AutenticaAdm autentica;
+	private Autentica autentica;
 
 	@ApiOperation("Busque todos os genêros")
 	@GetMapping
-	public ResponseEntity<List<BuscarSexo>> getSexo() throws SQLException, Exception {
+	public ResponseEntity<List<BuscarSexo>> getSexo() {
 		Optional<List<BuscarSexo>> optionalGeneros = service.encontrar();
-		return ResponseEntity.ok(optionalGeneros.get());
+		if (optionalGeneros.isPresent()) {
+			return ResponseEntity.ok(optionalGeneros.get());
+		}
+		return ResponseEntity.notFound().build();
 	}
 
 	@ApiOperation("Busque um genêro pelo ID")
 	@GetMapping("/{id}")
-	public ResponseEntity<BuscarSexo> getSexoPorId(@PathVariable SexoId id)
-			throws SQLException, Exception, NullPointerException {
-		if (verificaSexoExistente(id)) {
-			Optional<BuscarSexo> optionalGenero = service.encontrar(id);
+	public ResponseEntity<BuscarSexo> getSexoPorId(@PathVariable SexoId id) {
+		Optional<BuscarSexo> optionalGenero = service.encontrar(id);
+		if (optionalGenero.isPresent()) {
 			return ResponseEntity.ok(optionalGenero.get());
 		}
 		throw new NullPointerException("O genêro procurado não existe no banco de dados");
@@ -56,25 +60,25 @@ public class SexoController {
 	@ApiOperation("Cadastre um novo genêro")
 	@PostMapping
 	public ResponseEntity<String> postSexo(@RequestBody CriarSexo comando, @RequestHeader String token)
-			throws Exception, AccessDeniedException {
-		if (autentica.autenticaRequisicao(token)) {
+			throws SQLException, AccessDeniedException {
+		if (autentica.autenticaRequisicaoAdm(token)) {
 			Optional<SexoId> optionalGeneroId = service.salvar(comando);
 			if (optionalGeneroId.isPresent()) {
 				URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
 						.buildAndExpand(optionalGeneroId.get()).toUri();
 				return ResponseEntity.created(location).body("O genêro foi cadastrado com sucesso");
 			}
-			throw new Exception("O genêro não foi salvo devido a um erro interno");
+			throw new SQLException("O genêro não foi salvo devido a um erro interno");
 		}
-		throw new AccessDeniedException("Acesso negado");
+		throw new AccessDeniedException(ACESSONEGADO);
 	}
 
 	@ApiOperation("Altere um genêro")
 	@PutMapping
 	public ResponseEntity<String> putSexo(@RequestBody EditarSexo comando, @RequestHeader String token)
-			throws NullPointerException, Exception, SQLException, AccessDeniedException {
-		if (autentica.autenticaRequisicao(token)) {
-			if (!verificaSexoExistente(comando.getIdSexo())) {
+			throws SQLException, AccessDeniedException {
+		if (autentica.autenticaRequisicaoAdm(token)) {
+			if (!service.encontrar(comando.getId()).isPresent()) {
 				throw new NullPointerException("O genêro a ser alterado não existe no banco de dados");
 			}
 			Optional<SexoId> optionalSexoId = service.alterar(comando);
@@ -83,17 +87,9 @@ public class SexoController {
 						.buildAndExpand(optionalSexoId.get()).toUri();
 				return ResponseEntity.created(location).body("O genêro foi alterado com sucesso");
 			} else {
-				throw new InternalError("Ocorreu um erro interno durante a alteração do genêro");
+				throw new SQLException("Ocorreu um erro interno durante a alteração do genêro");
 			}
 		}
-		throw new AccessDeniedException("Acesso negado");
-	}
-
-	private boolean verificaSexoExistente(SexoId id) {
-		if (!service.encontrar(id).isPresent()) {
-			return false;
-		} else {
-			return true;
-		}
+		throw new AccessDeniedException(ACESSONEGADO);
 	}
 }

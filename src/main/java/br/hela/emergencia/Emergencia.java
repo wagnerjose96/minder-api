@@ -31,12 +31,12 @@ public class Emergencia {
 	public Emergencia() {
 	}
 
-	public Emergencia(CriarEmergencia comando) {
+	public Emergencia(CriarEmergencia comando, UsuarioId id) {
 		this.idEmergencia = new EmergenciaId();
 		this.ataqueConvulsivos = comando.getAtaqueConvulsivos();
 		this.problemasCardiacos = comando.getProblemasCardiacos();
 		this.doadorDeOrgaos = comando.getDoadorDeOrgaos();
-		this.idUsuario = comando.getIdUsuario();
+		this.idUsuario = id;
 	}
 
 	public void apply(EditarEmergencia comando) {

@@ -20,7 +20,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import br.hela.telefone.comandos.BuscarTelefone;
 import br.hela.telefone.comandos.CriarTelefone;
 import br.hela.telefone.comandos.EditarTelefone;
-import br.hela.security.AutenticaRequisicao;
+import br.hela.security.Autentica;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 
@@ -29,25 +29,29 @@ import io.swagger.annotations.ApiOperation;
 @RequestMapping("/telefones")
 @CrossOrigin
 public class TelefoneController {
+	private static final String ACESSONEGADO = "Acesso negado";
+
 	@Autowired
 	private TelefoneService service;
 
 	@Autowired
-	private AutenticaRequisicao autentica;
+	private Autentica autentica;
 
 	@ApiOperation("Busque todos os telefones")
 	@GetMapping
-	public ResponseEntity<List<BuscarTelefone>> getTelefone() throws SQLException, Exception {
+	public ResponseEntity<List<BuscarTelefone>> getTelefone() {
 		Optional<List<BuscarTelefone>> optionalTelefones = service.encontrar();
-		return ResponseEntity.ok(optionalTelefones.get());
+		if (optionalTelefones.isPresent()) {
+			return ResponseEntity.ok(optionalTelefones.get());
+		}
+		return ResponseEntity.notFound().build();
 	}
 
 	@ApiOperation("Busque um telefone pelo ID")
 	@GetMapping("/{id}")
-	public ResponseEntity<BuscarTelefone> getTelefonePorId(@PathVariable TelefoneId id)
-			throws SQLException, Exception, NullPointerException {
-		if (verificaTelefoneExistente(id)) {
-			Optional<BuscarTelefone> optionalTelefone = service.encontrar(id);
+	public ResponseEntity<BuscarTelefone> getTelefonePorId(@PathVariable TelefoneId id) {
+		Optional<BuscarTelefone> optionalTelefone = service.encontrar(id);
+		if (optionalTelefone.isPresent()) {
 			return ResponseEntity.ok(optionalTelefone.get());
 		}
 		throw new NullPointerException("O telefone procurado não existe no banco de dados");
@@ -56,7 +60,7 @@ public class TelefoneController {
 	@ApiOperation("Cadastre um novo telefone")
 	@PostMapping
 	public ResponseEntity<String> postTelefone(@RequestBody CriarTelefone comando, @RequestHeader String token)
-			throws Exception, AccessDeniedException {
+			throws SQLException, AccessDeniedException {
 		if (autentica.autenticaRequisicao(token)) {
 			Optional<TelefoneId> optionalTelefoneId = service.salvar(comando);
 			if (optionalTelefoneId.isPresent()) {
@@ -64,17 +68,17 @@ public class TelefoneController {
 						.buildAndExpand(optionalTelefoneId.get()).toUri();
 				return ResponseEntity.created(location).body("O telefone foi cadastrado com sucesso");
 			}
-			throw new Exception("O telefone não foi salvo devido a um erro interno");
+			throw new SQLException("O telefone não foi salvo devido a um erro interno");
 		}
-		throw new AccessDeniedException("Acesso negado");
+		throw new AccessDeniedException(ACESSONEGADO);
 	}
 
 	@ApiOperation("Altere um telefone")
 	@PutMapping
 	public ResponseEntity<String> putTelefone(@RequestBody EditarTelefone comando, @RequestHeader String token)
-			throws NullPointerException, Exception, SQLException, AccessDeniedException {
+			throws SQLException, AccessDeniedException {
 		if (autentica.autenticaRequisicao(token)) {
-			if (!verificaTelefoneExistente(comando.getId())) {
+			if (!service.encontrar(comando.getId()).isPresent()) {
 				throw new NullPointerException("O telefone a ser alterado não existe no banco de dados");
 			}
 			Optional<TelefoneId> optionalTelefoneId = service.alterar(comando);
@@ -83,17 +87,9 @@ public class TelefoneController {
 						.buildAndExpand(optionalTelefoneId.get()).toUri();
 				return ResponseEntity.created(location).body("O telefone foi alterado com sucesso");
 			} else {
-				throw new InternalError("Ocorreu um erro interno durante a alteração do telefone");
+				throw new SQLException("Ocorreu um erro interno durante a alteração do telefone");
 			}
 		}
-		throw new AccessDeniedException("Acesso negado");
-	}
-
-	private boolean verificaTelefoneExistente(TelefoneId id) {
-		if (!service.encontrar(id).isPresent()) {
-			return false;
-		} else {
-			return true;
-		}
+		throw new AccessDeniedException(ACESSONEGADO);
 	}
 }
