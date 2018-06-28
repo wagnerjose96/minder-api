@@ -1,7 +1,8 @@
 package br.hela.doenca.doenca_medicamento;
 
 import javax.persistence.Embeddable;
-import br.hela.BaseId;
+
+import br.hela.base_id.BaseId;
 
 @Embeddable
 public class DoencaMedicamentoId extends BaseId {

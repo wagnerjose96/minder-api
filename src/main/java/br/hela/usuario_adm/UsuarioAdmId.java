@@ -2,7 +2,7 @@ package br.hela.usuario_adm;
 
 import javax.persistence.Embeddable;
 
-import br.hela.BaseId;
+import br.hela.base_id.BaseId;
 
 @Embeddable
 public class UsuarioAdmId extends BaseId {

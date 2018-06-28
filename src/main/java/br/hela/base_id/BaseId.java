@@ -1,4 +1,4 @@
-package br.hela;
+package br.hela.base_id;
 
 import java.io.Serializable;
 import java.util.UUID;

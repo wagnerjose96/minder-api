@@ -1,4 +1,4 @@
-package br.hela;
+package br.hela.configuracao;
 
 import java.util.Collections;
 import org.springframework.context.annotation.Bean;
