@@ -9,12 +9,17 @@ import org.springframework.transaction.annotation.Transactional;
 import br.hela.pergunta_notificacao.comandos.BuscarPergunta;
 import br.hela.pergunta_notificacao.comandos.CriarPergunta;
 import br.hela.pergunta_notificacao.comandos.EditarPergunta;
+import br.hela.pergunta_notificacao.resposta.RespostaService;
+import br.hela.pergunta_notificacao.resposta.comandos.BuscarResposta;
 
 @Service
 @Transactional
 public class PerguntaService {
 	@Autowired
 	private PerguntaRepository repo;
+
+	@Autowired
+	private RespostaService respostaService;
 
 	public Optional<PerguntaId> salvar(CriarPergunta comando) {
 		Pergunta novo = repo.save(new Pergunta(comando));
@@ -25,6 +30,7 @@ public class PerguntaService {
 		Optional<Pergunta> pergunta = repo.findById(id);
 		if (pergunta.isPresent()) {
 			BuscarPergunta resultado = new BuscarPergunta(pergunta.get());
+			resultado.setRespostas(construir(resultado));
 			return Optional.of(resultado);
 		}
 		return Optional.empty();
@@ -34,8 +40,9 @@ public class PerguntaService {
 		List<BuscarPergunta> resultados = new ArrayList<>();
 		List<Pergunta> perguntas = repo.findAll();
 		for (Pergunta pergunta : perguntas) {
-			BuscarPergunta med = new BuscarPergunta(pergunta);
-			resultados.add(med);
+			BuscarPergunta resultado = new BuscarPergunta(pergunta);
+			resultado.setRespostas(construir(resultado));
+			resultados.add(resultado);
 		}
 		return Optional.of(resultados);
 	}
@@ -49,5 +56,17 @@ public class PerguntaService {
 			return Optional.of(comando.getIdPergunta());
 		}
 		return Optional.empty();
+	}
+
+	private List<BuscarResposta> construir(BuscarPergunta resultado) {
+		Optional<List<BuscarResposta>> respostas = respostaService.encontrar();
+		List<BuscarResposta> listaRespostas = new ArrayList<>();
+		if (respostas.isPresent()) {
+			for (BuscarResposta resposta : respostas.get()) {
+				if (resultado.getIdPergunta().toString().equals(resposta.getIdPergunta().toString()))
+					listaRespostas.add(resposta);
+			}
+		}
+		return listaRespostas;
 	}
 }
