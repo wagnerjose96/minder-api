@@ -59,7 +59,7 @@ public class UsuarioAdmController {
 	@GetMapping("/{id}")
 	public ResponseEntity<BuscarUsuarioAdm> getUsuarioAdminId(@PathVariable UsuarioAdmId id,
 			@RequestHeader String token) throws AccessDeniedException {
-		if (autentica.autenticaRequisicao(token)) {
+		if (autentica.autenticaRequisicaoAdm(token)) {
 			Optional<BuscarUsuarioAdm> optionalUsuarioAdmin = service.encontrar(id);
 			if (optionalUsuarioAdmin.isPresent()) {
 				return ResponseEntity.ok(optionalUsuarioAdmin.get());
@@ -73,7 +73,7 @@ public class UsuarioAdmController {
 	@DeleteMapping("/{id}")
 	public ResponseEntity<Optional<String>> deleteUsuarioAdmin(@PathVariable UsuarioAdmId id,
 			@RequestHeader String token) throws AccessDeniedException {
-		if (autentica.autenticaRequisicao(token)) {
+		if (autentica.autenticaRequisicaoAdm(token)) {
 			if (service.encontrar(id).isPresent()) {
 				Optional<String> resultado = service.deletar(id);
 				return ResponseEntity.ok(resultado);
@@ -99,7 +99,7 @@ public class UsuarioAdmController {
 	@PutMapping
 	public ResponseEntity<String> putUsuarioAdmin(@RequestHeader String token, @RequestBody EditarUsuarioAdm comando)
 			throws AccessDeniedException, SQLException {
-		if (autentica.autenticaRequisicao(token)) {
+		if (autentica.autenticaRequisicaoAdm(token)) {
 			if (!service.encontrar(comando.getId()).isPresent()) {
 				throw new NullPointerException("O administrador a ser alterado não existe no banco de dados");
 			}
