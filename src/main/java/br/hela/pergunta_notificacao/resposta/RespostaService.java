@@ -6,6 +6,9 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import br.hela.pergunta_notificacao.PerguntaService;
+import br.hela.pergunta_notificacao.comandos.BuscarPergunta;
 import br.hela.pergunta_notificacao.resposta.comandos.BuscarResposta;
 import br.hela.pergunta_notificacao.resposta.comandos.CriarResposta;
 import br.hela.pergunta_notificacao.resposta.comandos.EditarResposta;
@@ -15,6 +18,9 @@ import br.hela.pergunta_notificacao.resposta.comandos.EditarResposta;
 public class RespostaService {
 	@Autowired
 	private RespostaRepository repo;
+	
+	@Autowired
+	private PerguntaService perguntaService;
 
 	public Optional<RespostaId> salvar(CriarResposta comando) {
 		Resposta novo = repo.save(new Resposta(comando));	
@@ -25,6 +31,9 @@ public class RespostaService {
 		Optional<Resposta> resposta = repo.findById(id);
 		if (resposta.isPresent()) {
 			BuscarResposta resultado = new BuscarResposta(resposta.get());
+			Optional<BuscarPergunta> pergunta = perguntaService.encontrar(resposta.get().getIdPergunta());
+			if(pergunta.isPresent())
+				resultado.setPergunta(pergunta.get());
 			return Optional.of(resultado);
 		}
 		return Optional.empty();
@@ -35,6 +44,9 @@ public class RespostaService {
 		List<Resposta> respostas = repo.findAll();
 		for (Resposta resposta : respostas) {
 			BuscarResposta res = new BuscarResposta(resposta);
+			Optional<BuscarPergunta> pergunta = perguntaService.encontrar(resposta.getIdPergunta());
+			if(pergunta.isPresent())
+				res.setPergunta(pergunta.get());
 			resultados.add(res);
 		}
 		return Optional.of(resultados);
