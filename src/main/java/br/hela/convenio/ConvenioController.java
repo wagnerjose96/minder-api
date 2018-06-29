@@ -64,7 +64,7 @@ public class ConvenioController {
 	@DeleteMapping("/{id}")
 	public ResponseEntity<Optional<String>> deletarConvenio(@PathVariable ConvenioId id, @RequestHeader String token)
 			throws AccessDeniedException {
-		if (autentica.autenticaRequisicao(token)) {
+		if (autentica.autenticaRequisicaoAdm(token)) {
 			if (service.encontrar(id).isPresent()) {
 				Optional<String> optionalConvenio = service.deletar(id);
 				return ResponseEntity.ok(optionalConvenio);
@@ -78,7 +78,7 @@ public class ConvenioController {
 	@PostMapping
 	public ResponseEntity<String> postConvenio(@RequestBody CriarConvenio comando, @RequestHeader String token)
 			throws AccessDeniedException, SQLException {
-		if (autentica.autenticaRequisicao(token)) {
+		if (autentica.autenticaRequisicaoAdm(token)) {
 			Optional<ConvenioId> optionalConvenioId = service.salvar(comando);
 			if (optionalConvenioId.isPresent()) {
 				URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
@@ -94,7 +94,7 @@ public class ConvenioController {
 	@PutMapping
 	public ResponseEntity<String> putConvenio(@RequestBody EditarConvenio comando, @RequestHeader String token)
 			throws AccessDeniedException, SQLException {
-		if (autentica.autenticaRequisicao(token)) {
+		if (autentica.autenticaRequisicaoAdm(token)) {
 			if (!service.encontrar(comando.getId()).isPresent()) {
 				throw new NullPointerException("O convênio a ser alterado não existe no banco de dados");
 			}
