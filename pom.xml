@@ -25,14 +25,17 @@
 	</properties>
 
 	<dependencies>
+
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-actuator</artifactId>
 		</dependency>
+
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
 		</dependency>
+
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-data-jpa</artifactId>
@@ -83,6 +86,7 @@
 			<version>2.8.0</version>
 			<scope>compile</scope>
 		</dependency>
+
 		<dependency>
 			<groupId>io.springfox</groupId>
 			<artifactId>springfox-swagger-ui</artifactId>
@@ -112,6 +116,11 @@
 			<groupId>org.codehaus.sonar</groupId>
 			<artifactId>sonar-maven-plugin</artifactId>
 			<version>4.5.4</version>
+		</dependency>
+
+		<dependency>
+			<groupId>com.jayway.jsonpath</groupId>
+			<artifactId>json-path</artifactId>
 		</dependency>
 
 	</dependencies>
@@ -144,6 +153,7 @@
 	</build>
 
 	<repositories>
+
 		<repository>
 			<id>spring-releases</id>
 			<url>https://repo.spring.io/libs-release</url>
@@ -154,16 +164,20 @@
 			<name>jcenter</name>
 			<url>http://oss.jfrog.org/artifactory/oss-release-local/</url>
 		</repository>
+
 	</repositories>
 
 	<pluginRepositories>
+
 		<pluginRepository>
 			<id>spring-releases</id>
 			<url>https://repo.spring.io/libs-release</url>
 		</pluginRepository>
+
 	</pluginRepositories>
 
 	<profiles>
+
 		<profile>
 			<id>sonar</id>
 			<activation>
@@ -171,10 +185,10 @@
 			</activation>
 			<properties>
 				<sonar.host.url>
-					http://ip172-18-0-26-bcr50lm08n7000c2v680-9000.direct.labs.play-with-docker.com
 				</sonar.host.url>
 			</properties>
 		</profile>
+
 	</profiles>
 
 </project>
