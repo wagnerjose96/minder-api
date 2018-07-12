@@ -77,7 +77,7 @@ public class UsuarioController {
 
 	@ApiOperation("Cadastre um novo usuário")
 	@PostMapping
-	public ResponseEntity<String> postMedicamento(@RequestBody CriarUsuario comando) throws SQLException {
+	public ResponseEntity<String> postUsuario(@RequestBody CriarUsuario comando) throws SQLException {
 		Optional<UsuarioId> optionalUsuarioId = service.salvar(comando);
 		if (optionalUsuarioId.isPresent()) {
 			URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
@@ -89,7 +89,7 @@ public class UsuarioController {
 
 	@ApiOperation("Altere um usuário")
 	@PutMapping
-	public ResponseEntity<String> putMedicamento(@RequestBody EditarUsuario comando, @RequestHeader String token)
+	public ResponseEntity<String> putUsuario(@RequestBody EditarUsuario comando, @RequestHeader String token)
 			throws AccessDeniedException, SQLException {
 		if (autentica.autenticaRequisicao(token)) {
 			if (!service.encontrar(comando.getId()).isPresent()) {
