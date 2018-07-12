@@ -139,22 +139,20 @@ public class TestUsuarioController {
 		usuario.setIdEndereco(new EnderecoId("1"));
 		usuario.setIdTelefone(new TelefoneId("1"));		
 		repo.save(usuario);
-		String login = logar("wagnerju", "1234");
 		
 		EditarUsuario usuarioAtualizado = editarUsuario(usuario);
 		final String jsonString = objectMapper.writeValueAsString(usuarioAtualizado);
 
 		this.mockMvc
 				.perform(put("/usuarios").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
-						.header("token", login).content(jsonString)).andExpect(status().isOk());
+						.header("token", logar(usuario.getNomeUsuario(), usuario.getSenha())).content(jsonString)).andExpect(status().isOk());
 		assertEquals(usuarioAtualizado.getNome(), "Teste Ṕut");
 	}
 
 	private String logar(String nomeUsuario, String senha) {
 		LogarUsuario corpoLogin = new LogarUsuario();
-		corpoLogin.setIdentificador(nomeUsuario);
-		corpoLogin.setSenha(senha);
-		return login.loginUsuario(corpoLogin).toString();
+		corpoLogin.se
+		login.loginUsuario(comando)		return null;
 	}
 
 }
