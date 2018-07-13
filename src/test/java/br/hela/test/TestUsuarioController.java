@@ -146,11 +146,11 @@ public class TestUsuarioController {
 	}
 
 	private SangueId criarSangue() {
-		return repoSangue.save(new Sangue(new CriarSangue("A+"))).getIdSangue();
+		return repoSangue.save(new Sangue(new CriarSangue("T+"))).getIdSangue();
 	}
 
 	private SexoId criarSexo() {
-		return repoSexo.save(new Sexo(new CriarSexo("Masculino"))).getIdGenero();
+		return repoSexo.save(new Sexo(new CriarSexo("Teste"))).getIdGenero();
 	}
 
 	private String logar(String nomeUsuario, String senha) {
