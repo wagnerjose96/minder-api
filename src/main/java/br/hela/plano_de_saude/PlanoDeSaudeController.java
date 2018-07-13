@@ -113,7 +113,8 @@ public class PlanoDeSaudeController {
 				throw new NullPointerException("O plano de saúde a ser deletado não existe no banco de dados");
 			}
 			Optional<String> resultado = service.deletar(id);
-			return ResponseEntity.ok(resultado.get());
+			if (resultado.isPresent())
+				return ResponseEntity.ok(resultado.get());
 		}
 		throw new AccessDeniedException(ACESSONEGADO);
 	}

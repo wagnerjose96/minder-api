@@ -68,7 +68,8 @@ public class UsuarioController {
 		if (autentica.autenticaRequisicao(token)) {
 			if (service.encontrar(id).isPresent()) {
 				Optional<String> optionalUsuario = service.deletar(id);
-				return ResponseEntity.ok(optionalUsuario.get());
+				if (optionalUsuario.isPresent())
+					return ResponseEntity.ok(optionalUsuario.get());
 			}
 			throw new NullPointerException("O usuário a deletar não existe no banco de dados");
 		}

@@ -65,7 +65,8 @@ public class MedicamentoController {
 		if (autentica.autenticaRequisicaoAdm(token)) {
 			if (service.encontrar().isPresent()) {
 				Optional<String> optionalMedicamento = service.deletar(id);
-				return ResponseEntity.ok(optionalMedicamento.get());
+				if (optionalMedicamento.isPresent())
+					return ResponseEntity.ok(optionalMedicamento.get());
 			}
 			throw new NullPointerException("O medicamento a deletar não existe no banco de dados");
 		}

@@ -108,7 +108,8 @@ public class AlarmeController {
 				throw new NullPointerException("O alarme a ser deletado não existe no banco de dados");
 			}
 			Optional<String> resultado = alarmeService.deletar(id);
-			return ResponseEntity.ok(resultado.get());
+			if (resultado.isPresent())
+				return ResponseEntity.ok(resultado.get());
 		}
 		throw new AccessDeniedException(ACESSONEGADO);
 	}

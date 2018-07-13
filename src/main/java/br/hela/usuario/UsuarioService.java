@@ -99,7 +99,7 @@ public class UsuarioService {
 		if (usuario.isPresent()) {
 			usuario.get().setAtivo(0);
 			repo.save(usuario.get());
-			return Optional.of("Usuário -> " + id + ": deletado com sucesso");
+			return Optional.of("Usuário ===> " + id + ": deletado com sucesso");
 		}
 		return Optional.empty();
 	}

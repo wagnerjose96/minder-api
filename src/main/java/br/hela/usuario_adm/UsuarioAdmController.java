@@ -76,7 +76,8 @@ public class UsuarioAdmController {
 		if (autentica.autenticaRequisicaoAdm(token)) {
 			if (service.encontrar(id).isPresent()) {
 				Optional<String> resultado = service.deletar(id);
-				return ResponseEntity.ok(resultado.get());
+				if (resultado.isPresent())
+					return ResponseEntity.ok(resultado.get());
 			}
 			throw new NullPointerException("O administrador a deletar não existe no banco de dados");
 		}

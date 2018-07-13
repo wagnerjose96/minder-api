@@ -48,7 +48,7 @@ public class UsuarioAdmService {
 		Optional<UsuarioAdm> usuario = repo.findById(id);
 		if (usuario.isPresent()) {
 			repo.delete(usuario.get());
-			return Optional.of("Usuário -> " + id + ": deletado com sucesso");
+			return Optional.of("Usuário ===> " + id + ": deletado com sucesso");
 		}
 		return Optional.empty();
 	}

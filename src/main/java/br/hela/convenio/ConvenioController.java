@@ -67,7 +67,8 @@ public class ConvenioController {
 		if (autentica.autenticaRequisicaoAdm(token)) {
 			if (service.encontrar(id).isPresent()) {
 				Optional<String> optionalConvenio = service.deletar(id);
-				return ResponseEntity.ok(optionalConvenio.get());
+				if (optionalConvenio.isPresent())
+					return ResponseEntity.ok(optionalConvenio.get());
 			}
 			throw new NullPointerException("O convênio a deletar não existe no banco de dados");
 		}
