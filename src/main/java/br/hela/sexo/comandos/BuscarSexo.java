@@ -7,11 +7,11 @@ import lombok.Data;
 @Data
 public class BuscarSexo {
 	private SexoId id;
-	private String sexo;
+	private String genero;
 	
 	public BuscarSexo(Sexo comandos) {
 		this.id = comandos.getIdGenero();
-		this.sexo = comandos.getGenero();
+		this.genero = comandos.getGenero();
 	}
 
 	public BuscarSexo() {

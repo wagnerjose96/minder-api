@@ -46,7 +46,7 @@ public class EmergenciaController {
 			if (optionalEmergencias.isPresent()) {
 				return ResponseEntity.ok(optionalEmergencias.get());
 			}
-			return ResponseEntity.notFound().build();
+			throw new NullPointerException("Não existe nenhuma emergência cadastrada no banco de dados");
 		}
 		throw new AccessDeniedException(ACESSONEGADO);
 	}
@@ -91,9 +91,7 @@ public class EmergenciaController {
 			}
 			Optional<EmergenciaId> optionalEmergenciaId = service.alterar(comando);
 			if (optionalEmergenciaId.isPresent()) {
-				URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
-						.buildAndExpand(optionalEmergenciaId.get()).toUri();
-				return ResponseEntity.created(location).body("A emergência foi alterada com sucesso");
+				return ResponseEntity.ok().body("A emergência foi alterada com sucesso");
 			} else {
 				throw new SQLException("Ocorreu um erro interno durante a alteração da emergência");
 			}

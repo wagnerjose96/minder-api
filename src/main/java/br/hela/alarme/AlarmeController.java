@@ -46,12 +46,12 @@ public class AlarmeController {
 			if (optionalAlarmes.isPresent()) {
 				return ResponseEntity.ok(optionalAlarmes.get());
 			}
-			return ResponseEntity.notFound().build();
+			throw new NullPointerException("Não existe nenhum alarme cadastrado no banco de dados");
 		}
 		throw new AccessDeniedException(ACESSONEGADO);
 	}
 
-	@ApiOperation("Busque o alarme pelo ID")
+	@ApiOperation("Busque um alarme pelo ID")
 	@GetMapping("/{id}")
 	public ResponseEntity<BuscarAlarme> getAlarmePorId(@PathVariable AlarmeId id, @RequestHeader String token)
 			throws AccessDeniedException {
@@ -74,7 +74,7 @@ public class AlarmeController {
 			if (optionalAlarmeId.isPresent()) {
 				URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
 						.buildAndExpand(optionalAlarmeId.get()).toUri();
-				return ResponseEntity.created(location).body("Alarme cadastrado com sucesso");
+				return ResponseEntity.created(location).body("O alarme foi cadastrado com sucesso");
 			}
 			throw new SQLException("O alarme não foi salvo devido a um erro interno");
 		}
@@ -91,9 +91,7 @@ public class AlarmeController {
 			}
 			Optional<AlarmeId> optionalAlarmeId = alarmeService.alterar(comando);
 			if (optionalAlarmeId.isPresent()) {
-				URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
-						.buildAndExpand(optionalAlarmeId.get()).toUri();
-				return ResponseEntity.created(location).body("Alarme alterado com sucesso");
+				return ResponseEntity.ok().body("O alarme foi alterado com sucesso");
 			} else {
 				throw new SQLException("Ocorreu um erro interno durante a alteração do alarme");
 			}
@@ -103,14 +101,14 @@ public class AlarmeController {
 
 	@ApiOperation("Delete um alarme pelo ID")
 	@DeleteMapping("/{id}")
-	public ResponseEntity<Optional<String>> deleteAlarme(@PathVariable AlarmeId id, @RequestHeader String token)
+	public ResponseEntity<String> deleteAlarme(@PathVariable AlarmeId id, @RequestHeader String token)
 			throws AccessDeniedException {
 		if (autentica.autenticaRequisicao(token)) {
 			if (!alarmeService.encontrar(id).isPresent()) {
 				throw new NullPointerException("O alarme a ser deletado não existe no banco de dados");
 			}
 			Optional<String> resultado = alarmeService.deletar(id);
-			return ResponseEntity.ok(resultado);
+			return ResponseEntity.ok(resultado.get());
 		}
 		throw new AccessDeniedException(ACESSONEGADO);
 	}

@@ -24,7 +24,7 @@ import br.hela.security.Autentica;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 
-@Api("Basic Perguntas de Notificações Controller")
+@Api("Basic Perguntas Controller")
 @RestController
 @RequestMapping("/perguntas")
 @CrossOrigin
@@ -44,7 +44,7 @@ public class PerguntaController {
 		if (optionalPergunta.isPresent()) {
 			return ResponseEntity.ok(optionalPergunta.get());
 		}
-		return ResponseEntity.notFound().build();
+		throw new NullPointerException("Não existe nenhuma pergunta cadastrada no banco de dados");
 	}
 
 	@ApiOperation("Busque uma pergunta pelo ID")
@@ -83,9 +83,7 @@ public class PerguntaController {
 			}
 			Optional<PerguntaId> optionalPerguntaId = service.alterar(comando);
 			if (optionalPerguntaId.isPresent()) {
-				URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
-						.buildAndExpand(optionalPerguntaId.get()).toUri();
-				return ResponseEntity.created(location).body("A pergunta foi alterada com sucesso");
+				return ResponseEntity.ok().body("A pergunta foi alterada com sucesso");
 			} else {
 				throw new SQLException("Ocorreu um erro interno durante a alteração da pergunta");
 			}

@@ -24,7 +24,7 @@ import br.hela.security.Autentica;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 
-@Api("Basic Respostas de Notificações Controller")
+@Api("Basic Respostas Controller")
 @RestController
 @RequestMapping("/respostas")
 @CrossOrigin
@@ -44,7 +44,7 @@ public class RespostaController {
 		if (optionalResposta.isPresent()) {
 			return ResponseEntity.ok(optionalResposta.get());
 		}
-		return ResponseEntity.notFound().build();
+		throw new NullPointerException("Não existe nenhuma resposta cadastrada no banco de dados");
 	}
 
 	@ApiOperation("Busque uma resposta pelo ID")
@@ -72,7 +72,7 @@ public class RespostaController {
 		}
 		throw new AccessDeniedException(ACESSONEGADO);
 	}
-	
+
 	@ApiOperation("Altere uma resposta")
 	@PutMapping
 	public ResponseEntity<String> putResposta(@RequestBody EditarResposta comando, @RequestHeader String token)
@@ -83,9 +83,7 @@ public class RespostaController {
 			}
 			Optional<RespostaId> optionalRespostaId = service.alterar(comando);
 			if (optionalRespostaId.isPresent()) {
-				URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
-						.buildAndExpand(optionalRespostaId.get()).toUri();
-				return ResponseEntity.created(location).body("A resposta foi alterada com sucesso");
+				return ResponseEntity.ok().body("A resposta foi alterada com sucesso");
 			} else {
 				throw new SQLException("Ocorreu um erro interno durante a alteração da resposta");
 			}

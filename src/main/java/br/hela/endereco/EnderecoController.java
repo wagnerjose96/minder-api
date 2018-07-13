@@ -39,30 +39,33 @@ public class EnderecoController {
 
 	@ApiOperation("Busque todos os endereços")
 	@GetMapping
-	public ResponseEntity<Optional<List<BuscarEndereco>>> getenderecos() {
-		Optional<List<BuscarEndereco>> optionalenderecos = enderecoService.encontrar();
-		return ResponseEntity.ok(optionalenderecos);
+	public ResponseEntity<List<BuscarEndereco>> getEnderecos() {
+		Optional<List<BuscarEndereco>> optionalEnderecos = enderecoService.encontrar();
+		if (optionalEnderecos.isPresent()) {
+			return ResponseEntity.ok(optionalEnderecos.get());
+		}
+		throw new NullPointerException("Não existe nenhum endereço cadastrado no banco de dados");
 	}
 
-	@ApiOperation("Busque o endereço pelo ID")
+	@ApiOperation("Busque um endereço pelo ID")
 	@GetMapping("/{id}")
-	public ResponseEntity<BuscarEndereco> getenderecoPorId(@PathVariable EnderecoId id) {
-		Optional<BuscarEndereco> optionalendereco = enderecoService.encontrar(id);
-		if (optionalendereco.isPresent()) {
-			return ResponseEntity.ok(optionalendereco.get());
+	public ResponseEntity<BuscarEndereco> getEnderecoPorId(@PathVariable EnderecoId id) {
+		Optional<BuscarEndereco> optionalEndereco = enderecoService.encontrar(id);
+		if (optionalEndereco.isPresent()) {
+			return ResponseEntity.ok(optionalEndereco.get());
 		}
 		throw new NullPointerException("O endereço procurado não existe no banco de dados");
 	}
 
 	@ApiOperation("Cadastre um novo endereço")
 	@PostMapping
-	public ResponseEntity<String> postendereco(@RequestBody CriarEndereco comando, @RequestHeader String token)
+	public ResponseEntity<String> postEndereco(@RequestBody CriarEndereco comando, @RequestHeader String token)
 			throws SQLException, AccessDeniedException {
 		if (autentica.autenticaRequisicao(token)) {
-			Optional<EnderecoId> optionalenderecoId = enderecoService.salvar(comando);
-			if (optionalenderecoId.isPresent()) {
+			Optional<EnderecoId> optionalEnderecoId = enderecoService.salvar(comando);
+			if (optionalEnderecoId.isPresent()) {
 				URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
-						.buildAndExpand(optionalenderecoId.get()).toUri();
+						.buildAndExpand(optionalEnderecoId.get()).toUri();
 				return ResponseEntity.created(location).body("O endereço foi cadastrado com sucesso");
 			}
 			throw new SQLException("O endereço não foi salvo devido a um erro interno");
@@ -72,17 +75,15 @@ public class EnderecoController {
 
 	@ApiOperation("Altere um endereço")
 	@PutMapping
-	public ResponseEntity<String> putendereco(@RequestBody EditarEndereco comando, @RequestHeader String token)
+	public ResponseEntity<String> putEndereco(@RequestBody EditarEndereco comando, @RequestHeader String token)
 			throws AccessDeniedException, SQLException {
 		if (autentica.autenticaRequisicao(token)) {
 			if (!enderecoService.encontrar(comando.getId()).isPresent()) {
 				throw new NullPointerException("O endereço a ser alterado não existe no banco de dados");
 			}
-			Optional<EnderecoId> optionalenderecoId = enderecoService.alterar(comando);
-			if (optionalenderecoId.isPresent()) {
-				URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
-						.buildAndExpand(optionalenderecoId.get()).toUri();
-				return ResponseEntity.created(location).body("O endereço foi alterado com sucesso");
+			Optional<EnderecoId> optionalEnderecoId = enderecoService.alterar(comando);
+			if (optionalEnderecoId.isPresent()) {
+				return ResponseEntity.ok().body("O endereço foi alterado com sucesso");
 			} else {
 				throw new SQLException("Ocorreu um erro interno durante a alteração do endereço");
 			}

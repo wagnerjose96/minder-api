@@ -44,7 +44,7 @@ public class SexoController {
 		if (optionalGeneros.isPresent()) {
 			return ResponseEntity.ok(optionalGeneros.get());
 		}
-		return ResponseEntity.notFound().build();
+		throw new NullPointerException("Não existe nenhum genêro cadastrado no banco de dados");
 	}
 
 	@ApiOperation("Busque um genêro pelo ID")
@@ -83,9 +83,7 @@ public class SexoController {
 			}
 			Optional<SexoId> optionalSexoId = service.alterar(comando);
 			if (optionalSexoId.isPresent()) {
-				URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
-						.buildAndExpand(optionalSexoId.get()).toUri();
-				return ResponseEntity.created(location).body("O genêro foi alterado com sucesso");
+				return ResponseEntity.ok().body("O genêro foi alterado com sucesso");
 			} else {
 				throw new SQLException("Ocorreu um erro interno durante a alteração do genêro");
 			}

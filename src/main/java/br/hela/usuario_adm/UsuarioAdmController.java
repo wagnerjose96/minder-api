@@ -41,7 +41,7 @@ public class UsuarioAdmController {
 	@Autowired
 	private Autentica autentica;
 
-	@ApiOperation("Busque todos os usuários admin")
+	@ApiOperation("Busque todos os administradores")
 	@GetMapping
 	public ResponseEntity<List<BuscarUsuarioAdm>> getUsuarioAdmins(@RequestHeader String token)
 			throws AccessDeniedException {
@@ -50,12 +50,12 @@ public class UsuarioAdmController {
 			if (optionalUsuarioAdmin.isPresent()) {
 				return ResponseEntity.ok(optionalUsuarioAdmin.get());
 			}
-			return ResponseEntity.notFound().build();
+			throw new NullPointerException("Não existe nenhum administrador cadastrado no banco de dados");
 		}
 		throw new AccessDeniedException(ACESSONEGADO);
 	}
 
-	@ApiOperation("Busque um usuário admin pelo ID")
+	@ApiOperation("Busque um administrador pelo ID")
 	@GetMapping("/{id}")
 	public ResponseEntity<BuscarUsuarioAdm> getUsuarioAdminId(@PathVariable UsuarioAdmId id,
 			@RequestHeader String token) throws AccessDeniedException {
@@ -69,21 +69,21 @@ public class UsuarioAdmController {
 		throw new AccessDeniedException(ACESSONEGADO);
 	}
 
-	@ApiOperation("Delete um usuário admin pelo ID")
+	@ApiOperation("Delete um administrador pelo ID")
 	@DeleteMapping("/{id}")
-	public ResponseEntity<Optional<String>> deleteUsuarioAdmin(@PathVariable UsuarioAdmId id,
-			@RequestHeader String token) throws AccessDeniedException {
+	public ResponseEntity<String> deleteUsuarioAdmin(@PathVariable UsuarioAdmId id, @RequestHeader String token)
+			throws AccessDeniedException {
 		if (autentica.autenticaRequisicaoAdm(token)) {
 			if (service.encontrar(id).isPresent()) {
 				Optional<String> resultado = service.deletar(id);
-				return ResponseEntity.ok(resultado);
+				return ResponseEntity.ok(resultado.get());
 			}
 			throw new NullPointerException("O administrador a deletar não existe no banco de dados");
 		}
 		throw new AccessDeniedException(ACESSONEGADO);
 	}
 
-	@ApiOperation("Cadastre um novo usuário admin")
+	@ApiOperation("Cadastre um novo administrador")
 	@PostMapping
 	public ResponseEntity<String> postUsuarioAdmin(@RequestBody CriarUsuarioAdm comando) throws SQLException {
 		Optional<UsuarioAdmId> optionalUsuarioAdminId = service.salvar(comando);
@@ -95,7 +95,7 @@ public class UsuarioAdmController {
 		throw new SQLException("O administrador não foi salvo devido a um erro interno");
 	}
 
-	@ApiOperation("Altere um usuário admin")
+	@ApiOperation("Altere um administrador")
 	@PutMapping
 	public ResponseEntity<String> putUsuarioAdmin(@RequestHeader String token, @RequestBody EditarUsuarioAdm comando)
 			throws AccessDeniedException, SQLException {
@@ -105,9 +105,7 @@ public class UsuarioAdmController {
 			}
 			Optional<UsuarioAdmId> optionalUsuarioAdminId = service.alterar(comando);
 			if (optionalUsuarioAdminId.isPresent()) {
-				URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
-						.buildAndExpand(optionalUsuarioAdminId.get()).toUri();
-				return ResponseEntity.created(location).body("O administrador foi alterado com sucesso");
+				return ResponseEntity.ok().body("O administrador foi alterado com sucesso");
 			} else {
 				throw new SQLException("Ocorreu um erro interno durante a alteração do administrador");
 			}

@@ -4,13 +4,13 @@ import lombok.Data;
 
 @Data
 public class CriarSexo {
-	private String sexo;
+	private String genero;
 
 	public CriarSexo() {
 
 	}
 
 	public CriarSexo(String sexo) {
-		this.sexo = sexo;
+		this.genero = sexo;
 	}
 }

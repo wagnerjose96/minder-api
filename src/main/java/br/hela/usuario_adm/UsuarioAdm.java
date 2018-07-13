@@ -31,13 +31,13 @@ public class UsuarioAdm {
 
 	public UsuarioAdm(CriarUsuarioAdm comando) {
 		this.id = new UsuarioAdmId();
-		this.nomeUsuario = comando.getUsername();
+		this.nomeUsuario = comando.getNome();
 		this.senha = Criptografia.criptografa(comando.getSenha());
 	}
 	
 	public void apply(EditarUsuarioAdm comando) {
 		this.id = comando.getId();
-		this.nomeUsuario = comando.getUsername();
+		this.nomeUsuario = comando.getNome();
 		this.senha = Criptografia.criptografa(comando.getSenha());
 	}
 	

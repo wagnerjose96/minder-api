@@ -27,7 +27,7 @@ import br.hela.security.Autentica;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 
-@Api("Basic Convenios Controller")
+@Api("Basic Convênios Controller")
 @Controller
 @RequestMapping("/convenios")
 @CrossOrigin
@@ -47,7 +47,7 @@ public class ConvenioController {
 		if (optionalConvenios.isPresent()) {
 			return ResponseEntity.ok(optionalConvenios.get());
 		}
-		return ResponseEntity.notFound().build();
+		throw new NullPointerException("Não existe nenhum convênio cadastrado no banco de dados");
 	}
 
 	@ApiOperation("Busque um convênio pelo ID")
@@ -62,12 +62,12 @@ public class ConvenioController {
 
 	@ApiOperation("Delete um convênio pelo ID")
 	@DeleteMapping("/{id}")
-	public ResponseEntity<Optional<String>> deletarConvenio(@PathVariable ConvenioId id, @RequestHeader String token)
+	public ResponseEntity<String> deletarConvenio(@PathVariable ConvenioId id, @RequestHeader String token)
 			throws AccessDeniedException {
 		if (autentica.autenticaRequisicaoAdm(token)) {
 			if (service.encontrar(id).isPresent()) {
 				Optional<String> optionalConvenio = service.deletar(id);
-				return ResponseEntity.ok(optionalConvenio);
+				return ResponseEntity.ok(optionalConvenio.get());
 			}
 			throw new NullPointerException("O convênio a deletar não existe no banco de dados");
 		}
@@ -100,9 +100,7 @@ public class ConvenioController {
 			}
 			Optional<ConvenioId> optionalConvenioId = service.alterar(comando);
 			if (optionalConvenioId.isPresent()) {
-				URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
-						.buildAndExpand(optionalConvenioId.get()).toUri();
-				return ResponseEntity.created(location).body("O convênio foi alterado com sucesso");
+				return ResponseEntity.ok().body("O convênio foi alterado com sucesso");
 			} else {
 				throw new SQLException("Ocorreu um erro interno durante a alteração do convênio");
 			}

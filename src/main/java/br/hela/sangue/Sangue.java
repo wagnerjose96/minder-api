@@ -29,11 +29,11 @@ public class Sangue {
 
 	public Sangue(CriarSangue comando) {
 		this.idSangue = new SangueId();
-		this.tipoSanguineo = comando.getSangue();
+		this.tipoSanguineo = comando.getTipoSanguineo();
 	}
 
 	public void apply(EditarSangue comando) {
 		this.idSangue = comando.getIdSangue();
-		this.tipoSanguineo = comando.getSangue();
+		this.tipoSanguineo = comando.getTipoSanguineo();
 	}
 }

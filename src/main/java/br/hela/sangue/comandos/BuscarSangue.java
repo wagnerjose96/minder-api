@@ -7,10 +7,10 @@ import lombok.Data;
 @Data
 public class BuscarSangue {
 	private SangueId idSangue;
-	private String sangue;
+	private String tipoSanguineo;
 
 	public BuscarSangue(Sangue comandos) {
 		this.idSangue = comandos.getIdSangue();
-		this.sangue = comandos.getTipoSanguineo();
+		this.tipoSanguineo = comandos.getTipoSanguineo();
 	}
 }

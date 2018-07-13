@@ -46,7 +46,7 @@ public class UsuarioController {
 			if (optionalUsuarios.isPresent()) {
 				return ResponseEntity.ok(optionalUsuarios.get());
 			}
-			return ResponseEntity.notFound().build();
+			throw new NullPointerException("Não existe nenhum usuário cadastrado no banco de dados");
 		}
 		throw new AccessDeniedException(ACESSONEGADO);
 	}
@@ -63,12 +63,12 @@ public class UsuarioController {
 
 	@ApiOperation("Delete um usuário pelo ID")
 	@DeleteMapping("/{id}")
-	public ResponseEntity<Optional<String>> deletarUsuario(@PathVariable UsuarioId id, @RequestHeader String token)
+	public ResponseEntity<String> deletarUsuario(@PathVariable UsuarioId id, @RequestHeader String token)
 			throws AccessDeniedException {
 		if (autentica.autenticaRequisicao(token)) {
 			if (service.encontrar(id).isPresent()) {
 				Optional<String> optionalUsuario = service.deletar(id);
-				return ResponseEntity.ok(optionalUsuario);
+				return ResponseEntity.ok(optionalUsuario.get());
 			}
 			throw new NullPointerException("O usuário a deletar não existe no banco de dados");
 		}
@@ -97,9 +97,7 @@ public class UsuarioController {
 			}
 			Optional<UsuarioId> optionalUsuarioId = service.alterar(comando);
 			if (optionalUsuarioId.isPresent()) {
-				URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
-						.buildAndExpand(optionalUsuarioId.get()).toUri();
-				return ResponseEntity.created(location).body("O usuário foi alterado com sucesso");
+				return ResponseEntity.ok().body("O usuário foi alterado com sucesso");
 			} else {
 				throw new SQLException("Ocorreu um erro interno durante a alteração do usuário");
 			}

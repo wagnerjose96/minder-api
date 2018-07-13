@@ -63,13 +63,13 @@ public class LoginService {
 	
 	public boolean consultarUsuario(LogarAdm comando) {
 		String senha = Criptografia.criptografa(comando.getSenha());
-		String username = comando.getUsername();
+		String username = comando.getIdentificador();
 		LogarAdm usuario = new LogarAdm();
 		List<LogarAdm> user = jdbcTemplate.query(sqlAdm, new Object[] { username, senha }, (rs, rowNum) -> {
 			String senhaUsuario = rs.getString(COLUNASENHA);
 			String nomeUsuario = rs.getString(COLUNANOMEUSUARIO);
 			if (senhaUsuario.equals(senha) && nomeUsuario.equals(username)) {
-				usuario.setUsername(rs.getString(COLUNANOMEUSUARIO));
+				usuario.setIdentificador(rs.getString(COLUNANOMEUSUARIO));
 				usuario.setSenha(rs.getString(COLUNASENHA));
 			}
 			return usuario;

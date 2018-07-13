@@ -45,7 +45,7 @@ public class DoencaController {
 			if (optionalDoencas.isPresent()) {
 				return ResponseEntity.ok(optionalDoencas.get());
 			}
-			return ResponseEntity.notFound().build();
+			throw new NullPointerException("Não existe nenhuma doença cadastrada no banco de dados");
 		}
 		throw new AccessDeniedException(ACESSONEGADO);
 	}
@@ -90,9 +90,7 @@ public class DoencaController {
 			}
 			Optional<DoencaId> optionalDoencaId = doencaService.alterar(comando);
 			if (optionalDoencaId.isPresent()) {
-				URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
-						.buildAndExpand(optionalDoencaId.get()).toUri();
-				return ResponseEntity.created(location).body("A doença foi alterada com sucesso");
+				return ResponseEntity.ok().body("A doença foi alterada com sucesso");
 			} else {
 				throw new SQLException("Ocorreu um erro interno durante a alteração da doença");
 			}

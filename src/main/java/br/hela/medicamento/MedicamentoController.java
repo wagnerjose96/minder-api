@@ -45,7 +45,7 @@ public class MedicamentoController {
 		if (optionalMedicamentos.isPresent()) {
 			return ResponseEntity.ok(optionalMedicamentos.get());
 		}
-		return ResponseEntity.notFound().build();
+		throw new NullPointerException("Não existe nenhum medicamento cadastrado no banco de dados");
 	}
 
 	@ApiOperation("Busque um medicamento pelo ID")
@@ -60,12 +60,12 @@ public class MedicamentoController {
 
 	@ApiOperation("Delete um medicamento pelo ID")
 	@DeleteMapping("/{id}")
-	public ResponseEntity<Optional<String>> deletarMedicamento(@PathVariable MedicamentoId id,
-			@RequestHeader String token) throws AccessDeniedException {
+	public ResponseEntity<String> deletarMedicamento(@PathVariable MedicamentoId id, @RequestHeader String token)
+			throws AccessDeniedException {
 		if (autentica.autenticaRequisicaoAdm(token)) {
 			if (service.encontrar().isPresent()) {
 				Optional<String> optionalMedicamento = service.deletar(id);
-				return ResponseEntity.ok(optionalMedicamento);
+				return ResponseEntity.ok(optionalMedicamento.get());
 			}
 			throw new NullPointerException("O medicamento a deletar não existe no banco de dados");
 		}
@@ -98,9 +98,7 @@ public class MedicamentoController {
 			}
 			Optional<MedicamentoId> optionalMedicamentoId = service.alterar(comando);
 			if (optionalMedicamentoId.isPresent()) {
-				URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
-						.buildAndExpand(optionalMedicamentoId.get()).toUri();
-				return ResponseEntity.created(location).body("O medicamento foi alterado com sucesso");
+				return ResponseEntity.ok().body("O medicamento foi alterado com sucesso");
 			} else {
 				throw new SQLException("Ocorreu um erro interno durante a alteração do medicamento");
 			}

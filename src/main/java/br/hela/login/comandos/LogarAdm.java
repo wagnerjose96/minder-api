@@ -4,6 +4,6 @@ import lombok.Data;
 
 @Data
 public class LogarAdm {
-	private String username;
+	private String identificador;
 	private String senha;
 }

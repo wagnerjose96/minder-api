@@ -45,7 +45,7 @@ public class PerguntaRespostaUsuarioController {
 			if (optionalPergunta.isPresent()) {
 				return ResponseEntity.ok(optionalPergunta.get());
 			}
-			return ResponseEntity.notFound().build();
+			throw new NullPointerException("Não existe nenhuma pergunta de notificação respondida no banco de dados");
 		}
 		throw new AccessDeniedException(ACESSONEGADO);
 	}
@@ -75,7 +75,7 @@ public class PerguntaRespostaUsuarioController {
 						.buildAndExpand(optionalPerguntaId.get()).toUri();
 				return ResponseEntity.created(location).body("A  pergunta de notificação foi respondida com sucesso");
 			}
-			throw new SQLException("A  pergunta de notificação não foi respondida devido a um erro interno");
+			throw new SQLException("A pergunta de notificação não foi respondida devido a um erro interno");
 		}
 		throw new AccessDeniedException(ACESSONEGADO);
 	}

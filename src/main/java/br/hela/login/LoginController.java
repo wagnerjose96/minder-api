@@ -47,7 +47,7 @@ public class LoginController {
 	@PostMapping("/loginAdm")
 	public ResponseEntity<String> loginAdm(@RequestBody LogarAdm comando) {
 		if (service.consultarUsuario(comando)) {
-			String token = JWTUtil.create(comando.getUsername());
+			String token = JWTUtil.create(comando.getIdentificador());
 			return ResponseEntity.ok().body(token);
 		}
 		throw new NullPointerException(LOGINRECUSADO);

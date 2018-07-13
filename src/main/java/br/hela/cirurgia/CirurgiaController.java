@@ -45,7 +45,7 @@ public class CirurgiaController {
 			if (optionalCirurgias.isPresent()) {
 				return ResponseEntity.ok(optionalCirurgias.get());
 			}
-			return ResponseEntity.notFound().build();
+			throw new NullPointerException("Não existe nenhuma alergia cadastrada no banco de dados");
 		}
 		throw new AccessDeniedException(ACESSONEGADO);
 	}
@@ -90,9 +90,7 @@ public class CirurgiaController {
 			}
 			Optional<CirurgiaId> optionalCirurgiaId = cirurgiaService.alterar(comando);
 			if (optionalCirurgiaId.isPresent()) {
-				URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
-						.buildAndExpand(optionalCirurgiaId.get()).toUri();
-				return ResponseEntity.created(location).body("A cirurgia foi alterada com sucesso");
+				return ResponseEntity.ok().body("A cirurgia foi alterada com sucesso");
 			} else {
 				throw new SQLException("Ocorreu um erro interno durante a alteração do cirurgia");
 			}

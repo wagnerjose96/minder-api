@@ -65,7 +65,7 @@ public class Autentica {
 		List<LogarAdm> user = jdbcTemplate.query(selectAdm, new Object[] { identificador }, (rs, rowNum) -> {
 			String nomeUsuario = rs.getString(COLUNAUSERNAME);
 			if (nomeUsuario.equals(identificador) && JWTUtil.tokenValido(token)) {
-				usuario.setUsername(rs.getString(COLUNAUSERNAME));
+				usuario.setIdentificador(rs.getString(COLUNAUSERNAME));
 			}
 			return usuario;
 		});

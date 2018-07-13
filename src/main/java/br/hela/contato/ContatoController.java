@@ -45,10 +45,10 @@ public class ContatoController {
 		if (optionalContatos.isPresent()) {
 			return ResponseEntity.ok(optionalContatos.get());
 		}
-		return ResponseEntity.notFound().build();
+		throw new NullPointerException("Não existe nenhum contato cadastrado no banco de dados");
 	}
 
-	@ApiOperation("Busque o contato pelo ID")
+	@ApiOperation("Busque um contato pelo ID")
 	@GetMapping("/{id}")
 	public ResponseEntity<BuscarContato> getContatoPorId(@PathVariable ContatoId id) {
 		Optional<BuscarContato> optionalContato = contatoService.encontrar(id);
@@ -85,9 +85,7 @@ public class ContatoController {
 
 			Optional<ContatoId> optionalContatoId = contatoService.alterar(comando);
 			if (optionalContatoId.isPresent()) {
-				URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
-						.buildAndExpand(optionalContatoId.get()).toUri();
-				return ResponseEntity.created(location).body("O contato foi alterado com sucesso");
+				return ResponseEntity.ok().body("O contato foi alterado com sucesso");
 			} else {
 				throw new SQLException("Ocorreu um erro interno durante a alteração do contato");
 			}
@@ -97,11 +95,12 @@ public class ContatoController {
 
 	@ApiOperation("Delete um contato pelo ID")
 	@DeleteMapping("/{id}")
-	public ResponseEntity<Optional<String>> deletarContato(@PathVariable ContatoId id, @RequestHeader String token) throws AccessDeniedException {
+	public ResponseEntity<String> deletarContato(@PathVariable ContatoId id, @RequestHeader String token)
+			throws AccessDeniedException {
 		if (autentica.autenticaRequisicao(token)) {
 			if (contatoService.encontrar(id).isPresent()) {
 				Optional<String> optionalContato = contatoService.deletar(id, autentica.idUser(token));
-				return ResponseEntity.ok(optionalContato);
+				return ResponseEntity.ok(optionalContato.get());
 			}
 			throw new NullPointerException("O contato a deletar não existe no banco de dados");
 		}

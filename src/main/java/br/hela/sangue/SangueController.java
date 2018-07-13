@@ -44,7 +44,7 @@ public class SangueController {
 		if (optionalSangues.isPresent()) {
 			return ResponseEntity.ok(optionalSangues.get());
 		}
-		return ResponseEntity.notFound().build();
+		throw new NullPointerException("Não existe nenhum tipo sanguíneo cadastrado no banco de dados");
 	}
 
 	@ApiOperation("Busque um tipo sanguíneo pelo ID")
@@ -83,9 +83,7 @@ public class SangueController {
 			}
 			Optional<SangueId> optionalSangueId = service.alterar(comando);
 			if (optionalSangueId.isPresent()) {
-				URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
-						.buildAndExpand(optionalSangueId.get()).toUri();
-				return ResponseEntity.created(location).body("O tipo sanguíneo foi alterado com sucesso");
+				return ResponseEntity.ok().body("O tipo sanguíneo foi alterado com sucesso");
 			} else {
 				throw new SQLException("Ocorreu um erro interno durante a alteração do tipo sanguíneo");
 			}

@@ -50,12 +50,12 @@ public class PlanoDeSaudeController {
 			if (optionalPlanoDeSaude.isPresent()) {
 				return ResponseEntity.ok(optionalPlanoDeSaude.get());
 			}
-			return ResponseEntity.notFound().build();
+			throw new NullPointerException("Não existe nenhum plano de saúde cadastrado no banco de dados");
 		}
 		throw new AccessDeniedException(ACESSONEGADO);
 	}
 
-	@ApiOperation("Busque o plano de saúde pelo ID")
+	@ApiOperation("Busque um plano de saúde pelo ID")
 	@GetMapping("/{id}")
 	public ResponseEntity<BuscarPlanoDeSaude> getPlanoDeSaudePorId(@PathVariable PlanoDeSaudeId id,
 			@RequestHeader String token) throws AccessDeniedException {
@@ -96,9 +96,7 @@ public class PlanoDeSaudeController {
 
 			Optional<PlanoDeSaudeId> optionalPlanoId = service.alterar(comando);
 			if (optionalPlanoId.isPresent()) {
-				URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
-						.buildAndExpand(optionalPlanoId.get()).toUri();
-				return ResponseEntity.created(location).body("O plano de saúde foi alterado com sucesso");
+				return ResponseEntity.ok().body("O plano de saúde foi alterado com sucesso");
 			} else {
 				throw new SQLException("Ocorreu um erro interno durante a alteração do plano de saúde");
 			}
@@ -108,14 +106,14 @@ public class PlanoDeSaudeController {
 
 	@ApiOperation("Delete um plano de saúde pelo ID")
 	@DeleteMapping("/{id}")
-	public ResponseEntity<Optional<String>> deletePlanoDeSaude(@PathVariable PlanoDeSaudeId id,
-			@RequestHeader String token) throws AccessDeniedException {
+	public ResponseEntity<String> deletePlanoDeSaude(@PathVariable PlanoDeSaudeId id, @RequestHeader String token)
+			throws AccessDeniedException {
 		if (autentica.autenticaRequisicao(token)) {
 			if (!service.encontrar(id).isPresent()) {
 				throw new NullPointerException("O plano de saúde a ser deletado não existe no banco de dados");
 			}
 			Optional<String> resultado = service.deletar(id);
-			return ResponseEntity.ok(resultado);
+			return ResponseEntity.ok(resultado.get());
 		}
 		throw new AccessDeniedException(ACESSONEGADO);
 	}

@@ -29,11 +29,11 @@ public class Sexo {
 
 	public Sexo(CriarSexo comando) {
 		this.idGenero = new SexoId();
-		this.genero = comando.getSexo();
+		this.genero = comando.getGenero();
 	}
 
 	public void apply(EditarSexo comando) {
 		this.idGenero = comando.getId();
-		this.genero = comando.getSexo();
+		this.genero = comando.getGenero();
 	}
 }

@@ -45,12 +45,12 @@ public class AlergiaController {
 			if (optionalAlergias.isPresent()) {
 				return ResponseEntity.ok(optionalAlergias.get());
 			}
-			return ResponseEntity.notFound().build();
+			throw new NullPointerException("Não existe nenhuma alergia cadastrada no banco de dados");
 		}
 		throw new AccessDeniedException(ACESSONEGADO);
 	}
 
-	@ApiOperation("Busque a alergia pelo ID")
+	@ApiOperation("Busque uma alergia pelo ID")
 	@GetMapping("/{id}")
 	public ResponseEntity<BuscarAlergia> getAlergiaPorId(@PathVariable AlergiaId id, @RequestHeader String token)
 			throws AccessDeniedException {
@@ -90,9 +90,7 @@ public class AlergiaController {
 			}
 			Optional<AlergiaId> optionalAlergiaId = alergiaService.alterar(comando);
 			if (optionalAlergiaId.isPresent()) {
-				URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
-						.buildAndExpand(optionalAlergiaId.get()).toUri();
-				return ResponseEntity.created(location).body("A alergia foi alterada com sucesso");
+				return ResponseEntity.ok().body("A alergia foi alterada com sucesso");
 			} else {
 				throw new SQLException("Ocorreu um erro interno durante a alteração da alergia");
 			}
