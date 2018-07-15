@@ -45,7 +45,7 @@ public class CirurgiaController {
 			if (optionalCirurgias.isPresent()) {
 				return ResponseEntity.ok(optionalCirurgias.get());
 			}
-			throw new NullPointerException("Não existe nenhuma alergia cadastrada no banco de dados");
+			return ResponseEntity.notFound().build();
 		}
 		throw new AccessDeniedException(ACESSONEGADO);
 	}

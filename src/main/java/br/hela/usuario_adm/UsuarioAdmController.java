@@ -50,7 +50,7 @@ public class UsuarioAdmController {
 			if (optionalUsuarioAdmin.isPresent()) {
 				return ResponseEntity.ok(optionalUsuarioAdmin.get());
 			}
-			throw new NullPointerException("Não existe nenhum administrador cadastrado no banco de dados");
+			return ResponseEntity.notFound().build();
 		}
 		throw new AccessDeniedException(ACESSONEGADO);
 	}

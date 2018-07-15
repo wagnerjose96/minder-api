@@ -50,7 +50,7 @@ public class PlanoDeSaudeController {
 			if (optionalPlanoDeSaude.isPresent()) {
 				return ResponseEntity.ok(optionalPlanoDeSaude.get());
 			}
-			throw new NullPointerException("Não existe nenhum plano de saúde cadastrado no banco de dados");
+			return ResponseEntity.notFound().build();
 		}
 		throw new AccessDeniedException(ACESSONEGADO);
 	}

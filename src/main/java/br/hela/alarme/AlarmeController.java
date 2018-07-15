@@ -46,7 +46,7 @@ public class AlarmeController {
 			if (optionalAlarmes.isPresent()) {
 				return ResponseEntity.ok(optionalAlarmes.get());
 			}
-			throw new NullPointerException("Não existe nenhum alarme cadastrado no banco de dados");
+			return ResponseEntity.notFound().build();
 		}
 		throw new AccessDeniedException(ACESSONEGADO);
 	}

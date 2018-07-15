@@ -45,7 +45,7 @@ public class DoencaController {
 			if (optionalDoencas.isPresent()) {
 				return ResponseEntity.ok(optionalDoencas.get());
 			}
-			throw new NullPointerException("Não existe nenhuma doença cadastrada no banco de dados");
+			return ResponseEntity.notFound().build();
 		}
 		throw new AccessDeniedException(ACESSONEGADO);
 	}

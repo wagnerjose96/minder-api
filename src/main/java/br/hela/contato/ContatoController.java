@@ -45,7 +45,7 @@ public class ContatoController {
 		if (optionalContatos.isPresent()) {
 			return ResponseEntity.ok(optionalContatos.get());
 		}
-		throw new NullPointerException("Não existe nenhum contato cadastrado no banco de dados");
+		return ResponseEntity.notFound().build();
 	}
 
 	@ApiOperation("Busque um contato pelo ID")
