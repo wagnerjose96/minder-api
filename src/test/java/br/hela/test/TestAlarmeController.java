@@ -3,6 +3,8 @@ package br.hela.test;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.junit.Assert.assertThat;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -112,7 +114,7 @@ public class TestAlarmeController {
 		List<Usuario> usuarios = repo.findAll();
 		assertThat(usuarios.get(0), notNullValue());
 
-		final String jsonString = objectMapper.writeValueAsString(criarAlarme(idMedicamento));
+		final String jsonString = objectMapper.writeValueAsString(criarAlarme(idMedicamento, "Tomar medicamento"));
 
 		this.mockMvc
 				.perform(post("/alarmes").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
@@ -132,7 +134,7 @@ public class TestAlarmeController {
 		List<Usuario> usuarios = repo.findAll();
 		assertThat(usuarios.get(0), notNullValue());
 
-		String jsonString = objectMapper.writeValueAsString(criarAlarme(idMedicamento));
+		String jsonString = objectMapper.writeValueAsString(criarAlarme(idMedicamento, "Tomar medicamento"));
 
 		this.mockMvc
 				.perform(post("/alarmes").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
@@ -144,20 +146,117 @@ public class TestAlarmeController {
 		assertThat(alarmes.get(0), notNullValue());
 
 		jsonString = objectMapper.writeValueAsString(editarAlarme(alarmes.get(0)));
-		System.out.println(jsonString);
 
 		this.mockMvc
 				.perform(put("/alarmes").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
 						.header("token", logar("wagnerju", "1234")).content(jsonString))
+				.andExpect(jsonPath("$", notNullValue()))
 				.andExpect(jsonPath("$", equalTo("O alarme foi alterado com sucesso"))).andExpect(status().isOk());
 
 	}
 
-	private CriarAlarme criarAlarme(MedicamentoId idMedicamento) {
+	@Test
+	public void testBuscarPorId() throws Exception {
+		SangueId idSangue = criarSangue("A+");
+		SexoId idSexo = criarSexo("Masculino");
+
+		serviceUsuario.salvar(criarUsuario("wagner@hotmail.com", "wagnerju", idSexo, idSangue)).get();
+		MedicamentoId idMedicamento = serviceMedicamento.salvar(criarMedicamento("DorFlex", "100mg")).get();
+
+		List<Usuario> usuarios = repo.findAll();
+		assertThat(usuarios.get(0), notNullValue());
+
+		final String jsonString = objectMapper.writeValueAsString(criarAlarme(idMedicamento, "Tomar medicamento"));
+
+		this.mockMvc
+				.perform(post("/alarmes").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+						.header("token", logar("wagnerju", "1234")).content(jsonString))
+				.andExpect(jsonPath("$", equalTo("O alarme foi cadastrado com sucesso")))
+				.andExpect(status().isCreated());
+
+		List<Alarme> alarmes = repoAlarme.findAll();
+		assertThat(alarmes.get(0), notNullValue());
+
+		this.mockMvc
+				.perform(
+						get("/alarmes/" + alarmes.get(0).getId().toString()).header("token", logar("wagnerju", "1234")))
+				.andExpect(jsonPath("$", notNullValue())).andExpect(jsonPath("$", notNullValue()))
+				.andExpect(jsonPath("$.descricao", equalTo("Tomar medicamento"))).andExpect(status().isOk());
+	}
+
+	@Test
+	public void testBurcarTodos() throws Exception {
+		SangueId idSangue = criarSangue("A+");
+		SexoId idSexo = criarSexo("Masculino");
+
+		serviceUsuario.salvar(criarUsuario("wagner@hotmail.com", "wagnerju", idSexo, idSangue)).get();
+		MedicamentoId idMedicamento = serviceMedicamento.salvar(criarMedicamento("DorFlex", "100mg")).get();
+
+		List<Usuario> usuarios = repo.findAll();
+		assertThat(usuarios.get(0), notNullValue());
+
+		String jsonString = objectMapper.writeValueAsString(criarAlarme(idMedicamento, "Tomar medicamento"));
+
+		this.mockMvc
+				.perform(post("/alarmes").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+						.header("token", logar("wagnerju", "1234")).content(jsonString))
+				.andExpect(jsonPath("$", equalTo("O alarme foi cadastrado com sucesso")))
+				.andExpect(status().isCreated());
+
+		jsonString = objectMapper.writeValueAsString(criarAlarme(idMedicamento, "Aplicar medicamento"));
+
+		this.mockMvc
+				.perform(post("/alarmes").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+						.header("token", logar("wagnerju", "1234")).content(jsonString))
+				.andExpect(jsonPath("$", equalTo("O alarme foi cadastrado com sucesso")))
+				.andExpect(status().isCreated());
+
+		List<Alarme> alarmes = repoAlarme.findAll();
+		assertThat(alarmes.get(0), notNullValue());
+
+		this.mockMvc.perform(get("/alarmes").header("token", logar("wagnerju", "1234")))
+				.andExpect(jsonPath("$", notNullValue()))
+				.andExpect(jsonPath("$[0].descricao", equalTo("Tomar medicamento")))
+				.andExpect(jsonPath("$[1].descricao", equalTo("Aplicar medicamento"))).andExpect(status().isOk());
+
+	}
+
+	@Test
+	public void testDeletar() throws Exception {
+		SangueId idSangue = criarSangue("A+");
+		SexoId idSexo = criarSexo("Masculino");
+
+		serviceUsuario.salvar(criarUsuario("wagner@hotmail.com", "wagnerju", idSexo, idSangue)).get();
+		MedicamentoId idMedicamento = serviceMedicamento.salvar(criarMedicamento("DorFlex", "100mg")).get();
+
+		List<Usuario> usuarios = repo.findAll();
+		assertThat(usuarios.get(0), notNullValue());
+
+		String jsonString = objectMapper.writeValueAsString(criarAlarme(idMedicamento, "Tomar medicamento"));
+
+		this.mockMvc
+				.perform(post("/alarmes").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+						.header("token", logar("wagnerju", "1234")).content(jsonString))
+				.andExpect(jsonPath("$", equalTo("O alarme foi cadastrado com sucesso")))
+				.andExpect(status().isCreated());
+
+		List<Alarme> alarmes = repoAlarme.findAll();
+		assertThat(alarmes.get(0), notNullValue());
+
+		this.mockMvc
+				.perform(delete("/alarmes/" + alarmes.get(0).getId().toString()).header("token",
+						logar("wagnerju", "1234")))
+				.andExpect(jsonPath("$", notNullValue()))
+				.andExpect(jsonPath("$",
+						equalTo("Alarme ===> " + alarmes.get(0).getId().toString() + ": deletado com sucesso")))
+				.andExpect(status().isOk());
+	}
+
+	private CriarAlarme criarAlarme(MedicamentoId idMedicamento, String descrição) {
 		CriarAlarme alarme = new CriarAlarme();
 		alarme.setDataInicio(Date.valueOf(LocalDate.of(2018, 07, 10)));
 		alarme.setDataFim(Date.valueOf(LocalDate.of(2018, 07, 20)));
-		alarme.setDescricao("Tomar medicamento");
+		alarme.setDescricao(descrição);
 		alarme.setIdMedicamento(idMedicamento);
 		alarme.setPeriodicidade(8);
 		alarme.setQuantidade("1");

@@ -31,7 +31,6 @@ import br.hela.Escoladeti2018Application;
 import br.hela.endereco.comandos.CriarEndereco;
 import br.hela.endereco.comandos.EditarEndereco;
 import br.hela.login.LoginController;
-import br.hela.login.comandos.LogarAdm;
 import br.hela.login.comandos.LogarUsuario;
 import br.hela.sangue.Sangue;
 import br.hela.sangue.SangueId;
@@ -47,10 +46,6 @@ import br.hela.usuario.Usuario;
 import br.hela.usuario.UsuarioRepository;
 import br.hela.usuario.comandos.CriarUsuario;
 import br.hela.usuario.comandos.EditarUsuario;
-import br.hela.usuario_adm.UsuarioAdm;
-import br.hela.usuario_adm.UsuarioAdmRepository;
-import br.hela.usuario_adm.UsuarioAdmService;
-import br.hela.usuario_adm.comandos.CriarUsuarioAdm;
 
 @RunWith(SpringRunner.class)
 @Transactional
@@ -78,12 +73,6 @@ public class TestUsuarioController {
 
 	@Autowired
 	private UsuarioRepository repo;
-
-	@Autowired
-	private UsuarioAdmRepository repoAdm;
-
-	@Autowired
-	private UsuarioAdmService admService;
 
 	@Before
 	public void setup() {
@@ -127,7 +116,7 @@ public class TestUsuarioController {
 	}
 
 	@Test
-	public void testBuscarPorId() throws Exception {
+	public void testBuscarTodos() throws Exception {
 		SexoId idSexo = criarSexo("Masculino");
 		SangueId idSangue = criarSangue("A+");
 
@@ -137,40 +126,12 @@ public class TestUsuarioController {
 		this.mockMvc.perform(post("/usuarios").accept(MediaType.APPLICATION_JSON)
 				.contentType(MediaType.APPLICATION_JSON).content(jsonString)).andExpect(status().isCreated());
 
-		List<Usuario> usuarios = repo.findAll();
-
-		this.mockMvc.perform(get("/usuarios/" + usuarios.get(0).getId().toString()))
-				.andExpect(jsonPath("$", notNullValue())).andExpect(jsonPath("$.username", equalTo("wagnerju")))
-				.andExpect(status().isOk());
-	}
-
-	@Test
-	public void testBurcarTodos() throws Exception {
-		SexoId idSexo = criarSexo("Masculino");
-		SangueId idSangue = criarSangue("A+");
-
-		String jsonString = objectMapper
-				.writeValueAsString(criarUsuario("wagner@hotmail.com", "wagnerju", idSexo, idSangue));
-
-		this.mockMvc.perform(post("/usuarios").accept(MediaType.APPLICATION_JSON)
-				.contentType(MediaType.APPLICATION_JSON).content(jsonString)).andExpect(status().isCreated());
-
-		jsonString = objectMapper
-				.writeValueAsString(criarUsuario("wagner_junior@hotmail.com", "wagner", idSexo, idSangue));
-
-		this.mockMvc.perform(post("/usuarios").accept(MediaType.APPLICATION_JSON)
-				.contentType(MediaType.APPLICATION_JSON).content(jsonString)).andExpect(status().isCreated());
-
-		admService.salvar(criarAdm());
-
-		List<UsuarioAdm> adm = repoAdm.findAll();
-		assertThat(adm.get(0), notNullValue());
 		List<Usuario> usuarios = repo.findAll();
 		assertThat(usuarios.get(0), notNullValue());
 
-		this.mockMvc.perform(get("/usuarios").header("token", logarAdm("admin", "1234")))
-				.andExpect(jsonPath("$", notNullValue())).andExpect(jsonPath("$[0].username", equalTo("wagnerju")))
-				.andExpect(jsonPath("$[1].username", equalTo("wagner"))).andExpect(status().isOk());
+		this.mockMvc.perform(get("/usuarios").header("token", logar("wagnerju", "1234")))
+				.andExpect(jsonPath("$", notNullValue())).andExpect(jsonPath("$.username", equalTo("wagnerju")))
+				.andExpect(status().isOk());
 
 	}
 
@@ -260,20 +221,6 @@ public class TestUsuarioController {
 
 	private SexoId criarSexo(String tipo) {
 		return repoSexo.save(new Sexo(new CriarSexo(tipo))).getIdGenero();
-	}
-
-	private CriarUsuarioAdm criarAdm() {
-		CriarUsuarioAdm adm = new CriarUsuarioAdm();
-		adm.setNome("admin");
-		adm.setSenha("1234");
-		return adm;
-	}
-
-	private String logarAdm(String nomeUsuario, String senha) {
-		LogarAdm corpoLogin = new LogarAdm();
-		corpoLogin.setIdentificador(nomeUsuario);
-		corpoLogin.setSenha(senha);
-		return login.loginAdm(corpoLogin).getBody();
 	}
 
 }
