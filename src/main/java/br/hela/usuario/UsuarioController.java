@@ -37,7 +37,7 @@ public class UsuarioController {
 	@Autowired
 	private Autentica autentica;
 
-	@ApiOperation("Busque todos os usuários")
+	@ApiOperation("Busque um usuário")
 	@GetMapping
 	public ResponseEntity<BuscarUsuario> getUsuario(@RequestHeader String token) throws AccessDeniedException {
 		if (autentica.autenticaRequisicao(token)) {
