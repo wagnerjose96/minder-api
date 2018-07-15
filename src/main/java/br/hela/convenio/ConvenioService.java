@@ -50,7 +50,7 @@ public class ConvenioService {
 		if (convenio.isPresent()) {
 			convenio.get().setAtivo(0);
 			convenioRepo.save(convenio.get());
-			return Optional.of("Convênio -> " + id + ": deletado com sucesso");
+			return Optional.of("Convênio ===> " + id + ": deletado com sucesso");
 		}
 		return Optional.empty();
 	}

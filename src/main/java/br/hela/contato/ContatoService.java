@@ -112,7 +112,7 @@ public class ContatoService {
 			if (contato.isPresent()) {
 				telefoneService.deletar(contato.get().getIdTelefone());
 				repo.deleteById(id);
-				return Optional.of("Contato " + id + " deletado com sucesso");
+				return Optional.of("Contato ===> " + id + ": deletado com sucesso");
 			}
 		}
 		return Optional.empty();

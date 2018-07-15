@@ -50,7 +50,7 @@ public class PlanoDeSaudeController {
 			if (optionalPlanoDeSaude.isPresent()) {
 				return ResponseEntity.ok(optionalPlanoDeSaude.get());
 			}
-			throw new NullPointerException("Não existe nenhum plano de saúde cadastrado no banco de dados");
+			return ResponseEntity.notFound().build();
 		}
 		throw new AccessDeniedException(ACESSONEGADO);
 	}
@@ -113,7 +113,8 @@ public class PlanoDeSaudeController {
 				throw new NullPointerException("O plano de saúde a ser deletado não existe no banco de dados");
 			}
 			Optional<String> resultado = service.deletar(id);
-			return ResponseEntity.ok(resultado.get());
+			if (resultado.isPresent())
+				return ResponseEntity.ok(resultado.get());
 		}
 		throw new AccessDeniedException(ACESSONEGADO);
 	}

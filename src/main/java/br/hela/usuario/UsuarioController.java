@@ -3,7 +3,6 @@ package br.hela.usuario;
 import java.net.URI;
 import java.nio.file.AccessDeniedException;
 import java.sql.SQLException;
-import java.util.List;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -38,27 +37,17 @@ public class UsuarioController {
 	@Autowired
 	private Autentica autentica;
 
-	@ApiOperation("Busque todos os usuários")
+	@ApiOperation("Busque um usuário")
 	@GetMapping
-	public ResponseEntity<List<BuscarUsuario>> getUsuarios(@RequestHeader String token) throws AccessDeniedException {
-		if (autentica.autenticaRequisicaoAdm(token)) {
-			Optional<List<BuscarUsuario>> optionalUsuarios = service.encontrar();
+	public ResponseEntity<BuscarUsuario> getUsuario(@RequestHeader String token) throws AccessDeniedException {
+		if (autentica.autenticaRequisicao(token)) {
+			Optional<BuscarUsuario> optionalUsuarios = service.encontrar(autentica.idUser(token));
 			if (optionalUsuarios.isPresent()) {
 				return ResponseEntity.ok(optionalUsuarios.get());
 			}
-			throw new NullPointerException("Não existe nenhum usuário cadastrado no banco de dados");
+			return ResponseEntity.notFound().build();
 		}
 		throw new AccessDeniedException(ACESSONEGADO);
-	}
-
-	@ApiOperation("Busque um usuário pelo ID")
-	@GetMapping("/{id}")
-	public ResponseEntity<BuscarUsuario> getUsuarioPorId(@PathVariable UsuarioId id) {
-		Optional<BuscarUsuario> optionalUsuario = service.encontrar(id);
-		if (optionalUsuario.isPresent()) {
-			return ResponseEntity.ok(optionalUsuario.get());
-		}
-		throw new NullPointerException("O usuário procurado não existe no banco de dados");
 	}
 
 	@ApiOperation("Delete um usuário pelo ID")
@@ -68,7 +57,8 @@ public class UsuarioController {
 		if (autentica.autenticaRequisicao(token)) {
 			if (service.encontrar(id).isPresent()) {
 				Optional<String> optionalUsuario = service.deletar(id);
-				return ResponseEntity.ok(optionalUsuario.get());
+				if (optionalUsuario.isPresent())
+					return ResponseEntity.ok(optionalUsuario.get());
 			}
 			throw new NullPointerException("O usuário a deletar não existe no banco de dados");
 		}

@@ -45,7 +45,7 @@ public class ContatoController {
 		if (optionalContatos.isPresent()) {
 			return ResponseEntity.ok(optionalContatos.get());
 		}
-		throw new NullPointerException("Não existe nenhum contato cadastrado no banco de dados");
+		return ResponseEntity.notFound().build();
 	}
 
 	@ApiOperation("Busque um contato pelo ID")
@@ -100,7 +100,8 @@ public class ContatoController {
 		if (autentica.autenticaRequisicao(token)) {
 			if (contatoService.encontrar(id).isPresent()) {
 				Optional<String> optionalContato = contatoService.deletar(id, autentica.idUser(token));
-				return ResponseEntity.ok(optionalContato.get());
+				if (optionalContato.isPresent())
+					return ResponseEntity.ok(optionalContato.get());
 			}
 			throw new NullPointerException("O contato a deletar não existe no banco de dados");
 		}

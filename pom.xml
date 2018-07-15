@@ -122,7 +122,7 @@
 			<groupId>com.jayway.jsonpath</groupId>
 			<artifactId>json-path</artifactId>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-test</artifactId>
@@ -204,7 +204,11 @@
 			</activation>
 			<properties>
 				<sonar.host.url>
+<<<<<<< HEAD
 				http://ip172-18-0-31-bd48juv466cg00f29r00-9000.direct.labs.play-with-docker.com/
+=======
+					http://ip172-18-0-5-bd4g91pio8dg00fqf5h0-9000.direct.labs.play-with-docker.com/
+>>>>>>> 8e5daaaa7afcc5b74ae93112734afcbbbfaa38ca
 				</sonar.host.url>
 			</properties>
 		</profile>

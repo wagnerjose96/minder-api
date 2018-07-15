@@ -20,6 +20,8 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import br.hela.security.Autentica;
+import br.hela.usuario.UsuarioService;
+import br.hela.usuario.comandos.BuscarUsuario;
 import br.hela.usuario_adm.UsuarioAdmId;
 import br.hela.usuario_adm.UsuarioAdmService;
 import br.hela.usuario_adm.comandos.BuscarUsuarioAdm;
@@ -37,9 +39,25 @@ public class UsuarioAdmController {
 
 	@Autowired
 	private UsuarioAdmService service;
+	
+	@Autowired
+	private UsuarioService serviceUsuario;
 
 	@Autowired
 	private Autentica autentica;
+	
+	@ApiOperation("Busque todos os usuários")
+	@GetMapping("/usuarios")
+	public ResponseEntity<List<BuscarUsuario>> getUsuarioAll(@RequestHeader String token) throws AccessDeniedException {
+		if (autentica.autenticaRequisicaoAdm(token)) {
+			Optional<List<BuscarUsuario>> optionalUsuarios = serviceUsuario.encontrar();
+			if (optionalUsuarios.isPresent()) {
+				return ResponseEntity.ok(optionalUsuarios.get());
+			}
+			return ResponseEntity.notFound().build();
+		}
+		throw new AccessDeniedException(ACESSONEGADO);
+	}
 
 	@ApiOperation("Busque todos os administradores")
 	@GetMapping
@@ -50,7 +68,7 @@ public class UsuarioAdmController {
 			if (optionalUsuarioAdmin.isPresent()) {
 				return ResponseEntity.ok(optionalUsuarioAdmin.get());
 			}
-			throw new NullPointerException("Não existe nenhum administrador cadastrado no banco de dados");
+			return ResponseEntity.notFound().build();
 		}
 		throw new AccessDeniedException(ACESSONEGADO);
 	}
@@ -76,7 +94,8 @@ public class UsuarioAdmController {
 		if (autentica.autenticaRequisicaoAdm(token)) {
 			if (service.encontrar(id).isPresent()) {
 				Optional<String> resultado = service.deletar(id);
-				return ResponseEntity.ok(resultado.get());
+				if (resultado.isPresent())
+					return ResponseEntity.ok(resultado.get());
 			}
 			throw new NullPointerException("O administrador a deletar não existe no banco de dados");
 		}

@@ -52,26 +52,7 @@ public class UsuarioService {
 		}
 		return Optional.empty();
 	}
-
-	public Optional<BuscarUsuario> encontrar(UsuarioId id) {
-		Optional<Usuario> usuario = repo.findById(id);
-		if (usuario.isPresent() && usuario.get().getAtivo() == 1) {
-			BuscarUsuario resultado = new BuscarUsuario(usuario.get());
-			Optional<BuscarSangue> sangue = sangueService.encontrar(usuario.get().getIdSangue());
-			Optional<BuscarEndereco> endereco = enderecoService.encontrar(usuario.get().getIdEndereco());
-			Optional<BuscarSexo> sexo = sexoService.encontrar(usuario.get().getIdSexo());
-			Optional<BuscarTelefone> telefone = telefoneService.encontrar(usuario.get().getIdTelefone());
-			if (sangue.isPresent() && endereco.isPresent() && sexo.isPresent() && telefone.isPresent()) {
-				resultado.setSexo(sexo.get());
-				resultado.setSangue(sangue.get());
-				resultado.setEndereco(endereco.get());
-				resultado.setTelefone(telefone.get());
-				return Optional.of(resultado);
-			}
-		}
-		return Optional.empty();
-	}
-
+	
 	public Optional<List<BuscarUsuario>> encontrar() {
 		List<BuscarUsuario> resultados = new ArrayList<>();
 		List<Usuario> usuarios = repo.findAll();
@@ -94,12 +75,33 @@ public class UsuarioService {
 		return Optional.of(resultados);
 	}
 
+	public Optional<BuscarUsuario> encontrar(UsuarioId id) {
+		List<Usuario> usuarios = repo.findAll();
+		BuscarUsuario user = new BuscarUsuario();
+		for (Usuario usuario : usuarios) {
+			if (usuario.getId().toString().equals(id.toString()) && usuario.getAtivo() == 1) {
+				user = new BuscarUsuario(usuario);
+				Optional<BuscarSangue> sangue = sangueService.encontrar(usuario.getIdSangue());
+				Optional<BuscarEndereco> endereco = enderecoService.encontrar(usuario.getIdEndereco());
+				Optional<BuscarSexo> sexo = sexoService.encontrar(usuario.getIdSexo());
+				Optional<BuscarTelefone> telefone = telefoneService.encontrar(usuario.getIdTelefone());
+				if (sangue.isPresent() && endereco.isPresent() && sexo.isPresent() && telefone.isPresent()) {
+					user.setSexo(sexo.get());
+					user.setSangue(sangue.get());
+					user.setEndereco(endereco.get());
+					user.setTelefone(telefone.get());
+				}
+			}
+		}
+		return Optional.of(user);
+	}
+
 	public Optional<String> deletar(UsuarioId id) {
 		Optional<Usuario> usuario = repo.findById(id);
 		if (usuario.isPresent()) {
 			usuario.get().setAtivo(0);
 			repo.save(usuario.get());
-			return Optional.of("Usuário -> " + id + ": deletado com sucesso");
+			return Optional.of("Usuário ===> " + id + ": deletado com sucesso");
 		}
 		return Optional.empty();
 	}

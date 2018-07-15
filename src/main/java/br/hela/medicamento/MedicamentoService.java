@@ -47,7 +47,7 @@ public class MedicamentoService {
 		if (medicamento.isPresent()) {
 			medicamento.get().setAtivo(0);
 			medicamentoRepo.save(medicamento.get());
-			return Optional.of("Medicamento -> " + id + ": deletado com sucesso");
+			return Optional.of("Medicamento ===> " + id + ": deletado com sucesso");
 		}
 		return Optional.empty();
 	}
