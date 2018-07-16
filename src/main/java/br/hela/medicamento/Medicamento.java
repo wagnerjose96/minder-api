@@ -41,6 +41,7 @@ public class Medicamento {
 		this.idMedicamento = comando.getIdMedicamento();
 		this.nomeMedicamento = comando.getNomeMedicamento();
 		this.composicao = comando.getComposicao();
+		this.ativo = comando.getAtivo();
 	}
 	
 	public static boolean verificarMedicamento(MedicamentoId idMedicamento, List<MedicamentoId> list) {

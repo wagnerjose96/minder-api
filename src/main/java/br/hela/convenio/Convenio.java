@@ -15,7 +15,7 @@ import lombok.Setter;
 @Entity
 @Audited
 @Data
-@EqualsAndHashCode(exclude = { "nome", "ativo"})
+@EqualsAndHashCode(exclude = { "nome", "ativo" })
 public class Convenio {
 	@EmbeddedId
 	@AttributeOverride(name = "value", column = @Column(name = "id"))
@@ -36,5 +36,6 @@ public class Convenio {
 	public void apply(EditarConvenio comandos) {
 		this.id = comandos.getId();
 		this.nome = comandos.getNome();
+		this.ativo = comandos.getAtivo();
 	}
 }

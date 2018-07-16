@@ -66,7 +66,6 @@ import br.hela.usuario.comandos.CriarUsuario;
 @Rollback
 @WebAppConfiguration
 @SpringBootTest(classes = { Escoladeti2018Application.class }, webEnvironment = WebEnvironment.MOCK)
-
 public class TestAlarmeController {
 
 	@Autowired
@@ -215,7 +214,6 @@ public class TestAlarmeController {
 		this.mockMvc.perform(get("/alarmes").header("token", logar("wagnerju", "1234")))
 				.andExpect(jsonPath("$[0].descricao", equalTo("Tomar medicamento")))
 				.andExpect(jsonPath("$[1].descricao", equalTo("Aplicar medicamento"))).andExpect(status().isOk());
-
 	}
 
 	@Test
