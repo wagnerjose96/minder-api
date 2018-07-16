@@ -1,4 +1,4 @@
-package br.hela.test;
+package br.hela.test.usuario;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.notNullValue;

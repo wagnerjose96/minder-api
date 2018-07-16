@@ -1,9 +1,8 @@
-package br.hela.test;
+package br.hela.test.doenca;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.junit.Assert.assertThat;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
@@ -12,6 +11,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import java.sql.Date;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.Before;
@@ -35,10 +35,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.springtestdbunit.TransactionDbUnitTestExecutionListener;
 
 import br.hela.Escoladeti2018Application;
-import br.hela.alarme.Alarme;
-import br.hela.alarme.AlarmeRepository;
-import br.hela.alarme.comandos.CriarAlarme;
-import br.hela.alarme.comandos.EditarAlarme;
+import br.hela.doenca.Doenca;
+import br.hela.doenca.DoencaRepository;
+import br.hela.doenca.comandos.CriarDoenca;
+import br.hela.doenca.comandos.EditarDoenca;
 import br.hela.endereco.comandos.CriarEndereco;
 import br.hela.login.LoginController;
 import br.hela.login.comandos.LogarUsuario;
@@ -67,7 +67,7 @@ import br.hela.usuario.comandos.CriarUsuario;
 @WebAppConfiguration
 @SpringBootTest(classes = { Escoladeti2018Application.class }, webEnvironment = WebEnvironment.MOCK)
 
-public class TestAlarmeController {
+public class TestDoencaController {
 
 	@Autowired
 	private WebApplicationContext context;
@@ -96,7 +96,7 @@ public class TestAlarmeController {
 	private UsuarioRepository repo;
 
 	@Autowired
-	private AlarmeRepository repoAlarme;
+	private DoencaRepository repoDoenca;
 
 	@Before
 	public void setup() {
@@ -110,16 +110,18 @@ public class TestAlarmeController {
 
 		serviceUsuario.salvar(criarUsuario("wagner@hotmail.com", "wagnerju", idSexo, idSangue)).get();
 		MedicamentoId idMedicamento = serviceMedicamento.salvar(criarMedicamento("DorFlex", "100mg")).get();
+		List<MedicamentoId> idsMedicamentos = new ArrayList<MedicamentoId>();
+		idsMedicamentos.add(idMedicamento);
 
 		List<Usuario> usuarios = repo.findAll();
 		assertThat(usuarios.get(0), notNullValue());
 
-		final String jsonString = objectMapper.writeValueAsString(criarAlarme(idMedicamento, "Tomar medicamento"));
+		final String jsonString = objectMapper.writeValueAsString(criarDoenca(idsMedicamentos, "Miopia"));
 
 		this.mockMvc
-				.perform(post("/alarmes").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+				.perform(post("/doencas").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
 						.header("token", logar("wagnerju", "1234")).content(jsonString))
-				.andExpect(jsonPath("$", equalTo("O alarme foi cadastrado com sucesso")))
+				.andExpect(jsonPath("$", equalTo("A doença foi cadastrada com sucesso")))
 				.andExpect(status().isCreated());
 	}
 
@@ -130,28 +132,29 @@ public class TestAlarmeController {
 
 		serviceUsuario.salvar(criarUsuario("wagner@hotmail.com", "wagnerju", idSexo, idSangue)).get();
 		MedicamentoId idMedicamento = serviceMedicamento.salvar(criarMedicamento("DorFlex", "100mg")).get();
+		List<MedicamentoId> idsMedicamentos = new ArrayList<MedicamentoId>();
+		idsMedicamentos.add(idMedicamento);
 
 		List<Usuario> usuarios = repo.findAll();
 		assertThat(usuarios.get(0), notNullValue());
 
-		String jsonString = objectMapper.writeValueAsString(criarAlarme(idMedicamento, "Tomar medicamento"));
+		String jsonString = objectMapper.writeValueAsString(criarDoenca(idsMedicamentos, "Miopia"));
 
 		this.mockMvc
-				.perform(post("/alarmes").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+				.perform(post("/doencas").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
 						.header("token", logar("wagnerju", "1234")).content(jsonString))
-				.andExpect(jsonPath("$", equalTo("O alarme foi cadastrado com sucesso")))
+				.andExpect(jsonPath("$", equalTo("A doença foi cadastrada com sucesso")))
 				.andExpect(status().isCreated());
 
-		List<Alarme> alarmes = repoAlarme.findAll();
-		assertThat(alarmes.get(0), notNullValue());
+		List<Doenca> doencas = repoDoenca.findAll();
+		assertThat(doencas.get(0), notNullValue());
 
-		jsonString = objectMapper.writeValueAsString(editarAlarme(alarmes.get(0)));
+		jsonString = objectMapper.writeValueAsString(editarDoenca(doencas.get(0), idsMedicamentos));
 
 		this.mockMvc
-				.perform(put("/alarmes").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+				.perform(put("/doencas").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
 						.header("token", logar("wagnerju", "1234")).content(jsonString))
-				.andExpect(jsonPath("$", notNullValue()))
-				.andExpect(jsonPath("$", equalTo("O alarme foi alterado com sucesso"))).andExpect(status().isOk());
+				.andExpect(jsonPath("$", equalTo("A doença foi alterada com sucesso"))).andExpect(status().isOk());
 
 	}
 
@@ -162,26 +165,27 @@ public class TestAlarmeController {
 
 		serviceUsuario.salvar(criarUsuario("wagner@hotmail.com", "wagnerju", idSexo, idSangue)).get();
 		MedicamentoId idMedicamento = serviceMedicamento.salvar(criarMedicamento("DorFlex", "100mg")).get();
+		List<MedicamentoId> idsMedicamentos = new ArrayList<MedicamentoId>();
+		idsMedicamentos.add(idMedicamento);
 
 		List<Usuario> usuarios = repo.findAll();
 		assertThat(usuarios.get(0), notNullValue());
 
-		final String jsonString = objectMapper.writeValueAsString(criarAlarme(idMedicamento, "Tomar medicamento"));
+		final String jsonString = objectMapper.writeValueAsString(criarDoenca(idsMedicamentos, "Miopia"));
 
 		this.mockMvc
-				.perform(post("/alarmes").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+				.perform(post("/doencas").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
 						.header("token", logar("wagnerju", "1234")).content(jsonString))
-				.andExpect(jsonPath("$", equalTo("O alarme foi cadastrado com sucesso")))
+				.andExpect(jsonPath("$", equalTo("A doença foi cadastrada com sucesso")))
 				.andExpect(status().isCreated());
 
-		List<Alarme> alarmes = repoAlarme.findAll();
-		assertThat(alarmes.get(0), notNullValue());
+		List<Doenca> doencas = repoDoenca.findAll();
+		assertThat(doencas.get(0), notNullValue());
 
 		this.mockMvc
-				.perform(
-						get("/alarmes/" + alarmes.get(0).getId().toString()).header("token", logar("wagnerju", "1234")))
-				.andExpect(jsonPath("$", notNullValue())).andExpect(jsonPath("$", notNullValue()))
-				.andExpect(jsonPath("$.descricao", equalTo("Tomar medicamento"))).andExpect(status().isOk());
+				.perform(get("/doencas/" + doencas.get(0).getIdDoenca().toString()).header("token",
+						logar("wagnerju", "1234")))
+				.andExpect(jsonPath("$.nomeDoenca", equalTo("Miopia"))).andExpect(status().isOk());
 	}
 
 	@Test
@@ -191,76 +195,52 @@ public class TestAlarmeController {
 
 		serviceUsuario.salvar(criarUsuario("wagner@hotmail.com", "wagnerju", idSexo, idSangue)).get();
 		MedicamentoId idMedicamento = serviceMedicamento.salvar(criarMedicamento("DorFlex", "100mg")).get();
+		List<MedicamentoId> idsMedicamentos = new ArrayList<MedicamentoId>();
+		idsMedicamentos.add(idMedicamento);
 
 		List<Usuario> usuarios = repo.findAll();
 		assertThat(usuarios.get(0), notNullValue());
 
-		String jsonString = objectMapper.writeValueAsString(criarAlarme(idMedicamento, "Tomar medicamento"));
+		String jsonString = objectMapper.writeValueAsString(criarDoenca(idsMedicamentos, "Miopia"));
 
 		this.mockMvc
-				.perform(post("/alarmes").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+				.perform(post("/doencas").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
 						.header("token", logar("wagnerju", "1234")).content(jsonString))
-				.andExpect(jsonPath("$", equalTo("O alarme foi cadastrado com sucesso")))
+				.andExpect(jsonPath("$", equalTo("A doença foi cadastrada com sucesso")))
 				.andExpect(status().isCreated());
 
-		jsonString = objectMapper.writeValueAsString(criarAlarme(idMedicamento, "Aplicar medicamento"));
+		jsonString = objectMapper.writeValueAsString(criarDoenca(idsMedicamentos, "Asma"));
 
 		this.mockMvc
-				.perform(post("/alarmes").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+				.perform(post("/doencas").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
 						.header("token", logar("wagnerju", "1234")).content(jsonString))
-				.andExpect(jsonPath("$", equalTo("O alarme foi cadastrado com sucesso")))
+				.andExpect(jsonPath("$", equalTo("A doença foi cadastrada com sucesso")))
 				.andExpect(status().isCreated());
 
-		List<Alarme> alarmes = repoAlarme.findAll();
-		assertThat(alarmes.get(0), notNullValue());
+		List<Doenca> doencas = repoDoenca.findAll();
+		assertThat(doencas.get(0), notNullValue());
 
-		this.mockMvc.perform(get("/alarmes").header("token", logar("wagnerju", "1234")))
-				.andExpect(jsonPath("$", notNullValue()))
-				.andExpect(jsonPath("$[0].descricao", equalTo("Tomar medicamento")))
-				.andExpect(jsonPath("$[1].descricao", equalTo("Aplicar medicamento"))).andExpect(status().isOk());
+		this.mockMvc.perform(get("/doencas").header("token", logar("wagnerju", "1234")))
+				.andExpect(jsonPath("$[0].nomeDoenca", equalTo("Miopia")))
+				.andExpect(jsonPath("$[1].nomeDoenca", equalTo("Asma"))).andExpect(status().isOk());
 
 	}
 
-	@Test
-	public void testDeletar() throws Exception {
-		SangueId idSangue = criarSangue("A+");
-		SexoId idSexo = criarSexo("Masculino");
-
-		serviceUsuario.salvar(criarUsuario("wagner@hotmail.com", "wagnerju", idSexo, idSangue)).get();
-		MedicamentoId idMedicamento = serviceMedicamento.salvar(criarMedicamento("DorFlex", "100mg")).get();
-
-		List<Usuario> usuarios = repo.findAll();
-		assertThat(usuarios.get(0), notNullValue());
-
-		String jsonString = objectMapper.writeValueAsString(criarAlarme(idMedicamento, "Tomar medicamento"));
-
-		this.mockMvc
-				.perform(post("/alarmes").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
-						.header("token", logar("wagnerju", "1234")).content(jsonString))
-				.andExpect(jsonPath("$", equalTo("O alarme foi cadastrado com sucesso")))
-				.andExpect(status().isCreated());
-
-		List<Alarme> alarmes = repoAlarme.findAll();
-		assertThat(alarmes.get(0), notNullValue());
-
-		this.mockMvc
-				.perform(delete("/alarmes/" + alarmes.get(0).getId().toString()).header("token",
-						logar("wagnerju", "1234")))
-				.andExpect(jsonPath("$", notNullValue()))
-				.andExpect(jsonPath("$",
-						equalTo("Alarme ===> " + alarmes.get(0).getId().toString() + ": deletado com sucesso")))
-				.andExpect(status().isOk());
+	private CriarDoenca criarDoenca(List<MedicamentoId> idsMedicamentos, String nomeDoenca) {
+		CriarDoenca doenca = new CriarDoenca();
+		doenca.setDataDescoberta(Date.valueOf(LocalDate.of(2018, 07, 10)));
+		doenca.setIdMedicamentos(idsMedicamentos);
+		doenca.setNomeDoenca(nomeDoenca);
+		return doenca;
 	}
 
-	private CriarAlarme criarAlarme(MedicamentoId idMedicamento, String descrição) {
-		CriarAlarme alarme = new CriarAlarme();
-		alarme.setDataInicio(Date.valueOf(LocalDate.of(2018, 07, 10)));
-		alarme.setDataFim(Date.valueOf(LocalDate.of(2018, 07, 20)));
-		alarme.setDescricao(descrição);
-		alarme.setIdMedicamento(idMedicamento);
-		alarme.setPeriodicidade(8);
-		alarme.setQuantidade("1");
-		return alarme;
+	private EditarDoenca editarDoenca(Doenca doenca, List<MedicamentoId> idsMedicamentos) {
+		EditarDoenca doencaEditada = new EditarDoenca();
+		doencaEditada.setIdDoenca(doenca.getIdDoenca());
+		doencaEditada.setDataDescoberta(doencaEditada.getDataDescoberta());
+		doencaEditada.setIdMedicamentos(idsMedicamentos);
+		doencaEditada.setNomeDoenca("Asma");
+		return doencaEditada;
 	}
 
 	private CriarMedicamento criarMedicamento(String nome, String composicao) {
@@ -311,18 +291,6 @@ public class TestAlarmeController {
 		corpoLogin.setIdentificador(nomeUsuario);
 		corpoLogin.setSenha(senha);
 		return login.loginUsuario(corpoLogin).getBody();
-	}
-
-	private EditarAlarme editarAlarme(Alarme alarme) {
-		EditarAlarme alarmeEditado = new EditarAlarme();
-		alarmeEditado.setId(alarme.getId());
-		alarmeEditado.setDataInicio(Date.valueOf(LocalDate.of(2018, 07, 10)));
-		alarmeEditado.setDataFim(Date.valueOf(LocalDate.of(2018, 07, 20)));
-		alarmeEditado.setDescricao("Tomar medicamento Editado !!!");
-		alarmeEditado.setIdMedicamento(alarme.getIdMedicamento());
-		alarmeEditado.setPeriodicidade(8);
-		alarmeEditado.setQuantidade("1");
-		return alarmeEditado;
 	}
 
 }
