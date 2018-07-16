@@ -4,8 +4,8 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
-	<groupId>br.hela</groupId>
-	<artifactId>escoladeti2018</artifactId>
+	<groupId>br.minder</groupId>
+	<artifactId>minder</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 
 	<name>escoladeti2018</name>
@@ -204,7 +204,7 @@
 			</activation>
 			<properties>
 				<sonar.host.url>
-					http://ip172-18-0-15-bd6gboor37a0008f95vg-9000.direct.labs.play-with-docker.com/
+					http://ip172-18-0-12-bd6hbc7mgqu000d15qt0-9000.direct.labs.play-with-docker.com/
 				</sonar.host.url>
 			</properties>
 		</profile>
