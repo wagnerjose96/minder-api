@@ -1,4 +1,4 @@
-package br.hela.test;
+package br.hela.test.usuario;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.notNullValue;
@@ -87,8 +87,11 @@ public class TestUsuarioController {
 		String jsonString = objectMapper
 				.writeValueAsString(criarUsuario("wagner@hotmail.com", "wagnerju", idSexo, idSangue));
 
-		this.mockMvc.perform(post("/usuarios").accept(MediaType.APPLICATION_JSON)
-				.contentType(MediaType.APPLICATION_JSON).content(jsonString)).andExpect(status().isCreated());
+		this.mockMvc
+				.perform(post("/usuarios").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+						.content(jsonString))
+				.andExpect(jsonPath("$", equalTo("O usuário foi cadastrado com sucesso")))
+				.andExpect(status().isCreated());
 	}
 
 	@Test
@@ -99,8 +102,11 @@ public class TestUsuarioController {
 		String jsonString = objectMapper
 				.writeValueAsString(criarUsuario("wagner@hotmail.com", "wagnerju", idSexo, idSangue));
 
-		this.mockMvc.perform(post("/usuarios").accept(MediaType.APPLICATION_JSON)
-				.contentType(MediaType.APPLICATION_JSON).content(jsonString)).andExpect(status().isCreated());
+		this.mockMvc
+				.perform(post("/usuarios").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+						.content(jsonString))
+				.andExpect(jsonPath("$", equalTo("O usuário foi cadastrado com sucesso")))
+				.andExpect(status().isCreated());
 
 		List<Usuario> usuarios = repo.findAll();
 		assertThat(usuarios.get(0), notNullValue());
@@ -110,9 +116,7 @@ public class TestUsuarioController {
 		this.mockMvc
 				.perform(put("/usuarios").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
 						.header("token", logar("wagnerju", "1234")).content(jsonString))
-				.andExpect(jsonPath("$", notNullValue()))
 				.andExpect(jsonPath("$", equalTo("O usuário foi alterado com sucesso"))).andExpect(status().isOk());
-
 	}
 
 	@Test
@@ -123,16 +127,17 @@ public class TestUsuarioController {
 		String jsonString = objectMapper
 				.writeValueAsString(criarUsuario("wagner@hotmail.com", "wagnerju", idSexo, idSangue));
 
-		this.mockMvc.perform(post("/usuarios").accept(MediaType.APPLICATION_JSON)
-				.contentType(MediaType.APPLICATION_JSON).content(jsonString)).andExpect(status().isCreated());
+		this.mockMvc
+				.perform(post("/usuarios").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+						.content(jsonString))
+				.andExpect(jsonPath("$", equalTo("O usuário foi cadastrado com sucesso")))
+				.andExpect(status().isCreated());
 
 		List<Usuario> usuarios = repo.findAll();
 		assertThat(usuarios.get(0), notNullValue());
 
 		this.mockMvc.perform(get("/usuarios").header("token", logar("wagnerju", "1234")))
-				.andExpect(jsonPath("$", notNullValue())).andExpect(jsonPath("$.username", equalTo("wagnerju")))
-				.andExpect(status().isOk());
-
+				.andExpect(jsonPath("$.username", equalTo("wagnerju"))).andExpect(status().isOk());
 	}
 
 	@Test
@@ -143,10 +148,14 @@ public class TestUsuarioController {
 		String jsonString = objectMapper
 				.writeValueAsString(criarUsuario("wagner@hotmail.com", "wagnerju", idSexo, idSangue));
 
-		this.mockMvc.perform(post("/usuarios").accept(MediaType.APPLICATION_JSON)
-				.contentType(MediaType.APPLICATION_JSON).content(jsonString)).andExpect(status().isCreated());
+		this.mockMvc
+				.perform(post("/usuarios").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+						.content(jsonString))
+				.andExpect(jsonPath("$", equalTo("O usuário foi cadastrado com sucesso")))
+				.andExpect(status().isCreated());
 
 		List<Usuario> usuarios = repo.findAll();
+		assertThat(usuarios.get(0), notNullValue());
 
 		this.mockMvc
 				.perform(delete("/usuarios/" + usuarios.get(0).getId().toString()).header("token",

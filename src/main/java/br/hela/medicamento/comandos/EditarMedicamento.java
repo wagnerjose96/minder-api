@@ -8,4 +8,5 @@ public class EditarMedicamento {
 	private MedicamentoId idMedicamento;
 	private String nomeMedicamento;
 	private String composicao;
+	private int ativo;
 }

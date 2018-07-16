@@ -1,4 +1,4 @@
-package br.hela.test;
+package br.hela.test.alarme;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.notNullValue;
@@ -66,7 +66,6 @@ import br.hela.usuario.comandos.CriarUsuario;
 @Rollback
 @WebAppConfiguration
 @SpringBootTest(classes = { Escoladeti2018Application.class }, webEnvironment = WebEnvironment.MOCK)
-
 public class TestAlarmeController {
 
 	@Autowired
@@ -150,7 +149,6 @@ public class TestAlarmeController {
 		this.mockMvc
 				.perform(put("/alarmes").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
 						.header("token", logar("wagnerju", "1234")).content(jsonString))
-				.andExpect(jsonPath("$", notNullValue()))
 				.andExpect(jsonPath("$", equalTo("O alarme foi alterado com sucesso"))).andExpect(status().isOk());
 
 	}
@@ -180,7 +178,6 @@ public class TestAlarmeController {
 		this.mockMvc
 				.perform(
 						get("/alarmes/" + alarmes.get(0).getId().toString()).header("token", logar("wagnerju", "1234")))
-				.andExpect(jsonPath("$", notNullValue())).andExpect(jsonPath("$", notNullValue()))
 				.andExpect(jsonPath("$.descricao", equalTo("Tomar medicamento"))).andExpect(status().isOk());
 	}
 
@@ -215,10 +212,8 @@ public class TestAlarmeController {
 		assertThat(alarmes.get(0), notNullValue());
 
 		this.mockMvc.perform(get("/alarmes").header("token", logar("wagnerju", "1234")))
-				.andExpect(jsonPath("$", notNullValue()))
 				.andExpect(jsonPath("$[0].descricao", equalTo("Tomar medicamento")))
 				.andExpect(jsonPath("$[1].descricao", equalTo("Aplicar medicamento"))).andExpect(status().isOk());
-
 	}
 
 	@Test
@@ -246,7 +241,6 @@ public class TestAlarmeController {
 		this.mockMvc
 				.perform(delete("/alarmes/" + alarmes.get(0).getId().toString()).header("token",
 						logar("wagnerju", "1234")))
-				.andExpect(jsonPath("$", notNullValue()))
 				.andExpect(jsonPath("$",
 						equalTo("Alarme ===> " + alarmes.get(0).getId().toString() + ": deletado com sucesso")))
 				.andExpect(status().isOk());

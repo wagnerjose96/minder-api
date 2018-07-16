@@ -7,4 +7,5 @@ import lombok.Data;
 public class EditarConvenio {
 	private ConvenioId id;
 	private String nome;
+	private int ativo;
 }
