@@ -91,7 +91,7 @@ public class TestConvenioController {
 		this.mockMvc
 				.perform(post("/convenios").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
 						.header("token", logarAdm("admin", "1234")).content(jsonString))
-				.andExpect(jsonPath("$", equalTo("O convenio foi cadastrado com sucesso")))
+				.andExpect(jsonPath("$", equalTo("O convênio foi cadastrado com sucesso")))
 				.andExpect(status().isCreated());
 	}
 
@@ -107,7 +107,7 @@ public class TestConvenioController {
 		this.mockMvc
 				.perform(post("/convenios").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
 						.header("token", logarAdm("admin", "1234")).content(jsonString))
-				.andExpect(jsonPath("$", equalTo("O convenio foi cadastrado com sucesso")))
+				.andExpect(jsonPath("$", equalTo("O convênio foi cadastrado com sucesso")))
 				.andExpect(status().isCreated());
 
 		List<Convenio> convenios = repoConvenio.findAll();
@@ -118,7 +118,7 @@ public class TestConvenioController {
 		this.mockMvc
 				.perform(put("/convenios").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
 						.header("token", logarAdm("admin", "1234")).content(jsonString))
-				.andExpect(jsonPath("$", equalTo("O convenio foi alterado com sucesso"))).andExpect(status().isOk());
+				.andExpect(jsonPath("$", equalTo("O convênio foi alterado com sucesso"))).andExpect(status().isOk());
 
 	}
 
@@ -134,7 +134,7 @@ public class TestConvenioController {
 		this.mockMvc
 				.perform(post("/convenios").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
 						.header("token", logarAdm("admin", "1234")).content(jsonString))
-				.andExpect(jsonPath("$", equalTo("O convenio foi cadastrado com sucesso")))
+				.andExpect(jsonPath("$", equalTo("O convênio foi cadastrado com sucesso")))
 				.andExpect(status().isCreated());
 
 		List<Convenio> convenios = repoConvenio.findAll();
@@ -143,7 +143,7 @@ public class TestConvenioController {
 		this.mockMvc
 				.perform(get("/convenios/" + convenios.get(0).getId().toString()).header("token",
 						logarAdm("admin", "1234")))
-				.andExpect(jsonPath("$.nome", equalTo("Santa Casa"))).andExpect(status().isOk());
+				.andExpect(jsonPath("$.nome", equalTo("Unimed"))).andExpect(status().isOk());
 	}
 
 	@Test
@@ -158,7 +158,7 @@ public class TestConvenioController {
 		this.mockMvc
 				.perform(post("/convenios").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
 						.header("token", logarAdm("admin", "1234")).content(jsonString))
-				.andExpect(jsonPath("$", equalTo("O convenio foi cadastrado com sucesso")))
+				.andExpect(jsonPath("$", equalTo("O convênio foi cadastrado com sucesso")))
 				.andExpect(status().isCreated());
 
 		jsonString = objectMapper.writeValueAsString(criarConvenio("Santa Casa"));
@@ -166,7 +166,7 @@ public class TestConvenioController {
 		this.mockMvc
 				.perform(post("/convenios").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
 						.header("token", logarAdm("admin", "1234")).content(jsonString))
-				.andExpect(jsonPath("$", equalTo("O convenio foi cadastrado com sucesso")))
+				.andExpect(jsonPath("$", equalTo("O convênio foi cadastrado com sucesso")))
 				.andExpect(status().isCreated());
 
 		List<Convenio> convenios = repoConvenio.findAll();
@@ -190,7 +190,7 @@ public class TestConvenioController {
 		this.mockMvc
 				.perform(post("/convenios").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
 						.header("token", logarAdm("admin", "1234")).content(jsonString))
-				.andExpect(jsonPath("$", equalTo("O convenio foi cadastrado com sucesso")))
+				.andExpect(jsonPath("$", equalTo("O convênio foi cadastrado com sucesso")))
 				.andExpect(status().isCreated());
 
 		List<Convenio> convenios = repoConvenio.findAll();
@@ -200,7 +200,7 @@ public class TestConvenioController {
 				.perform(delete("/convenios/" + convenios.get(0).getId().toString()).header("token",
 						logarAdm("admin", "1234")))
 				.andExpect(jsonPath("$",
-						equalTo("Convenio ===> " + convenios.get(0).getId().toString() + ": deletado com sucesso")))
+						equalTo("Convênio ===> " + convenios.get(0).getId().toString() + ": deletado com sucesso")))
 				.andExpect(status().isOk());
 	}
 
@@ -214,7 +214,7 @@ public class TestConvenioController {
 		EditarConvenio convenioEditado = new EditarConvenio();
 		convenioEditado.setId(convenio.getId());
 		convenioEditado.setNome("Santa Casa");
-
+		convenioEditado.setAtivo(convenio.getAtivo());
 		return convenioEditado;
 	}
 
