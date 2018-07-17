@@ -88,13 +88,6 @@
 		</dependency>
 
 		<dependency>
-			<groupId>io.springfox</groupId>
-			<artifactId>springfox-swagger-ui</artifactId>
-			<version>2.8.0</version>
-			<scope>compile</scope>
-		</dependency>
-
-		<dependency>
 			<groupId>org.apache.tomcat.embed</groupId>
 			<artifactId>tomcat-embed-jasper</artifactId>
 			<scope>provided</scope>
@@ -128,6 +121,7 @@
 			<artifactId>spring-test</artifactId>
 			<scope>test</scope>
 		</dependency>
+		
 		<dependency>
 			<groupId>org.dbunit</groupId>
 			<artifactId>dbunit</artifactId>
@@ -135,6 +129,7 @@
 			<type>jar</type>
 			<scope>test</scope>
 		</dependency>
+		
 		<dependency>
 			<groupId>com.github.springtestdbunit</groupId>
 			<artifactId>spring-test-dbunit</artifactId>
@@ -204,7 +199,7 @@
 			</activation>
 			<properties>
 				<sonar.host.url>
-					http://ip172-18-0-12-bd6hbc7mgqu000d15qt0-9000.direct.labs.play-with-docker.com/
+					http://ip172-18-0-44-bd6k0bor37a0008f98p0-9000.direct.labs.play-with-docker.com
 				</sonar.host.url>
 			</properties>
 		</profile>
