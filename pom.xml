@@ -8,7 +8,7 @@
 	<artifactId>minder</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 
-	<name>escoladeti2018</name>
+	<name>minder</name>
 	<description>Demo project for Spring Boot</description>
 
 	<parent>
@@ -204,7 +204,7 @@
 			</activation>
 			<properties>
 				<sonar.host.url>
-					http://ip172-18-0-12-bd6hbc7mgqu000d15qt0-9000.direct.labs.play-with-docker.com/
+					http://ip172-18-0-9-bd71h1gr37a0009tpq50-9000.direct.labs.play-with-docker.com/
 				</sonar.host.url>
 			</properties>
 		</profile>

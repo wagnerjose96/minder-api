@@ -36,6 +36,8 @@
 	<include file="db/changelog/entidades/db.changelog-emergencia.xml" />
 	<include file="db/changelog/entidades/db.changelog-error.xml" />
 	<include file="db/changelog/entidades/db.changelog-plano_de_saude.xml" />
+	<include file="db/changelog/entidades/db.changelog-pergunta.xml" />
+	<include file="db/changelog/entidades/db.changelog-resposta.xml" />
 	
 	
 		<!-- Carregando associações no banco de dados -->
@@ -44,5 +46,15 @@
 	<include file="db/changelog/associações/db.changelog-doenca_medicamento.xml" />
 	<include file="db/changelog/associações/db.changelog-cirurgia_medicamento.xml" />
 	<include file="db/changelog/associações/db.changelog-contato_emergencia.xml" />
+	<include file="db/changelog/associações/db.changelog-pergunta_resposta_usuario.xml" />
+	
+	
+		<!-- Carregando alterações no banco de dados -->
+	
+	<include file="db/changelog/alterações/db.changelog-alarme_usuario.xml" />
+	<include file="db/changelog/alterações/db.changelog-alergia_usuario.xml" />
+	<include file="db/changelog/alterações/db.changelog-cirurgia_usuario.xml" />
+	<include file="db/changelog/alterações/db.changelog-doenca_usuario.xml" />
+	<include file="db/changelog/alterações/db.changelog-plano_de_saude_usuario.xml" />
 	
 </databaseChangeLog>

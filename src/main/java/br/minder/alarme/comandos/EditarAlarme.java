@@ -1,6 +1,6 @@
 package br.minder.alarme.comandos;
 
-import java.util.Date;
+import java.sql.Date;
 
 import br.minder.alarme.AlarmeId;
 import br.minder.medicamento.MedicamentoId;
