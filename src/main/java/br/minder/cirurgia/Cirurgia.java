@@ -5,16 +5,14 @@ import javax.persistence.AttributeOverride;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
-
+import br.minder.cirurgia.comandos.CriarCirurgia;
+import br.minder.cirurgia.comandos.EditarCirurgia;
+import br.minder.usuario.UsuarioId;
 import lombok.AccessLevel;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.Setter;
 import org.hibernate.envers.Audited;
-
-import br.minder.cirurgia.comandos.CriarCirurgia;
-import br.minder.cirurgia.comandos.EditarCirurgia;
-import br.minder.usuario.UsuarioId;
 
 @Entity
 @Audited

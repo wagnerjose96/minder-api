@@ -10,10 +10,10 @@ public class BuscarTelefone {
 	private int ddd;
 	private int numero;
 
-	public BuscarTelefone(Telefone telefone) {
-		this.id = telefone.getId();
-		this.ddd = telefone.getDdd();
-		this.numero = telefone.getNumero();
+	public BuscarTelefone(Telefone plano) {
+		this.id = plano.getId();
+		this.ddd = plano.getDdd();
+		this.numero = plano.getNumero();
 	}
 
 	public BuscarTelefone() {
