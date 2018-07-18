@@ -3,9 +3,11 @@ package br.minder.alarme.comandos;
 import java.sql.Date;
 
 import br.minder.medicamento.MedicamentoId;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
-@Data
+@Getter
+@Setter
 public class CriarAlarme {
 	private Date dataInicio;
 	private Date dataFim;

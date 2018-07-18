@@ -26,6 +26,7 @@ import org.springframework.test.context.support.DependencyInjectionTestExecution
 import org.springframework.test.context.support.DirtiesContextTestExecutionListener;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.WebApplicationContext;
@@ -33,6 +34,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.springtestdbunit.TransactionDbUnitTestExecutionListener;
 import br.minder.MinderApplication;
 import br.minder.alarme.Alarme;
+import br.minder.alarme.AlarmeId;
 import br.minder.alarme.AlarmeRepository;
 import br.minder.alarme.comandos.CriarAlarme;
 import br.minder.alarme.comandos.EditarAlarme;
@@ -111,6 +113,18 @@ public class TestAlarmeController {
 		assertThat(usuarios.get(0), notNullValue());
 
 		final String jsonString = objectMapper.writeValueAsString(criarAlarme(idMedicamento, "Tomar medicamento"));
+		final String erro = objectMapper.writeValueAsString(new CriarAlarme());
+
+		this.mockMvc
+				.perform(post("/alarmes").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+						.header("token", logar("wagnerju", "1234")).content(erro))
+				.andExpect(jsonPath("$.error", equalTo("O alarme não foi salvo devido a um erro interno")))
+				.andExpect(status().isInternalServerError());
+
+		this.mockMvc
+				.perform(post("/alarmes").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+						.header("token", logar("wagnerju", "1234") + "erroToken").content(jsonString))
+				.andExpect(jsonPath("$.error", equalTo("Acesso negado"))).andExpect(status().isForbidden());
 
 		this.mockMvc
 				.perform(post("/alarmes").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
@@ -148,6 +162,28 @@ public class TestAlarmeController {
 						.header("token", logar("wagnerju", "1234")).content(jsonString))
 				.andExpect(jsonPath("$", equalTo("O alarme foi alterado com sucesso"))).andExpect(status().isOk());
 
+		this.mockMvc
+				.perform(put("/alarmes").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+						.header("token", logar("wagnerju", "1234") + "erroToken").content(jsonString))
+				.andExpect(jsonPath("$.error", equalTo("Acesso negado"))).andExpect(status().isForbidden());
+
+		jsonString = objectMapper.writeValueAsString(editarAlarmeErro());
+
+		this.mockMvc
+				.perform(put("/alarmes").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+						.header("token", logar("wagnerju", "1234")).content(jsonString))
+				.andExpect(jsonPath("$.error", equalTo("O alarme a ser alterado não existe no banco de dados")))
+				.andExpect(status().isNotFound());
+
+		jsonString = objectMapper.writeValueAsString(editarAlarmeErroId(alarmes.get(0).getId()));
+
+		this.mockMvc
+				.perform(put("/alarmes").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+						.header("token", logar("wagnerju", "1234")).content(jsonString))
+				.andDo(MockMvcResultHandlers.print())
+				.andExpect(jsonPath("$.error", equalTo("Ocorreu um erro interno durante a alteração do alarme")))
+				.andExpect(status().isInternalServerError());
+
 	}
 
 	@Test
@@ -160,6 +196,13 @@ public class TestAlarmeController {
 
 		List<Usuario> usuarios = repo.findAll();
 		assertThat(usuarios.get(0), notNullValue());
+
+		this.mockMvc.perform(get("/alarmes/" + new AlarmeId().toString()).header("token", logar("wagnerju", "1234")))
+				.andExpect(jsonPath("$.error", equalTo("O alarme procurado não existe no banco de dados")))
+				.andExpect(status().isNotFound());
+
+		this.mockMvc.perform(get("/alarmes").header("token", logar("wagnerju", "1234") + "erroToken"))
+				.andExpect(jsonPath("$.error", equalTo("Acesso negado"))).andExpect(status().isForbidden());
 
 		final String jsonString = objectMapper.writeValueAsString(criarAlarme(idMedicamento, "Tomar medicamento"));
 
@@ -188,6 +231,11 @@ public class TestAlarmeController {
 
 		List<Usuario> usuarios = repo.findAll();
 		assertThat(usuarios.get(0), notNullValue());
+
+		this.mockMvc.perform(get("/alarmes").header("token", logar("wagnerju", "1234"))).andExpect(status().isOk());
+
+		this.mockMvc.perform(get("/alarmes").header("token", logar("wagnerju", "1234") + "erroToken"))
+				.andExpect(jsonPath("$.error", equalTo("Acesso negado"))).andExpect(status().isForbidden());
 
 		String jsonString = objectMapper.writeValueAsString(criarAlarme(idMedicamento, "Tomar medicamento"));
 
@@ -225,6 +273,12 @@ public class TestAlarmeController {
 		List<Usuario> usuarios = repo.findAll();
 		assertThat(usuarios.get(0), notNullValue());
 
+		this.mockMvc
+				.perform(delete("/alarmes/" + new AlarmeId()).accept(MediaType.APPLICATION_JSON)
+						.contentType(MediaType.APPLICATION_JSON).header("token", logar("wagnerju", "1234")))
+				.andExpect(jsonPath("$.error", equalTo("O alarme a ser deletado não existe no banco de dados")))
+				.andExpect(status().isNotFound());
+
 		String jsonString = objectMapper.writeValueAsString(criarAlarme(idMedicamento, "Tomar medicamento"));
 
 		this.mockMvc
@@ -242,6 +296,11 @@ public class TestAlarmeController {
 				.andExpect(jsonPath("$",
 						equalTo("Alarme ===> " + alarmes.get(0).getId().toString() + ": deletado com sucesso")))
 				.andExpect(status().isOk());
+
+		this.mockMvc
+				.perform(delete("/alarmes/" + alarmes.get(0).getId().toString()).header("token",
+						logar("wagnerju", "1234") + "erroToken"))
+				.andExpect(jsonPath("$.error", equalTo("Acesso negado"))).andExpect(status().isForbidden());
 	}
 
 	private CriarAlarme criarAlarme(MedicamentoId idMedicamento, String descrição) {
@@ -253,6 +312,24 @@ public class TestAlarmeController {
 		alarme.setPeriodicidade(8);
 		alarme.setQuantidade("1");
 		return alarme;
+	}
+
+	private EditarAlarme editarAlarmeErro() {
+		EditarAlarme editar = new EditarAlarme();
+		editar.setId(new AlarmeId());
+		editar.setDataInicio(Date.valueOf(LocalDate.of(2018, 07, 10)));
+		editar.setDataFim(Date.valueOf(LocalDate.of(2018, 07, 20)));
+		editar.setDescricao("Erro");
+		editar.setIdMedicamento(new MedicamentoId());
+		editar.setPeriodicidade(8);
+		editar.setQuantidade("1");
+		return editar;
+	}
+
+	private EditarAlarme editarAlarmeErroId(AlarmeId id) {
+		EditarAlarme editar = new EditarAlarme();
+		editar.setId(id);
+		return editar;
 	}
 
 	private CriarMedicamento criarMedicamento(String nome, String composicao) {
