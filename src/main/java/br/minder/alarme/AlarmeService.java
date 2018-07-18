@@ -26,8 +26,11 @@ public class AlarmeService {
 	private MedicamentoService medService;
 
 	public Optional<AlarmeId> salvar(CriarAlarme comando, UsuarioId id) {
-		Alarme novo = repo.save(new Alarme(comando, id));
-		return Optional.of(novo.getId());
+		if(comando.getDataInicio() != null && comando.getDataFim() != null) {
+			Alarme novo = repo.save(new Alarme(comando, id));
+			return Optional.of(novo.getId());
+		}
+		return Optional.empty();
 	}
 
 	public Optional<BuscarAlarme> encontrar(AlarmeId alarmeId) {
@@ -60,7 +63,7 @@ public class AlarmeService {
 
 	public Optional<AlarmeId> alterar(EditarAlarme comando) {
 		Optional<Alarme> optional = repo.findById(comando.getId());
-		if (optional.isPresent()) {
+		if (optional.isPresent() && comando.getDataFim() != null && comando.getDataInicio() != null) {
 			Alarme alarme = optional.get();
 			alarme.apply(comando);
 			repo.save(alarme);
