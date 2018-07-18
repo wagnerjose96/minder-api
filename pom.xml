@@ -4,11 +4,11 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
-	<groupId>br.minder</groupId>
+	<groupId>br</groupId>
 	<artifactId>minder</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 
-	<name>minder</name>
+	<name>Minder</name>
 	<description>Demo project for Spring Boot</description>
 
 	<parent>
@@ -199,7 +199,7 @@
 			</activation>
 			<properties>
 				<sonar.host.url>
-					http://ip172-18-0-44-bd6k0bor37a0008f98p0-9000.direct.labs.play-with-docker.com
+				http://ip172-18-0-15-bd760ivmgqu000eb8b5g-9000.direct.labs.play-with-docker.com
 				</sonar.host.url>
 			</properties>
 		</profile>

@@ -1,6 +1,6 @@
 package br.minder.alarme;
 
-import java.util.Date;
+import java.sql.Date;
 import javax.persistence.AttributeOverride;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
