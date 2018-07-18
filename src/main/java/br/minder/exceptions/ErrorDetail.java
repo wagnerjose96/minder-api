@@ -5,17 +5,14 @@ import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import org.hibernate.envers.Audited;
-
 import br.minder.exceptions.comandos.CriarErrorDetail;
 import lombok.AccessLevel;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import lombok.Setter;
 
 @Entity
 @Audited
-@Data
-@EqualsAndHashCode(exclude = { "type", "error", "developerMessage", "httpStatus"})
+@Getter
 public class ErrorDetail {
 	@EmbeddedId
 	@AttributeOverride(name = "value", column = @Column(name = "id_error_detail"))

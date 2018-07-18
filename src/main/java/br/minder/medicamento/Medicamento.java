@@ -7,18 +7,16 @@ import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import org.hibernate.envers.Audited;
-
 import br.minder.medicamento.comandos.CriarMedicamento;
 import br.minder.medicamento.comandos.EditarMedicamento;
 import lombok.AccessLevel;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import lombok.Setter;
 
 @Entity
 @Audited
-@Data
-@EqualsAndHashCode(exclude = { "nomeMedicamento", "composicao", "ativo"})
+@Getter
+@Setter
 public class Medicamento {
 	@EmbeddedId
 	@AttributeOverride(name = "value", column = @Column(name = "id_medicamento"))

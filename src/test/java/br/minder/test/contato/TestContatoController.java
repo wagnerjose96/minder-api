@@ -28,7 +28,6 @@ import org.springframework.test.context.support.DependencyInjectionTestExecution
 import org.springframework.test.context.support.DirtiesContextTestExecutionListener;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.WebApplicationContext;
@@ -130,7 +129,6 @@ public class TestContatoController {
 		this.mockMvc
 				.perform(post("/contatos").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
 						.header("token", logar("wagnerju", "1234")).content(jsonString))
-				.andDo(MockMvcResultHandlers.print())
 				.andExpect(jsonPath("$", equalTo("O contato foi cadastrado com sucesso")))
 				.andExpect(status().isCreated());
 	}

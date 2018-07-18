@@ -1,9 +1,11 @@
 package br.minder.medicamento.comandos;
 
 import br.minder.medicamento.MedicamentoId;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
-@Data
+@Getter
+@Setter
 public class EditarMedicamento {
 	private MedicamentoId idMedicamento;
 	private String nomeMedicamento;

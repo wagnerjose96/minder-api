@@ -110,8 +110,11 @@ public class TestAlergiaController {
 
 		serviceUsuario.salvar(criarUsuario("wagner@hotmail.com", "wagnerju", idSexo, idSangue)).get();
 		MedicamentoId idMedicamento = serviceMedicamento.salvar(criarMedicamento("DorFlex", "100mg")).get();
+		MedicamentoId idMedicamento1 = serviceMedicamento.salvar(criarMedicamento("DorFlex", "100mg")).get();
 		List<MedicamentoId> idsMedicamentos = new ArrayList<MedicamentoId>();
 		idsMedicamentos.add(idMedicamento);
+		idsMedicamentos.add(idMedicamento);
+		idsMedicamentos.add(idMedicamento1);
 
 		List<Usuario> usuarios = repo.findAll();
 		assertThat(usuarios.get(0), notNullValue());

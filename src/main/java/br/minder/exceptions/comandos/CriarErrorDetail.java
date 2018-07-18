@@ -1,8 +1,10 @@
 package br.minder.exceptions.comandos;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
-@Data
+@Getter
+@Setter
 public class CriarErrorDetail {
 	private String type;
 	private String error;

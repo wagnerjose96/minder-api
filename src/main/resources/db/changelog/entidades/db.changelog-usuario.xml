@@ -81,12 +81,12 @@
 				<constraints nullable="true" />
 			</column>
 			<column name="rev" type="${TYPE_NUMBER}">
-				<constraints nullable="true"
+				<constraints nullable="false"
 					referencedTableName="revinfo" referencedColumnNames="rev"
 					foreignKeyName="FK_USUARIO_REVINFO" />
 			</column>
 			<column name="revtype" type="${TYPE_NUMBER}">
-				<constraints nullable="true" />
+				<constraints nullable="false" />
 			</column>
 		</createTable>
 		<addPrimaryKey constraintName="PK_USUARIO_AUD"
