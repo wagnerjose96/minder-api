@@ -7,7 +7,6 @@ import javax.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
-
 import br.minder.alergia.Alergia;
 import br.minder.alergia.AlergiaId;
 import br.minder.alergia.alergia_medicamento.AlergiaMedicamento;
@@ -15,7 +14,6 @@ import br.minder.alergia.alergia_medicamento.AlergiaMedicamentoService;
 import br.minder.alergia.comandos.BuscarAlergia;
 import br.minder.alergia.comandos.CriarAlergia;
 import br.minder.alergia.comandos.EditarAlergia;
-import br.minder.medicamento.Medicamento;
 import br.minder.medicamento.MedicamentoId;
 import br.minder.medicamento.MedicamentoService;
 import br.minder.medicamento.comandos.BuscarMedicamento;
@@ -45,14 +43,12 @@ public class AlergiaService {
 	public Optional<AlergiaId> salvar(CriarAlergia comando, UsuarioId id) {
 		Alergia novo = repo.save(new Alergia(comando, id));
 		for (MedicamentoId idMedicamento : comando.getIdMedicamentos()) {
-			do {
-				if (medicamentoService.encontrar(idMedicamento).isPresent()) {
-					AlergiaMedicamento alergiaMedicamento = new AlergiaMedicamento();
-					alergiaMedicamento.setIdAlergia(novo.getIdAlergia());
-					alergiaMedicamento.setIdMedicamento(idMedicamento);
-					service.salvar(alergiaMedicamento);
-				}
-			} while (Medicamento.verificarMedicamento(idMedicamento, comando.getIdMedicamentos()));
+			if (medicamentoService.encontrar(idMedicamento).isPresent()) {
+				AlergiaMedicamento alergiaMedicamento = new AlergiaMedicamento();
+				alergiaMedicamento.setIdAlergia(novo.getIdAlergia());
+				alergiaMedicamento.setIdMedicamento(idMedicamento);
+				service.salvar(alergiaMedicamento);
+			}
 		}
 		return Optional.of(novo.getIdAlergia());
 	}
@@ -114,4 +110,5 @@ public class AlergiaService {
 			return med;
 		});
 	}
+
 }

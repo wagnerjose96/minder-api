@@ -7,7 +7,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import br.minder.doenca.Doenca;
 import br.minder.doenca.DoencaId;
 import br.minder.doenca.comandos.BuscarDoenca;
@@ -15,7 +14,6 @@ import br.minder.doenca.comandos.CriarDoenca;
 import br.minder.doenca.comandos.EditarDoenca;
 import br.minder.doenca.doenca_medicamento.DoencaMedicamento;
 import br.minder.doenca.doenca_medicamento.DoencaMedicamentoService;
-import br.minder.medicamento.Medicamento;
 import br.minder.medicamento.MedicamentoId;
 import br.minder.medicamento.MedicamentoService;
 import br.minder.medicamento.comandos.BuscarMedicamento;
@@ -45,14 +43,12 @@ public class DoencaService {
 	public Optional<DoencaId> salvar(CriarDoenca comando, UsuarioId id) {
 		Doenca novo = doencaRepo.save(new Doenca(comando, id));
 		for (MedicamentoId idMedicamento : comando.getIdMedicamentos()) {
-			do {
 				if (medicamentoService.encontrar(idMedicamento).isPresent()) {
 					DoencaMedicamento doencaMedicamento = new DoencaMedicamento();
 					doencaMedicamento.setIdDoenca(novo.getIdDoenca());
 					doencaMedicamento.setIdMedicamento(idMedicamento);
 					service.salvar(doencaMedicamento);
 				}
-			} while (Medicamento.verificarMedicamento(idMedicamento, comando.getIdMedicamentos()));
 		}
 		return Optional.of(novo.getIdDoenca());
 	}

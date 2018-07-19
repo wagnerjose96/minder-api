@@ -8,12 +8,11 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
 import java.sql.Date;
 import java.time.LocalDate;
-import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
-
+import java.util.Set;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -33,7 +32,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.WebApplicationContext;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.springtestdbunit.TransactionDbUnitTestExecutionListener;
-
 import br.minder.MinderApplication;
 import br.minder.cirurgia.Cirurgia;
 import br.minder.cirurgia.CirurgiaRepository;
@@ -110,7 +108,7 @@ public class TestCirurgiaController {
 
 		serviceUsuario.salvar(criarUsuario("wagner@hotmail.com", "wagnerju", idSexo, idSangue)).get();
 		MedicamentoId idMedicamento = serviceMedicamento.salvar(criarMedicamento("DorFlex", "100mg")).get();
-		List<MedicamentoId> idsMedicamentos = new ArrayList<MedicamentoId>();
+		Set<MedicamentoId> idsMedicamentos = new HashSet<MedicamentoId>();
 		idsMedicamentos.add(idMedicamento);
 
 		List<Usuario> usuarios = repo.findAll();
@@ -132,7 +130,7 @@ public class TestCirurgiaController {
 
 		serviceUsuario.salvar(criarUsuario("wagner@hotmail.com", "wagnerju", idSexo, idSangue)).get();
 		MedicamentoId idMedicamento = serviceMedicamento.salvar(criarMedicamento("DorFlex", "100mg")).get();
-		List<MedicamentoId> idsMedicamentos = new ArrayList<MedicamentoId>();
+		Set<MedicamentoId> idsMedicamentos = new HashSet<MedicamentoId>();
 		idsMedicamentos.add(idMedicamento);
 
 		List<Usuario> usuarios = repo.findAll();
@@ -165,7 +163,7 @@ public class TestCirurgiaController {
 
 		serviceUsuario.salvar(criarUsuario("wagner@hotmail.com", "wagnerju", idSexo, idSangue)).get();
 		MedicamentoId idMedicamento = serviceMedicamento.salvar(criarMedicamento("DorFlex", "100mg")).get();
-		List<MedicamentoId> idsMedicamentos = new ArrayList<MedicamentoId>();
+		Set<MedicamentoId> idsMedicamentos = new HashSet<MedicamentoId>();
 		idsMedicamentos.add(idMedicamento);
 
 		List<Usuario> usuarios = repo.findAll();
@@ -195,7 +193,7 @@ public class TestCirurgiaController {
 
 		serviceUsuario.salvar(criarUsuario("wagner@hotmail.com", "wagnerju", idSexo, idSangue)).get();
 		MedicamentoId idMedicamento = serviceMedicamento.salvar(criarMedicamento("DorFlex", "100mg")).get();
-		List<MedicamentoId> idsMedicamentos = new ArrayList<MedicamentoId>();
+		Set<MedicamentoId> idsMedicamentos = new HashSet<MedicamentoId>();
 		idsMedicamentos.add(idMedicamento);
 
 		List<Usuario> usuarios = repo.findAll();
@@ -226,7 +224,7 @@ public class TestCirurgiaController {
 
 	}
 
-	private CriarCirurgia criarCirurgia(List<MedicamentoId> idsMedicamentos, String tipoCirurgia) {
+	private CriarCirurgia criarCirurgia(Set<MedicamentoId> idsMedicamentos, String tipoCirurgia) {
 		CriarCirurgia cirurgia = new CriarCirurgia();
 		cirurgia.setDataCirurgia(Date.valueOf(LocalDate.of(2018, 07, 10)));
 		cirurgia.setClinicaResponsavel("Unimed");
@@ -236,7 +234,7 @@ public class TestCirurgiaController {
 		return cirurgia;
 	}
 
-	private EditarCirurgia editarCirurgia(Cirurgia cirurgia, List<MedicamentoId> idsMedicamentos) {
+	private EditarCirurgia editarCirurgia(Cirurgia cirurgia, Set<MedicamentoId> idsMedicamentos) {
 		EditarCirurgia cirurgiaEditada = new EditarCirurgia();
 		cirurgiaEditada.setIdCirurgia(cirurgia.getIdCirurgia());
 		cirurgiaEditada.setDataCirurgia(cirurgia.getDataCirurgia());

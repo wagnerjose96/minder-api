@@ -23,4 +23,10 @@ public class DoencaMedicamento {
 	public DoencaMedicamento() {
 		this.id = new DoencaMedicamentoId();
 	}
+
+	public DoencaMedicamento(DoencaMedicamento doencaMedicamento) {
+		this.id = doencaMedicamento.getId();
+		this.idDoenca = doencaMedicamento.getIdDoenca();
+		this.idMedicamento = doencaMedicamento.getIdMedicamento();
+	}
 }

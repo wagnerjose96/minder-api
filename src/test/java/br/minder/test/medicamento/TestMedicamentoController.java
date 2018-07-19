@@ -29,6 +29,7 @@ import br.minder.MinderApplication;
 import br.minder.login.LoginController;
 import br.minder.login.comandos.LogarAdm;
 import br.minder.medicamento.Medicamento;
+import br.minder.medicamento.MedicamentoId;
 import br.minder.medicamento.MedicamentoRepository;
 import br.minder.medicamento.comandos.CriarMedicamento;
 import br.minder.medicamento.comandos.EditarMedicamento;
@@ -82,6 +83,38 @@ public class TestMedicamentoController {
 						.accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON).content(jsonString))
 				.andExpect(jsonPath("$", equalTo("O medicamento foi cadastrado com sucesso")))
 				.andExpect(status().isCreated());
+
+		jsonString = objectMapper.writeValueAsString(new CriarMedicamento());
+
+		this.mockMvc
+				.perform(
+						post("/medicamentos").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+								.header("token", logarAdm("admin", "1234") + "erroToken").content(jsonString))
+				.andExpect(jsonPath("$.error", equalTo("Acesso negado"))).andExpect(status().isForbidden());
+
+		this.mockMvc
+				.perform(
+						post("/medicamentos").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+								.header("token", logarAdm("admin", "1234")).content(jsonString))
+				.andExpect(jsonPath("$.error", equalTo("O medicamento não foi salvo devido a um erro interno")))
+				.andExpect(status().isInternalServerError());
+
+		jsonString = objectMapper.writeValueAsString(criarMedicamentoErro1("Medicamento de Teste"));
+		this.mockMvc
+				.perform(
+						post("/medicamentos").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+								.header("token", logarAdm("admin", "1234")).content(jsonString))
+				.andExpect(jsonPath("$.error", equalTo("O medicamento não foi salvo devido a um erro interno")))
+				.andExpect(status().isInternalServerError());
+
+		jsonString = objectMapper.writeValueAsString(criarMedicamentoErro2());
+		this.mockMvc
+				.perform(
+						post("/medicamentos").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+								.header("token", logarAdm("admin", "1234")).content(jsonString))
+				.andExpect(jsonPath("$.error", equalTo("O medicamento não foi salvo devido a um erro interno")))
+				.andExpect(status().isInternalServerError());
+
 	}
 
 	@Test
@@ -107,6 +140,63 @@ public class TestMedicamentoController {
 				.perform(put("/medicamentos").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
 						.header("token", logarAdm("admin", "1234")).content(jsonString))
 				.andExpect(jsonPath("$", equalTo("O medicamento foi alterado com sucesso"))).andExpect(status().isOk());
+
+		this.mockMvc
+				.perform(put("/medicamentos").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+						.header("token", logarAdm("admin", "1234") + "erroToken").content(jsonString))
+				.andExpect(jsonPath("$.error", equalTo("Acesso negado"))).andExpect(status().isForbidden());
+
+		jsonString = objectMapper.writeValueAsString(editarMedicamentoErro());
+
+		this.mockMvc
+				.perform(put("/medicamentos").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+						.header("token", logarAdm("admin", "1234")).content(jsonString))
+				.andExpect(jsonPath("$.error", equalTo("O medicamento a ser alterado não existe no banco de dados")))
+				.andExpect(status().isNotFound());
+
+		jsonString = objectMapper.writeValueAsString(editarMedicamentoErroId());
+
+		this.mockMvc
+				.perform(put("/medicamentos").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+						.header("token", logarAdm("admin", "1234")).content(jsonString))
+				.andExpect(jsonPath("$.error", equalTo("O medicamento a ser alterado não existe no banco de dados")))
+				.andExpect(status().isNotFound());
+
+		jsonString = objectMapper.writeValueAsString(editarMedicamentoErro1(medicamentos.get(0)));
+		this.mockMvc
+				.perform(put("/medicamentos").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+						.header("token", logarAdm("admin", "1234")).content(jsonString))
+				.andExpect(jsonPath("$.error", equalTo("Ocorreu um erro interno durante a alteração do medicamento")))
+				.andExpect(status().isInternalServerError());
+
+		jsonString = objectMapper.writeValueAsString(editarMedicamentoErro2(medicamentos.get(0)));
+		this.mockMvc
+				.perform(put("/medicamentos").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+						.header("token", logarAdm("admin", "1234")).content(jsonString))
+				.andExpect(jsonPath("$.error", equalTo("Ocorreu um erro interno durante a alteração do medicamento")))
+				.andExpect(status().isInternalServerError());
+
+		jsonString = objectMapper.writeValueAsString(editarMedicamentoErro3(medicamentos.get(0)));
+		this.mockMvc
+				.perform(put("/medicamentos").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+						.header("token", logarAdm("admin", "1234")).content(jsonString))
+				.andExpect(jsonPath("$.error", equalTo("Ocorreu um erro interno durante a alteração do medicamento")))
+				.andExpect(status().isInternalServerError());
+
+		jsonString = objectMapper.writeValueAsString(editarMedicamentoErroId1());
+		this.mockMvc
+				.perform(put("/medicamentos").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+						.header("token", logarAdm("admin", "1234")).content(jsonString))
+				.andExpect(jsonPath("$.error", equalTo("O medicamento a ser alterado não existe no banco de dados")))
+				.andExpect(status().isNotFound());
+
+		jsonString = objectMapper.writeValueAsString(editarMedicamentoErroId2());
+		this.mockMvc
+				.perform(put("/medicamentos").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+						.header("token", logarAdm("admin", "1234")).content(jsonString))
+				.andExpect(jsonPath("$.error", equalTo("O medicamento a ser alterado não existe no banco de dados")))
+				.andExpect(status().isNotFound());
+
 	}
 
 	@Test
@@ -114,6 +204,10 @@ public class TestMedicamentoController {
 		admService.salvar(criarAdm());
 		List<UsuarioAdm> adm = repoAdm.findAll();
 		assertThat(adm.get(0), notNullValue());
+
+		this.mockMvc.perform(get("/medicamentos"))
+				.andExpect(jsonPath("$.error", equalTo("Não existe nenhum medicamento cadastrado no banco de dados")))
+				.andExpect(status().isNotFound());
 
 		String jsonString = objectMapper.writeValueAsString(criarMedicamento("Medicamento de Teste"));
 
@@ -128,16 +222,37 @@ public class TestMedicamentoController {
 		this.mockMvc
 				.perform(post("/medicamentos").header("token", logarAdm("admin", "1234"))
 						.accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON).content(jsonString))
-				.andExpect(jsonPath("$", equalTo("O medicamento foi cadastrado com sucesso"))).andExpect(status().isCreated());
+				.andExpect(jsonPath("$", equalTo("O medicamento foi cadastrado com sucesso")))
+				.andExpect(status().isCreated());
 
 		List<Medicamento> medicamentos = repo.findAll();
 		assertThat(medicamentos.get(0), notNullValue());
 		assertThat(medicamentos.get(1), notNullValue());
 
-		this.mockMvc.perform(get("/medicamentos").header("token", logarAdm("admin", "1234")))
+		this.mockMvc.perform(get("/medicamentos"))
 				.andExpect(jsonPath("$[0].nomeMedicamento", equalTo("Medicamento de Teste")))
 				.andExpect(jsonPath("$[1].nomeMedicamento", equalTo("Medicamento de Teste 2")))
 				.andExpect(status().isOk());
+
+		this.mockMvc
+				.perform(delete("/medicamentos/" + medicamentos.get(0).getIdMedicamento().toString()).header("token",
+						logarAdm("admin", "1234")))
+				.andExpect(jsonPath("$", equalTo("Medicamento ===> " + medicamentos.get(0).getIdMedicamento().toString()
+						+ ": deletado com sucesso")))
+				.andExpect(status().isOk());
+
+		this.mockMvc.perform(get("/medicamentos"))
+				.andExpect(jsonPath("$[0].nomeMedicamento", equalTo("Medicamento de Teste 2")))
+				.andExpect(status().isOk());
+
+		this.mockMvc
+				.perform(delete("/medicamentos/" + medicamentos.get(1).getIdMedicamento().toString()).header("token",
+						logarAdm("admin", "1234")))
+				.andExpect(jsonPath("$", equalTo("Medicamento ===> " + medicamentos.get(1).getIdMedicamento().toString()
+						+ ": deletado com sucesso")))
+				.andExpect(status().isOk());
+
+		this.mockMvc.perform(get("/medicamentos")).andExpect(status().isOk());
 	}
 
 	@Test
@@ -159,6 +274,21 @@ public class TestMedicamentoController {
 
 		this.mockMvc.perform(get("/medicamentos/" + medicamentos.get(0).getIdMedicamento().toString()))
 				.andExpect(jsonPath("$.nomeMedicamento", equalTo("Medicamento de Teste"))).andExpect(status().isOk());
+
+		this.mockMvc.perform(get("/medicamentos/" + new MedicamentoId().toString()))
+				.andExpect(jsonPath("$.error", equalTo("O medicamento procurado não existe no banco de dados")))
+				.andExpect(status().isNotFound());
+
+		this.mockMvc
+				.perform(delete("/medicamentos/" + medicamentos.get(0).getIdMedicamento().toString()).header("token",
+						logarAdm("admin", "1234")))
+				.andExpect(jsonPath("$", equalTo("Medicamento ===> " + medicamentos.get(0).getIdMedicamento().toString()
+						+ ": deletado com sucesso")))
+				.andExpect(status().isOk());
+
+		this.mockMvc.perform(get("/medicamentos/" + medicamentos.get(0).getIdMedicamento().toString()))
+				.andExpect(jsonPath("$.error", equalTo("O medicamento procurado não existe no banco de dados")))
+				.andExpect(status().isNotFound());
 	}
 
 	@Test
@@ -184,6 +314,18 @@ public class TestMedicamentoController {
 				.andExpect(jsonPath("$", equalTo("Medicamento ===> " + medicamentos.get(0).getIdMedicamento().toString()
 						+ ": deletado com sucesso")))
 				.andExpect(status().isOk());
+
+		this.mockMvc
+				.perform(delete("/medicamentos/" + new MedicamentoId().toString()).header("token",
+						logarAdm("admin", "1234")))
+				.andExpect(jsonPath("$.error", equalTo("O medicamento a deletar não existe no banco de dados")))
+				.andExpect(status().isNotFound());
+
+		this.mockMvc
+				.perform(delete("/medicamentos/" + medicamentos.get(0).getIdMedicamento().toString()).header("token",
+						logarAdm("admin", "1234") + "erroToken"))
+				.andExpect(jsonPath("$.error", equalTo("Acesso negado"))).andExpect(status().isForbidden());
+
 	}
 
 	private CriarMedicamento criarMedicamento(String nome) {
@@ -193,13 +335,76 @@ public class TestMedicamentoController {
 		return medicamento;
 	}
 
+	private CriarMedicamento criarMedicamentoErro1(String nome) {
+		CriarMedicamento medicamento = new CriarMedicamento();
+		medicamento.setNomeMedicamento(nome);
+		return medicamento;
+	}
+
+	private CriarMedicamento criarMedicamentoErro2() {
+		CriarMedicamento medicamento = new CriarMedicamento();
+		medicamento.setComposicao("teste");
+		return medicamento;
+	}
+
 	private EditarMedicamento editarMedicamento(Medicamento medicamento) {
 		EditarMedicamento medicamentoAtualizado = new EditarMedicamento();
 		medicamentoAtualizado.setIdMedicamento(medicamento.getIdMedicamento());
 		medicamentoAtualizado.setNomeMedicamento("Teste Put");
 		medicamentoAtualizado.setComposicao(medicamento.getComposicao());
-		medicamentoAtualizado.setAtivo(medicamento.getAtivo());
+		medicamentoAtualizado.setAtivo(1);
 		return medicamentoAtualizado;
+	}
+
+	private EditarMedicamento editarMedicamentoErro1(Medicamento medicamento) {
+		EditarMedicamento medicamentoAtualizado = new EditarMedicamento();
+		medicamentoAtualizado.setIdMedicamento(medicamento.getIdMedicamento());
+		medicamentoAtualizado.setComposicao(medicamento.getComposicao());
+		medicamentoAtualizado.setAtivo(1);
+		return medicamentoAtualizado;
+	}
+
+	private EditarMedicamento editarMedicamentoErro2(Medicamento medicamento) {
+		EditarMedicamento medicamentoAtualizado = new EditarMedicamento();
+		medicamentoAtualizado.setIdMedicamento(medicamento.getIdMedicamento());
+		medicamentoAtualizado.setNomeMedicamento("Teste Put");
+		medicamentoAtualizado.setAtivo(1);
+		return medicamentoAtualizado;
+	}
+
+	private EditarMedicamento editarMedicamentoErro3(Medicamento medicamento) {
+		EditarMedicamento medicamentoAtualizado = new EditarMedicamento();
+		medicamentoAtualizado.setIdMedicamento(medicamento.getIdMedicamento());
+		return medicamentoAtualizado;
+	}
+
+	private EditarMedicamento editarMedicamentoErro() {
+		EditarMedicamento medicamentoAtualizado = new EditarMedicamento();
+		medicamentoAtualizado.setIdMedicamento(new MedicamentoId());
+		medicamentoAtualizado.setNomeMedicamento("Teste Erro");
+		medicamentoAtualizado.setComposicao("Teste Erro");
+		medicamentoAtualizado.setAtivo(1);
+		return medicamentoAtualizado;
+	}
+
+	private EditarMedicamento editarMedicamentoErroId() {
+		EditarMedicamento editar = new EditarMedicamento();
+		editar.setIdMedicamento(new MedicamentoId());
+		return editar;
+	}
+
+	private EditarMedicamento editarMedicamentoErroId1() {
+		EditarMedicamento editar = new EditarMedicamento();
+		editar.setIdMedicamento(new MedicamentoId());
+		editar.setNomeMedicamento("Teste Erro");
+		return editar;
+	}
+
+	private EditarMedicamento editarMedicamentoErroId2() {
+		EditarMedicamento editar = new EditarMedicamento();
+		editar.setIdMedicamento(new MedicamentoId());
+		editar.setComposicao("Teste Erro");
+		return editar;
 	}
 
 	private CriarUsuarioAdm criarAdm() {

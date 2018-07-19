@@ -18,8 +18,11 @@ public class MedicamentoService {
 	private MedicamentoRepository medicamentoRepo;
 
 	public Optional<MedicamentoId> salvar(CriarMedicamento comando) {
-		Medicamento novo = medicamentoRepo.save(new Medicamento(comando));
-		return Optional.of(novo.getIdMedicamento());
+		if (comando.getComposicao() != null && comando.getNomeMedicamento() != null) {
+			Medicamento novo = medicamentoRepo.save(new Medicamento(comando));
+			return Optional.of(novo.getIdMedicamento());
+		}
+		return Optional.empty();
 	}
 
 	public Optional<BuscarMedicamento> encontrar(MedicamentoId id) {
@@ -34,13 +37,16 @@ public class MedicamentoService {
 	public Optional<List<BuscarMedicamento>> encontrar() {
 		List<BuscarMedicamento> resultados = new ArrayList<>();
 		List<Medicamento> medicamentos = medicamentoRepo.findAll();
-		for (Medicamento medicamento : medicamentos) {
-			if (medicamento.getAtivo() == 1) {
-				BuscarMedicamento med = new BuscarMedicamento(medicamento);
-				resultados.add(med);
+		if (!medicamentos.isEmpty()) {
+			for (Medicamento medicamento : medicamentos) {
+				if (medicamento.getAtivo() == 1) {
+					BuscarMedicamento med = new BuscarMedicamento(medicamento);
+					resultados.add(med);
+				}
 			}
+			return Optional.of(resultados);
 		}
-		return Optional.of(resultados);
+		return Optional.empty();
 	}
 
 	public Optional<String> deletar(MedicamentoId id) {
@@ -55,7 +61,7 @@ public class MedicamentoService {
 
 	public Optional<MedicamentoId> alterar(EditarMedicamento comando) {
 		Optional<Medicamento> optional = medicamentoRepo.findById(comando.getIdMedicamento());
-		if (optional.isPresent()) {
+		if (optional.isPresent() && comando.getComposicao() != null && comando.getNomeMedicamento() != null) {
 			Medicamento med = optional.get();
 			med.apply(comando);
 			medicamentoRepo.save(med);

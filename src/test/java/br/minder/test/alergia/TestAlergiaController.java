@@ -8,12 +8,11 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
 import java.sql.Date;
 import java.time.LocalDate;
-import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
-
+import java.util.Set;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -33,7 +32,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.WebApplicationContext;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.springtestdbunit.TransactionDbUnitTestExecutionListener;
-
 import br.minder.MinderApplication;
 import br.minder.alergia.Alergia;
 import br.minder.alergia.AlergiaRepository;
@@ -111,7 +109,7 @@ public class TestAlergiaController {
 		serviceUsuario.salvar(criarUsuario("wagner@hotmail.com", "wagnerju", idSexo, idSangue)).get();
 		MedicamentoId idMedicamento = serviceMedicamento.salvar(criarMedicamento("DorFlex", "100mg")).get();
 		MedicamentoId idMedicamento1 = serviceMedicamento.salvar(criarMedicamento("DorFlex", "100mg")).get();
-		List<MedicamentoId> idsMedicamentos = new ArrayList<MedicamentoId>();
+		Set<MedicamentoId> idsMedicamentos = new HashSet<MedicamentoId>();
 		idsMedicamentos.add(idMedicamento);
 		idsMedicamentos.add(idMedicamento);
 		idsMedicamentos.add(idMedicamento1);
@@ -135,7 +133,7 @@ public class TestAlergiaController {
 
 		serviceUsuario.salvar(criarUsuario("wagner@hotmail.com", "wagnerju", idSexo, idSangue)).get();
 		MedicamentoId idMedicamento = serviceMedicamento.salvar(criarMedicamento("DorFlex", "100mg")).get();
-		List<MedicamentoId> idsMedicamentos = new ArrayList<MedicamentoId>();
+		Set<MedicamentoId> idsMedicamentos = new HashSet<MedicamentoId>();
 		idsMedicamentos.add(idMedicamento);
 
 		List<Usuario> usuarios = repo.findAll();
@@ -168,8 +166,11 @@ public class TestAlergiaController {
 
 		serviceUsuario.salvar(criarUsuario("wagner@hotmail.com", "wagnerju", idSexo, idSangue)).get();
 		MedicamentoId idMedicamento = serviceMedicamento.salvar(criarMedicamento("DorFlex", "100mg")).get();
-		List<MedicamentoId> idsMedicamentos = new ArrayList<MedicamentoId>();
+		MedicamentoId idMedicamento1 = serviceMedicamento.salvar(criarMedicamento("DorFlex", "100mg")).get();
+		Set<MedicamentoId> idsMedicamentos = new HashSet<MedicamentoId>();
 		idsMedicamentos.add(idMedicamento);
+		idsMedicamentos.add(idMedicamento);
+		idsMedicamentos.add(idMedicamento1);
 
 		List<Usuario> usuarios = repo.findAll();
 		assertThat(usuarios.get(0), notNullValue());
@@ -198,7 +199,7 @@ public class TestAlergiaController {
 
 		serviceUsuario.salvar(criarUsuario("wagner@hotmail.com", "wagnerju", idSexo, idSangue)).get();
 		MedicamentoId idMedicamento = serviceMedicamento.salvar(criarMedicamento("DorFlex", "100mg")).get();
-		List<MedicamentoId> idsMedicamentos = new ArrayList<MedicamentoId>();
+		Set<MedicamentoId> idsMedicamentos = new HashSet<MedicamentoId>();
 		idsMedicamentos.add(idMedicamento);
 
 		List<Usuario> usuarios = repo.findAll();
@@ -229,7 +230,7 @@ public class TestAlergiaController {
 
 	}
 
-	private CriarAlergia criarAlergia(List<MedicamentoId> idsMedicamentos, String tipoAlergia) {
+	private CriarAlergia criarAlergia(Set<MedicamentoId> idsMedicamentos, String tipoAlergia) {
 		CriarAlergia alergia = new CriarAlergia();
 		alergia.setDataDescoberta(Date.valueOf(LocalDate.of(2018, 07, 10)));
 		alergia.setEfeitos("Coceira");
@@ -239,7 +240,7 @@ public class TestAlergiaController {
 		return alergia;
 	}
 
-	private EditarAlergia editarAlergia(Alergia alergia, List<MedicamentoId> idsMedicamentos) {
+	private EditarAlergia editarAlergia(Alergia alergia, Set<MedicamentoId> idsMedicamentos) {
 		EditarAlergia alergiaEditada = new EditarAlergia();
 		alergiaEditada.setIdAlergia(alergia.getIdAlergia());
 		alergiaEditada.setDataDescoberta(Date.valueOf(LocalDate.of(2018, 07, 10)));

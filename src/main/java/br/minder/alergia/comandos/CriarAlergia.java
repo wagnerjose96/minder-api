@@ -1,8 +1,7 @@
 package br.minder.alergia.comandos;
 
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
+import java.util.Set;
 
 import br.minder.medicamento.MedicamentoId;
 import lombok.Data;
@@ -13,6 +12,6 @@ public class CriarAlergia {
 	private String localAfetado;
 	private Date dataDescoberta;
 	private String efeitos;
-	private List<MedicamentoId> idMedicamentos = new ArrayList<>();
+	private Set<MedicamentoId> idMedicamentos;
 
 }

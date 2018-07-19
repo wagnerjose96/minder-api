@@ -23,4 +23,10 @@ public class CirurgiaMedicamento {
 	public CirurgiaMedicamento() {
 		this.id = new CirurgiaMedicamentoId();
 	}
+
+	public CirurgiaMedicamento(CirurgiaMedicamento cirurgiaMedicamento) {
+		this.id = cirurgiaMedicamento.getId();
+		this.idCirurgia = cirurgiaMedicamento.getIdCirurgia();
+		this.idMedicamento = cirurgiaMedicamento.getIdMedicamento();
+	}
 }

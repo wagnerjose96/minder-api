@@ -7,13 +7,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import br.minder.cirurgia.cirurgia_medicamento.CirurgiaMedicamento;
 import br.minder.cirurgia.cirurgia_medicamento.CirurgiaMedicamentoService;
 import br.minder.cirurgia.comandos.BuscarCirurgia;
 import br.minder.cirurgia.comandos.CriarCirurgia;
 import br.minder.cirurgia.comandos.EditarCirurgia;
-import br.minder.medicamento.Medicamento;
 import br.minder.medicamento.MedicamentoId;
 import br.minder.medicamento.MedicamentoService;
 import br.minder.medicamento.comandos.BuscarMedicamento;
@@ -42,14 +40,12 @@ public class CirurgiaService {
 	public Optional<CirurgiaId> salvar(CriarCirurgia comando, UsuarioId id) {
 		Cirurgia novo = cirurgiaRepo.save(new Cirurgia(comando, id));
 		for (MedicamentoId idMedicamento : comando.getIdMedicamentos()) {
-			do {
-				if (medicamentoService.encontrar(idMedicamento).isPresent()) {
-					CirurgiaMedicamento cirurgiaMedicamento = new CirurgiaMedicamento();
-					cirurgiaMedicamento.setIdCirurgia(novo.getIdCirurgia());
-					cirurgiaMedicamento.setIdMedicamento(idMedicamento);
-					service.salvar(cirurgiaMedicamento);
-				}
-			} while (Medicamento.verificarMedicamento(idMedicamento, comando.getIdMedicamentos()));
+			if (medicamentoService.encontrar(idMedicamento).isPresent()) {
+				CirurgiaMedicamento cirurgiaMedicamento = new CirurgiaMedicamento();
+				cirurgiaMedicamento.setIdCirurgia(novo.getIdCirurgia());
+				cirurgiaMedicamento.setIdMedicamento(idMedicamento);
+				service.salvar(cirurgiaMedicamento);
+			}
 		}
 		return Optional.of(novo.getIdCirurgia());
 	}

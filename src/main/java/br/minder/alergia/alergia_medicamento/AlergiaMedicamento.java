@@ -23,4 +23,11 @@ public class AlergiaMedicamento {
 	public AlergiaMedicamento() {
 		this.id = new AlergiaMedicamentoId();
 	}
+
+	public AlergiaMedicamento(AlergiaMedicamento alergia) {
+		this.id = alergia.getId();
+		this.idAlergia = alergia.getIdAlergia();
+		this.idMedicamento = alergia.getIdMedicamento();
+	}
+
 }

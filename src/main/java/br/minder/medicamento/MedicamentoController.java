@@ -64,11 +64,9 @@ public class MedicamentoController {
 	public ResponseEntity<String> deletarMedicamento(@PathVariable MedicamentoId id, @RequestHeader String token)
 			throws AccessDeniedException {
 		if (autentica.autenticaRequisicaoAdm(token)) {
-			if (service.encontrar().isPresent()) {
-				Optional<String> optionalMedicamento = service.deletar(id);
-				if (optionalMedicamento.isPresent())
-					return ResponseEntity.ok(optionalMedicamento.get());
-			}
+			Optional<String> optionalMedicamento = service.deletar(id);
+			if (optionalMedicamento.isPresent())
+				return ResponseEntity.ok(optionalMedicamento.get());
 			throw new NullPointerException("O medicamento a deletar não existe no banco de dados");
 		}
 		throw new AccessDeniedException(ACESSONEGADO);

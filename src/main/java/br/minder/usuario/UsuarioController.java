@@ -56,11 +56,9 @@ public class UsuarioController {
 	public ResponseEntity<String> deletarUsuario(@PathVariable UsuarioId id, @RequestHeader String token)
 			throws AccessDeniedException {
 		if (autentica.autenticaRequisicao(token)) {
-			if (service.encontrar(id).isPresent()) {
-				Optional<String> optionalUsuario = service.deletar(id);
-				if (optionalUsuario.isPresent())
-					return ResponseEntity.ok(optionalUsuario.get());
-			}
+			Optional<String> optionalUsuario = service.deletar(id);
+			if (optionalUsuario.isPresent())
+				return ResponseEntity.ok(optionalUsuario.get());
 			throw new NullPointerException("O usuário a deletar não existe no banco de dados");
 		}
 		throw new AccessDeniedException(ACESSONEGADO);

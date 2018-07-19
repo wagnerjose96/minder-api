@@ -1,7 +1,5 @@
 package br.minder.medicamento;
 
-import java.util.List;
-
 import javax.persistence.AttributeOverride;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
@@ -42,13 +40,5 @@ public class Medicamento {
 		this.composicao = comando.getComposicao();
 		this.ativo = comando.getAtivo();
 	}
-	
-	public static boolean verificarMedicamento(MedicamentoId idMedicamento, List<MedicamentoId> list) {
-		for (MedicamentoId medicamentoId : list) {
-			if (medicamentoId.equals(idMedicamento)) {
-				return false;
-			}
-		}
-		return true;
-	}
+
 }
