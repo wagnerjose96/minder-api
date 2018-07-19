@@ -3,12 +3,10 @@ package br.minder.test.alarme;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.junit.Assert.assertThat;
-
 import java.sql.Date;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -27,13 +25,11 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.WebApplicationContext;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.springtestdbunit.TransactionDbUnitTestExecutionListener;
-
 import br.minder.MinderApplication;
 import br.minder.alarme.Alarme;
 import br.minder.alarme.AlarmeId;
 import br.minder.alarme.AlarmeRepository;
 import br.minder.alarme.AlarmeService;
-import br.minder.alarme.comandos.BuscarAlarme;
 import br.minder.alarme.comandos.CriarAlarme;
 import br.minder.alarme.comandos.EditarAlarme;
 import br.minder.conversor.ConverterData;
@@ -196,14 +192,14 @@ public class TestAlarmeService {
 		assertThat(alarme.getQuantidade(), equalTo("1"));
 		assertThat(alarme.getIdUsuario().toString(), equalTo(idUsuario.toString()));
 
-		BuscarAlarme alarmeEncontrado = serviceAlarme.encontrar(alarme.getId()).get();
+		Alarme alarmeEncontrado = repoAlarme.findById(alarme.getId()).get();
 		assertThat(alarmeEncontrado.getId().getValue().toString(), equalTo(idAlarme.toString()));
-		assertThat(alarmeEncontrado.getDataInicio(), equalTo("10-07-2018"));
-		assertThat(alarmeEncontrado.getDataFim(), equalTo("20-07-2018"));
+		assertThat(converterData(alarmeEncontrado.getDataInicio()), equalTo(LocalDate.of(2018, 07, 10).toString()));
+		assertThat(converterData(alarmeEncontrado.getDataFim()), equalTo(LocalDate.of(2018, 07, 20).toString()));
 		assertThat(alarmeEncontrado.getDescricao(), equalTo("Tomar medicamento"));
 		assertThat(alarmeEncontrado.getPeriodicidade(), equalTo(8));
 		assertThat(alarmeEncontrado.getQuantidade(), equalTo("1"));
-		assertThat(alarmeEncontrado.getMedicamento().getIdMedicamento().toString(), equalTo(idMedicamento.toString()));
+		assertThat(alarmeEncontrado.getIdMedicamento().toString(), equalTo(idMedicamento.toString()));
 
 	}
 

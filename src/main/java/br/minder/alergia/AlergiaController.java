@@ -55,7 +55,7 @@ public class AlergiaController {
 	public ResponseEntity<BuscarAlergia> getAlergiaPorId(@PathVariable AlergiaId id, @RequestHeader String token)
 			throws AccessDeniedException {
 		if (autentica.autenticaRequisicao(token)) {
-			Optional<BuscarAlergia> optionalAlergia = alergiaService.encontrar(id);
+			Optional<BuscarAlergia> optionalAlergia = alergiaService.encontrar(id, autentica.idUser(token));
 			if (optionalAlergia.isPresent()) {
 				return ResponseEntity.ok(optionalAlergia.get());
 			}
@@ -85,7 +85,7 @@ public class AlergiaController {
 	public ResponseEntity<String> putAlergia(@RequestBody EditarAlergia comando, @RequestHeader String token)
 			throws SQLException, AccessDeniedException {
 		if (autentica.autenticaRequisicao(token)) {
-			if (!alergiaService.encontrar(comando.getIdAlergia()).isPresent()) {
+			if (!alergiaService.encontrar(comando.getIdAlergia(), autentica.idUser(token)).isPresent()) {
 				throw new NullPointerException("A alergia a ser alterada não existe no banco de dados");
 			}
 			Optional<AlergiaId> optionalAlergiaId = alergiaService.alterar(comando);

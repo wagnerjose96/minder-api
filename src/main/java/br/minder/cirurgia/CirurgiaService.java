@@ -35,13 +35,15 @@ public class CirurgiaService {
 	private CirurgiaMedicamentoService service;
 
 	@Autowired
-	private MedicamentoService medicamentoService;
+	private MedicamentoService medService;
 
 	public Optional<CirurgiaId> salvar(CriarCirurgia comando, UsuarioId id) {
-		if (comando.getTipoCirurgia() != null) {
+		if (comando.getTipoCirurgia() != null && comando.getClinicaResponsavel() != null
+				&& comando.getDataCirurgia() != null && comando.getIdMedicamentos() != null
+				&& comando.getMedicoResponsavel() != null) {
 			Cirurgia novo = cirurgiaRepo.save(new Cirurgia(comando, id));
 			for (MedicamentoId idMedicamento : comando.getIdMedicamentos()) {
-				if (medicamentoService.encontrar(idMedicamento).isPresent()) {
+				if (medService.encontrar(idMedicamento).isPresent()) {
 					CirurgiaMedicamento cirurgiaMedicamento = new CirurgiaMedicamento();
 					cirurgiaMedicamento.setIdCirurgia(novo.getIdCirurgia());
 					cirurgiaMedicamento.setIdMedicamento(idMedicamento);
@@ -53,10 +55,10 @@ public class CirurgiaService {
 		return Optional.empty();
 	}
 
-	public Optional<BuscarCirurgia> encontrar(CirurgiaId cirurgiaId) {
+	public Optional<BuscarCirurgia> encontrar(CirurgiaId cirurgiaId, UsuarioId id) {
 		List<BuscarMedicamento> medicamentos = executeQuery(cirurgiaId.toString(), sql);
 		Optional<Cirurgia> result = cirurgiaRepo.findById(cirurgiaId);
-		if (result.isPresent()) {
+		if (result.isPresent() && id.toString().equals(result.get().getIdUsuario().toString())) {
 			BuscarCirurgia resultado = new BuscarCirurgia(result.get());
 			resultado.setMedicamentos(medicamentos);
 			return Optional.of(resultado);
@@ -80,12 +82,14 @@ public class CirurgiaService {
 
 	public Optional<CirurgiaId> alterar(EditarCirurgia comando) {
 		Optional<Cirurgia> optional = cirurgiaRepo.findById(comando.getIdCirurgia());
-		if (optional.isPresent() && comando.getTipoCirurgia() != null) {
+		if (optional.isPresent() && comando.getTipoCirurgia() != null && comando.getClinicaResponsavel() != null
+				&& comando.getDataCirurgia() != null && comando.getIdMedicamentos() != null
+				&& comando.getMedicoResponsavel() != null) {
 			Cirurgia cirurgia = optional.get();
 			cirurgia.apply(comando);
 			cirurgiaRepo.save(cirurgia);
 			for (MedicamentoId idMedicamento : comando.getIdMedicamentos()) {
-				if (medicamentoService.encontrar(idMedicamento).isPresent()) {
+				if (medService.encontrar(idMedicamento).isPresent()) {
 					CirurgiaMedicamento cirurgiaMedicamento = new CirurgiaMedicamento();
 					cirurgiaMedicamento.setIdCirurgia(comando.getIdCirurgia());
 					cirurgiaMedicamento.setIdMedicamento(idMedicamento);

@@ -112,7 +112,7 @@ public class TestAlarmeController {
 		assertThat(usuarios.get(0), notNullValue());
 
 		final String jsonString = objectMapper.writeValueAsString(criarAlarme(idMedicamento, "Tomar medicamento"));
-		final String erro = objectMapper.writeValueAsString(new CriarAlarme());
+		String erro = objectMapper.writeValueAsString(new CriarAlarme());
 
 		this.mockMvc
 				.perform(post("/alarmes").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
@@ -130,6 +130,47 @@ public class TestAlarmeController {
 						.header("token", logar("wagnerju", "1234")).content(jsonString))
 				.andExpect(jsonPath("$", equalTo("O alarme foi cadastrado com sucesso")))
 				.andExpect(status().isCreated());
+
+		erro = objectMapper.writeValueAsString(criarAlarmeErro1(idMedicamento, "Tomar medicamento"));
+
+		this.mockMvc
+				.perform(post("/alarmes").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+						.header("token", logar("wagnerju", "1234")).content(erro))
+				.andExpect(jsonPath("$.error", equalTo("O alarme não foi salvo devido a um erro interno")))
+				.andExpect(status().isInternalServerError());
+
+		erro = objectMapper.writeValueAsString(criarAlarmeErro2(idMedicamento, "Tomar medicamento"));
+
+		this.mockMvc
+				.perform(post("/alarmes").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+						.header("token", logar("wagnerju", "1234")).content(erro))
+				.andExpect(jsonPath("$.error", equalTo("O alarme não foi salvo devido a um erro interno")))
+				.andExpect(status().isInternalServerError());
+
+		erro = objectMapper.writeValueAsString(criarAlarmeErro3(idMedicamento));
+
+		this.mockMvc
+				.perform(post("/alarmes").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+						.header("token", logar("wagnerju", "1234")).content(erro))
+				.andExpect(jsonPath("$.error", equalTo("O alarme não foi salvo devido a um erro interno")))
+				.andExpect(status().isInternalServerError());
+
+		erro = objectMapper.writeValueAsString(criarAlarmeErro4(idMedicamento, "Tomar medicamento"));
+
+		this.mockMvc
+				.perform(post("/alarmes").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+						.header("token", logar("wagnerju", "1234")).content(erro))
+				.andExpect(jsonPath("$.error", equalTo("O alarme não foi salvo devido a um erro interno")))
+				.andExpect(status().isInternalServerError());
+
+		erro = objectMapper.writeValueAsString(criarAlarmeErro5(idMedicamento, "Tomar medicamento"));
+
+		this.mockMvc
+				.perform(post("/alarmes").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+						.header("token", logar("wagnerju", "1234")).content(erro))
+				.andExpect(jsonPath("$.error", equalTo("O alarme não foi salvo devido a um erro interno")))
+				.andExpect(status().isInternalServerError());
+
 	}
 
 	@Test
@@ -166,7 +207,7 @@ public class TestAlarmeController {
 						.header("token", logar("wagnerju", "1234") + "erroToken").content(jsonString))
 				.andExpect(jsonPath("$.error", equalTo("Acesso negado"))).andExpect(status().isForbidden());
 
-		jsonString = objectMapper.writeValueAsString(editarAlarmeErro());
+		jsonString = objectMapper.writeValueAsString(editarAlarmeErro(alarmes.get(0)));
 
 		this.mockMvc
 				.perform(put("/alarmes").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
@@ -174,7 +215,95 @@ public class TestAlarmeController {
 				.andExpect(jsonPath("$.error", equalTo("O alarme a ser alterado não existe no banco de dados")))
 				.andExpect(status().isNotFound());
 
-		jsonString = objectMapper.writeValueAsString(editarAlarmeErroId(alarmes.get(0).getId()));
+		jsonString = objectMapper.writeValueAsString(editarAlarmeErro1(alarmes.get(0)));
+
+		this.mockMvc
+				.perform(put("/alarmes").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+						.header("token", logar("wagnerju", "1234")).content(jsonString))
+				.andExpect(jsonPath("$.error", equalTo("O alarme a ser alterado não existe no banco de dados")))
+				.andExpect(status().isNotFound());
+		
+		jsonString = objectMapper.writeValueAsString(editarAlarmeErro2(alarmes.get(0)));
+
+		this.mockMvc
+				.perform(put("/alarmes").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+						.header("token", logar("wagnerju", "1234")).content(jsonString))
+				.andExpect(jsonPath("$.error", equalTo("O alarme a ser alterado não existe no banco de dados")))
+				.andExpect(status().isNotFound());
+		
+		jsonString = objectMapper.writeValueAsString(editarAlarmeErro3(alarmes.get(0)));
+
+		this.mockMvc
+				.perform(put("/alarmes").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+						.header("token", logar("wagnerju", "1234")).content(jsonString))
+				.andExpect(jsonPath("$.error", equalTo("O alarme a ser alterado não existe no banco de dados")))
+				.andExpect(status().isNotFound());
+		
+		jsonString = objectMapper.writeValueAsString(editarAlarmeErro4(alarmes.get(0)));
+
+		this.mockMvc
+				.perform(put("/alarmes").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+						.header("token", logar("wagnerju", "1234")).content(jsonString))
+				.andExpect(jsonPath("$.error", equalTo("O alarme a ser alterado não existe no banco de dados")))
+				.andExpect(status().isNotFound());
+		
+		jsonString = objectMapper.writeValueAsString(editarAlarmeErro5(alarmes.get(0)));
+
+		this.mockMvc
+				.perform(put("/alarmes").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+						.header("token", logar("wagnerju", "1234")).content(jsonString))
+				.andExpect(jsonPath("$.error", equalTo("O alarme a ser alterado não existe no banco de dados")))
+				.andExpect(status().isNotFound());
+		
+		jsonString = objectMapper.writeValueAsString(editarAlarmeErro6());
+
+		this.mockMvc
+				.perform(put("/alarmes").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+						.header("token", logar("wagnerju", "1234")).content(jsonString))
+				.andExpect(jsonPath("$.error", equalTo("O alarme a ser alterado não existe no banco de dados")))
+				.andExpect(status().isNotFound());
+		
+		jsonString = objectMapper.writeValueAsString(editarAlarmeErro7(alarmes.get(0)));
+
+		this.mockMvc
+				.perform(put("/alarmes").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+						.header("token", logar("wagnerju", "1234")).content(jsonString))
+				.andExpect(jsonPath("$.error", equalTo("Ocorreu um erro interno durante a alteração do alarme")))
+				.andExpect(status().isInternalServerError());
+		
+		jsonString = objectMapper.writeValueAsString(editarAlarmeErro8(alarmes.get(0)));
+
+		this.mockMvc
+				.perform(put("/alarmes").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+						.header("token", logar("wagnerju", "1234")).content(jsonString))
+				.andExpect(jsonPath("$.error", equalTo("Ocorreu um erro interno durante a alteração do alarme")))
+				.andExpect(status().isInternalServerError());
+		
+		jsonString = objectMapper.writeValueAsString(editarAlarmeErro9(alarmes.get(0)));
+
+		this.mockMvc
+				.perform(put("/alarmes").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+						.header("token", logar("wagnerju", "1234")).content(jsonString))
+				.andExpect(jsonPath("$.error", equalTo("Ocorreu um erro interno durante a alteração do alarme")))
+				.andExpect(status().isInternalServerError());
+		
+		jsonString = objectMapper.writeValueAsString(editarAlarmeErro10(alarmes.get(0)));
+
+		this.mockMvc
+				.perform(put("/alarmes").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+						.header("token", logar("wagnerju", "1234")).content(jsonString))
+				.andExpect(jsonPath("$.error", equalTo("Ocorreu um erro interno durante a alteração do alarme")))
+				.andExpect(status().isInternalServerError());
+		
+		jsonString = objectMapper.writeValueAsString(editarAlarmeErro11(alarmes.get(0)));
+
+		this.mockMvc
+				.perform(put("/alarmes").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+						.header("token", logar("wagnerju", "1234")).content(jsonString))
+				.andExpect(jsonPath("$.error", equalTo("Ocorreu um erro interno durante a alteração do alarme")))
+				.andExpect(status().isInternalServerError());
+		
+		jsonString = objectMapper.writeValueAsString(editarAlarmeErro12(alarmes.get(0)));
 
 		this.mockMvc
 				.perform(put("/alarmes").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
@@ -191,9 +320,11 @@ public class TestAlarmeController {
 
 		serviceUsuario.salvar(criarUsuario("wagner@hotmail.com", "wagnerju", idSexo, idSangue)).get();
 		MedicamentoId idMedicamento = serviceMedicamento.salvar(criarMedicamento("DorFlex", "100mg")).get();
+		serviceUsuario.salvar(criarUsuario("lathuanny@hotmail.com", "lathuanny", idSexo, idSangue)).get();
 
 		List<Usuario> usuarios = repo.findAll();
 		assertThat(usuarios.get(0), notNullValue());
+		assertThat(usuarios.get(1), notNullValue());
 
 		final String jsonString = objectMapper.writeValueAsString(criarAlarme(idMedicamento, "Tomar medicamento"));
 
@@ -210,12 +341,21 @@ public class TestAlarmeController {
 				.perform(
 						get("/alarmes/" + alarmes.get(0).getId().toString()).header("token", logar("wagnerju", "1234")))
 				.andExpect(jsonPath("$.descricao", equalTo("Tomar medicamento"))).andExpect(status().isOk());
-		
-		this.mockMvc.perform(get("/alarmes/" + alarmes.get(0).getId().toString()).header("token", logar("wagnerju", "1234") + "erroToken"))
-		.andExpect(jsonPath("$.error", equalTo("Acesso negado"))).andExpect(status().isForbidden());
-		
+
+		this.mockMvc
+				.perform(get("/alarmes/" + alarmes.get(0).getId().toString()).header("token",
+						logar("lathuanny", "1234")))
+				.andExpect(jsonPath("$.error", equalTo("O alarme procurado não existe no banco de dados")))
+				.andExpect(status().isNotFound());
+
+		this.mockMvc
+				.perform(get("/alarmes/" + alarmes.get(0).getId().toString()).header("token",
+						logar("wagnerju", "1234") + "erroToken"))
+				.andExpect(jsonPath("$.error", equalTo("Acesso negado"))).andExpect(status().isForbidden());
+
 		this.mockMvc.perform(get("/alarmes/" + new AlarmeId()).header("token", logar("wagnerju", "1234")))
-		.andExpect(jsonPath("$.error", equalTo("O alarme procurado não existe no banco de dados"))).andExpect(status().isNotFound());
+				.andExpect(jsonPath("$.error", equalTo("O alarme procurado não existe no banco de dados")))
+				.andExpect(status().isNotFound());
 
 	}
 
@@ -256,6 +396,12 @@ public class TestAlarmeController {
 		this.mockMvc.perform(get("/alarmes").header("token", logar("wagnerju", "1234")))
 				.andExpect(jsonPath("$[0].descricao", equalTo("Tomar medicamento")))
 				.andExpect(jsonPath("$[1].descricao", equalTo("Aplicar medicamento"))).andExpect(status().isOk());
+
+		serviceUsuario.salvar(criarUsuario("lathuanny@hotmail.com", "lathuanny", idSexo, idSangue)).get();
+		usuarios = repo.findAll();
+		assertThat(usuarios.get(1), notNullValue());
+
+		this.mockMvc.perform(get("/alarmes").header("token", logar("lathuanny", "1234"))).andExpect(status().isOk());
 	}
 
 	@Test
@@ -269,14 +415,14 @@ public class TestAlarmeController {
 		List<Usuario> usuarios = repo.findAll();
 		assertThat(usuarios.get(0), notNullValue());
 
-		this.mockMvc
-				.perform(delete("/alarmes/" + new AlarmeId()).accept(MediaType.APPLICATION_JSON)
-						.contentType(MediaType.APPLICATION_JSON).header("token", logar("wagnerju", "1234")))
-				.andExpect(jsonPath("$.error", equalTo("O alarme a ser deletado não existe no banco de dados")))
-				.andExpect(status().isNotFound());
-
 		String jsonString = objectMapper.writeValueAsString(criarAlarme(idMedicamento, "Tomar medicamento"));
-
+		
+		this.mockMvc
+		.perform(delete("/alarmes/" + new AlarmeId().toString()).accept(MediaType.APPLICATION_JSON)
+				.contentType(MediaType.APPLICATION_JSON).header("token", logar("wagnerju", "1234")))
+		.andExpect(jsonPath("$.error", equalTo("O alarme a ser deletado não existe no banco de dados")))
+		.andExpect(status().isNotFound());
+		
 		this.mockMvc
 				.perform(post("/alarmes").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
 						.header("token", logar("wagnerju", "1234")).content(jsonString))
@@ -310,22 +456,188 @@ public class TestAlarmeController {
 		return alarme;
 	}
 
-	private EditarAlarme editarAlarmeErro() {
+	private CriarAlarme criarAlarmeErro1(MedicamentoId idMedicamento, String descrição) {
+		CriarAlarme alarme = new CriarAlarme();
+		alarme.setDataFim(Date.valueOf(LocalDate.of(2018, 07, 20)));
+		alarme.setDescricao(descrição);
+		alarme.setIdMedicamento(idMedicamento);
+		alarme.setPeriodicidade(8);
+		alarme.setQuantidade("1");
+		return alarme;
+	}
+
+	private CriarAlarme criarAlarmeErro2(MedicamentoId idMedicamento, String descrição) {
+		CriarAlarme alarme = new CriarAlarme();
+		alarme.setDataInicio(Date.valueOf(LocalDate.of(2018, 07, 10)));
+		alarme.setDescricao(descrição);
+		alarme.setIdMedicamento(idMedicamento);
+		alarme.setPeriodicidade(8);
+		alarme.setQuantidade("1");
+		return alarme;
+	}
+
+	private CriarAlarme criarAlarmeErro3(MedicamentoId idMedicamento) {
+		CriarAlarme alarme = new CriarAlarme();
+		alarme.setDataInicio(Date.valueOf(LocalDate.of(2018, 07, 10)));
+		alarme.setDataFim(Date.valueOf(LocalDate.of(2018, 07, 20)));
+		alarme.setIdMedicamento(idMedicamento);
+		alarme.setPeriodicidade(8);
+		alarme.setQuantidade("1");
+		return alarme;
+	}
+
+	private CriarAlarme criarAlarmeErro4(MedicamentoId idMedicamento, String descrição) {
+		CriarAlarme alarme = new CriarAlarme();
+		alarme.setDataInicio(Date.valueOf(LocalDate.of(2018, 07, 10)));
+		alarme.setDataFim(Date.valueOf(LocalDate.of(2018, 07, 20)));
+		alarme.setDescricao(descrição);
+		alarme.setPeriodicidade(8);
+		alarme.setQuantidade("1");
+		return alarme;
+	}
+
+	private CriarAlarme criarAlarmeErro5(MedicamentoId idMedicamento, String descrição) {
+		CriarAlarme alarme = new CriarAlarme();
+		alarme.setDataInicio(Date.valueOf(LocalDate.of(2018, 07, 10)));
+		alarme.setDataFim(Date.valueOf(LocalDate.of(2018, 07, 20)));
+		alarme.setDescricao(descrição);
+		alarme.setIdMedicamento(idMedicamento);
+		alarme.setPeriodicidade(8);
+		return alarme;
+	}
+
+	private EditarAlarme editarAlarmeErro(Alarme alarme) {
 		EditarAlarme editar = new EditarAlarme();
 		editar.setId(new AlarmeId());
 		editar.setDataInicio(Date.valueOf(LocalDate.of(2018, 07, 10)));
 		editar.setDataFim(Date.valueOf(LocalDate.of(2018, 07, 20)));
 		editar.setDescricao("Erro");
-		editar.setIdMedicamento(new MedicamentoId());
+		editar.setIdMedicamento(alarme.getIdMedicamento());
 		editar.setPeriodicidade(8);
 		editar.setQuantidade("1");
 		return editar;
 	}
 
-	private EditarAlarme editarAlarmeErroId(AlarmeId id) {
+	private EditarAlarme editarAlarmeErro1(Alarme alarme) {
 		EditarAlarme editar = new EditarAlarme();
-		editar.setId(id);
+		editar.setId(new AlarmeId());
+		editar.setDataFim(Date.valueOf(LocalDate.of(2018, 07, 20)));
+		editar.setDescricao("Erro");
+		editar.setIdMedicamento(alarme.getIdMedicamento());
+		editar.setPeriodicidade(8);
+		editar.setQuantidade("1");
 		return editar;
+	}
+	
+	private EditarAlarme editarAlarmeErro2(Alarme alarme) {
+		EditarAlarme editar = new EditarAlarme();
+		editar.setId(new AlarmeId());
+		editar.setDataInicio(Date.valueOf(LocalDate.of(2018, 07, 10)));
+		editar.setDescricao("Erro");
+		editar.setIdMedicamento(alarme.getIdMedicamento());
+		editar.setPeriodicidade(8);
+		editar.setQuantidade("1");
+		return editar;
+	}
+	
+	private EditarAlarme editarAlarmeErro3(Alarme alarme) {
+		EditarAlarme editar = new EditarAlarme();
+		editar.setId(new AlarmeId());
+		editar.setDataInicio(Date.valueOf(LocalDate.of(2018, 07, 10)));
+		editar.setDataFim(Date.valueOf(LocalDate.of(2018, 07, 20)));
+		editar.setIdMedicamento(alarme.getIdMedicamento());
+		editar.setPeriodicidade(8);
+		editar.setQuantidade("1");
+		return editar;
+	}
+	
+	private EditarAlarme editarAlarmeErro4(Alarme alarme) {
+		EditarAlarme editar = new EditarAlarme();
+		editar.setId(new AlarmeId());
+		editar.setDataInicio(Date.valueOf(LocalDate.of(2018, 07, 10)));
+		editar.setDataFim(Date.valueOf(LocalDate.of(2018, 07, 20)));
+		editar.setDescricao("Erro");
+		editar.setPeriodicidade(8);
+		editar.setQuantidade("1");
+		return editar;
+	}
+	
+	private EditarAlarme editarAlarmeErro5(Alarme alarme) {
+		EditarAlarme editar = new EditarAlarme();
+		editar.setId(new AlarmeId());
+		editar.setDataInicio(Date.valueOf(LocalDate.of(2018, 07, 10)));
+		editar.setDataFim(Date.valueOf(LocalDate.of(2018, 07, 20)));
+		editar.setDescricao("Erro");
+		editar.setIdMedicamento(alarme.getIdMedicamento());
+		editar.setPeriodicidade(8);
+		return editar;
+	}
+	
+	private EditarAlarme editarAlarmeErro6() {
+		EditarAlarme editar = new EditarAlarme();
+		editar.setId(new AlarmeId());
+		return editar;
+	}
+	
+	private EditarAlarme editarAlarmeErro7(Alarme alarme) {
+		EditarAlarme alarmeEditado = new EditarAlarme();
+		alarmeEditado.setId(alarme.getId());
+		alarmeEditado.setDataFim(Date.valueOf(LocalDate.of(2018, 07, 20)));
+		alarmeEditado.setDescricao("Tomar medicamento Editado !!!");
+		alarmeEditado.setIdMedicamento(alarme.getIdMedicamento());
+		alarmeEditado.setPeriodicidade(8);
+		alarmeEditado.setQuantidade("1");
+		return alarmeEditado;
+	}
+	
+	private EditarAlarme editarAlarmeErro8(Alarme alarme) {
+		EditarAlarme alarmeEditado = new EditarAlarme();
+		alarmeEditado.setId(alarme.getId());
+		alarmeEditado.setDataInicio(Date.valueOf(LocalDate.of(2018, 07, 10)));
+		alarmeEditado.setDescricao("Tomar medicamento Editado !!!");
+		alarmeEditado.setIdMedicamento(alarme.getIdMedicamento());
+		alarmeEditado.setPeriodicidade(8);
+		alarmeEditado.setQuantidade("1");
+		return alarmeEditado;
+	}
+	
+	private EditarAlarme editarAlarmeErro9(Alarme alarme) {
+		EditarAlarme alarmeEditado = new EditarAlarme();
+		alarmeEditado.setId(alarme.getId());
+		alarmeEditado.setDataInicio(Date.valueOf(LocalDate.of(2018, 07, 10)));
+		alarmeEditado.setDataFim(Date.valueOf(LocalDate.of(2018, 07, 20)));
+		alarmeEditado.setIdMedicamento(alarme.getIdMedicamento());
+		alarmeEditado.setPeriodicidade(8);
+		alarmeEditado.setQuantidade("1");
+		return alarmeEditado;
+	}
+	
+	private EditarAlarme editarAlarmeErro10(Alarme alarme) {
+		EditarAlarme alarmeEditado = new EditarAlarme();
+		alarmeEditado.setId(alarme.getId());
+		alarmeEditado.setDataInicio(Date.valueOf(LocalDate.of(2018, 07, 10)));
+		alarmeEditado.setDataFim(Date.valueOf(LocalDate.of(2018, 07, 20)));
+		alarmeEditado.setDescricao("Tomar medicamento Editado !!!");
+		alarmeEditado.setPeriodicidade(8);
+		alarmeEditado.setQuantidade("1");
+		return alarmeEditado;
+	}
+	
+	private EditarAlarme editarAlarmeErro11(Alarme alarme) {
+		EditarAlarme alarmeEditado = new EditarAlarme();
+		alarmeEditado.setId(alarme.getId());
+		alarmeEditado.setDataInicio(Date.valueOf(LocalDate.of(2018, 07, 10)));
+		alarmeEditado.setDataFim(Date.valueOf(LocalDate.of(2018, 07, 20)));
+		alarmeEditado.setDescricao("Tomar medicamento Editado !!!");
+		alarmeEditado.setIdMedicamento(alarme.getIdMedicamento());
+		alarmeEditado.setPeriodicidade(8);
+		return alarmeEditado;
+	}
+	
+	private EditarAlarme editarAlarmeErro12(Alarme alarme) {
+		EditarAlarme alarmeEditado = new EditarAlarme();
+		alarmeEditado.setId(alarme.getId());
+		return alarmeEditado;
 	}
 
 	private CriarMedicamento criarMedicamento(String nome, String composicao) {

@@ -6,13 +6,13 @@ import java.util.Optional;
 import javax.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import br.minder.alarme.Alarme;
 import br.minder.alarme.AlarmeId;
 import br.minder.alarme.comandos.BuscarAlarme;
 import br.minder.alarme.comandos.CriarAlarme;
 import br.minder.alarme.comandos.EditarAlarme;
-import br.minder.medicamento.MedicamentoService;
+import br.minder.medicamento.Medicamento;
+import br.minder.medicamento.MedicamentoRepository;
 import br.minder.medicamento.comandos.BuscarMedicamento;
 import br.minder.usuario.UsuarioId;
 
@@ -23,23 +23,24 @@ public class AlarmeService {
 	private AlarmeRepository repo;
 
 	@Autowired
-	private MedicamentoService medService;
+	private MedicamentoRepository medRepo;
 
 	public Optional<AlarmeId> salvar(CriarAlarme comando, UsuarioId id) {
-		if(comando.getDataInicio() != null && comando.getDataFim() != null) {
+		if (comando.getDataInicio() != null && comando.getDataFim() != null && comando.getIdMedicamento() != null
+				&& comando.getQuantidade() != null && comando.getDescricao() != null) {
 			Alarme novo = repo.save(new Alarme(comando, id));
 			return Optional.of(novo.getId());
 		}
 		return Optional.empty();
 	}
 
-	public Optional<BuscarAlarme> encontrar(AlarmeId alarmeId) {
+	public Optional<BuscarAlarme> encontrar(AlarmeId alarmeId, UsuarioId usuarioId) {
 		Optional<Alarme> result = repo.findById(alarmeId);
-		if (result.isPresent()) {
+		if (result.isPresent() && result.get().getIdUsuario().toString().equals(usuarioId.toString())) {
 			BuscarAlarme resultado = new BuscarAlarme(result.get());
-			Optional<BuscarMedicamento> medicamento = medService.encontrar(result.get().getIdMedicamento());
+			Optional<Medicamento> medicamento = medRepo.findById(result.get().getIdMedicamento());
 			if (medicamento.isPresent())
-				resultado.setMedicamento(medicamento.get());
+				resultado.setMedicamento(new BuscarMedicamento(medicamento.get()));
 
 			return Optional.of(resultado);
 		}
@@ -50,11 +51,11 @@ public class AlarmeService {
 		List<BuscarAlarme> resultados = new ArrayList<>();
 		List<Alarme> alarmes = repo.findAll();
 		for (Alarme alarme : alarmes) {
-			if(alarme.getIdUsuario().toString().equals(id.toString())) {
+			if (alarme.getIdUsuario().toString().equals(id.toString())) {
 				BuscarAlarme nova = new BuscarAlarme(alarme);
-				Optional<BuscarMedicamento> medicamento = medService.encontrar(alarme.getIdMedicamento());
+				Optional<Medicamento> medicamento = medRepo.findById(alarme.getIdMedicamento());
 				if (medicamento.isPresent())
-					nova.setMedicamento(medicamento.get());
+					nova.setMedicamento(new BuscarMedicamento(medicamento.get()));
 				resultados.add(nova);
 			}
 		}
@@ -63,7 +64,8 @@ public class AlarmeService {
 
 	public Optional<AlarmeId> alterar(EditarAlarme comando) {
 		Optional<Alarme> optional = repo.findById(comando.getId());
-		if (optional.isPresent() && comando.getDataFim() != null && comando.getDataInicio() != null) {
+		if (comando.getDataInicio() != null && comando.getDataFim() != null && comando.getIdMedicamento() != null
+				&& comando.getQuantidade() != null && comando.getDescricao() != null && optional.isPresent()) {
 			Alarme alarme = optional.get();
 			alarme.apply(comando);
 			repo.save(alarme);

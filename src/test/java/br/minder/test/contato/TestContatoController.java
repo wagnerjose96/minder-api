@@ -146,6 +146,22 @@ public class TestContatoController {
 				.andExpect(jsonPath("$.error", equalTo("O contato não foi salvo devido a um erro interno")))
 				.andExpect(status().isInternalServerError());
 
+		objectMapper.writeValueAsString(criarContatoError1("Larissa Thuanny"));
+
+		this.mockMvc
+				.perform(post("/contatos").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+						.header("token", logar("wagnerju", "1234")).content(error))
+				.andExpect(jsonPath("$.error", equalTo("O contato não foi salvo devido a um erro interno")))
+				.andExpect(status().isInternalServerError());
+
+		objectMapper.writeValueAsString(criarContatoError2("Larissa Thuanny"));
+
+		this.mockMvc
+				.perform(post("/contatos").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+						.header("token", logar("wagnerju", "1234")).content(error))
+				.andExpect(jsonPath("$.error", equalTo("O contato não foi salvo devido a um erro interno")))
+				.andExpect(status().isInternalServerError());
+
 	}
 
 	@Test
@@ -194,7 +210,23 @@ public class TestContatoController {
 				.andExpect(jsonPath("$.error", equalTo("Ocorreu um erro interno durante a alteração do contato")))
 				.andExpect(status().isInternalServerError());
 
-		error = objectMapper.writeValueAsString(editarContatoError());
+		error = objectMapper.writeValueAsString(editarContatoError1(contatos.get(0)));
+
+		this.mockMvc
+				.perform(put("/contatos").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+						.header("token", logar("wagnerju", "1234")).content(error))
+				.andExpect(jsonPath("$.error", equalTo("Ocorreu um erro interno durante a alteração do contato")))
+				.andExpect(status().isInternalServerError());
+
+		error = objectMapper.writeValueAsString(editarContatoError2(contatos.get(0)));
+
+		this.mockMvc
+				.perform(put("/contatos").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+						.header("token", logar("wagnerju", "1234")).content(error))
+				.andExpect(jsonPath("$.error", equalTo("Ocorreu um erro interno durante a alteração do contato")))
+				.andExpect(status().isInternalServerError());
+
+		error = objectMapper.writeValueAsString(editarContatoError3(contatos.get(0)));
 
 		this.mockMvc
 				.perform(put("/contatos").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
@@ -202,6 +234,29 @@ public class TestContatoController {
 				.andExpect(jsonPath("$.error", equalTo("O contato a ser alterado não existe no banco de dados")))
 				.andExpect(status().isNotFound());
 
+		error = objectMapper.writeValueAsString(editarContatoError4(contatos.get(0)));
+
+		this.mockMvc
+				.perform(put("/contatos").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+						.header("token", logar("wagnerju", "1234")).content(error))
+				.andExpect(jsonPath("$.error", equalTo("O contato a ser alterado não existe no banco de dados")))
+				.andExpect(status().isNotFound());
+
+		error = objectMapper.writeValueAsString(editarContatoError5(contatos.get(0)));
+
+		this.mockMvc
+				.perform(put("/contatos").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+						.header("token", logar("wagnerju", "1234")).content(error))
+				.andExpect(jsonPath("$.error", equalTo("O contato a ser alterado não existe no banco de dados")))
+				.andExpect(status().isNotFound());
+
+		error = objectMapper.writeValueAsString(editarContatoError6(contatos.get(0)));
+
+		this.mockMvc
+				.perform(put("/contatos").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+						.header("token", logar("wagnerju", "1234")).content(error))
+				.andExpect(jsonPath("$.error", equalTo("O contato a ser alterado não existe no banco de dados")))
+				.andExpect(status().isNotFound());
 	}
 
 	@Test
@@ -315,13 +370,24 @@ public class TestContatoController {
 
 		this.mockMvc
 				.perform(delete("/contatos/" + contatos.get(0).getId().toString()).header("token",
-						logar("wagnerju", "1234") + "TokenError"))
+						logar("wagnerju", "1234")))
+				.andExpect(jsonPath("$.error", equalTo("O contato a deletar não existe no banco de dados")))
+				.andExpect(status().isNotFound());
+
+		this.mockMvc
+				.perform(delete("/contatos/" + contatos.get(0).getId().toString()).header("token",
+						logar("wagnerju", "1234") + "ErroToken"))
 				.andExpect(jsonPath("$.error", equalTo("Acesso negado"))).andExpect(status().isForbidden());
 
 		this.mockMvc
 				.perform(delete("/contatos/" + new ContatoId().toString()).header("token", logar("wagnerju", "1234")))
 				.andExpect(jsonPath("$.error", equalTo("O contato a deletar não existe no banco de dados")))
 				.andExpect(status().isNotFound());
+
+		this.mockMvc
+				.perform(delete("/contatos/" + new ContatoId().toString()).header("token",
+						logar("wagnerju", "1234") + "ErroToken"))
+				.andExpect(jsonPath("$.error", equalTo("Acesso negado"))).andExpect(status().isForbidden());
 	}
 
 	private EditarContato editarContatoError(ContatoId id) {
@@ -330,10 +396,52 @@ public class TestContatoController {
 		return error;
 	}
 
-	private EditarContato editarContatoError() {
-		EditarContato error = new EditarContato();
-		error.setId(new ContatoId());
-		return error;
+	private EditarContato editarContatoError1(Contato contato) {
+		EditarContato contatoEditado = new EditarContato();
+		contatoEditado.setId(contato.getId());
+		contatoEditado.setTelefone(editarTelefone(contato.getIdTelefone()));
+
+		return contatoEditado;
+	}
+
+	private EditarContato editarContatoError2(Contato contato) {
+		EditarContato contatoEditado = new EditarContato();
+		contatoEditado.setId(contato.getId());
+		contatoEditado.setNome("Wagner Junior");
+
+		return contatoEditado;
+	}
+
+	private EditarContato editarContatoError3(Contato contato) {
+		EditarContato contatoEditado = new EditarContato();
+		contatoEditado.setId(new ContatoId());
+		contatoEditado.setNome("Wagner Junior");
+		contatoEditado.setTelefone(editarTelefone(contato.getIdTelefone()));
+
+		return contatoEditado;
+	}
+
+	private EditarContato editarContatoError4(Contato contato) {
+		EditarContato contatoEditado = new EditarContato();
+		contatoEditado.setId(new ContatoId());
+		contatoEditado.setTelefone(editarTelefone(contato.getIdTelefone()));
+
+		return contatoEditado;
+	}
+
+	private EditarContato editarContatoError5(Contato contato) {
+		EditarContato contatoEditado = new EditarContato();
+		contatoEditado.setId(new ContatoId());
+		contatoEditado.setNome("Wagner Junior");
+
+		return contatoEditado;
+	}
+
+	private EditarContato editarContatoError6(Contato contato) {
+		EditarContato contatoEditado = new EditarContato();
+		contatoEditado.setId(new ContatoId());
+
+		return contatoEditado;
 	}
 
 	private CriarEmergencia criarEmergencia() {
@@ -348,6 +456,17 @@ public class TestContatoController {
 		CriarContato contato = new CriarContato();
 		contato.setTelefone(telefone());
 		contato.setNome(nome);
+		return contato;
+	}
+
+	private CriarContato criarContatoError1(String nome) {
+		CriarContato contato = new CriarContato();
+		contato.setNome(nome);
+		return contato;
+	}
+
+	private CriarContato criarContatoError2(String nome) {
+		CriarContato contato = new CriarContato();
 		return contato;
 	}
 
