@@ -46,7 +46,7 @@ public class ContatoService {
 			+ "where e.id_emergencia = ? and e.id_contato = ?";
 
 	public Optional<ContatoId> salvar(CriarContato comando, UsuarioId id) {
-		if (comando.getTelefone() != null) {
+		if (comando.getTelefone() != null && comando.getNome() != null) {
 			Optional<TelefoneId> idTelefone = telefoneService.salvar(comando.getTelefone());
 			if (idTelefone.isPresent()) {
 				Contato novo = new Contato(comando);
@@ -95,7 +95,7 @@ public class ContatoService {
 
 	public Optional<ContatoId> alterar(EditarContato comando) {
 		Optional<Contato> optional = repo.findById(comando.getId());
-		if (optional.isPresent() && comando.getTelefone() != null) {
+		if (optional.isPresent() && comando.getTelefone() != null && comando.getNome() != null) {
 			if (comando.getTelefone() != null)
 				telefoneService.alterar(comando.getTelefone());
 			Contato contato = optional.get();

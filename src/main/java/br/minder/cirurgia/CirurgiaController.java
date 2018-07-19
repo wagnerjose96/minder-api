@@ -55,7 +55,7 @@ public class CirurgiaController {
 	public ResponseEntity<BuscarCirurgia> getCirurgiaPorId(@PathVariable CirurgiaId id, @RequestHeader String token)
 			throws AccessDeniedException {
 		if (autentica.autenticaRequisicao(token)) {
-			Optional<BuscarCirurgia> optionalCirurgia = cirurgiaService.encontrar(id);
+			Optional<BuscarCirurgia> optionalCirurgia = cirurgiaService.encontrar(id, autentica.idUser(token));
 			if (optionalCirurgia.isPresent()) {
 				return ResponseEntity.ok(optionalCirurgia.get());
 			}
@@ -85,7 +85,7 @@ public class CirurgiaController {
 	public ResponseEntity<String> putCirurgia(@RequestBody EditarCirurgia comando, @RequestHeader String token)
 			throws SQLException, AccessDeniedException {
 		if (autentica.autenticaRequisicao(token)) {
-			if (!cirurgiaService.encontrar(comando.getIdCirurgia()).isPresent()) {
+			if (!cirurgiaService.encontrar(comando.getIdCirurgia(), autentica.idUser(token)).isPresent()) {
 				throw new NullPointerException("A cirurgia a ser alterada não existe no banco de dados");
 			}
 			Optional<CirurgiaId> optionalCirurgiaId = cirurgiaService.alterar(comando);

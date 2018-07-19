@@ -38,13 +38,13 @@ public class DoencaService {
 	private DoencaMedicamentoService service;
 
 	@Autowired
-	private MedicamentoService medicamentoService;
+	private MedicamentoService medService;
 
 	public Optional<DoencaId> salvar(CriarDoenca comando, UsuarioId id) {
 		if (comando.getDataDescoberta() != null && comando.getNomeDoenca() != null) {
 			Doenca novo = doencaRepo.save(new Doenca(comando, id));
 			for (MedicamentoId idMedicamento : comando.getIdMedicamentos()) {
-				if (medicamentoService.encontrar(idMedicamento).isPresent()) {
+				if (medService.encontrar(idMedicamento).isPresent()) {
 					DoencaMedicamento doencaMedicamento = new DoencaMedicamento();
 					doencaMedicamento.setIdDoenca(novo.getIdDoenca());
 					doencaMedicamento.setIdMedicamento(idMedicamento);
@@ -88,7 +88,7 @@ public class DoencaService {
 			doenca.apply(comando);
 			doencaRepo.save(doenca);
 			for (MedicamentoId idMedicamento : comando.getIdMedicamentos()) {
-				if (medicamentoService.encontrar(idMedicamento).isPresent()) {
+				if (medService.encontrar(idMedicamento).isPresent()) {
 					DoencaMedicamento doencaMedicamento = new DoencaMedicamento();
 					doencaMedicamento.setIdDoenca(comando.getIdDoenca());
 					doencaMedicamento.setIdMedicamento(idMedicamento);

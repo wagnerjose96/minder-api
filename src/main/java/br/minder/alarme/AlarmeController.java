@@ -44,7 +44,7 @@ public class AlarmeController {
 	public ResponseEntity<List<BuscarAlarme>> getAlarmes(@RequestHeader String token) throws AccessDeniedException {
 		if (autentica.autenticaRequisicao(token)) {
 			Optional<List<BuscarAlarme>> optionalAlarmes = alarmeService.encontrar(autentica.idUser(token));
-			if(optionalAlarmes.isPresent()) {
+			if (optionalAlarmes.isPresent()) {
 				return ResponseEntity.ok(optionalAlarmes.get());
 			}
 		}
@@ -56,7 +56,7 @@ public class AlarmeController {
 	public ResponseEntity<BuscarAlarme> getAlarmePorId(@PathVariable AlarmeId id, @RequestHeader String token)
 			throws AccessDeniedException {
 		if (autentica.autenticaRequisicao(token)) {
-			Optional<BuscarAlarme> optionalAlarme = alarmeService.encontrar(id);
+			Optional<BuscarAlarme> optionalAlarme = alarmeService.encontrar(id, autentica.idUser(token));
 			if (optionalAlarme.isPresent()) {
 				return ResponseEntity.ok(optionalAlarme.get());
 			}
@@ -86,7 +86,7 @@ public class AlarmeController {
 	public ResponseEntity<String> putAlarme(@RequestBody EditarAlarme comando, @RequestHeader String token)
 			throws SQLException, AccessDeniedException {
 		if (autentica.autenticaRequisicao(token)) {
-			if (!alarmeService.encontrar(comando.getId()).isPresent()) {
+			if (!alarmeService.encontrar(comando.getId(), autentica.idUser(token)).isPresent()) {
 				throw new NullPointerException("O alarme a ser alterado não existe no banco de dados");
 			}
 			Optional<AlarmeId> optionalAlarmeId = alarmeService.alterar(comando);
@@ -104,7 +104,7 @@ public class AlarmeController {
 	public ResponseEntity<String> deleteAlarme(@PathVariable AlarmeId id, @RequestHeader String token)
 			throws AccessDeniedException {
 		if (autentica.autenticaRequisicao(token)) {
-			if (!alarmeService.encontrar(id).isPresent()) {
+			if (!alarmeService.encontrar(id, autentica.idUser(token)).isPresent()) {
 				throw new NullPointerException("O alarme a ser deletado não existe no banco de dados");
 			}
 			Optional<String> resultado = alarmeService.deletar(id);

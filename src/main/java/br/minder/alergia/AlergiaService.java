@@ -38,13 +38,14 @@ public class AlergiaService {
 	private AlergiaMedicamentoService service;
 
 	@Autowired
-	private MedicamentoService medicamentoService;
+	private MedicamentoService medService;
 
 	public Optional<AlergiaId> salvar(CriarAlergia comando, UsuarioId id) {
-		if (comando.getDataDescoberta() != null && comando.getTipoAlergia() != null) {
+		if (comando.getDataDescoberta() != null && comando.getTipoAlergia() != null
+				&& comando.getIdMedicamentos() != null && comando.getEfeitos() != null && comando.getLocalAfetado() != null) {
 			Alergia novo = repo.save(new Alergia(comando, id));
 			for (MedicamentoId idMedicamento : comando.getIdMedicamentos()) {
-				if (medicamentoService.encontrar(idMedicamento).isPresent()) {
+				if (medService.encontrar(idMedicamento).isPresent()) {
 					AlergiaMedicamento alergiaMedicamento = new AlergiaMedicamento();
 					alergiaMedicamento.setIdAlergia(novo.getIdAlergia());
 					alergiaMedicamento.setIdMedicamento(idMedicamento);
@@ -56,10 +57,10 @@ public class AlergiaService {
 		return Optional.empty();
 	}
 
-	public Optional<BuscarAlergia> encontrar(AlergiaId alergiaId) {
+	public Optional<BuscarAlergia> encontrar(AlergiaId alergiaId, UsuarioId id) {
 		List<BuscarMedicamento> medicamentos = executeQuery(alergiaId.toString(), sql);
 		Optional<Alergia> result = repo.findById(alergiaId);
-		if (result.isPresent()) {
+		if (result.isPresent() && id.toString().equals(result.get().getIdUsuario().toString())) {
 			BuscarAlergia resultado = new BuscarAlergia(result.get());
 			resultado.setMedicamentos(medicamentos);
 			return Optional.of(resultado);
@@ -82,14 +83,15 @@ public class AlergiaService {
 	}
 
 	public Optional<AlergiaId> alterar(EditarAlergia comando) {
-		if (comando.getDataDescoberta() != null && comando.getTipoAlergia() != null) {
+		if (comando.getDataDescoberta() != null && comando.getTipoAlergia() != null
+				&& comando.getIdMedicamentos() != null && comando.getEfeitos() != null && comando.getLocalAfetado() != null) {
 			Optional<Alergia> optional = repo.findById(comando.getIdAlergia());
 			if (optional.isPresent()) {
 				Alergia alergia = optional.get();
 				alergia.apply(comando);
 				repo.save(alergia);
 				for (MedicamentoId idMedicamento : comando.getIdMedicamentos()) {
-					if (medicamentoService.encontrar(idMedicamento).isPresent()) {
+					if (medService.encontrar(idMedicamento).isPresent()) {
 						AlergiaMedicamento alergiaMedicamento = new AlergiaMedicamento();
 						alergiaMedicamento.setIdAlergia(comando.getIdAlergia());
 						alergiaMedicamento.setIdMedicamento(idMedicamento);
