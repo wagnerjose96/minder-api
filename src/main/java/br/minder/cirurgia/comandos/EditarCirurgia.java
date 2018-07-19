@@ -6,9 +6,11 @@ import java.util.List;
 
 import br.minder.cirurgia.CirurgiaId;
 import br.minder.medicamento.MedicamentoId;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
-@Data
+@Getter
+@Setter
 public class EditarCirurgia {
 	private CirurgiaId idCirurgia;
 	private String tipoCirurgia;

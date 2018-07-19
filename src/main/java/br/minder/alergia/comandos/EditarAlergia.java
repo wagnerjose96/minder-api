@@ -6,9 +6,11 @@ import java.util.List;
 
 import br.minder.alergia.AlergiaId;
 import br.minder.medicamento.MedicamentoId;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
-@Data
+@Getter
+@Setter
 public class EditarAlergia {
 	private AlergiaId idAlergia;
 	private String tipoAlergia;

@@ -36,6 +36,7 @@ import com.github.springtestdbunit.TransactionDbUnitTestExecutionListener;
 
 import br.minder.MinderApplication;
 import br.minder.cirurgia.Cirurgia;
+import br.minder.cirurgia.CirurgiaId;
 import br.minder.cirurgia.CirurgiaRepository;
 import br.minder.cirurgia.comandos.CriarCirurgia;
 import br.minder.cirurgia.comandos.EditarCirurgia;
@@ -116,13 +117,26 @@ public class TestCirurgiaController {
 		List<Usuario> usuarios = repo.findAll();
 		assertThat(usuarios.get(0), notNullValue());
 
-		final String jsonString = objectMapper.writeValueAsString(criarCirurgia(idsMedicamentos, "Pedra no rim"));
+		String jsonString = objectMapper.writeValueAsString(criarCirurgia(idsMedicamentos, "Pedra no rim"));
 
 		this.mockMvc
 				.perform(post("/cirurgias").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
 						.header("token", logar("wagnerju", "1234")).content(jsonString))
 				.andExpect(jsonPath("$", equalTo("A cirurgia foi cadastrada com sucesso")))
 				.andExpect(status().isCreated());
+
+		this.mockMvc
+				.perform(post("/cirurgias").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+						.header("token", logar("wagnerju", "1234") + "TokenError").content(jsonString))
+				.andExpect(jsonPath("$.error", equalTo("Acesso negado"))).andExpect(status().isForbidden());
+
+		jsonString = objectMapper.writeValueAsString(new CriarCirurgia());
+
+		this.mockMvc
+				.perform(post("/cirurgias").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+						.header("token", logar("wagnerju", "1234")).content(jsonString))
+				.andExpect(jsonPath("$.error", equalTo("A cirurgia não foi salva devido a um erro interno")))
+				.andExpect(status().isInternalServerError());
 	}
 
 	@Test
@@ -156,6 +170,27 @@ public class TestCirurgiaController {
 						.header("token", logar("wagnerju", "1234")).content(jsonString))
 				.andExpect(jsonPath("$", equalTo("A cirurgia foi alterada com sucesso"))).andExpect(status().isOk());
 
+		this.mockMvc
+				.perform(put("/cirurgias").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+						.header("token", logar("wagnerju", "1234") + "TokenError").content(jsonString))
+				.andExpect(jsonPath("$.error", equalTo("Acesso negado"))).andExpect(status().isForbidden());
+
+		String error = objectMapper.writeValueAsString(editarCirurgiaError());
+
+		this.mockMvc
+				.perform(put("/cirurgias").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+						.header("token", logar("wagnerju", "1234")).content(error))
+				.andExpect(jsonPath("$.error", equalTo("A cirurgia a ser alterada não existe no banco de dados")))
+				.andExpect(status().isNotFound());
+
+		error = objectMapper.writeValueAsString(editarCirurgiaError(cirurgias.get(0).getIdCirurgia()));
+
+		this.mockMvc
+				.perform(put("/cirurgias").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+						.header("token", logar("wagnerju", "1234")).content(error))
+				.andExpect(jsonPath("$.error", equalTo("Ocorreu um erro interno durante a alteração do cirurgia")))
+				.andExpect(status().isInternalServerError());
+
 	}
 
 	@Test
@@ -186,6 +221,16 @@ public class TestCirurgiaController {
 				.perform(get("/cirurgias/" + cirurgias.get(0).getIdCirurgia().toString()).header("token",
 						logar("wagnerju", "1234")))
 				.andExpect(jsonPath("$.tipoCirurgia", equalTo("Pedra no rim"))).andExpect(status().isOk());
+		
+		this.mockMvc
+		.perform(get("/cirurgias/" + cirurgias.get(0).getIdCirurgia().toString()).header("token",
+				logar("wagnerju", "1234") + "TokenError"))
+		.andExpect(jsonPath("$.error", equalTo("Acesso negado"))).andExpect(status().isForbidden());
+		
+		this.mockMvc
+		.perform(get("/cirurgias/" + new CirurgiaId().toString()).header("token",
+				logar("wagnerju", "1234")))
+		.andExpect(jsonPath("$.error", equalTo("A cirurgia procurada não existe no banco de dados"))).andExpect(status().isNotFound());
 	}
 
 	@Test
@@ -223,7 +268,22 @@ public class TestCirurgiaController {
 		this.mockMvc.perform(get("/cirurgias").header("token", logar("wagnerju", "1234")))
 				.andExpect(jsonPath("$[0].tipoCirurgia", equalTo("Pedra no rim")))
 				.andExpect(jsonPath("$[1].tipoCirurgia", equalTo("Báriatrica"))).andExpect(status().isOk());
+		
+		this.mockMvc.perform(get("/cirurgias").header("token", logar("wagnerju", "1234") + "TokenError"))
+		.andExpect(jsonPath("$.error", equalTo("Acesso negado"))).andExpect(status().isForbidden());
 
+	}
+
+	private EditarCirurgia editarCirurgiaError() {
+		EditarCirurgia error = new EditarCirurgia();
+		error.setIdCirurgia(new CirurgiaId());
+		return error;
+	}
+
+	private EditarCirurgia editarCirurgiaError(CirurgiaId id) {
+		EditarCirurgia error = new EditarCirurgia();
+		error.setIdCirurgia(id);
+		return error;
 	}
 
 	private CriarCirurgia criarCirurgia(List<MedicamentoId> idsMedicamentos, String tipoCirurgia) {

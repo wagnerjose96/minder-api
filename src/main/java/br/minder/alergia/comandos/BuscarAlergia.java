@@ -7,9 +7,11 @@ import br.minder.alergia.Alergia;
 import br.minder.alergia.AlergiaId;
 import br.minder.conversor.ConverterData;
 import br.minder.medicamento.comandos.BuscarMedicamento;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
-@Data
+@Getter
+@Setter
 public class BuscarAlergia {
 	private AlergiaId idAlergia;
 	private String tipoAlergia;
@@ -25,9 +27,5 @@ public class BuscarAlergia {
 		Long dataLong = comando.getDataDescoberta().getTime();
 		this.dataDescoberta = ConverterData.converterData(dataLong);
 		this.efeitos = comando.getEfeitos();
-	}
-
-	public BuscarAlergia() {
-
 	}
 }

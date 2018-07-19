@@ -1,5 +1,7 @@
 package br.minder.plano_de_saude.comandos;
 
+import java.math.BigInteger;
+
 import javax.persistence.AttributeOverride;
 import javax.persistence.Column;
 
@@ -10,7 +12,7 @@ import lombok.Data;
 public class CriarPlanoDeSaude {
 	@AttributeOverride(name = "value", column = @Column(name = "id_convenio"))
 	private ConvenioId idConvenio;
-	private int numeroCartao;
+	private BigInteger numeroCartao;
 	private String habitacao;
 	private String territorio;
 }

@@ -11,14 +11,12 @@ import br.minder.alergia.comandos.CriarAlergia;
 import br.minder.alergia.comandos.EditarAlergia;
 import br.minder.usuario.UsuarioId;
 import lombok.AccessLevel;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import lombok.Setter;
 
 @Entity
 @Audited
-@Data
-@EqualsAndHashCode(exclude={"tipoAlergia", "localAfetado", "dataDescoberta", "efeitos"})
+@Getter
 public class Alergia {
 	@EmbeddedId
 	@AttributeOverride(name = "value", column = @Column(name = "id"))

@@ -40,18 +40,21 @@ public class CirurgiaService {
 	private MedicamentoService medicamentoService;
 
 	public Optional<CirurgiaId> salvar(CriarCirurgia comando, UsuarioId id) {
-		Cirurgia novo = cirurgiaRepo.save(new Cirurgia(comando, id));
-		for (MedicamentoId idMedicamento : comando.getIdMedicamentos()) {
-			do {
-				if (medicamentoService.encontrar(idMedicamento).isPresent()) {
-					CirurgiaMedicamento cirurgiaMedicamento = new CirurgiaMedicamento();
-					cirurgiaMedicamento.setIdCirurgia(novo.getIdCirurgia());
-					cirurgiaMedicamento.setIdMedicamento(idMedicamento);
-					service.salvar(cirurgiaMedicamento);
-				}
-			} while (Medicamento.verificarMedicamento(idMedicamento, comando.getIdMedicamentos()));
+		if (comando.getTipoCirurgia() != null) {
+			Cirurgia novo = cirurgiaRepo.save(new Cirurgia(comando, id));
+			for (MedicamentoId idMedicamento : comando.getIdMedicamentos()) {
+				do {
+					if (medicamentoService.encontrar(idMedicamento).isPresent()) {
+						CirurgiaMedicamento cirurgiaMedicamento = new CirurgiaMedicamento();
+						cirurgiaMedicamento.setIdCirurgia(novo.getIdCirurgia());
+						cirurgiaMedicamento.setIdMedicamento(idMedicamento);
+						service.salvar(cirurgiaMedicamento);
+					}
+				} while (Medicamento.verificarMedicamento(idMedicamento, comando.getIdMedicamentos()));
+			}
+			return Optional.of(novo.getIdCirurgia());
 		}
-		return Optional.of(novo.getIdCirurgia());
+		return Optional.empty();
 	}
 
 	public Optional<BuscarCirurgia> encontrar(CirurgiaId cirurgiaId) {
@@ -81,7 +84,7 @@ public class CirurgiaService {
 
 	public Optional<CirurgiaId> alterar(EditarCirurgia comando) {
 		Optional<Cirurgia> optional = cirurgiaRepo.findById(comando.getIdCirurgia());
-		if (optional.isPresent()) {
+		if (optional.isPresent() && comando.getTipoCirurgia() != null) {
 			Cirurgia cirurgia = optional.get();
 			cirurgia.apply(comando);
 			cirurgiaRepo.save(cirurgia);

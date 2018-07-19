@@ -18,7 +18,7 @@
 				<constraints nullable="false"
 					foreignKeyName="FK_PLANODESAUDE_CONVENIO" references="convenio(id)" />
 			</column>
-			<column name="numero_cartao" type="${TYPE_NUMBER}">
+			<column name="numero_cartao" type="${TYPE_BIG_INTEGER}">
 				<constraints nullable="false" />
 			</column>
 			<column name="habitacao" type="${TYPE_DESCRICAO}">
@@ -41,7 +41,7 @@
 			<column name="id" type="${TYPE_ID}">
 				<constraints nullable="false" />
 			</column>
-			<column name="numero_cartao" type="${TYPE_NUMBER}">
+			<column name="numero_cartao" type="${TYPE_BIG_INTEGER}">
 				<constraints nullable="false" />
 			</column>
 			<column name="habitacao" type="${TYPE_DESCRICAO}">

@@ -1,9 +1,11 @@
 package br.minder.convenio.comandos;
 
 import br.minder.convenio.ConvenioId;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
-@Data
+@Getter
+@Setter
 public class EditarConvenio {
 	private ConvenioId id;
 	private String nome;

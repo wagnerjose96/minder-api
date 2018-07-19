@@ -3,9 +3,11 @@ package br.minder.contato.comandos;
 import br.minder.contato.Contato;
 import br.minder.contato.ContatoId;
 import br.minder.telefone.comandos.BuscarTelefone;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
-@Data
+@Getter
+@Setter
 public class BuscarContato {
 	private ContatoId id;
 	private String nome;

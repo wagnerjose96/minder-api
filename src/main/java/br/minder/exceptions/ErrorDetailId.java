@@ -12,7 +12,4 @@ public class ErrorDetailId extends BaseId {
 		super();
 	}
 
-	public ErrorDetailId(String value) {
-		super(value);
-	}
 }

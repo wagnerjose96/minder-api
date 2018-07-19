@@ -28,6 +28,7 @@ import org.springframework.test.context.support.DependencyInjectionTestExecution
 import org.springframework.test.context.support.DirtiesContextTestExecutionListener;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.WebApplicationContext;
@@ -36,6 +37,7 @@ import com.github.springtestdbunit.TransactionDbUnitTestExecutionListener;
 
 import br.minder.MinderApplication;
 import br.minder.contato.Contato;
+import br.minder.contato.ContatoId;
 import br.minder.contato.ContatoRepository;
 import br.minder.contato.comandos.CriarContato;
 import br.minder.contato.comandos.EditarContato;
@@ -69,7 +71,6 @@ import br.minder.usuario.comandos.CriarUsuario;
 @Rollback
 @WebAppConfiguration
 @SpringBootTest(classes = { MinderApplication.class }, webEnvironment = WebEnvironment.MOCK)
-
 public class TestContatoController {
 
 	@Autowired
@@ -128,9 +129,23 @@ public class TestContatoController {
 
 		this.mockMvc
 				.perform(post("/contatos").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+						.header("token", logar("wagnerju", "1234") + "TokenError").content(jsonString))
+				.andExpect(jsonPath("$.error", equalTo("Acesso negado"))).andExpect(status().isForbidden());
+
+		this.mockMvc
+				.perform(post("/contatos").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
 						.header("token", logar("wagnerju", "1234")).content(jsonString))
 				.andExpect(jsonPath("$", equalTo("O contato foi cadastrado com sucesso")))
 				.andExpect(status().isCreated());
+
+		String error = objectMapper.writeValueAsString(new CriarContato());
+
+		this.mockMvc
+				.perform(post("/contatos").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+						.header("token", logar("wagnerju", "1234")).content(error))
+				.andExpect(jsonPath("$.error", equalTo("O contato não foi salvo devido a um erro interno")))
+				.andExpect(status().isInternalServerError());
+
 	}
 
 	@Test
@@ -163,8 +178,29 @@ public class TestContatoController {
 
 		this.mockMvc
 				.perform(put("/contatos").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+						.header("token", logar("wagnerju", "1234") + "TokenError").content(jsonString))
+				.andExpect(jsonPath("$.error", equalTo("Acesso negado"))).andExpect(status().isForbidden());
+
+		this.mockMvc
+				.perform(put("/contatos").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
 						.header("token", logar("wagnerju", "1234")).content(jsonString))
 				.andExpect(jsonPath("$", equalTo("O contato foi alterado com sucesso"))).andExpect(status().isOk());
+
+		String error = objectMapper.writeValueAsString(editarContatoError(contatos.get(0).getId()));
+
+		this.mockMvc
+				.perform(put("/contatos").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+						.header("token", logar("wagnerju", "1234")).content(error))
+				.andExpect(jsonPath("$.error", equalTo("Ocorreu um erro interno durante a alteração do contato")))
+				.andExpect(status().isInternalServerError());
+
+		error = objectMapper.writeValueAsString(editarContatoError());
+
+		this.mockMvc
+				.perform(put("/contatos").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+						.header("token", logar("wagnerju", "1234")).content(error))
+				.andExpect(jsonPath("$.error", equalTo("O contato a ser alterado não existe no banco de dados")))
+				.andExpect(status().isNotFound());
 
 	}
 
@@ -194,10 +230,12 @@ public class TestContatoController {
 		List<Contato> contatos = repoContato.findAll();
 		assertThat(contatos.get(0), notNullValue());
 
-		this.mockMvc
-				.perform(get("/contatos/" + contatos.get(0).getId().toString()).header("token",
-						logar("wagnerju", "1234")))
+		this.mockMvc.perform(get("/contatos/" + contatos.get(0).getId().toString()))
 				.andExpect(jsonPath("$.nome", equalTo("Larissa Thuanny"))).andExpect(status().isOk());
+
+		this.mockMvc.perform(get("/contatos/" + new ContatoId().toString()))
+				.andExpect(jsonPath("$.error", equalTo("O contato procurado não existe no banco de dados")))
+				.andExpect(status().isNotFound());
 	}
 
 	@Test
@@ -214,6 +252,8 @@ public class TestContatoController {
 
 		List<Emergencia> emergencias = repoEmergencia.findAll();
 		assertThat(emergencias.get(0), notNullValue());
+
+		this.mockMvc.perform(get("/contatos")).andDo(MockMvcResultHandlers.print()).andExpect(status().isNotFound());
 
 		String jsonString = objectMapper.writeValueAsString(criarContato("Larissa Thuanny"));
 
@@ -272,6 +312,18 @@ public class TestContatoController {
 				.andExpect(jsonPath("$",
 						equalTo("Contato ===> " + contatos.get(0).getId().toString() + ": deletado com sucesso")))
 				.andExpect(status().isOk());
+	}
+
+	private EditarContato editarContatoError(ContatoId id) {
+		EditarContato error = new EditarContato();
+		error.setId(id);
+		return error;
+	}
+
+	private EditarContato editarContatoError() {
+		EditarContato error = new EditarContato();
+		error.setId(new ContatoId());
+		return error;
 	}
 
 	private CriarEmergencia criarEmergencia() {

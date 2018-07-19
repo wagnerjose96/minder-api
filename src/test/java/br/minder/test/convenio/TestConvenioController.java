@@ -93,6 +93,20 @@ public class TestConvenioController {
 						.header("token", logarAdm("admin", "1234")).content(jsonString))
 				.andExpect(jsonPath("$", equalTo("O convênio foi cadastrado com sucesso")))
 				.andExpect(status().isCreated());
+		
+		this.mockMvc
+		.perform(post("/convenios").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+				.header("token", logarAdm("admin", "1234") + "TokenEror").content(jsonString))
+		.andExpect(jsonPath("$.error", equalTo("Acesso negado")))
+		.andExpect(status().isForbidden());
+		
+		String error = objectMapper.writeValueAsString(new CriarConvenio());
+				
+		this.mockMvc
+		.perform(post("/convenios").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+				.header("token", logarAdm("admin", "1234")).content(error))
+		.andExpect(jsonPath("$.error", equalTo("O convênio não foi salvo devido a um erro interno")))
+		.andExpect(status().isInternalServerError());
 	}
 
 	@Test

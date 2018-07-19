@@ -1,5 +1,7 @@
 package br.minder.plano_de_saude;
 
+import java.math.BigInteger;
+
 import javax.persistence.AttributeOverride;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
@@ -26,7 +28,7 @@ public class PlanoDeSaude {
 	private PlanoDeSaudeId id;
 	@AttributeOverride(name = "value", column = @Column(name = "id_convenio"))
 	private ConvenioId idConvenio;
-	private int numeroCartao;
+	private BigInteger numeroCartao;
 	private String habitacao;
 	private String territorio;
 	@AttributeOverride(name = "value", column = @Column(name = "id_usuario"))

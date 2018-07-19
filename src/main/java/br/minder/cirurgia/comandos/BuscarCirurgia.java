@@ -7,9 +7,11 @@ import br.minder.cirurgia.Cirurgia;
 import br.minder.cirurgia.CirurgiaId;
 import br.minder.conversor.ConverterData;
 import br.minder.medicamento.comandos.BuscarMedicamento;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
-@Data
+@Getter
+@Setter
 public class BuscarCirurgia {
 	private CirurgiaId idCirurgia;
 	private String tipoCirurgia;
@@ -26,9 +28,4 @@ public class BuscarCirurgia {
 		this.clinicaResponsavel = comando.getClinicaResponsavel();
 		this.medicoResponsavel = comando.getMedicoResponsavel();
 	}
-
-	public BuscarCirurgia() {
-
-	}
-
 }

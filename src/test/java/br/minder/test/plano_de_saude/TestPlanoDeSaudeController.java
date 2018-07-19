@@ -9,6 +9,8 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+import java.math.BigInteger;
 import java.sql.Date;
 import java.time.LocalDate;
 import java.util.List;
@@ -202,7 +204,7 @@ public class TestPlanoDeSaudeController {
 		assertThat(convenio.get(0), notNullValue());
 
 		String jsonString = objectMapper.writeValueAsString(criarPlano(convenio.get(0).getId()));
-
+		
 		this.mockMvc
 				.perform(post("/planos").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
 						.header("token", logar("wagnerju", "1234")).content(jsonString))
@@ -259,7 +261,7 @@ public class TestPlanoDeSaudeController {
 	private CriarPlanoDeSaude criarPlano(ConvenioId idConvenio) {
 		CriarPlanoDeSaude plano = new CriarPlanoDeSaude();
 		plano.setIdConvenio(idConvenio);
-		plano.setNumeroCartao(1234);
+		plano.setNumeroCartao(new BigInteger("1122334455667788990"));
 		plano.setHabitacao("quarto");
 		plano.setTerritorio("nacional");
 		return plano;

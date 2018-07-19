@@ -26,7 +26,6 @@ import org.springframework.test.context.support.DependencyInjectionTestExecution
 import org.springframework.test.context.support.DirtiesContextTestExecutionListener;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.WebApplicationContext;
@@ -180,7 +179,6 @@ public class TestAlarmeController {
 		this.mockMvc
 				.perform(put("/alarmes").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
 						.header("token", logar("wagnerju", "1234")).content(jsonString))
-				.andDo(MockMvcResultHandlers.print())
 				.andExpect(jsonPath("$.error", equalTo("Ocorreu um erro interno durante a alteração do alarme")))
 				.andExpect(status().isInternalServerError());
 
@@ -197,13 +195,6 @@ public class TestAlarmeController {
 		List<Usuario> usuarios = repo.findAll();
 		assertThat(usuarios.get(0), notNullValue());
 
-		this.mockMvc.perform(get("/alarmes/" + new AlarmeId().toString()).header("token", logar("wagnerju", "1234")))
-				.andExpect(jsonPath("$.error", equalTo("O alarme procurado não existe no banco de dados")))
-				.andExpect(status().isNotFound());
-
-		this.mockMvc.perform(get("/alarmes").header("token", logar("wagnerju", "1234") + "erroToken"))
-				.andExpect(jsonPath("$.error", equalTo("Acesso negado"))).andExpect(status().isForbidden());
-
 		final String jsonString = objectMapper.writeValueAsString(criarAlarme(idMedicamento, "Tomar medicamento"));
 
 		this.mockMvc
@@ -219,6 +210,13 @@ public class TestAlarmeController {
 				.perform(
 						get("/alarmes/" + alarmes.get(0).getId().toString()).header("token", logar("wagnerju", "1234")))
 				.andExpect(jsonPath("$.descricao", equalTo("Tomar medicamento"))).andExpect(status().isOk());
+		
+		this.mockMvc.perform(get("/alarmes/" + alarmes.get(0).getId().toString()).header("token", logar("wagnerju", "1234") + "erroToken"))
+		.andExpect(jsonPath("$.error", equalTo("Acesso negado"))).andExpect(status().isForbidden());
+		
+		this.mockMvc.perform(get("/alarmes/" + new AlarmeId()).header("token", logar("wagnerju", "1234")))
+		.andExpect(jsonPath("$.error", equalTo("O alarme procurado não existe no banco de dados"))).andExpect(status().isNotFound());
+
 	}
 
 	@Test
@@ -231,8 +229,6 @@ public class TestAlarmeController {
 
 		List<Usuario> usuarios = repo.findAll();
 		assertThat(usuarios.get(0), notNullValue());
-
-		this.mockMvc.perform(get("/alarmes").header("token", logar("wagnerju", "1234"))).andExpect(status().isOk());
 
 		this.mockMvc.perform(get("/alarmes").header("token", logar("wagnerju", "1234") + "erroToken"))
 				.andExpect(jsonPath("$.error", equalTo("Acesso negado"))).andExpect(status().isForbidden());

@@ -46,7 +46,6 @@ public class CirurgiaController {
 			if (optionalCirurgias.isPresent()) {
 				return ResponseEntity.ok(optionalCirurgias.get());
 			}
-			return ResponseEntity.notFound().build();
 		}
 		throw new AccessDeniedException(ACESSONEGADO);
 	}

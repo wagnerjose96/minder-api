@@ -9,15 +9,13 @@ import br.minder.cirurgia.comandos.CriarCirurgia;
 import br.minder.cirurgia.comandos.EditarCirurgia;
 import br.minder.usuario.UsuarioId;
 import lombok.AccessLevel;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.envers.Audited;
 
 @Entity
 @Audited
-@EqualsAndHashCode(exclude = { "tipoCirurgia", "dataCirurgia", "clinicaResponsavel", "medicoResponsavel" })
-@Data
+@Getter
 public class Cirurgia {
 	@EmbeddedId
 	@AttributeOverride(name = "value", column = @Column(name = "id"))

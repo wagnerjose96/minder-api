@@ -190,7 +190,7 @@
 				<artifactId>sonar-maven-plugin</artifactId>
 				<version>3.2</version>
 			</plugin>
-			
+
 			<plugin>
 				<groupId>org.jacoco</groupId>
 				<artifactId>jacoco-maven-plugin</artifactId>
@@ -257,7 +257,7 @@
 			</activation>
 			<properties>
 				<sonar.host.url>
-					http://ip172-18-0-15-bd760ivmgqu000eb8b5g-9000.direct.labs.play-with-docker.com/
+					http://ip172-18-0-41-bd87tk7mgqu000cpbi90-9000.direct.labs.play-with-docker.com/
 				</sonar.host.url>
 			</properties>
 		</profile>

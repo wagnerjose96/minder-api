@@ -4,9 +4,11 @@ import java.sql.Date;
 
 import br.minder.alarme.AlarmeId;
 import br.minder.medicamento.MedicamentoId;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
-@Data
+@Getter
+@Setter
 public class EditarAlarme {
 	private AlarmeId id;
 	private Date dataInicio;
