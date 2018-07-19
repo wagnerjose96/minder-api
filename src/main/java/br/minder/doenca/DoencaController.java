@@ -46,7 +46,6 @@ public class DoencaController {
 			if (optionalDoencas.isPresent()) {
 				return ResponseEntity.ok(optionalDoencas.get());
 			}
-			return ResponseEntity.notFound().build();
 		}
 		throw new AccessDeniedException(ACESSONEGADO);
 	}

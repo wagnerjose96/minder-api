@@ -40,13 +40,16 @@ public class ConvenioService {
 	public Optional<List<BuscarConvenio>> encontrar() {
 		List<BuscarConvenio> resultados = new ArrayList<>();
 		List<Convenio> convenios = convenioRepo.findAll();
-		for (Convenio convenio : convenios) {
-			if (convenio.getAtivo() == 1) {
-				BuscarConvenio nova = new BuscarConvenio(convenio);
-				resultados.add(nova);
+		if (!convenios.isEmpty()) {
+			for (Convenio convenio : convenios) {
+				if (convenio.getAtivo() == 1) {
+					BuscarConvenio nova = new BuscarConvenio(convenio);
+					resultados.add(nova);
+				}
 			}
+			return Optional.of(resultados);
 		}
-		return Optional.of(resultados);
+		return Optional.empty();
 	}
 
 	public Optional<String> deletar(ConvenioId id) {
@@ -54,14 +57,13 @@ public class ConvenioService {
 		if (convenio.isPresent()) {
 			convenio.get().setAtivo(0);
 			convenioRepo.save(convenio.get());
-			return Optional.of("Convênio ===> " + id + ": deletado com sucesso");
 		}
-		return Optional.empty();
+		return Optional.of("Convênio ===> " + id + ": deletado com sucesso");
 	}
 
 	public Optional<ConvenioId> alterar(EditarConvenio comando) {
 		Optional<Convenio> optional = convenioRepo.findById(comando.getId());
-		if (optional.isPresent()) {
+		if (optional.isPresent() && comando.getNome() != null) {
 			Convenio conv = optional.get();
 			conv.apply(comando);
 			convenioRepo.save(conv);

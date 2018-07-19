@@ -11,14 +11,12 @@ import br.minder.doenca.comandos.CriarDoenca;
 import br.minder.doenca.comandos.EditarDoenca;
 import br.minder.usuario.UsuarioId;
 import lombok.AccessLevel;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import lombok.Setter;
 
 @Entity
 @Audited
-@Data
-@EqualsAndHashCode(exclude = { "nomeDoenca", "dataDescoberta" })
+@Getter
 public class Doenca {
 	@EmbeddedId
 	@AttributeOverride(name = "value", column = @Column(name = "id_doenca"))

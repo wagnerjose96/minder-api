@@ -34,6 +34,7 @@ import com.github.springtestdbunit.TransactionDbUnitTestExecutionListener;
 
 import br.minder.MinderApplication;
 import br.minder.convenio.Convenio;
+import br.minder.convenio.ConvenioId;
 import br.minder.convenio.ConvenioRepository;
 import br.minder.convenio.comandos.CriarConvenio;
 import br.minder.convenio.comandos.EditarConvenio;
@@ -93,20 +94,19 @@ public class TestConvenioController {
 						.header("token", logarAdm("admin", "1234")).content(jsonString))
 				.andExpect(jsonPath("$", equalTo("O convênio foi cadastrado com sucesso")))
 				.andExpect(status().isCreated());
-		
+
 		this.mockMvc
-		.perform(post("/convenios").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
-				.header("token", logarAdm("admin", "1234") + "TokenEror").content(jsonString))
-		.andExpect(jsonPath("$.error", equalTo("Acesso negado")))
-		.andExpect(status().isForbidden());
-		
+				.perform(post("/convenios").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+						.header("token", logarAdm("admin", "1234") + "TokenEror").content(jsonString))
+				.andExpect(jsonPath("$.error", equalTo("Acesso negado"))).andExpect(status().isForbidden());
+
 		String error = objectMapper.writeValueAsString(new CriarConvenio());
-				
+
 		this.mockMvc
-		.perform(post("/convenios").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
-				.header("token", logarAdm("admin", "1234")).content(error))
-		.andExpect(jsonPath("$.error", equalTo("O convênio não foi salvo devido a um erro interno")))
-		.andExpect(status().isInternalServerError());
+				.perform(post("/convenios").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+						.header("token", logarAdm("admin", "1234")).content(error))
+				.andExpect(jsonPath("$.error", equalTo("O convênio não foi salvo devido a um erro interno")))
+				.andExpect(status().isInternalServerError());
 	}
 
 	@Test
@@ -134,6 +134,26 @@ public class TestConvenioController {
 						.header("token", logarAdm("admin", "1234")).content(jsonString))
 				.andExpect(jsonPath("$", equalTo("O convênio foi alterado com sucesso"))).andExpect(status().isOk());
 
+		this.mockMvc
+				.perform(put("/convenios").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+						.header("token", logarAdm("admin", "1234") + "TokenError").content(jsonString))
+				.andExpect(jsonPath("$.error", equalTo("Acesso negado"))).andExpect(status().isForbidden());
+
+		String error = objectMapper.writeValueAsString(editarConvenioError());
+
+		this.mockMvc
+				.perform(put("/convenios").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+						.header("token", logarAdm("admin", "1234")).content(error))
+				.andExpect(jsonPath("$.error", equalTo("O convênio a ser alterado não existe no banco de dados")))
+				.andExpect(status().isNotFound());
+
+		error = objectMapper.writeValueAsString(editarConvenioError(convenios.get(0).getId()));
+
+		this.mockMvc
+				.perform(put("/convenios").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+						.header("token", logarAdm("admin", "1234")).content(error))
+				.andExpect(jsonPath("$.error", equalTo("Ocorreu um erro interno durante a alteração do convênio")))
+				.andExpect(status().isInternalServerError());
 	}
 
 	@Test
@@ -142,6 +162,10 @@ public class TestConvenioController {
 
 		List<UsuarioAdm> usuarios = repoAdm.findAll();
 		assertThat(usuarios.get(0), notNullValue());
+
+		this.mockMvc.perform(get("/convenios/" + new ConvenioId().toString()))
+				.andExpect(jsonPath("$.error", equalTo("O convênio procurado não existe no banco de dados")))
+				.andExpect(status().isNotFound());
 
 		String jsonString = objectMapper.writeValueAsString(criarConvenio("Unimed"));
 
@@ -154,9 +178,7 @@ public class TestConvenioController {
 		List<Convenio> convenios = repoConvenio.findAll();
 		assertThat(convenios.get(0), notNullValue());
 
-		this.mockMvc
-				.perform(get("/convenios/" + convenios.get(0).getId().toString()).header("token",
-						logarAdm("admin", "1234")))
+		this.mockMvc.perform(get("/convenios/" + convenios.get(0).getId().toString()))
 				.andExpect(jsonPath("$.nome", equalTo("Unimed"))).andExpect(status().isOk());
 	}
 
@@ -166,6 +188,10 @@ public class TestConvenioController {
 
 		List<UsuarioAdm> usuarios = repoAdm.findAll();
 		assertThat(usuarios.get(0), notNullValue());
+
+		this.mockMvc.perform(get("/convenios"))
+				.andExpect(jsonPath("$.error", equalTo("Não existe nenhum convênio cadastrado no banco de dados")))
+				.andExpect(status().isNotFound());
 
 		String jsonString = objectMapper.writeValueAsString(criarConvenio("Unimed"));
 
@@ -186,8 +212,7 @@ public class TestConvenioController {
 		List<Convenio> convenios = repoConvenio.findAll();
 		assertThat(convenios.get(0), notNullValue());
 
-		this.mockMvc.perform(get("/convenios").header("token", logarAdm("admin", "1234")))
-				.andExpect(jsonPath("$[0].nome", equalTo("Unimed")))
+		this.mockMvc.perform(get("/convenios")).andExpect(jsonPath("$[0].nome", equalTo("Unimed")))
 				.andExpect(jsonPath("$[1].nome", equalTo("Santa Casa"))).andExpect(status().isOk());
 
 	}
@@ -216,12 +241,34 @@ public class TestConvenioController {
 				.andExpect(jsonPath("$",
 						equalTo("Convênio ===> " + convenios.get(0).getId().toString() + ": deletado com sucesso")))
 				.andExpect(status().isOk());
+
+		this.mockMvc
+				.perform(delete("/convenios/" + new ConvenioId().toString()).header("token", logarAdm("admin", "1234")))
+				.andExpect(jsonPath("$.error", equalTo("O convênio a deletar não existe no banco de dados")))
+				.andExpect(status().isNotFound());
+
+		this.mockMvc
+				.perform(delete("/convenios/" + convenios.get(0).getId().toString()).header("token",
+						logarAdm("admin", "1234") + "TokenError"))
+				.andExpect(jsonPath("$.error", equalTo("Acesso negado"))).andExpect(status().isForbidden());
 	}
 
 	private CriarConvenio criarConvenio(String nome) {
 		CriarConvenio convenio = new CriarConvenio();
 		convenio.setNome(nome);
 		return convenio;
+	}
+
+	private EditarConvenio editarConvenioError() {
+		EditarConvenio error = new EditarConvenio();
+		error.setId(new ConvenioId());
+		return error;
+	}
+
+	private EditarConvenio editarConvenioError(ConvenioId id) {
+		EditarConvenio error = new EditarConvenio();
+		error.setId(id);
+		return error;
 	}
 
 	private EditarConvenio editarConvenio(Convenio convenio) {

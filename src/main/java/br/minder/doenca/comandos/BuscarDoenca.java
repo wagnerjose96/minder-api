@@ -7,9 +7,11 @@ import br.minder.conversor.ConverterData;
 import br.minder.doenca.Doenca;
 import br.minder.doenca.DoencaId;
 import br.minder.medicamento.comandos.BuscarMedicamento;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
-@Data
+@Getter
+@Setter
 public class BuscarDoenca {
 	private DoencaId idDoenca;
 	private String nomeDoenca;
@@ -21,10 +23,6 @@ public class BuscarDoenca {
 		this.nomeDoenca = comandos.getNomeDoenca();
 		Long dataLong = comandos.getDataDescoberta().getTime();
 		this.dataDescoberta = ConverterData.converterData(dataLong);
-	}
-
-	public BuscarDoenca() {
-
 	}
 
 }

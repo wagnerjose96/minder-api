@@ -22,10 +22,10 @@ public class DoencaMedicamentoService {
 	
 	public Optional<DoencaMedicamento> encontrar(DoencaMedicamentoId id) {
 		Optional<DoencaMedicamento> doenca = repo.findById(id);
+		DoencaMedicamento resultado = null;
 		if (doenca.isPresent()) {
-			DoencaMedicamento resultado = new DoencaMedicamento(doenca.get());
-			return Optional.of(resultado);
+			resultado = new DoencaMedicamento(doenca.get());
 		}
-		return Optional.empty();
+		return Optional.of(resultado);
 	}
 }

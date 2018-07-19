@@ -27,6 +27,7 @@ import org.springframework.test.context.support.DependencyInjectionTestExecution
 import org.springframework.test.context.support.DirtiesContextTestExecutionListener;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.WebApplicationContext;
@@ -34,6 +35,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.springtestdbunit.TransactionDbUnitTestExecutionListener;
 import br.minder.MinderApplication;
 import br.minder.doenca.Doenca;
+import br.minder.doenca.DoencaId;
 import br.minder.doenca.DoencaRepository;
 import br.minder.doenca.comandos.CriarDoenca;
 import br.minder.doenca.comandos.EditarDoenca;
@@ -121,6 +123,19 @@ public class TestDoencaController {
 						.header("token", logar("wagnerju", "1234")).content(jsonString))
 				.andExpect(jsonPath("$", equalTo("A doença foi cadastrada com sucesso")))
 				.andExpect(status().isCreated());
+
+		this.mockMvc
+				.perform(post("/doencas").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+						.header("token", logar("wagnerju", "1234") + "TokenError").content(jsonString))
+				.andExpect(jsonPath("$.error", equalTo("Acesso negado"))).andExpect(status().isForbidden());
+
+		String error = objectMapper.writeValueAsString(new CriarDoenca());
+
+		this.mockMvc
+				.perform(post("/doencas").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+						.header("token", logar("wagnerju", "1234")).content(error))
+				.andExpect(jsonPath("$.error", equalTo("A doença não foi salva devido a um erro interno")))
+				.andExpect(status().isInternalServerError());
 	}
 
 	@Test
@@ -147,12 +162,34 @@ public class TestDoencaController {
 		List<Doenca> doencas = repoDoenca.findAll();
 		assertThat(doencas.get(0), notNullValue());
 
+		String error = objectMapper.writeValueAsString(editarDoencaError(doencas.get(0).getIdDoenca()));
+
+		this.mockMvc
+				.perform(put("/doencas").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+						.header("token", logar("wagnerju", "1234")).content(error))
+				.andDo(MockMvcResultHandlers.print())
+				.andExpect(jsonPath("$.error", equalTo("Ocorreu um erro interno durante a alteração da doença")))
+				.andExpect(status().isInternalServerError());
+
+		error = objectMapper.writeValueAsString(editarDoencaError());
+
+		this.mockMvc
+				.perform(put("/doencas").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+						.header("token", logar("wagnerju", "1234")).content(error))
+				.andExpect(jsonPath("$.error", equalTo("A doença a ser alterada não existe no banco de dados")))
+				.andExpect(status().isNotFound());
+
 		jsonString = objectMapper.writeValueAsString(editarDoenca(doencas.get(0), idsMedicamentos));
 
 		this.mockMvc
 				.perform(put("/doencas").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
 						.header("token", logar("wagnerju", "1234")).content(jsonString))
 				.andExpect(jsonPath("$", equalTo("A doença foi alterada com sucesso"))).andExpect(status().isOk());
+
+		this.mockMvc
+				.perform(put("/doencas").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+						.header("token", logar("wagnerju", "1234") + "TokenError").content(jsonString))
+				.andExpect(jsonPath("$.error", equalTo("Acesso negado"))).andExpect(status().isForbidden());
 
 	}
 
@@ -184,6 +221,15 @@ public class TestDoencaController {
 				.perform(get("/doencas/" + doencas.get(0).getIdDoenca().toString()).header("token",
 						logar("wagnerju", "1234")))
 				.andExpect(jsonPath("$.nomeDoenca", equalTo("Miopia"))).andExpect(status().isOk());
+
+		this.mockMvc.perform(get("/doencas/" + new DoencaId().toString()).header("token", logar("wagnerju", "1234")))
+				.andExpect(jsonPath("$.error", equalTo("A doença procurada não existe no banco de dados")))
+				.andExpect(status().isNotFound());
+
+		this.mockMvc
+				.perform(get("/doencas/" + doencas.get(0).getIdDoenca().toString()).header("token",
+						logar("wagnerju", "1234") + "TokenError"))
+				.andExpect(jsonPath("$.error", equalTo("Acesso negado"))).andExpect(status().isForbidden());
 	}
 
 	@Test
@@ -222,6 +268,9 @@ public class TestDoencaController {
 				.andExpect(jsonPath("$[0].nomeDoenca", equalTo("Miopia")))
 				.andExpect(jsonPath("$[1].nomeDoenca", equalTo("Asma"))).andExpect(status().isOk());
 
+		this.mockMvc.perform(get("/doencas").header("token", logar("wagnerju", "1234") + "TokenError"))
+				.andExpect(jsonPath("$.error", equalTo("Acesso negado"))).andExpect(status().isForbidden());
+
 	}
 
 	private CriarDoenca criarDoenca(Set<MedicamentoId> idsMedicamentos, String nomeDoenca) {
@@ -230,6 +279,18 @@ public class TestDoencaController {
 		doenca.setIdMedicamentos(idsMedicamentos);
 		doenca.setNomeDoenca(nomeDoenca);
 		return doenca;
+	}
+
+	private EditarDoenca editarDoencaError() {
+		EditarDoenca error = new EditarDoenca();
+		error.setIdDoenca(new DoencaId());
+		return error;
+	}
+
+	private EditarDoenca editarDoencaError(DoencaId idDoenca) {
+		EditarDoenca error = new EditarDoenca();
+		error.setIdDoenca(idDoenca);
+		return error;
 	}
 
 	private EditarDoenca editarDoenca(Doenca doenca, Set<MedicamentoId> idsMedicamentos) {

@@ -3,10 +3,8 @@ package br.minder.convenio.comandos;
 import br.minder.convenio.Convenio;
 import br.minder.convenio.ConvenioId;
 import lombok.Getter;
-import lombok.Setter;
 
 @Getter
-@Setter
 public class BuscarConvenio {
 	private ConvenioId id;
 	private String nome;

@@ -312,6 +312,16 @@ public class TestContatoController {
 				.andExpect(jsonPath("$",
 						equalTo("Contato ===> " + contatos.get(0).getId().toString() + ": deletado com sucesso")))
 				.andExpect(status().isOk());
+
+		this.mockMvc
+				.perform(delete("/contatos/" + contatos.get(0).getId().toString()).header("token",
+						logar("wagnerju", "1234") + "TokenError"))
+				.andExpect(jsonPath("$.error", equalTo("Acesso negado"))).andExpect(status().isForbidden());
+
+		this.mockMvc
+				.perform(delete("/contatos/" + new ContatoId().toString()).header("token", logar("wagnerju", "1234")))
+				.andExpect(jsonPath("$.error", equalTo("O contato a deletar não existe no banco de dados")))
+				.andExpect(status().isNotFound());
 	}
 
 	private EditarContato editarContatoError(ContatoId id) {

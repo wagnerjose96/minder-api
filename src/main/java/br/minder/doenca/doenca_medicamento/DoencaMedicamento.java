@@ -7,10 +7,12 @@ import javax.persistence.Entity;
 
 import br.minder.doenca.DoencaId;
 import br.minder.medicamento.MedicamentoId;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 @Entity
-@Data
+@Getter
+@Setter
 public class DoencaMedicamento {
 	@EmbeddedId
 	@AttributeOverride(name = "value", column = @Column(name = "id"))

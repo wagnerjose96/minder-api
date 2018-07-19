@@ -83,7 +83,7 @@ public class DoencaService {
 
 	public Optional<DoencaId> alterar(EditarDoenca comando) {
 		Optional<Doenca> optional = doencaRepo.findById(comando.getIdDoenca());
-		if (optional.isPresent()) {
+		if (optional.isPresent() && comando.getNomeDoenca() != null) {
 			Doenca doenca = optional.get();
 			doenca.apply(comando);
 			doencaRepo.save(doenca);
