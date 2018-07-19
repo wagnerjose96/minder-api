@@ -3,13 +3,11 @@ package br.minder.emergencia;
 import java.net.URI;
 import java.nio.file.AccessDeniedException;
 import java.sql.SQLException;
-import java.util.List;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -38,30 +36,16 @@ public class EmergenciaController {
 	@Autowired
 	private Autentica autentica;
 
-	@ApiOperation("Busque todas as emergencias")
+	@ApiOperation("Busque a sua emergencias")
 	@GetMapping
-	public ResponseEntity<List<BuscarEmergencia>> getEmergencias(@RequestHeader String token)
+	public ResponseEntity<BuscarEmergencia> getEmergencia(@RequestHeader String token)
 			throws AccessDeniedException {
 		if (autentica.autenticaRequisicao(token)) {
-			Optional<List<BuscarEmergencia>> optionalEmergencias = service.encontrar(autentica.idUser(token));
+			Optional<BuscarEmergencia> optionalEmergencias = service.encontrar(autentica.idUser(token));
 			if (optionalEmergencias.isPresent()) {
 				return ResponseEntity.ok(optionalEmergencias.get());
 			}
 			throw new NullPointerException("Não existe nenhuma emergência cadastrada no banco de dados");
-		}
-		throw new AccessDeniedException(ACESSONEGADO);
-	}
-
-	@ApiOperation("Busque uma emergência pelo ID")
-	@GetMapping("/{id}")
-	public ResponseEntity<BuscarEmergencia> getEmergenciaPorId(@PathVariable EmergenciaId id,
-			@RequestHeader String token) throws AccessDeniedException {
-		if (autentica.autenticaRequisicao(token)) {
-			Optional<BuscarEmergencia> optionalEmergencia = service.encontrar(id, autentica.idUser(token));
-			if (optionalEmergencia.isPresent()) {
-				return ResponseEntity.ok(optionalEmergencia.get());
-			}
-			throw new NullPointerException("A emergência procurada não existe no banco de dados");
 		}
 		throw new AccessDeniedException(ACESSONEGADO);
 	}

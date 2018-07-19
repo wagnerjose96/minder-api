@@ -11,9 +11,11 @@ import br.minder.emergencia.Emergencia;
 import br.minder.emergencia.EmergenciaId;
 import br.minder.endereco.comandos.BuscarEndereco;
 import br.minder.sangue.comandos.BuscarSangue;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
-@Data
+@Getter
+@Setter
 public class BuscarEmergencia {
 	private EmergenciaId id;
 	private String nomeDoUsuario;

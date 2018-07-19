@@ -1,6 +1,5 @@
 package br.minder.emergencia;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -90,16 +89,15 @@ public class EmergenciaService {
 		return resultado;
 	}
 
-	public Optional<List<BuscarEmergencia>> encontrar(UsuarioId id) {
-		List<BuscarEmergencia> resultados = new ArrayList<>();
+	public Optional<BuscarEmergencia> encontrar(UsuarioId id) {
 		List<Emergencia> emergencias = repo.findAll();
 		for (Emergencia emergencia : emergencias) {
 			if (id.toString().equals(emergencia.getIdUsuario().toString())) {
-				resultados.add(construirEmergencia(usuarioService.encontrar(id), new BuscarEmergencia(emergencia)));
+				BuscarEmergencia resultados = construirEmergencia(usuarioService.encontrar(id), new BuscarEmergencia(emergencia));
+				return Optional.of(resultados);
 			}
-
 		}
-		return Optional.of(resultados);
+		return Optional.empty();
 	}
 
 	public Optional<EmergenciaId> alterar(EditarEmergencia comando) {

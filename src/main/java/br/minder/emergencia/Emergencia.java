@@ -10,14 +10,12 @@ import br.minder.emergencia.comandos.CriarEmergencia;
 import br.minder.emergencia.comandos.EditarEmergencia;
 import br.minder.usuario.UsuarioId;
 import lombok.AccessLevel;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import lombok.Setter;
 
 @Entity
 @Audited
-@Data
-@EqualsAndHashCode(exclude = { "ataqueConvulsivos", "problemasCardiacos", "doadorDeOrgaos" , "idUsuario" })
+@Getter
 public class Emergencia {
 	@EmbeddedId
 	@AttributeOverride(name = "value", column = @Column(name = "id_emergencia"))

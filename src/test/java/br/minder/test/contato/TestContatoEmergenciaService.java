@@ -1,13 +1,8 @@
-package br.minder.test.emergencia;
+package br.minder.test.contato;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.junit.Assert.assertThat;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.sql.Date;
 import java.time.LocalDate;
@@ -19,7 +14,6 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
-import org.springframework.http.MediaType;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -34,13 +28,16 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.springtestdbunit.TransactionDbUnitTestExecutionListener;
 
 import br.minder.MinderApplication;
+import br.minder.contato.ContatoId;
+import br.minder.contato.ContatoService;
+import br.minder.contato.comandos.CriarContato;
+import br.minder.contato.contato_emergencia.ContatoEmergencia;
+import br.minder.contato.contato_emergencia.ContatoEmergenciaService;
 import br.minder.emergencia.Emergencia;
 import br.minder.emergencia.EmergenciaRepository;
+import br.minder.emergencia.EmergenciaService;
 import br.minder.emergencia.comandos.CriarEmergencia;
-import br.minder.emergencia.comandos.EditarEmergencia;
 import br.minder.endereco.comandos.CriarEndereco;
-import br.minder.login.LoginController;
-import br.minder.login.comandos.LogarUsuario;
 import br.minder.sangue.Sangue;
 import br.minder.sangue.SangueId;
 import br.minder.sangue.SangueRepository;
@@ -62,14 +59,16 @@ import br.minder.usuario.comandos.CriarUsuario;
 @Rollback
 @WebAppConfiguration
 @SpringBootTest(classes = { MinderApplication.class }, webEnvironment = WebEnvironment.MOCK)
-public class TestEmergenciaController {
+public class TestContatoEmergenciaService {
 
 	@Autowired
 	private WebApplicationContext context;
 
+	@SuppressWarnings("unused")
 	@Autowired
 	private ObjectMapper objectMapper;
 
+	@SuppressWarnings("unused")
 	private MockMvc mockMvc;
 
 	@Autowired
@@ -79,9 +78,6 @@ public class TestEmergenciaController {
 	private SexoRepository repoSexo;
 
 	@Autowired
-	private LoginController login;
-
-	@Autowired
 	private UsuarioService serviceUsuario;
 
 	@Autowired
@@ -89,6 +85,15 @@ public class TestEmergenciaController {
 
 	@Autowired
 	private EmergenciaRepository repoEmergencia;
+
+	@Autowired
+	private EmergenciaService serviceEmergencia;
+
+	@Autowired
+	private ContatoEmergenciaService contatoEmergenciaService;
+
+	@Autowired
+	private ContatoService serviceContato;
 
 	@Before
 	public void setup() {
@@ -105,85 +110,48 @@ public class TestEmergenciaController {
 		List<Usuario> usuarios = repo.findAll();
 		assertThat(usuarios.get(0), notNullValue());
 
-		final String jsonString = objectMapper.writeValueAsString(criarEmergencia(1));
-
-		this.mockMvc
-				.perform(post("/emergencias").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
-						.header("token", logar("wagnerju", "1234")).content(jsonString))
-				.andExpect(jsonPath("$", equalTo("A emergência foi cadastrada com sucesso")))
-				.andExpect(status().isCreated());
-	}
-
-	@Test
-	public void testEditar() throws Exception {
-		SangueId idSangue = criarSangue("A+");
-		SexoId idSexo = criarSexo("Masculino");
-
-		serviceUsuario.salvar(criarUsuario("wagner@hotmail.com", "wagnerju", idSexo, idSangue)).get();
-
-		List<Usuario> usuarios = repo.findAll();
-		assertThat(usuarios.get(0), notNullValue());
-
-		String jsonString = objectMapper.writeValueAsString(criarEmergencia(1));
-
-		this.mockMvc
-				.perform(post("/emergencias").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
-						.header("token", logar("wagnerju", "1234")).content(jsonString))
-				.andExpect(jsonPath("$", equalTo("A emergência foi cadastrada com sucesso")))
-				.andExpect(status().isCreated());
+		serviceEmergencia.salvar(criarEmergencia(), usuarios.get(0).getId());
 
 		List<Emergencia> emergencias = repoEmergencia.findAll();
 		assertThat(emergencias.get(0), notNullValue());
 
-		jsonString = objectMapper.writeValueAsString(editarEmergencia(emergencias.get(0)));
+		ContatoId idContato = serviceContato.salvar(criarContato("wagner"), usuarios.get(0).getId()).get();
 
-		this.mockMvc
-				.perform(put("/emergencias").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
-						.header("token", logar("wagnerju", "1234")).content(jsonString))
-				.andExpect(jsonPath("$", equalTo("A emergência foi alterada com sucesso"))).andExpect(status().isOk());
+		ContatoEmergencia contatoEmergencia = new ContatoEmergencia();
+		contatoEmergencia.setIdContato(idContato);
+		contatoEmergencia.setIdEmergencia(emergencias.get(0).getIdEmergencia());
+
+		contatoEmergenciaService.salvar(contatoEmergencia);
+
+		List<ContatoEmergencia> contatosEmergencias = contatoEmergenciaService.encontrar();
+
+		assertThat(contatosEmergencias.get(0), notNullValue());
+		assertThat(contatosEmergencias.get(0).getIdContato().toString(), equalTo(idContato.toString()));
+		assertThat(contatosEmergencias.get(0).getIdEmergencia().toString(),
+				equalTo(emergencias.get(0).getIdEmergencia().toString()));
 
 	}
 
-	@Test
-	public void testBurcarTodos() throws Exception {
-		SangueId idSangue = criarSangue("A+");
-		SexoId idSexo = criarSexo("Masculino");
-
-		serviceUsuario.salvar(criarUsuario("wagner@hotmail.com", "wagnerju", idSexo, idSangue)).get();
-
-		List<Usuario> usuarios = repo.findAll();
-		assertThat(usuarios.get(0), notNullValue());
-
-		String jsonString = objectMapper.writeValueAsString(criarEmergencia(1));
-
-		this.mockMvc
-				.perform(post("/emergencias").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
-						.header("token", logar("wagnerju", "1234")).content(jsonString))
-				.andExpect(jsonPath("$", equalTo("A emergência foi cadastrada com sucesso")))
-				.andExpect(status().isCreated());
-
-		List<Emergencia> emergencias = repoEmergencia.findAll();
-		assertThat(emergencias.get(0), notNullValue());
-
-		this.mockMvc.perform(get("/emergencias").header("token", logar("wagnerju", "1234")))
-				.andExpect(jsonPath("$.problemasCardiacos", equalTo("Arritmia"))).andExpect(status().isOk());
+	private CriarContato criarContato(String nome) {
+		CriarContato contato = new CriarContato();
+		contato.setTelefone(telefone());
+		contato.setNome(nome);
+		return contato;
 	}
 
-	private CriarEmergencia criarEmergencia(int doador) {
+	private CriarTelefone telefone() {
+		CriarTelefone telefone = new CriarTelefone();
+		telefone.setDdd(44);
+		telefone.setNumero(997703828);
+		return telefone;
+	}
+
+	private CriarEmergencia criarEmergencia() {
 		CriarEmergencia emergencia = new CriarEmergencia();
-		emergencia.setAtaqueConvulsivos(0);
-		emergencia.setDoadorDeOrgaos(doador);
-		emergencia.setProblemasCardiacos("Arritmia");
+		emergencia.setAtaqueConvulsivos(1);
+		emergencia.setDoadorDeOrgaos(1);
+		emergencia.setProblemasCardiacos("Não");
 		return emergencia;
-	}
-
-	private EditarEmergencia editarEmergencia(Emergencia emergencia) {
-		EditarEmergencia emergenciaEditada = new EditarEmergencia();
-		emergenciaEditada.setId(emergencia.getIdEmergencia());
-		emergenciaEditada.setAtaqueConvulsivos(emergencia.getAtaqueConvulsivos());
-		emergenciaEditada.setDoadorDeOrgaos(emergencia.getDoadorDeOrgaos());
-		emergenciaEditada.setProblemasCardiacos("Sopro no coração");
-		return emergenciaEditada;
 	}
 
 	private CriarUsuario criarUsuario(String email, String username, SexoId idSexo, SangueId idSangue) {
@@ -220,12 +188,5 @@ public class TestEmergenciaController {
 	private SexoId criarSexo(String tipo) {
 		SexoId id = repoSexo.save(new Sexo(new CriarSexo(tipo))).getIdGenero();
 		return id;
-	}
-
-	private String logar(String nomeUsuario, String senha) {
-		LogarUsuario corpoLogin = new LogarUsuario();
-		corpoLogin.setIdentificador(nomeUsuario);
-		corpoLogin.setSenha(senha);
-		return login.loginUsuario(corpoLogin).getBody();
 	}
 }

@@ -1,8 +1,10 @@
 package br.minder.emergencia.comandos;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
-@Data
+@Getter
+@Setter
 public class CriarEmergencia {
 	private int ataqueConvulsivos;
 	private String problemasCardiacos;
