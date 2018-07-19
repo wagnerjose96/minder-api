@@ -11,8 +11,9 @@ public class ErrorDetailId extends BaseId {
 	public ErrorDetailId() {
 		super();
 	}
-
+	
 	public ErrorDetailId(String value) {
 		super(value);
 	}
+
 }

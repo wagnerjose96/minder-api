@@ -12,14 +12,12 @@ import br.minder.alarme.comandos.EditarAlarme;
 import br.minder.medicamento.MedicamentoId;
 import br.minder.usuario.UsuarioId;
 import lombok.AccessLevel;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import lombok.Setter;
 
 @Entity
 @Audited
-@EqualsAndHashCode(exclude={"idMedicamento", "dataInicio", "dataFim", "quantidade", "descricao", "periodicidade"})
-@Data
+@Getter
 public class Alarme {
 	@EmbeddedId
 	@AttributeOverride(name = "value", column = @Column(name = "id"))

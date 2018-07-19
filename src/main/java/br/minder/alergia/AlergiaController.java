@@ -46,7 +46,6 @@ public class AlergiaController {
 			if (optionalAlergias.isPresent()) {
 				return ResponseEntity.ok(optionalAlergias.get());
 			}
-			return ResponseEntity.notFound().build();
 		}
 		throw new AccessDeniedException(ACESSONEGADO);
 	}

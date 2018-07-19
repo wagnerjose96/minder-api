@@ -44,10 +44,9 @@ public class AlarmeController {
 	public ResponseEntity<List<BuscarAlarme>> getAlarmes(@RequestHeader String token) throws AccessDeniedException {
 		if (autentica.autenticaRequisicao(token)) {
 			Optional<List<BuscarAlarme>> optionalAlarmes = alarmeService.encontrar(autentica.idUser(token));
-			if (optionalAlarmes.isPresent()) {
+			if(optionalAlarmes.isPresent()) {
 				return ResponseEntity.ok(optionalAlarmes.get());
 			}
-			return ResponseEntity.notFound().build();
 		}
 		throw new AccessDeniedException(ACESSONEGADO);
 	}

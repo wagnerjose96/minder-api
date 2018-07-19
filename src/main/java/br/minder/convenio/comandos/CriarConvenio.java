@@ -1,8 +1,10 @@
 package br.minder.convenio.comandos;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
-@Data
+@Getter
+@Setter
 public class CriarConvenio {
 	private String nome;
 }

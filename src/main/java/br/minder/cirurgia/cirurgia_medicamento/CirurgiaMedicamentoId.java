@@ -11,8 +11,4 @@ public class CirurgiaMedicamentoId extends BaseId {
 	public CirurgiaMedicamentoId() {
 		super();
 	}
-
-	public CirurgiaMedicamentoId(String value) {
-		super(value);
-	}
 }

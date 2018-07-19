@@ -1,5 +1,7 @@
 package br.minder.plano_de_saude.comandos;
 
+import java.math.BigInteger;
+
 import br.minder.convenio.comandos.BuscarConvenio;
 import br.minder.plano_de_saude.PlanoDeSaude;
 import br.minder.plano_de_saude.PlanoDeSaudeId;
@@ -9,7 +11,7 @@ import lombok.Data;
 public class BuscarPlanoDeSaude {
 	private PlanoDeSaudeId id;
 	private BuscarConvenio convenio;
-	private int numeroCartao;
+	private BigInteger numeroCartao;
 	private String habitacao;
 	private String territorio;
 

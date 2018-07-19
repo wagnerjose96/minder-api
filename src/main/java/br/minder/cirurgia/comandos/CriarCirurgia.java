@@ -4,9 +4,11 @@ import java.util.Date;
 import java.util.Set;
 
 import br.minder.medicamento.MedicamentoId;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
-@Data
+@Getter
+@Setter
 public class CriarCirurgia {
 	private String tipoCirurgia;
 	private Date dataCirurgia;

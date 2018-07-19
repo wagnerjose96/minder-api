@@ -78,6 +78,9 @@ public class ContatoService {
 
 	public Optional<List<BuscarContato>> encontrar() {
 		List<Contato> contatos = repo.findAll();
+		if (contatos.isEmpty()) {
+			return Optional.empty();
+		}
 		List<BuscarContato> resultados = new ArrayList<>();
 		for (Contato contato : contatos) {
 			BuscarContato nova = new BuscarContato(contato);
@@ -92,7 +95,7 @@ public class ContatoService {
 
 	public Optional<ContatoId> alterar(EditarContato comando) {
 		Optional<Contato> optional = repo.findById(comando.getId());
-		if (optional.isPresent()) {
+		if (optional.isPresent() && comando.getTelefone() != null) {
 			if (comando.getTelefone() != null)
 				telefoneService.alterar(comando.getTelefone());
 			Contato contato = optional.get();

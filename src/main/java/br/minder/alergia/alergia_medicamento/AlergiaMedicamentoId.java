@@ -11,8 +11,4 @@ public class AlergiaMedicamentoId extends BaseId {
 	public AlergiaMedicamentoId() {
 		super();
 	}
-
-	public AlergiaMedicamentoId(String value) {
-		super(value);
-	}
 }

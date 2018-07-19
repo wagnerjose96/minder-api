@@ -41,16 +41,19 @@ public class AlergiaService {
 	private MedicamentoService medicamentoService;
 
 	public Optional<AlergiaId> salvar(CriarAlergia comando, UsuarioId id) {
-		Alergia novo = repo.save(new Alergia(comando, id));
-		for (MedicamentoId idMedicamento : comando.getIdMedicamentos()) {
-			if (medicamentoService.encontrar(idMedicamento).isPresent()) {
-				AlergiaMedicamento alergiaMedicamento = new AlergiaMedicamento();
-				alergiaMedicamento.setIdAlergia(novo.getIdAlergia());
-				alergiaMedicamento.setIdMedicamento(idMedicamento);
-				service.salvar(alergiaMedicamento);
+		if (comando.getDataDescoberta() != null && comando.getTipoAlergia() != null) {
+			Alergia novo = repo.save(new Alergia(comando, id));
+			for (MedicamentoId idMedicamento : comando.getIdMedicamentos()) {
+				if (medicamentoService.encontrar(idMedicamento).isPresent()) {
+					AlergiaMedicamento alergiaMedicamento = new AlergiaMedicamento();
+					alergiaMedicamento.setIdAlergia(novo.getIdAlergia());
+					alergiaMedicamento.setIdMedicamento(idMedicamento);
+					service.salvar(alergiaMedicamento);
+				}
 			}
+			return Optional.of(novo.getIdAlergia());
 		}
-		return Optional.of(novo.getIdAlergia());
+		return Optional.empty();
 	}
 
 	public Optional<BuscarAlergia> encontrar(AlergiaId alergiaId) {
@@ -79,20 +82,22 @@ public class AlergiaService {
 	}
 
 	public Optional<AlergiaId> alterar(EditarAlergia comando) {
-		Optional<Alergia> optional = repo.findById(comando.getIdAlergia());
-		if (optional.isPresent()) {
-			Alergia alergia = optional.get();
-			alergia.apply(comando);
-			repo.save(alergia);
-			for (MedicamentoId idMedicamento : comando.getIdMedicamentos()) {
-				if (medicamentoService.encontrar(idMedicamento).isPresent()) {
-					AlergiaMedicamento alergiaMedicamento = new AlergiaMedicamento();
-					alergiaMedicamento.setIdAlergia(comando.getIdAlergia());
-					alergiaMedicamento.setIdMedicamento(idMedicamento);
-					service.salvar(alergiaMedicamento);
+		if (comando.getDataDescoberta() != null && comando.getTipoAlergia() != null) {
+			Optional<Alergia> optional = repo.findById(comando.getIdAlergia());
+			if (optional.isPresent()) {
+				Alergia alergia = optional.get();
+				alergia.apply(comando);
+				repo.save(alergia);
+				for (MedicamentoId idMedicamento : comando.getIdMedicamentos()) {
+					if (medicamentoService.encontrar(idMedicamento).isPresent()) {
+						AlergiaMedicamento alergiaMedicamento = new AlergiaMedicamento();
+						alergiaMedicamento.setIdAlergia(comando.getIdAlergia());
+						alergiaMedicamento.setIdMedicamento(idMedicamento);
+						service.salvar(alergiaMedicamento);
+					}
 				}
+				return Optional.of(comando.getIdAlergia());
 			}
-			return Optional.of(comando.getIdAlergia());
 		}
 		return Optional.empty();
 	}

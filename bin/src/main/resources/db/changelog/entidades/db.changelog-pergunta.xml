@@ -20,17 +20,17 @@
 	<changeSet id="create_table_pergunta_aud" author="wagner.junior">
 		<createTable tableName="pergunta_aud">
 			<column name="id_pergunta" type="${TYPE_ID}">
-				<constraints nullable="true" />	
+				<constraints nullable="false" />	
 			</column>
 			<column name="descricao" type="${TYPE_DESCRICAO}">
 				<constraints nullable="false" />
 			</column>
 			<column name="rev" type="${TYPE_NUMBER}">
-				<constraints nullable="true" referencedTableName="revinfo"
+				<constraints nullable="false" referencedTableName="revinfo"
 					referencedColumnNames="rev" foreignKeyName="FK_PERGUNTA_REVINFO" />
 			</column>
 			<column name="revtype" type="${TYPE_NUMBER}">
-				<constraints nullable="true" />
+				<constraints nullable="false" />
 			</column>
 		</createTable>
 		<addPrimaryKey constraintName="PK_PERGUNTA_AUD"

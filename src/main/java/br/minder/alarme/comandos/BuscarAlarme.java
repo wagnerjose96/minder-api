@@ -4,9 +4,11 @@ import br.minder.alarme.Alarme;
 import br.minder.alarme.AlarmeId;
 import br.minder.conversor.ConverterData;
 import br.minder.medicamento.comandos.BuscarMedicamento;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
-@Data
+@Getter
+@Setter
 public class BuscarAlarme {
 	private AlarmeId id;
 	private String dataInicio;
@@ -25,9 +27,6 @@ public class BuscarAlarme {
 		this.quantidade = comandos.getQuantidade();
 		this.descricao = comandos.getDescricao();
 		this.periodicidade = comandos.getPeriodicidade();
-	}
-
-	public BuscarAlarme() {
 	}
 
 }

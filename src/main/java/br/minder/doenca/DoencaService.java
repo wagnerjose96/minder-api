@@ -41,16 +41,19 @@ public class DoencaService {
 	private MedicamentoService medicamentoService;
 
 	public Optional<DoencaId> salvar(CriarDoenca comando, UsuarioId id) {
-		Doenca novo = doencaRepo.save(new Doenca(comando, id));
-		for (MedicamentoId idMedicamento : comando.getIdMedicamentos()) {
+		if (comando.getDataDescoberta() != null && comando.getNomeDoenca() != null) {
+			Doenca novo = doencaRepo.save(new Doenca(comando, id));
+			for (MedicamentoId idMedicamento : comando.getIdMedicamentos()) {
 				if (medicamentoService.encontrar(idMedicamento).isPresent()) {
 					DoencaMedicamento doencaMedicamento = new DoencaMedicamento();
 					doencaMedicamento.setIdDoenca(novo.getIdDoenca());
 					doencaMedicamento.setIdMedicamento(idMedicamento);
 					service.salvar(doencaMedicamento);
 				}
+			}
+			return Optional.of(novo.getIdDoenca());
 		}
-		return Optional.of(novo.getIdDoenca());
+		return Optional.empty();
 	}
 
 	public Optional<BuscarDoenca> encontrar(DoencaId doencaId) {

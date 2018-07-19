@@ -9,14 +9,13 @@ import org.hibernate.envers.Audited;
 import br.minder.convenio.comandos.CriarConvenio;
 import br.minder.convenio.comandos.EditarConvenio;
 import lombok.AccessLevel;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import lombok.Setter;
 
 @Entity
 @Audited
-@Data
-@EqualsAndHashCode(exclude = { "nome", "ativo" })
+@Getter
+@Setter
 public class Convenio {
 	@EmbeddedId
 	@AttributeOverride(name = "value", column = @Column(name = "id"))

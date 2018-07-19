@@ -40,7 +40,7 @@ public class TestExceptionController {
 
 	@Autowired
 	private ErrorDetailRepository repo;
-	
+
 	@Autowired
 	private ErrorDetailService service;
 
@@ -70,10 +70,11 @@ public class TestExceptionController {
 
 		List<ErrorDetail> erros = repo.findAll();
 		assertThat(erros.get(0), notNullValue());
-
+		
 		this.mockMvc.perform(get("/exceptions/" + erros.get(0).getIdErrorDetail().toString()))
-				.andExpect(jsonPath("$.idErrorDetail.value", equalTo(erros.get(0).getIdErrorDetail().toString())))
-				.andExpect(status().isOk());
+		.andExpect(jsonPath("$.idErrorDetail.value", equalTo(erros.get(0).getIdErrorDetail().toString())))
+		.andExpect(status().isOk());
+		
 	}
 
 	private CriarErrorDetail criarErrorDetail() {
