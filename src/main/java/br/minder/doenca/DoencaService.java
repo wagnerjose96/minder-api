@@ -56,10 +56,10 @@ public class DoencaService {
 		return Optional.empty();
 	}
 
-	public Optional<BuscarDoenca> encontrar(DoencaId doencaId) {
+	public Optional<BuscarDoenca> encontrar(DoencaId doencaId, UsuarioId id) {
 		List<BuscarMedicamento> medicamentos = executeQuery(doencaId.toString(), sql);
 		Optional<Doenca> doenca = doencaRepo.findById(doencaId);
-		if (doenca.isPresent()) {
+		if (doenca.isPresent() && id.toString().equals(doenca.get().getIdUsuario().toString())) {
 			BuscarDoenca resultado = new BuscarDoenca(doenca.get());
 			resultado.setMedicamentos(medicamentos);
 			return Optional.of(resultado);

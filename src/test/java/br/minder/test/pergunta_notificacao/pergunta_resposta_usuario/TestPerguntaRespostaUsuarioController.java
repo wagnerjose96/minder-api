@@ -151,6 +151,36 @@ public class TestPerguntaRespostaUsuarioController {
 				.contentType(MediaType.APPLICATION_JSON).header("token", logarAdm("admin", "1234")).content(jsonString))
 				.andExpect(jsonPath("$.error", equalTo("Acesso negado"))).andExpect(status().isForbidden());
 
+		jsonString = objectMapper.writeValueAsString(
+				criarPerguntaRespostaUsuarioErro1(pergunta.get(0).getIdPergunta(), resposta.get(0).getIdResposta()));
+
+		this.mockMvc
+				.perform(post("/perguntaNotificacao").header("token", logar("wagnerju", "1234"))
+						.accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON).content(jsonString))
+				.andExpect(jsonPath("$.error",
+						equalTo("A pergunta de notificação não foi respondida devido a um erro interno")))
+				.andExpect(status().isInternalServerError());
+
+		jsonString = objectMapper.writeValueAsString(
+				criarPerguntaRespostaUsuarioErro2(pergunta.get(0).getIdPergunta(), resposta.get(0).getIdResposta()));
+
+		this.mockMvc
+				.perform(post("/perguntaNotificacao").header("token", logar("wagnerju", "1234"))
+						.accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON).content(jsonString))
+				.andExpect(jsonPath("$.error",
+						equalTo("A pergunta de notificação não foi respondida devido a um erro interno")))
+				.andExpect(status().isInternalServerError());
+
+		jsonString = objectMapper.writeValueAsString(
+				criarPerguntaRespostaUsuarioErro3(pergunta.get(0).getIdPergunta(), resposta.get(0).getIdResposta()));
+
+		this.mockMvc
+				.perform(post("/perguntaNotificacao").header("token", logar("wagnerju", "1234"))
+						.accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON).content(jsonString))
+				.andExpect(jsonPath("$.error",
+						equalTo("A pergunta de notificação não foi respondida devido a um erro interno")))
+				.andExpect(status().isInternalServerError());
+
 	}
 
 	@Test
@@ -279,6 +309,26 @@ public class TestPerguntaRespostaUsuarioController {
 		return respostaUser;
 	}
 
+	private CriarPerguntaRespostaUsuario criarPerguntaRespostaUsuarioErro1(PerguntaId idPergunta,
+			RespostaId idResposta) {
+		CriarPerguntaRespostaUsuario respostaUser = new CriarPerguntaRespostaUsuario();
+		respostaUser.setIdResposta(idResposta);
+		return respostaUser;
+	}
+
+	private CriarPerguntaRespostaUsuario criarPerguntaRespostaUsuarioErro2(PerguntaId idPergunta,
+			RespostaId idResposta) {
+		CriarPerguntaRespostaUsuario respostaUser = new CriarPerguntaRespostaUsuario();
+		respostaUser.setIdPergunta(idPergunta);
+		return respostaUser;
+	}
+
+	private CriarPerguntaRespostaUsuario criarPerguntaRespostaUsuarioErro3(PerguntaId idPergunta,
+			RespostaId idResposta) {
+		CriarPerguntaRespostaUsuario respostaUser = new CriarPerguntaRespostaUsuario();
+		return respostaUser;
+	}
+
 	private CriarResposta criarResposta(String descricao, PerguntaId perguntaId) {
 		CriarResposta resposta = new CriarResposta();
 		resposta.setIdPergunta(perguntaId);
@@ -297,7 +347,7 @@ public class TestPerguntaRespostaUsuarioController {
 		endereco.setBairro("Zona 6");
 		endereco.setCidade("Maringá");
 		endereco.setEstado("Paraná");
-		endereco.setNumero(1390);
+		endereco.setNumero("1390");
 		endereco.setRua("Castro Alves");
 
 		CriarTelefone telefone = new CriarTelefone();

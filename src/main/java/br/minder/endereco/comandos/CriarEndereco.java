@@ -12,7 +12,7 @@ public class CriarEndereco {
 	private String cidade;
 	private String estado;
 	private String complemento;
-	private int numero;
+	private String numero;
 	
 	public CriarEndereco() {
 	}

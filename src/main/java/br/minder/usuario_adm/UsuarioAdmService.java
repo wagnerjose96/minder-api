@@ -21,8 +21,11 @@ public class UsuarioAdmService {
 	private UsuarioAdmRepository repo;
 
 	public Optional<UsuarioAdmId> salvar(CriarUsuarioAdm comando) {
-		UsuarioAdm novo = repo.save(new UsuarioAdm(comando));
-		return Optional.of(novo.getId());
+		if (comando.getNome() != null) {
+			UsuarioAdm novo = repo.save(new UsuarioAdm(comando));
+			return Optional.of(novo.getId());
+		}
+		return Optional.empty();
 	}
 
 	public Optional<BuscarUsuarioAdm> encontrar(UsuarioAdmId id) {
@@ -58,7 +61,7 @@ public class UsuarioAdmService {
 
 	public Optional<UsuarioAdmId> alterar(EditarUsuarioAdm comando) {
 		Optional<UsuarioAdm> optional = repo.findById(comando.getId());
-		if (optional.isPresent()) {
+		if (comando.getNome() != null && optional.isPresent()) {
 			UsuarioAdm user = optional.get();
 			user.apply(comando);
 			repo.save(user);

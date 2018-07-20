@@ -17,8 +17,11 @@ public class TelefoneService {
 	private TelefoneRepository repo;
 
 	public Optional<TelefoneId> salvar(CriarTelefone comando) {
-		Telefone novo = repo.save(new Telefone(comando));
-		return Optional.of(novo.getId());
+		if (comando.getDdd() != 0 && comando.getNumero() != 0) {
+			Telefone novo = repo.save(new Telefone(comando));
+			return Optional.of(novo.getId());
+		}
+		return Optional.empty();
 	}
 
 	public Optional<BuscarTelefone> encontrar(TelefoneId id) {
@@ -45,7 +48,7 @@ public class TelefoneService {
 
 	public Optional<TelefoneId> alterar(EditarTelefone comando) {
 		Optional<Telefone> optional = repo.findById(comando.getId());
-		if (optional.isPresent()) {
+		if (comando.getDdd() != 0 && comando.getNumero() != 0 && optional.isPresent()) {
 			Telefone tel = optional.get();
 			tel.apply(comando);
 			repo.save(tel);

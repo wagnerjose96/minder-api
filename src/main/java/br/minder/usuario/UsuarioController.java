@@ -46,7 +46,7 @@ public class UsuarioController {
 			if (optionalUsuarios.isPresent()) {
 				return ResponseEntity.ok(optionalUsuarios.get());
 			}
-			return ResponseEntity.notFound().build();
+			throw new NullPointerException("Não existe nenhum usuário cadastrado no banco de dados");
 		}
 		throw new AccessDeniedException(ACESSONEGADO);
 	}

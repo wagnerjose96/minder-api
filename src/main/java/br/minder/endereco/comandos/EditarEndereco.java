@@ -14,7 +14,7 @@ public class EditarEndereco {
 	private String cidade;
 	private String estado;
 	private String complemento;
-	private int numero;
+	private String numero;
 	
 	public EditarEndereco() {
 	}

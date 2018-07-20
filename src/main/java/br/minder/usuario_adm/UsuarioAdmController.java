@@ -39,13 +39,13 @@ public class UsuarioAdmController {
 
 	@Autowired
 	private UsuarioAdmService service;
-	
+
 	@Autowired
 	private UsuarioService serviceUsuario;
 
 	@Autowired
 	private Autentica autentica;
-	
+
 	@ApiOperation("Busque todos os usuários")
 	@GetMapping("/usuarios")
 	public ResponseEntity<List<BuscarUsuario>> getUsuarioAll(@RequestHeader String token) throws AccessDeniedException {
@@ -54,7 +54,7 @@ public class UsuarioAdmController {
 			if (optionalUsuarios.isPresent()) {
 				return ResponseEntity.ok(optionalUsuarios.get());
 			}
-			return ResponseEntity.notFound().build();
+			throw new NullPointerException("Não existe nenhum usuário cadastrado no banco de dados");
 		}
 		throw new AccessDeniedException(ACESSONEGADO);
 	}
@@ -68,7 +68,7 @@ public class UsuarioAdmController {
 			if (optionalUsuarioAdmin.isPresent()) {
 				return ResponseEntity.ok(optionalUsuarioAdmin.get());
 			}
-			return ResponseEntity.notFound().build();
+			throw new NullPointerException("Não existe nenhum administrador cadastrado no banco de dados");
 		}
 		throw new AccessDeniedException(ACESSONEGADO);
 	}

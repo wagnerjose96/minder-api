@@ -50,7 +50,7 @@ public class PlanoDeSaudeController {
 			if (optionalPlanoDeSaude.isPresent()) {
 				return ResponseEntity.ok(optionalPlanoDeSaude.get());
 			}
-			return ResponseEntity.notFound().build();
+			throw new NullPointerException("Não existe nenhum plano de saúde cadastrado no banco de dados");
 		}
 		throw new AccessDeniedException(ACESSONEGADO);
 	}
@@ -60,7 +60,7 @@ public class PlanoDeSaudeController {
 	public ResponseEntity<BuscarPlanoDeSaude> getPlanoDeSaudePorId(@PathVariable PlanoDeSaudeId id,
 			@RequestHeader String token) throws AccessDeniedException {
 		if (autentica.autenticaRequisicao(token)) {
-			Optional<BuscarPlanoDeSaude> optionalPlanoDeSaude = service.encontrar(id);
+			Optional<BuscarPlanoDeSaude> optionalPlanoDeSaude = service.encontrar(id, autentica.idUser(token));
 			if (optionalPlanoDeSaude.isPresent()) {
 				return ResponseEntity.ok(optionalPlanoDeSaude.get());
 			}
@@ -90,7 +90,7 @@ public class PlanoDeSaudeController {
 	public ResponseEntity<String> putPlanoDeSaude(@RequestBody EditarPlanoDeSaude comando, @RequestHeader String token)
 			throws AccessDeniedException, SQLException {
 		if (autentica.autenticaRequisicao(token)) {
-			if (!service.encontrar(comando.getId()).isPresent()) {
+			if (!service.encontrar(comando.getId(), autentica.idUser(token)).isPresent()) {
 				throw new NullPointerException("O plano de saúde a ser alterado não existe no banco de dados");
 			}
 
@@ -109,7 +109,7 @@ public class PlanoDeSaudeController {
 	public ResponseEntity<String> deletePlanoDeSaude(@PathVariable PlanoDeSaudeId id, @RequestHeader String token)
 			throws AccessDeniedException {
 		if (autentica.autenticaRequisicao(token)) {
-			if (!service.encontrar(id).isPresent()) {
+			if (!service.encontrar(id, autentica.idUser(token)).isPresent()) {
 				throw new NullPointerException("O plano de saúde a ser deletado não existe no banco de dados");
 			}
 			Optional<String> resultado = service.deletar(id);

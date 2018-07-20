@@ -39,6 +39,7 @@ import br.minder.endereco.comandos.CriarEndereco;
 import br.minder.login.LoginController;
 import br.minder.login.comandos.LogarUsuario;
 import br.minder.plano_de_saude.PlanoDeSaude;
+import br.minder.plano_de_saude.PlanoDeSaudeId;
 import br.minder.plano_de_saude.PlanoDeSaudeRepository;
 import br.minder.plano_de_saude.comandos.CriarPlanoDeSaude;
 import br.minder.plano_de_saude.comandos.EditarPlanoDeSaude;
@@ -116,6 +117,11 @@ public class TestPlanoDeSaudeController {
 
 		this.mockMvc
 				.perform(post("/planos").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+						.header("token", logar("wagnerju", "1234") + "TokenError").content(jsonString))
+				.andExpect(jsonPath("$.error", equalTo("Acesso negado"))).andExpect(status().isForbidden());
+
+		this.mockMvc
+				.perform(post("/planos").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
 						.header("token", logar("wagnerju", "1234")).content(jsonString))
 				.andExpect(jsonPath("$", equalTo("O plano de saúde foi cadastrado com sucesso")))
 				.andExpect(status().isCreated());
@@ -148,9 +154,20 @@ public class TestPlanoDeSaudeController {
 
 		this.mockMvc
 				.perform(put("/planos").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+						.header("token", logar("wagnerju", "1234") + "TokenError").content(jsonString))
+				.andExpect(jsonPath("$.error", equalTo("Acesso negado"))).andExpect(status().isForbidden());
+
+		this.mockMvc
+				.perform(put("/planos").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+						.header("token", logar("wagnerju", "1234") + "TokenError").content(jsonString))
+				.andExpect(jsonPath("$.error", equalTo("Acesso negado"))).andExpect(status().isForbidden());
+
+		this.mockMvc
+				.perform(put("/planos").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
 						.header("token", logar("wagnerju", "1234")).content(jsonString))
 				.andExpect(jsonPath("$", equalTo("O plano de saúde foi alterado com sucesso")))
 				.andExpect(status().isOk());
+
 	}
 
 	@Test
@@ -165,6 +182,12 @@ public class TestPlanoDeSaudeController {
 		List<Convenio> convenio = repoConvenio.findAll();
 		assertThat(convenio.get(0), notNullValue());
 
+		this.mockMvc
+		.perform(get("/planos")
+				.header("token", logar("wagnerju", "1234")))
+		.andExpect(jsonPath("$.error", equalTo("Não existe nenhum plano de saúde cadastrado no banco de dados")))
+		.andExpect(status().isNotFound());
+		
 		String jsonString = objectMapper.writeValueAsString(criarPlano(convenio.get(0).getId()));
 
 		this.mockMvc
@@ -185,6 +208,10 @@ public class TestPlanoDeSaudeController {
 		assertThat(planos.get(0), notNullValue());
 		assertThat(planos.get(1), notNullValue());
 
+		this.mockMvc
+				.perform(get("/planos").header("token", logar("wagnerju", "1234") + "TokenError").content(jsonString))
+				.andExpect(jsonPath("$.error", equalTo("Acesso negado"))).andExpect(status().isForbidden());
+
 		this.mockMvc.perform(get("/planos").header("token", logar("wagnerju", "1234")))
 				.andExpect(jsonPath("$[0].convenio.id.value", equalTo(convenio.get(0).getId().toString())))
 				.andExpect(jsonPath("$[1].convenio.id.value", equalTo(convenio.get(0).getId().toString())))
@@ -204,7 +231,7 @@ public class TestPlanoDeSaudeController {
 		assertThat(convenio.get(0), notNullValue());
 
 		String jsonString = objectMapper.writeValueAsString(criarPlano(convenio.get(0).getId()));
-		
+
 		this.mockMvc
 				.perform(post("/planos").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
 						.header("token", logar("wagnerju", "1234")).content(jsonString))
@@ -218,6 +245,19 @@ public class TestPlanoDeSaudeController {
 				.perform(get("/planos/" + planos.get(0).getId().toString()).header("token", logar("wagnerju", "1234")))
 				.andExpect(jsonPath("$.convenio.id.value", equalTo(convenio.get(0).getId().toString())))
 				.andExpect(status().isOk());
+
+		this.mockMvc
+				.perform(get("/planos/" + planos.get(0).getId().toString()).accept(MediaType.APPLICATION_JSON)
+						.contentType(MediaType.APPLICATION_JSON)
+						.header("token", logar("wagnerju", "1234") + "TokenError").content(jsonString))
+				.andExpect(jsonPath("$.error", equalTo("Acesso negado"))).andExpect(status().isForbidden());
+
+		this.mockMvc
+				.perform(get("/planos/" + new PlanoDeSaudeId().toString()).accept(MediaType.APPLICATION_JSON)
+						.contentType(MediaType.APPLICATION_JSON)
+						.header("token", logar("wagnerju", "1234")).content(jsonString))
+				.andExpect(jsonPath("$.error", equalTo("O plano de saúde procurado não existe no banco de dados")))
+				.andExpect(status().isNotFound());
 
 	}
 
@@ -243,6 +283,19 @@ public class TestPlanoDeSaudeController {
 
 		List<PlanoDeSaude> planos = repo.findAll();
 		assertThat(planos.get(0), notNullValue());
+
+		this.mockMvc
+				.perform(delete("/planos/" + planos.get(0).getId().toString()).accept(MediaType.APPLICATION_JSON)
+						.contentType(MediaType.APPLICATION_JSON)
+						.header("token", logar("wagnerju", "1234") + "TokenError").content(jsonString))
+				.andExpect(jsonPath("$.error", equalTo("Acesso negado"))).andExpect(status().isForbidden());
+
+		this.mockMvc
+				.perform(delete("/planos/" + new PlanoDeSaudeId().toString()).accept(MediaType.APPLICATION_JSON)
+						.contentType(MediaType.APPLICATION_JSON)
+						.header("token", logar("wagnerju", "1234")).content(jsonString))
+				.andExpect(jsonPath("$.error", equalTo("O plano de saúde a ser deletado não existe no banco de dados")))
+				.andExpect(status().isNotFound());
 
 		this.mockMvc
 				.perform(delete("/planos/" + planos.get(0).getId().toString()).header("token",
@@ -282,7 +335,7 @@ public class TestPlanoDeSaudeController {
 		endereco.setBairro("Zona 6");
 		endereco.setCidade("Maringá");
 		endereco.setEstado("Paraná");
-		endereco.setNumero(1390);
+		endereco.setNumero("1390");
 		endereco.setRua("Castro Alves");
 
 		CriarTelefone telefone = new CriarTelefone();

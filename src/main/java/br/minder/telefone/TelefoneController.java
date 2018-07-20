@@ -36,7 +36,7 @@ public class TelefoneController {
 		if (optionalTelefones.isPresent()) {
 			return ResponseEntity.ok(optionalTelefones.get());
 		}
-		return ResponseEntity.notFound().build();
+		throw new NullPointerException("Não existe nenhum telefone cadastrado no banco de dados");
 	}
 
 	@ApiOperation("Busque um telefone pelo ID")
@@ -51,29 +51,27 @@ public class TelefoneController {
 
 	@ApiOperation("Cadastre um novo telefone")
 	@PostMapping
-	public ResponseEntity<String> postTelefone(@RequestBody CriarTelefone comando)
-			throws SQLException {
-			Optional<TelefoneId> optionalTelefoneId = service.salvar(comando);
-			if (optionalTelefoneId.isPresent()) {
-				URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
-						.buildAndExpand(optionalTelefoneId.get()).toUri();
-				return ResponseEntity.created(location).body("O telefone foi cadastrado com sucesso");
-			}
-			throw new SQLException("O telefone não foi salvo devido a um erro interno");
+	public ResponseEntity<String> postTelefone(@RequestBody CriarTelefone comando) throws SQLException {
+		Optional<TelefoneId> optionalTelefoneId = service.salvar(comando);
+		if (optionalTelefoneId.isPresent()) {
+			URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
+					.buildAndExpand(optionalTelefoneId.get()).toUri();
+			return ResponseEntity.created(location).body("O telefone foi cadastrado com sucesso");
+		}
+		throw new SQLException("O telefone não foi salvo devido a um erro interno");
 	}
 
 	@ApiOperation("Altere um telefone")
 	@PutMapping
-	public ResponseEntity<String> putTelefone(@RequestBody EditarTelefone comando)
-			throws SQLException {
-			if (!service.encontrar(comando.getId()).isPresent()) {
-				throw new NullPointerException("O telefone a ser alterado não existe no banco de dados");
-			}
-			Optional<TelefoneId> optionalTelefoneId = service.alterar(comando);
-			if (optionalTelefoneId.isPresent()) {
-				return ResponseEntity.ok().body("O telefone foi alterado com sucesso");
-			} else {
-				throw new SQLException("Ocorreu um erro interno durante a alteração do telefone");
-			}
+	public ResponseEntity<String> putTelefone(@RequestBody EditarTelefone comando) throws SQLException {
+		if (!service.encontrar(comando.getId()).isPresent()) {
+			throw new NullPointerException("O telefone a ser alterado não existe no banco de dados");
+		}
+		Optional<TelefoneId> optionalTelefoneId = service.alterar(comando);
+		if (optionalTelefoneId.isPresent()) {
+			return ResponseEntity.ok().body("O telefone foi alterado com sucesso");
+		} else {
+			throw new SQLException("Ocorreu um erro interno durante a alteração do telefone");
+		}
 	}
 }

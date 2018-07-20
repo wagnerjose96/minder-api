@@ -273,7 +273,7 @@ public class TestEnderecoController {
 		endereco.setCidade("Maringá");
 		endereco.setEstado("Paraná");
 		endereco.setComplemento(complemento);
-		endereco.setNumero(1390);
+		endereco.setNumero("1390");
 		endereco.setRua("Castro Alves");
 		return endereco;
 	}
@@ -282,7 +282,7 @@ public class TestEnderecoController {
 		CriarEndereco endereco = new CriarEndereco();
 		endereco.setCidade("Maringá");
 		endereco.setEstado("Paraná");
-		endereco.setNumero(1390);
+		endereco.setNumero("1390");
 		endereco.setRua("Castro Alves");
 		return endereco;
 	}
@@ -291,7 +291,7 @@ public class TestEnderecoController {
 		CriarEndereco endereco = new CriarEndereco();
 		endereco.setBairro("Zona 6");
 		endereco.setEstado("Paraná");
-		endereco.setNumero(1390);
+		endereco.setNumero("1390");
 		endereco.setRua("Castro Alves");
 		return endereco;
 	}
@@ -300,7 +300,7 @@ public class TestEnderecoController {
 		CriarEndereco endereco = new CriarEndereco();
 		endereco.setBairro("Zona 6");
 		endereco.setCidade("Maringá");
-		endereco.setNumero(1390);
+		endereco.setNumero("1390");
 		endereco.setRua("Castro Alves");
 		return endereco;
 	}
@@ -310,7 +310,7 @@ public class TestEnderecoController {
 		endereco.setBairro("Zona 6");
 		endereco.setCidade("Maringá");
 		endereco.setEstado("Paraná");
-		endereco.setNumero(1390);
+		endereco.setNumero("1390");
 		return endereco;
 	}
 

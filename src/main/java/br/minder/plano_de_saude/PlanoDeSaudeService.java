@@ -33,13 +33,17 @@ public class PlanoDeSaudeService {
 	}
 
 	public Optional<PlanoDeSaudeId> salvar(CriarPlanoDeSaude comando, UsuarioId id) {
-		PlanoDeSaude novo = repo.save(new PlanoDeSaude(comando, id));
-		return Optional.of(novo.getId());
+		if (comando.getHabitacao() != null && comando.getIdConvenio() != null && comando.getNumeroCartao() != null
+				&& comando.getTerritorio() != null) {
+			PlanoDeSaude novo = repo.save(new PlanoDeSaude(comando, id));
+			return Optional.of(novo.getId());
+		}
+		return Optional.empty();
 	}
 
-	public Optional<BuscarPlanoDeSaude> encontrar(PlanoDeSaudeId planoId) {
+	public Optional<BuscarPlanoDeSaude> encontrar(PlanoDeSaudeId planoId, UsuarioId id) {
 		Optional<PlanoDeSaude> plano = repo.findById(planoId);
-		if (plano.isPresent()) {
+		if (plano.isPresent() && id.toString().equals(plano.get().getIdUsuario().toString())) {
 			BuscarPlanoDeSaude resultado = new BuscarPlanoDeSaude(plano.get());
 			Optional<BuscarConvenio> convenio = convService.encontrar(plano.get().getIdConvenio());
 			if (convenio.isPresent()) {
@@ -71,7 +75,8 @@ public class PlanoDeSaudeService {
 
 	public Optional<PlanoDeSaudeId> alterar(EditarPlanoDeSaude comando) {
 		Optional<PlanoDeSaude> optional = repo.findById(comando.getId());
-		if (optional.isPresent()) {
+		if (comando.getHabitacao() != null && comando.getIdConvenio() != null && comando.getNumeroCartao() != null
+				&& comando.getTerritorio() != null && optional.isPresent()) {
 			PlanoDeSaude plano = optional.get();
 			plano.apply(comando);
 			repo.save(plano);
