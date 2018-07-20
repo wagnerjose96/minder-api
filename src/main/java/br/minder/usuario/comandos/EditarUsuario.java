@@ -3,9 +3,11 @@ package br.minder.usuario.comandos;
 import br.minder.endereco.comandos.EditarEndereco;
 import br.minder.telefone.comandos.EditarTelefone;
 import br.minder.usuario.UsuarioId;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
-@Data
+@Getter
+@Setter
 public class EditarUsuario {
 	private UsuarioId id;
 	private String senha;

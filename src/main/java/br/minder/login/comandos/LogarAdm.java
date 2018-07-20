@@ -1,8 +1,10 @@
 package br.minder.login.comandos;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
-@Data
+@Getter
+@Setter
 public class LogarAdm {
 	private String identificador;
 	private String senha;

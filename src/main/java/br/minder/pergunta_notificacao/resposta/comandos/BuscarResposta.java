@@ -3,9 +3,11 @@ package br.minder.pergunta_notificacao.resposta.comandos;
 import br.minder.pergunta_notificacao.PerguntaId;
 import br.minder.pergunta_notificacao.resposta.Resposta;
 import br.minder.pergunta_notificacao.resposta.RespostaId;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
-@Data
+@Getter
+@Setter
 public class BuscarResposta {
 	private RespostaId idResposta;
 	private String descricao;

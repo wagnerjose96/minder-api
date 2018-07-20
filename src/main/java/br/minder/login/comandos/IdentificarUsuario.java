@@ -1,9 +1,11 @@
 package br.minder.login.comandos;
 
 import br.minder.usuario.UsuarioId;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
-@Data
+@Getter
+@Setter
 public class IdentificarUsuario {
 	private UsuarioId id;
 	private String identificador;

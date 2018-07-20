@@ -2,9 +2,11 @@ package br.minder.telefone.comandos;
 
 import br.minder.telefone.Telefone;
 import br.minder.telefone.TelefoneId;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
-@Data
+@Getter
+@Setter
 public class BuscarTelefone {
 	private TelefoneId id;
 	private int ddd;

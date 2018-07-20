@@ -9,14 +9,13 @@ import org.hibernate.envers.Audited;
 import br.minder.sexo.comandos.CriarSexo;
 import br.minder.sexo.comandos.EditarSexo;
 import lombok.AccessLevel;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import lombok.Setter;
 
 @Entity
 @Audited
-@Data
-@EqualsAndHashCode(exclude = { "genero" })
+@Getter
+@Setter
 public class Sexo {
 	@EmbeddedId
 	@AttributeOverride(name = "value", column = @Column(name = "id_sexo"))

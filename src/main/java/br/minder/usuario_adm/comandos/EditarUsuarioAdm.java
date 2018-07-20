@@ -1,9 +1,11 @@
 package br.minder.usuario_adm.comandos;
 
 import br.minder.usuario_adm.UsuarioAdmId;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
-@Data
+@Getter
+@Setter
 public class EditarUsuarioAdm {
 	private UsuarioAdmId id;
 	private String nome;

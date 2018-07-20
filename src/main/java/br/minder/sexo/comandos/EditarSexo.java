@@ -1,9 +1,11 @@
 package br.minder.sexo.comandos;
 
 import br.minder.sexo.SexoId;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
-@Data
+@Getter
+@Setter
 public class EditarSexo {
 	private SexoId id;
 	private String genero;

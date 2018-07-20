@@ -10,14 +10,13 @@ import br.minder.security.Criptografia;
 import br.minder.usuario_adm.comandos.CriarUsuarioAdm;
 import br.minder.usuario_adm.comandos.EditarUsuarioAdm;
 import lombok.AccessLevel;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import lombok.Setter;
 
 @Entity
 @Audited
-@Data
-@EqualsAndHashCode(exclude = { "nomeUsuario", "senha" })
+@Getter
+@Setter
 public class UsuarioAdm {
 	@EmbeddedId
 	@AttributeOverride(name = "value", column = @Column(name = "id"))

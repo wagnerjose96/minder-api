@@ -7,9 +7,11 @@ import javax.persistence.Column;
 
 import br.minder.convenio.ConvenioId;
 import br.minder.plano_de_saude.PlanoDeSaudeId;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
-@Data
+@Getter
+@Setter
 public class EditarPlanoDeSaude {
 	private PlanoDeSaudeId id;
 	@AttributeOverride(name = "value", column = @Column(name = "id_convenio"))

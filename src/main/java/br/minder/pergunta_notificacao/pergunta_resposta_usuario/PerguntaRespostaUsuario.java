@@ -9,10 +9,12 @@ import br.minder.pergunta_notificacao.PerguntaId;
 import br.minder.pergunta_notificacao.pergunta_resposta_usuario.comandos.CriarPerguntaRespostaUsuario;
 import br.minder.pergunta_notificacao.resposta.RespostaId;
 import br.minder.usuario.UsuarioId;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 @Entity
-@Data
+@Getter
+@Setter
 public class PerguntaRespostaUsuario {
 	@EmbeddedId
 	@AttributeOverride(name = "value", column = @Column(name = "id"))

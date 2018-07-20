@@ -9,14 +9,13 @@ import org.hibernate.envers.Audited;
 import br.minder.telefone.comandos.CriarTelefone;
 import br.minder.telefone.comandos.EditarTelefone;
 import lombok.AccessLevel;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import lombok.Setter;
 
 @Entity
 @Audited
-@Data
-@EqualsAndHashCode(exclude = { "ddd", "numero" })
+@Getter
+@Setter
 public class Telefone {
 	@EmbeddedId
 	@AttributeOverride(name = "value", column = @Column(name = "id"))

@@ -16,15 +16,13 @@ import br.minder.telefone.TelefoneId;
 import br.minder.usuario.comandos.CriarUsuario;
 import br.minder.usuario.comandos.EditarUsuario;
 import lombok.AccessLevel;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import lombok.Setter;
 
 @Entity
 @Audited
-@Data
-@EqualsAndHashCode(exclude = { "nomeCompleto", "nomeUsuario", "email", "senha", "idSangue", "idEndereco",
-		"idTelefone", "dataNascimento", "idSexo", "imagemUsuario", "ativo" })
+@Getter
+@Setter
 public class Usuario {
 	@EmbeddedId
 	@AttributeOverride(name = "value", column = @Column(name = "id"))

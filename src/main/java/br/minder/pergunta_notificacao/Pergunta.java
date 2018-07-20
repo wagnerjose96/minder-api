@@ -9,14 +9,13 @@ import org.hibernate.envers.Audited;
 import br.minder.pergunta_notificacao.comandos.CriarPergunta;
 import br.minder.pergunta_notificacao.comandos.EditarPergunta;
 import lombok.AccessLevel;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import lombok.Setter;
 
 @Entity
 @Audited
-@Data
-@EqualsAndHashCode(exclude = { "descricao"})
+@Getter
+@Setter
 public class Pergunta {
 	@EmbeddedId
 	@AttributeOverride(name = "value", column = @Column(name = "id_pergunta"))

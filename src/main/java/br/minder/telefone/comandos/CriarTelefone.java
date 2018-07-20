@@ -1,8 +1,10 @@
 package br.minder.telefone.comandos;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
-@Data
+@Getter
+@Setter
 public class CriarTelefone {
 	private int ddd;
 	private int numero;

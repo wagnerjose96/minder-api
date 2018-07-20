@@ -5,9 +5,11 @@ import java.math.BigInteger;
 import br.minder.convenio.comandos.BuscarConvenio;
 import br.minder.plano_de_saude.PlanoDeSaude;
 import br.minder.plano_de_saude.PlanoDeSaudeId;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
-@Data
+@Getter
+@Setter
 public class BuscarPlanoDeSaude {
 	private PlanoDeSaudeId id;
 	private BuscarConvenio convenio;

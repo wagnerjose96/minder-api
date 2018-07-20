@@ -1,9 +1,11 @@
 package br.minder.endereco.comandos;
 
 import br.minder.endereco.Endereco;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
-@Data
+@Getter
+@Setter
 public class CriarEndereco {
 	private String rua;
 	private String bairro;

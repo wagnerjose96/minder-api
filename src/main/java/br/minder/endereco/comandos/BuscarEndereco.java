@@ -2,9 +2,11 @@ package br.minder.endereco.comandos;
 
 import br.minder.endereco.Endereco;
 import br.minder.endereco.EnderecoId;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
-@Data
+@Getter
+@Setter
 public class BuscarEndereco {
 	private EnderecoId id;
 	private String rua;

@@ -1,8 +1,10 @@
 package br.minder.usuario_adm.comandos;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
-@Data
+@Getter
+@Setter
 public class CriarUsuarioAdm {
 	private String nome;
 	private String senha;

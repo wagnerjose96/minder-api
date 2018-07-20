@@ -10,10 +10,12 @@ import br.minder.login.comandos.IdentificarUsuario;
 import br.minder.login.comandos.LogarAdm;
 import br.minder.login.comandos.LogarUsuario;
 import br.minder.usuario.UsuarioId;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 @Component
-@Data
+@Getter
+@Setter
 public class Autentica {
 	@Autowired
 	private JdbcTemplate jdbcTemplate;

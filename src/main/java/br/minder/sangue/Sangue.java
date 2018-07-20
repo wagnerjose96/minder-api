@@ -9,14 +9,13 @@ import org.hibernate.envers.Audited;
 import br.minder.sangue.comandos.CriarSangue;
 import br.minder.sangue.comandos.EditarSangue;
 import lombok.AccessLevel;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import lombok.Setter;
 
 @Entity
 @Audited
-@Data
-@EqualsAndHashCode(exclude = { "tipoSanguineo" })
+@Getter
+@Setter
 public class Sangue {
 	@EmbeddedId
 	@AttributeOverride(name = "value", column = @Column(name = "id_sangue"))
