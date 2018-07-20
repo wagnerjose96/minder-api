@@ -66,11 +66,9 @@ public class ConvenioController {
 	public ResponseEntity<String> deletarConvenio(@PathVariable ConvenioId id, @RequestHeader String token)
 			throws AccessDeniedException {
 		if (autentica.autenticaRequisicaoAdm(token)) {
-			if (service.encontrar(id).isPresent()) {
-				Optional<String> optionalConvenio = service.deletar(id);
-				if (optionalConvenio.isPresent())
-					return ResponseEntity.ok(optionalConvenio.get());
-			}
+			Optional<String> optionalConvenio = service.deletar(id);
+			if (optionalConvenio.isPresent())
+				return ResponseEntity.ok(optionalConvenio.get());
 			throw new NullPointerException("O convênio a deletar não existe no banco de dados");
 		}
 		throw new AccessDeniedException(ACESSONEGADO);

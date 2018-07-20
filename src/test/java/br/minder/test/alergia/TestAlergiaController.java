@@ -6,6 +6,7 @@ import static org.junit.Assert.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import java.sql.Date;
@@ -339,13 +340,22 @@ public class TestAlergiaController {
 				.andExpect(jsonPath("$.error", equalTo("A alergia a ser alterada não existe no banco de dados")))
 				.andExpect(status().isNotFound());
 		
+		idsMedicamentos.add(new MedicamentoId());
+		
 		error = objectMapper.writeValueAsString(editarAlergiaError12(alergias.get(0), idsMedicamentos));
 
 		this.mockMvc
 				.perform(put("/alergias").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
 						.header("token", logar("wagnerju", "1234")).content(error))
-				.andExpect(jsonPath("$.error", equalTo("Ocorreu um erro interno durante a alteração da alergia")))
-				.andExpect(status().isInternalServerError());
+				.andExpect(status().isOk());
+		
+		error = objectMapper.writeValueAsString(editarAlergiaError13(alergias.get(0), idsMedicamentos));
+
+		this.mockMvc
+				.perform(put("/alergias").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+						.header("token", logar("wagnerju", "1234")).content(error))
+				.andExpect(jsonPath("$.error", equalTo("A alergia a ser alterada não existe no banco de dados")))
+				.andExpect(status().isNotFound());
 	}
 
 	@Test
@@ -411,7 +421,11 @@ public class TestAlergiaController {
 
 		List<Usuario> usuarios = repo.findAll();
 		assertThat(usuarios.get(0), notNullValue());
-
+		
+		this.mockMvc.perform(get("/alergias").header("token", logar("wagnerju", "1234")))
+				.andExpect(jsonPath("$.error", equalTo("Não existe nenhuma alergia cadastrada no banco de dados")))
+				.andExpect(status().isNotFound());
+		
 		String jsonString = objectMapper.writeValueAsString(criarAlergia(idsMedicamentos, "Alergia de pele"));
 
 		this.mockMvc
@@ -431,7 +445,7 @@ public class TestAlergiaController {
 		List<Alergia> alergias = repoAlergia.findAll();
 		assertThat(alergias.get(0), notNullValue());
 
-		this.mockMvc.perform(get("/alergias").header("token", logar("wagnerju", "1234")))
+		this.mockMvc.perform(get("/alergias").header("token", logar("wagnerju", "1234"))).andDo(print())
 				.andExpect(jsonPath("$[0].tipoAlergia", equalTo("Alergia de pele")))
 				.andExpect(jsonPath("$[1].tipoAlergia", equalTo("Alergia nas pernas"))).andExpect(status().isOk());
 
@@ -593,6 +607,7 @@ public class TestAlergiaController {
 	private EditarAlergia editarAlergiaError7(Alergia alergia, Set<MedicamentoId> idsMedicamentos) {
 		EditarAlergia alergiaEditada = new EditarAlergia();
 		alergiaEditada.setIdAlergia(new AlergiaId());
+		alergiaEditada.setTipoAlergia("teste");
 		alergiaEditada.setDataDescoberta(Date.valueOf(LocalDate.of(2018, 07, 10)));
 		alergiaEditada.setEfeitos("Manchas");
 		alergiaEditada.setIdMedicamentos(idsMedicamentos);
@@ -603,6 +618,7 @@ public class TestAlergiaController {
 	private EditarAlergia editarAlergiaError8(Alergia alergia, Set<MedicamentoId> idsMedicamentos) {
 		EditarAlergia alergiaEditada = new EditarAlergia();
 		alergiaEditada.setIdAlergia(new AlergiaId());
+		alergiaEditada.setDataDescoberta(Date.valueOf(LocalDate.of(2018, 07, 10)));
 		alergiaEditada.setEfeitos("Manchas");
 		alergiaEditada.setIdMedicamentos(idsMedicamentos);
 		alergiaEditada.setLocalAfetado("Pernas");
@@ -612,7 +628,8 @@ public class TestAlergiaController {
 	private EditarAlergia editarAlergiaError9(Alergia alergia, Set<MedicamentoId> idsMedicamentos) {
 		EditarAlergia alergiaEditada = new EditarAlergia();
 		alergiaEditada.setIdAlergia(new AlergiaId());
-		alergiaEditada.setDataDescoberta(Date.valueOf(LocalDate.of(2018, 07, 10)));
+		alergiaEditada.setTipoAlergia("teste");
+		alergiaEditada.setEfeitos("Manchas");
 		alergiaEditada.setIdMedicamentos(idsMedicamentos);
 		alergiaEditada.setLocalAfetado("Pernas");
 		return alergiaEditada;
@@ -621,8 +638,9 @@ public class TestAlergiaController {
 	private EditarAlergia editarAlergiaError10(Alergia alergia, Set<MedicamentoId> idsMedicamentos) {
 		EditarAlergia alergiaEditada = new EditarAlergia();
 		alergiaEditada.setIdAlergia(new AlergiaId());
+		alergiaEditada.setTipoAlergia("teste");
 		alergiaEditada.setDataDescoberta(Date.valueOf(LocalDate.of(2018, 07, 10)));
-		alergiaEditada.setEfeitos("Manchas");
+		alergiaEditada.setIdMedicamentos(idsMedicamentos);
 		alergiaEditada.setLocalAfetado("Pernas");
 		return alergiaEditada;
 	}
@@ -630,19 +648,31 @@ public class TestAlergiaController {
 	private EditarAlergia editarAlergiaError11(Alergia alergia, Set<MedicamentoId> idsMedicamentos) {
 		EditarAlergia alergiaEditada = new EditarAlergia();
 		alergiaEditada.setIdAlergia(new AlergiaId());
+		alergiaEditada.setTipoAlergia("teste");
 		alergiaEditada.setDataDescoberta(Date.valueOf(LocalDate.of(2018, 07, 10)));
 		alergiaEditada.setEfeitos("Manchas");
-		alergiaEditada.setIdMedicamentos(idsMedicamentos);
+		alergiaEditada.setLocalAfetado("Pernas");
 		return alergiaEditada;
 	}
 
 	private EditarAlergia editarAlergiaError12(Alergia alergia, Set<MedicamentoId> idsMedicamentos) {
 		EditarAlergia alergiaEditada = new EditarAlergia();
 		alergiaEditada.setIdAlergia(alergia.getIdAlergia());
+		alergiaEditada.setTipoAlergia("teste");
 		alergiaEditada.setDataDescoberta(Date.valueOf(LocalDate.of(2018, 07, 10)));
 		alergiaEditada.setEfeitos("Manchas");
 		alergiaEditada.setIdMedicamentos(idsMedicamentos);
 		alergiaEditada.setLocalAfetado("Pernas");
+		return alergiaEditada;
+	}
+	
+	private EditarAlergia editarAlergiaError13(Alergia alergia, Set<MedicamentoId> idsMedicamentos) {
+		EditarAlergia alergiaEditada = new EditarAlergia();
+		alergiaEditada.setIdAlergia(new AlergiaId());
+		alergiaEditada.setTipoAlergia("teste");
+		alergiaEditada.setDataDescoberta(Date.valueOf(LocalDate.of(2018, 07, 10)));
+		alergiaEditada.setEfeitos("Manchas");
+		alergiaEditada.setIdMedicamentos(idsMedicamentos);
 		return alergiaEditada;
 	}
 

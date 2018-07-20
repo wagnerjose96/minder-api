@@ -37,11 +37,14 @@ public class UsuarioAdmService {
 	public Optional<List<BuscarUsuarioAdm>> encontrar() {
 		List<UsuarioAdm> adms = repo.findAll();
 		List<BuscarUsuarioAdm> resultados = new ArrayList<>();
-		for (UsuarioAdm adm : adms) {
-			BuscarUsuarioAdm nova = new BuscarUsuarioAdm(adm);
-			resultados.add(nova);
+		if (!adms.isEmpty()) {
+			for (UsuarioAdm adm : adms) {
+				BuscarUsuarioAdm nova = new BuscarUsuarioAdm(adm);
+				resultados.add(nova);
+			}
+			return Optional.of(resultados);
 		}
-		return Optional.of(resultados);
+		return Optional.empty();
 	}
 
 	public Optional<String> deletar(UsuarioAdmId id) {

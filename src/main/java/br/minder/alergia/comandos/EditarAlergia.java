@@ -1,6 +1,6 @@
 package br.minder.alergia.comandos;
 
-import java.util.Date;
+import java.sql.Date;
 import java.util.Set;
 import br.minder.alergia.AlergiaId;
 import br.minder.medicamento.MedicamentoId;

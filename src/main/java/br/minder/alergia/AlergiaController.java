@@ -46,6 +46,7 @@ public class AlergiaController {
 			if (optionalAlergias.isPresent()) {
 				return ResponseEntity.ok(optionalAlergias.get());
 			}
+			throw new NullPointerException("Não existe nenhuma alergia cadastrada no banco de dados");
 		}
 		throw new AccessDeniedException(ACESSONEGADO);
 	}

@@ -18,8 +18,12 @@ public class EnderecoService {
 	private EnderecoRepository repo;
 
 	public Optional<EnderecoId> salvar(CriarEndereco comando) {
-		Endereco nova = repo.save(new Endereco(comando));
-		return Optional.of(nova.getId());
+		if (comando.getBairro() != null && comando.getCidade() != null && comando.getEstado() != null
+				&& comando.getRua() != null) {
+			Endereco nova = repo.save(new Endereco(comando));
+			return Optional.of(nova.getId());
+		}
+		return Optional.empty();
 	}
 
 	public Optional<BuscarEndereco> encontrar(EnderecoId id) {
@@ -34,16 +38,20 @@ public class EnderecoService {
 	public Optional<List<BuscarEndereco>> encontrar() {
 		List<Endereco> enderecos = repo.findAll();
 		List<BuscarEndereco> resultados = new ArrayList<>();
-		for (Endereco endereco : enderecos) {
-			BuscarEndereco nova = new BuscarEndereco(endereco);
-			resultados.add(nova);
+		if (!enderecos.isEmpty()) {
+			for (Endereco endereco : enderecos) {
+				BuscarEndereco nova = new BuscarEndereco(endereco);
+				resultados.add(nova);
+			}
+			return Optional.of(resultados);
 		}
-		return Optional.of(resultados);
+		return Optional.empty();
 	}
 
 	public Optional<EnderecoId> alterar(EditarEndereco comando) {
 		Optional<Endereco> optional = repo.findById(comando.getId());
-		if (optional.isPresent()) {
+		if (comando.getBairro() != null && comando.getCidade() != null && comando.getEstado() != null
+				&& comando.getRua() != null && optional.isPresent()) {
 			Endereco endereco = optional.get();
 			endereco.apply(comando);
 			repo.save(endereco);

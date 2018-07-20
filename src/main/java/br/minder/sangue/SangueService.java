@@ -34,11 +34,14 @@ public class SangueService {
 	public Optional<List<BuscarSangue>> encontrar() {
 		List<Sangue> sangues = repo.findAll();
 		List<BuscarSangue> resultados = new ArrayList<>();
-		for (Sangue sangue : sangues) {
-			BuscarSangue nova = new BuscarSangue(sangue);
-			resultados.add(nova);
+		if (!sangues.isEmpty()) {
+			for (Sangue sangue : sangues) {
+				BuscarSangue nova = new BuscarSangue(sangue);
+				resultados.add(nova);
+			}
+			return Optional.of(resultados);
 		}
-		return Optional.of(resultados);
+		return Optional.empty();
 	}
 
 	public Optional<SangueId> alterar(EditarSangue comando) {

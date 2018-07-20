@@ -8,11 +8,9 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
 import java.sql.Date;
 import java.time.LocalDate;
 import java.util.List;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -32,7 +30,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.WebApplicationContext;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.springtestdbunit.TransactionDbUnitTestExecutionListener;
-
 import br.minder.MinderApplication;
 import br.minder.emergencia.Emergencia;
 import br.minder.emergencia.EmergenciaRepository;
@@ -105,13 +102,19 @@ public class TestEmergenciaController {
 		List<Usuario> usuarios = repo.findAll();
 		assertThat(usuarios.get(0), notNullValue());
 
-		final String jsonString = objectMapper.writeValueAsString(criarEmergencia(1));
+		String jsonString = objectMapper.writeValueAsString(criarEmergencia(1));
 
 		this.mockMvc
 				.perform(post("/emergencias").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
 						.header("token", logar("wagnerju", "1234")).content(jsonString))
 				.andExpect(jsonPath("$", equalTo("A emergência foi cadastrada com sucesso")))
 				.andExpect(status().isCreated());
+
+		this.mockMvc
+				.perform(post("/emergencias").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+						.header("token", logar("wagnerju", "1234") + "erroToken").content(jsonString))
+				.andExpect(jsonPath("$.error", equalTo("Acesso negado"))).andExpect(status().isForbidden());
+
 	}
 
 	@Test
@@ -120,6 +123,7 @@ public class TestEmergenciaController {
 		SexoId idSexo = criarSexo("Masculino");
 
 		serviceUsuario.salvar(criarUsuario("wagner@hotmail.com", "wagnerju", idSexo, idSangue)).get();
+		serviceUsuario.salvar(criarUsuario("lathuanny@hotmail.com", "lathuanny", idSexo, idSangue)).get();
 
 		List<Usuario> usuarios = repo.findAll();
 		assertThat(usuarios.get(0), notNullValue());
@@ -142,6 +146,16 @@ public class TestEmergenciaController {
 						.header("token", logar("wagnerju", "1234")).content(jsonString))
 				.andExpect(jsonPath("$", equalTo("A emergência foi alterada com sucesso"))).andExpect(status().isOk());
 
+		this.mockMvc
+				.perform(put("/emergencias").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+						.header("token", logar("lathuanny", "1234")).content(jsonString))
+				.andExpect(jsonPath("$.error", equalTo("A emergência a ser alterada não existe no banco de dados")))
+				.andExpect(status().isNotFound());
+
+		this.mockMvc
+				.perform(put("/emergencias").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+						.header("token", logar("wagnerju", "1234") + "erroToken").content(jsonString))
+				.andExpect(jsonPath("$.error", equalTo("Acesso negado"))).andExpect(status().isForbidden());
 	}
 
 	@Test
@@ -153,6 +167,13 @@ public class TestEmergenciaController {
 
 		List<Usuario> usuarios = repo.findAll();
 		assertThat(usuarios.get(0), notNullValue());
+
+		this.mockMvc.perform(get("/emergencias").header("token", logar("wagnerju", "1234")))
+				.andExpect(jsonPath("$.error", equalTo("Não existe nenhuma emergência cadastrada no banco de dados")))
+				.andExpect(status().isNotFound());
+
+		this.mockMvc.perform(get("/emergencias").header("token", logar("wagnerju", "1234") + "erroToken"))
+				.andExpect(jsonPath("$.error", equalTo("Acesso negado"))).andExpect(status().isForbidden());
 
 		String jsonString = objectMapper.writeValueAsString(criarEmergencia(1));
 

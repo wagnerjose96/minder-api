@@ -50,16 +50,19 @@ public class AlarmeService {
 	public Optional<List<BuscarAlarme>> encontrar(UsuarioId id) {
 		List<BuscarAlarme> resultados = new ArrayList<>();
 		List<Alarme> alarmes = repo.findAll();
-		for (Alarme alarme : alarmes) {
-			if (alarme.getIdUsuario().toString().equals(id.toString())) {
-				BuscarAlarme nova = new BuscarAlarme(alarme);
-				Optional<Medicamento> medicamento = medRepo.findById(alarme.getIdMedicamento());
-				if (medicamento.isPresent())
-					nova.setMedicamento(new BuscarMedicamento(medicamento.get()));
-				resultados.add(nova);
+		if (!alarmes.isEmpty()) {
+			for (Alarme alarme : alarmes) {
+				if (alarme.getIdUsuario().toString().equals(id.toString())) {
+					BuscarAlarme nova = new BuscarAlarme(alarme);
+					Optional<Medicamento> medicamento = medRepo.findById(alarme.getIdMedicamento());
+					if (medicamento.isPresent())
+						nova.setMedicamento(new BuscarMedicamento(medicamento.get()));
+					resultados.add(nova);
+				}
 			}
+			return Optional.of(resultados);
 		}
-		return Optional.of(resultados);
+		return Optional.empty();
 	}
 
 	public Optional<AlarmeId> alterar(EditarAlarme comando) {

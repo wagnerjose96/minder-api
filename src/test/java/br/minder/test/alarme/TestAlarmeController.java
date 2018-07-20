@@ -222,7 +222,7 @@ public class TestAlarmeController {
 						.header("token", logar("wagnerju", "1234")).content(jsonString))
 				.andExpect(jsonPath("$.error", equalTo("O alarme a ser alterado não existe no banco de dados")))
 				.andExpect(status().isNotFound());
-		
+
 		jsonString = objectMapper.writeValueAsString(editarAlarmeErro2(alarmes.get(0)));
 
 		this.mockMvc
@@ -230,7 +230,7 @@ public class TestAlarmeController {
 						.header("token", logar("wagnerju", "1234")).content(jsonString))
 				.andExpect(jsonPath("$.error", equalTo("O alarme a ser alterado não existe no banco de dados")))
 				.andExpect(status().isNotFound());
-		
+
 		jsonString = objectMapper.writeValueAsString(editarAlarmeErro3(alarmes.get(0)));
 
 		this.mockMvc
@@ -238,7 +238,7 @@ public class TestAlarmeController {
 						.header("token", logar("wagnerju", "1234")).content(jsonString))
 				.andExpect(jsonPath("$.error", equalTo("O alarme a ser alterado não existe no banco de dados")))
 				.andExpect(status().isNotFound());
-		
+
 		jsonString = objectMapper.writeValueAsString(editarAlarmeErro4(alarmes.get(0)));
 
 		this.mockMvc
@@ -246,7 +246,7 @@ public class TestAlarmeController {
 						.header("token", logar("wagnerju", "1234")).content(jsonString))
 				.andExpect(jsonPath("$.error", equalTo("O alarme a ser alterado não existe no banco de dados")))
 				.andExpect(status().isNotFound());
-		
+
 		jsonString = objectMapper.writeValueAsString(editarAlarmeErro5(alarmes.get(0)));
 
 		this.mockMvc
@@ -254,7 +254,7 @@ public class TestAlarmeController {
 						.header("token", logar("wagnerju", "1234")).content(jsonString))
 				.andExpect(jsonPath("$.error", equalTo("O alarme a ser alterado não existe no banco de dados")))
 				.andExpect(status().isNotFound());
-		
+
 		jsonString = objectMapper.writeValueAsString(editarAlarmeErro6());
 
 		this.mockMvc
@@ -262,7 +262,7 @@ public class TestAlarmeController {
 						.header("token", logar("wagnerju", "1234")).content(jsonString))
 				.andExpect(jsonPath("$.error", equalTo("O alarme a ser alterado não existe no banco de dados")))
 				.andExpect(status().isNotFound());
-		
+
 		jsonString = objectMapper.writeValueAsString(editarAlarmeErro7(alarmes.get(0)));
 
 		this.mockMvc
@@ -270,7 +270,7 @@ public class TestAlarmeController {
 						.header("token", logar("wagnerju", "1234")).content(jsonString))
 				.andExpect(jsonPath("$.error", equalTo("Ocorreu um erro interno durante a alteração do alarme")))
 				.andExpect(status().isInternalServerError());
-		
+
 		jsonString = objectMapper.writeValueAsString(editarAlarmeErro8(alarmes.get(0)));
 
 		this.mockMvc
@@ -278,7 +278,7 @@ public class TestAlarmeController {
 						.header("token", logar("wagnerju", "1234")).content(jsonString))
 				.andExpect(jsonPath("$.error", equalTo("Ocorreu um erro interno durante a alteração do alarme")))
 				.andExpect(status().isInternalServerError());
-		
+
 		jsonString = objectMapper.writeValueAsString(editarAlarmeErro9(alarmes.get(0)));
 
 		this.mockMvc
@@ -286,7 +286,7 @@ public class TestAlarmeController {
 						.header("token", logar("wagnerju", "1234")).content(jsonString))
 				.andExpect(jsonPath("$.error", equalTo("Ocorreu um erro interno durante a alteração do alarme")))
 				.andExpect(status().isInternalServerError());
-		
+
 		jsonString = objectMapper.writeValueAsString(editarAlarmeErro10(alarmes.get(0)));
 
 		this.mockMvc
@@ -294,7 +294,7 @@ public class TestAlarmeController {
 						.header("token", logar("wagnerju", "1234")).content(jsonString))
 				.andExpect(jsonPath("$.error", equalTo("Ocorreu um erro interno durante a alteração do alarme")))
 				.andExpect(status().isInternalServerError());
-		
+
 		jsonString = objectMapper.writeValueAsString(editarAlarmeErro11(alarmes.get(0)));
 
 		this.mockMvc
@@ -302,7 +302,7 @@ public class TestAlarmeController {
 						.header("token", logar("wagnerju", "1234")).content(jsonString))
 				.andExpect(jsonPath("$.error", equalTo("Ocorreu um erro interno durante a alteração do alarme")))
 				.andExpect(status().isInternalServerError());
-		
+
 		jsonString = objectMapper.writeValueAsString(editarAlarmeErro12(alarmes.get(0)));
 
 		this.mockMvc
@@ -370,6 +370,10 @@ public class TestAlarmeController {
 		List<Usuario> usuarios = repo.findAll();
 		assertThat(usuarios.get(0), notNullValue());
 
+		this.mockMvc.perform(get("/alarmes").header("token", logar("wagnerju", "1234")))
+		.andExpect(jsonPath("$.error", equalTo("Não existe nenhum alarme cadastrado no banco de dados")))
+		.andExpect(status().isNotFound());
+		
 		this.mockMvc.perform(get("/alarmes").header("token", logar("wagnerju", "1234") + "erroToken"))
 				.andExpect(jsonPath("$.error", equalTo("Acesso negado"))).andExpect(status().isForbidden());
 
@@ -402,6 +406,7 @@ public class TestAlarmeController {
 		assertThat(usuarios.get(1), notNullValue());
 
 		this.mockMvc.perform(get("/alarmes").header("token", logar("lathuanny", "1234"))).andExpect(status().isOk());
+
 	}
 
 	@Test
@@ -416,13 +421,7 @@ public class TestAlarmeController {
 		assertThat(usuarios.get(0), notNullValue());
 
 		String jsonString = objectMapper.writeValueAsString(criarAlarme(idMedicamento, "Tomar medicamento"));
-		
-		this.mockMvc
-		.perform(delete("/alarmes/" + new AlarmeId().toString()).accept(MediaType.APPLICATION_JSON)
-				.contentType(MediaType.APPLICATION_JSON).header("token", logar("wagnerju", "1234")))
-		.andExpect(jsonPath("$.error", equalTo("O alarme a ser deletado não existe no banco de dados")))
-		.andExpect(status().isNotFound());
-		
+
 		this.mockMvc
 				.perform(post("/alarmes").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
 						.header("token", logar("wagnerju", "1234")).content(jsonString))
@@ -441,8 +440,21 @@ public class TestAlarmeController {
 
 		this.mockMvc
 				.perform(delete("/alarmes/" + alarmes.get(0).getId().toString()).header("token",
+						logar("wagnerju", "1234")))
+				.andExpect(jsonPath("$.error", equalTo("O alarme a ser deletado não existe no banco de dados")))
+				.andExpect(status().isNotFound());
+
+		this.mockMvc
+				.perform(delete("/alarmes/" + new AlarmeId().toString()).accept(MediaType.APPLICATION_JSON)
+						.contentType(MediaType.APPLICATION_JSON).header("token", logar("wagnerju", "1234")))
+				.andExpect(jsonPath("$.error", equalTo("O alarme a ser deletado não existe no banco de dados")))
+				.andExpect(status().isNotFound());
+
+		this.mockMvc
+				.perform(delete("/alarmes/" + alarmes.get(0).getId().toString()).header("token",
 						logar("wagnerju", "1234") + "erroToken"))
 				.andExpect(jsonPath("$.error", equalTo("Acesso negado"))).andExpect(status().isForbidden());
+
 	}
 
 	private CriarAlarme criarAlarme(MedicamentoId idMedicamento, String descrição) {
@@ -528,7 +540,7 @@ public class TestAlarmeController {
 		editar.setQuantidade("1");
 		return editar;
 	}
-	
+
 	private EditarAlarme editarAlarmeErro2(Alarme alarme) {
 		EditarAlarme editar = new EditarAlarme();
 		editar.setId(new AlarmeId());
@@ -539,7 +551,7 @@ public class TestAlarmeController {
 		editar.setQuantidade("1");
 		return editar;
 	}
-	
+
 	private EditarAlarme editarAlarmeErro3(Alarme alarme) {
 		EditarAlarme editar = new EditarAlarme();
 		editar.setId(new AlarmeId());
@@ -550,7 +562,7 @@ public class TestAlarmeController {
 		editar.setQuantidade("1");
 		return editar;
 	}
-	
+
 	private EditarAlarme editarAlarmeErro4(Alarme alarme) {
 		EditarAlarme editar = new EditarAlarme();
 		editar.setId(new AlarmeId());
@@ -561,7 +573,7 @@ public class TestAlarmeController {
 		editar.setQuantidade("1");
 		return editar;
 	}
-	
+
 	private EditarAlarme editarAlarmeErro5(Alarme alarme) {
 		EditarAlarme editar = new EditarAlarme();
 		editar.setId(new AlarmeId());
@@ -572,13 +584,13 @@ public class TestAlarmeController {
 		editar.setPeriodicidade(8);
 		return editar;
 	}
-	
+
 	private EditarAlarme editarAlarmeErro6() {
 		EditarAlarme editar = new EditarAlarme();
 		editar.setId(new AlarmeId());
 		return editar;
 	}
-	
+
 	private EditarAlarme editarAlarmeErro7(Alarme alarme) {
 		EditarAlarme alarmeEditado = new EditarAlarme();
 		alarmeEditado.setId(alarme.getId());
@@ -589,7 +601,7 @@ public class TestAlarmeController {
 		alarmeEditado.setQuantidade("1");
 		return alarmeEditado;
 	}
-	
+
 	private EditarAlarme editarAlarmeErro8(Alarme alarme) {
 		EditarAlarme alarmeEditado = new EditarAlarme();
 		alarmeEditado.setId(alarme.getId());
@@ -600,7 +612,7 @@ public class TestAlarmeController {
 		alarmeEditado.setQuantidade("1");
 		return alarmeEditado;
 	}
-	
+
 	private EditarAlarme editarAlarmeErro9(Alarme alarme) {
 		EditarAlarme alarmeEditado = new EditarAlarme();
 		alarmeEditado.setId(alarme.getId());
@@ -611,7 +623,7 @@ public class TestAlarmeController {
 		alarmeEditado.setQuantidade("1");
 		return alarmeEditado;
 	}
-	
+
 	private EditarAlarme editarAlarmeErro10(Alarme alarme) {
 		EditarAlarme alarmeEditado = new EditarAlarme();
 		alarmeEditado.setId(alarme.getId());
@@ -622,7 +634,7 @@ public class TestAlarmeController {
 		alarmeEditado.setQuantidade("1");
 		return alarmeEditado;
 	}
-	
+
 	private EditarAlarme editarAlarmeErro11(Alarme alarme) {
 		EditarAlarme alarmeEditado = new EditarAlarme();
 		alarmeEditado.setId(alarme.getId());
@@ -633,7 +645,7 @@ public class TestAlarmeController {
 		alarmeEditado.setPeriodicidade(8);
 		return alarmeEditado;
 	}
-	
+
 	private EditarAlarme editarAlarmeErro12(Alarme alarme) {
 		EditarAlarme alarmeEditado = new EditarAlarme();
 		alarmeEditado.setId(alarme.getId());

@@ -34,11 +34,14 @@ public class TelefoneService {
 	public Optional<List<BuscarTelefone>> encontrar() {
 		List<BuscarTelefone> resultados = new ArrayList<>();
 		List<Telefone> telefones = repo.findAll();
-		for (Telefone telefone : telefones) {
-			BuscarTelefone tel = new BuscarTelefone(telefone);
-			resultados.add(tel);
+		if (!telefones.isEmpty()) {
+			for (Telefone telefone : telefones) {
+				BuscarTelefone tel = new BuscarTelefone(telefone);
+				resultados.add(tel);
+			}
+			return Optional.of(resultados);
 		}
-		return Optional.of(resultados);
+		return Optional.empty();
 	}
 
 	public Optional<TelefoneId> alterar(EditarTelefone comando) {

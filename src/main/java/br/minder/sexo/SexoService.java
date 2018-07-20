@@ -34,11 +34,14 @@ public class SexoService {
 	public Optional<List<BuscarSexo>> encontrar() {
 		List<BuscarSexo> resultados = new ArrayList<>();
 		List<Sexo> generos = repo.findAll();
-		for (Sexo genero : generos) {
-			BuscarSexo sexo = new BuscarSexo(genero);
-			resultados.add(sexo);
+		if (!generos.isEmpty()) {
+			for (Sexo genero : generos) {
+				BuscarSexo sexo = new BuscarSexo(genero);
+				resultados.add(sexo);
+			}
+			return Optional.of(resultados);
 		}
-		return Optional.of(resultados);
+		return Optional.empty();
 	}
 
 	public Optional<SexoId> alterar(EditarSexo comando) {

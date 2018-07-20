@@ -40,12 +40,15 @@ public class PerguntaService {
 	public Optional<List<BuscarPergunta>> encontrar() {
 		List<BuscarPergunta> resultados = new ArrayList<>();
 		List<Pergunta> perguntas = repo.findAll();
-		for (Pergunta pergunta : perguntas) {
-			BuscarPergunta resultado = new BuscarPergunta(pergunta);
-			resultado.setRespostas(construir(resultado));
-			resultados.add(resultado);
+		if (!perguntas.isEmpty()) {
+			for (Pergunta pergunta : perguntas) {
+				BuscarPergunta resultado = new BuscarPergunta(pergunta);
+				resultado.setRespostas(construir(resultado));
+				resultados.add(resultado);
+			}
+			return Optional.of(resultados);
 		}
-		return Optional.of(resultados);
+		return Optional.empty();
 	}
 
 	public Optional<PerguntaId> alterar(EditarPergunta comando) {

@@ -53,17 +53,20 @@ public class PlanoDeSaudeService {
 	public Optional<List<BuscarPlanoDeSaude>> encontrar(UsuarioId id) {
 		List<BuscarPlanoDeSaude> rsPlanos = new ArrayList<>();
 		List<PlanoDeSaude> planos = repo.findAll();
-		for (PlanoDeSaude plano : planos) {
-			if (id.toString().equals(plano.getIdUsuario().toString())) {
-				Optional<BuscarConvenio> convenio = convService.encontrar(plano.getIdConvenio());
-				BuscarPlanoDeSaude nova = new BuscarPlanoDeSaude(plano);
-				if (convenio.isPresent()) {
-					nova.setConvenio(convenio.get());
-					rsPlanos.add(nova);
+		if (!planos.isEmpty()) {
+			for (PlanoDeSaude plano : planos) {
+				if (id.toString().equals(plano.getIdUsuario().toString())) {
+					Optional<BuscarConvenio> convenio = convService.encontrar(plano.getIdConvenio());
+					BuscarPlanoDeSaude nova = new BuscarPlanoDeSaude(plano);
+					if (convenio.isPresent()) {
+						nova.setConvenio(convenio.get());
+						rsPlanos.add(nova);
+					}
 				}
 			}
+			return Optional.of(rsPlanos);
 		}
-		return Optional.of(rsPlanos);
+		return Optional.empty();
 	}
 
 	public Optional<PlanoDeSaudeId> alterar(EditarPlanoDeSaude comando) {

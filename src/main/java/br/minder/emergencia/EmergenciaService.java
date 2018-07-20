@@ -59,7 +59,7 @@ public class EmergenciaService {
 
 	public Optional<BuscarEmergencia> encontrar(EmergenciaId id, UsuarioId idUsuario) {
 		Optional<Emergencia> emergencia = repo.findById(id);
-		if (emergencia.isPresent()) {
+		if (emergencia.isPresent() && emergencia.get().getIdUsuario().toString().equals(idUsuario.toString())) {
 			return Optional.of(
 					construirEmergencia(usuarioService.encontrar(idUsuario), new BuscarEmergencia(emergencia.get())));
 		}
@@ -93,7 +93,8 @@ public class EmergenciaService {
 		List<Emergencia> emergencias = repo.findAll();
 		for (Emergencia emergencia : emergencias) {
 			if (id.toString().equals(emergencia.getIdUsuario().toString())) {
-				BuscarEmergencia resultados = construirEmergencia(usuarioService.encontrar(id), new BuscarEmergencia(emergencia));
+				BuscarEmergencia resultados = construirEmergencia(usuarioService.encontrar(id),
+						new BuscarEmergencia(emergencia));
 				return Optional.of(resultados);
 			}
 		}
