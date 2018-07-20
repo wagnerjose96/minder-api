@@ -39,7 +39,7 @@ public class SenhaService {
 		});
 	}
 
-	public String gerarSenhaAleatoria(GerarSenha comando) {
+	private StringBuilder criarSenha() {
 		String[] carct = { "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "a", "b", "c", "d", "e", "f", "g", "h",
 				"i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z", "A", "B", "C",
 				"D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X",
@@ -50,18 +50,23 @@ public class SenhaService {
 			int j = (r.nextInt(62));
 			senha.append(carct[j]);
 		}
+		return senha;
+	}
+
+	public Optional<String> gerarSenhaAleatoria(GerarSenha comando) {
 		List<GerarSenha> usuario = consultarId(comando);
-		if (usuario.get(0).getAtivo() == 1) {
+		if (!usuario.isEmpty() && usuario.get(0).getAtivo() == 1) {
 			Optional<Usuario> optional = repo.findById(usuario.get(0).getId());
 			if (optional.isPresent()) {
 				Usuario user = optional.get();
-				comando.setSenha(senha.toString());
+				String senha = criarSenha().toString();
+				comando.setSenha(senha);
 				user.applySenha(comando);
 				repo.save(user);
+				return Optional.of(senha);
 			}
-			return senha.toString();
 		}
-		return senha.toString();
+		return Optional.empty();
 	}
 
 }

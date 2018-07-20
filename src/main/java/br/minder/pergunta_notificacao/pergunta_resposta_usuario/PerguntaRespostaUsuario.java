@@ -4,17 +4,14 @@ import javax.persistence.AttributeOverride;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
-
 import br.minder.pergunta_notificacao.PerguntaId;
 import br.minder.pergunta_notificacao.pergunta_resposta_usuario.comandos.CriarPerguntaRespostaUsuario;
 import br.minder.pergunta_notificacao.resposta.RespostaId;
 import br.minder.usuario.UsuarioId;
 import lombok.Getter;
-import lombok.Setter;
 
 @Entity
 @Getter
-@Setter
 public class PerguntaRespostaUsuario {
 	@EmbeddedId
 	@AttributeOverride(name = "value", column = @Column(name = "id"))

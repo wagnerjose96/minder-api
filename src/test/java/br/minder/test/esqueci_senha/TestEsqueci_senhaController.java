@@ -1,5 +1,6 @@
 package br.minder.test.esqueci_senha;
 
+import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.junit.Assert.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
@@ -91,10 +92,15 @@ public class TestEsqueci_senhaController {
 		List<Usuario> usuarios = repo.findAll();
 		assertThat(usuarios.get(0), notNullValue());
 
-		final String jsonString = objectMapper.writeValueAsString(criarSenha("wagner@hotmail.com"));
+		String jsonString = objectMapper.writeValueAsString(criarSenha("wagner@hotmail.com"));
 
 		this.mockMvc.perform(put("/senha").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
 				.content(jsonString)).andExpect(jsonPath("$", notNullValue())).andExpect(status().isOk());
+		
+		jsonString = objectMapper.writeValueAsString(criarSenha("lathuanny@hotmail.com"));
+
+		this.mockMvc.perform(put("/senha").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+				.content(jsonString)).andExpect(jsonPath("$.error", equalTo("Usuário não encontrado"))).andExpect(status().isNotFound());
 	}
 
 	private GerarSenha criarSenha(String email) {

@@ -19,6 +19,10 @@
 				foreignKeyName="FK_CONTATO_TELEFONE" references="telefone(id)" />
 			</column>
 		</createTable>
+		<addForeignKeyConstraint
+			constraintName="DELETE_TELEFONE" referencedTableName="telefone"
+			baseColumnNames="id_telefone" baseTableName="contato"
+			referencedColumnNames="id" onDelete="CASCADE" />
 	</changeSet>
 
 

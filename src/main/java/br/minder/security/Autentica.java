@@ -5,17 +5,14 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
-
 import br.minder.login.comandos.IdentificarUsuario;
 import br.minder.login.comandos.LogarAdm;
 import br.minder.login.comandos.LogarUsuario;
 import br.minder.usuario.UsuarioId;
 import lombok.Getter;
-import lombok.Setter;
 
 @Component
 @Getter
-@Setter
 public class Autentica {
 	@Autowired
 	private JdbcTemplate jdbcTemplate;

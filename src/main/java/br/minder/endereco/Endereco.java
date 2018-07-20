@@ -14,7 +14,6 @@ import lombok.Setter;
 @Entity
 @Audited
 @Getter
-@Setter
 public class Endereco {
 	@EmbeddedId
 	@AttributeOverride(name = "value", column = @Column(name = "id"))
@@ -29,9 +28,9 @@ public class Endereco {
 
 	public Endereco() {
 	}
-	
+
 	public void apply(EditarEndereco comando) {
-		this.id =  comando.getId();
+		this.id = comando.getId();
 		this.rua = comando.getRua();
 		this.bairro = comando.getBairro();
 		this.cidade = comando.getCidade();
@@ -41,7 +40,7 @@ public class Endereco {
 	}
 
 	public Endereco(CriarEndereco comando) {
-		this.id =  new EnderecoId();
+		this.id = new EnderecoId();
 		this.rua = comando.getRua();
 		this.bairro = comando.getBairro();
 		this.cidade = comando.getCidade();

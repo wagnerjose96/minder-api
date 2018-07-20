@@ -28,6 +28,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import br.minder.MinderApplication;
 import br.minder.endereco.comandos.CriarEndereco;
 import br.minder.login.LoginController;
+import br.minder.login.comandos.LogarAdm;
 import br.minder.login.comandos.LogarUsuario;
 import br.minder.pergunta_notificacao.Pergunta;
 import br.minder.pergunta_notificacao.PerguntaId;
@@ -35,6 +36,7 @@ import br.minder.pergunta_notificacao.PerguntaRepository;
 import br.minder.pergunta_notificacao.PerguntaService;
 import br.minder.pergunta_notificacao.comandos.CriarPergunta;
 import br.minder.pergunta_notificacao.pergunta_resposta_usuario.PerguntaRespostaUsuario;
+import br.minder.pergunta_notificacao.pergunta_resposta_usuario.PerguntaRespostaUsuarioId;
 import br.minder.pergunta_notificacao.pergunta_resposta_usuario.PerguntaRespostaUsuarioRepository;
 import br.minder.pergunta_notificacao.pergunta_resposta_usuario.comandos.CriarPerguntaRespostaUsuario;
 import br.minder.pergunta_notificacao.resposta.Resposta;
@@ -55,6 +57,10 @@ import br.minder.usuario.Usuario;
 import br.minder.usuario.UsuarioRepository;
 import br.minder.usuario.UsuarioService;
 import br.minder.usuario.comandos.CriarUsuario;
+import br.minder.usuario_adm.UsuarioAdm;
+import br.minder.usuario_adm.UsuarioAdmRepository;
+import br.minder.usuario_adm.UsuarioAdmService;
+import br.minder.usuario_adm.comandos.CriarUsuarioAdm;
 
 @RunWith(SpringRunner.class)
 @Transactional
@@ -101,6 +107,12 @@ public class TestPerguntaRespostaUsuarioController {
 	@Autowired
 	private SexoRepository repoSexo;
 
+	@Autowired
+	private UsuarioAdmRepository repoAdm;
+
+	@Autowired
+	private UsuarioAdmService admService;
+
 	@Before
 	public void setup() {
 		mockMvc = MockMvcBuilders.webAppContextSetup(context).build();
@@ -113,6 +125,10 @@ public class TestPerguntaRespostaUsuarioController {
 		usuarioService.salvar((criarUsuario("wagner@hotmail.com", "wagnerju", idSexo, idSangue)));
 		List<Usuario> usuario = repoUsuario.findAll();
 		assertThat(usuario.get(0), notNullValue());
+
+		admService.salvar(criarAdm());
+		List<UsuarioAdm> adm = repoAdm.findAll();
+		assertThat(adm.get(0), notNullValue());
 
 		perguntaService.salvar(criarPergunta("Como vc está se sentindo hj??"));
 		List<Pergunta> pergunta = repoPergunta.findAll();
@@ -130,6 +146,11 @@ public class TestPerguntaRespostaUsuarioController {
 						.accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON).content(jsonString))
 				.andExpect(jsonPath("$", equalTo("A  pergunta de notificação foi respondida com sucesso")))
 				.andExpect(status().isCreated());
+
+		this.mockMvc.perform(post("/perguntaNotificacao").accept(MediaType.APPLICATION_JSON)
+				.contentType(MediaType.APPLICATION_JSON).header("token", logarAdm("admin", "1234")).content(jsonString))
+				.andExpect(jsonPath("$.error", equalTo("Acesso negado"))).andExpect(status().isForbidden());
+
 	}
 
 	@Test
@@ -139,6 +160,20 @@ public class TestPerguntaRespostaUsuarioController {
 		usuarioService.salvar((criarUsuario("wagner@hotmail.com", "wagnerju", idSexo, idSangue)));
 		List<Usuario> usuario = repoUsuario.findAll();
 		assertThat(usuario.get(0), notNullValue());
+
+		admService.salvar(criarAdm());
+		List<UsuarioAdm> adm = repoAdm.findAll();
+		assertThat(adm.get(0), notNullValue());
+
+		this.mockMvc.perform(get("/perguntaNotificacao").header("token", logar("wagnerju", "1234")))
+				.andExpect(jsonPath("$.error",
+						equalTo("Não existe nenhuma pergunta de notificação respondida no banco de dados")))
+				.andExpect(status().isNotFound());
+
+		this.mockMvc
+				.perform(get("/perguntaNotificacao").accept(MediaType.APPLICATION_JSON)
+						.contentType(MediaType.APPLICATION_JSON).header("token", logarAdm("admin", "1234")))
+				.andExpect(jsonPath("$.error", equalTo("Acesso negado"))).andExpect(status().isForbidden());
 
 		perguntaService.salvar(criarPergunta("Como vc está se sentindo hj??"));
 		List<Pergunta> pergunta = repoPergunta.findAll();
@@ -192,6 +227,23 @@ public class TestPerguntaRespostaUsuarioController {
 		usuarioService.salvar((criarUsuario("wagner@hotmail.com", "wagnerju", idSexo, idSangue)));
 		List<Usuario> usuario = repoUsuario.findAll();
 		assertThat(usuario.get(0), notNullValue());
+
+		admService.salvar(criarAdm());
+		List<UsuarioAdm> adm = repoAdm.findAll();
+		assertThat(adm.get(0), notNullValue());
+
+		this.mockMvc
+				.perform(get("/perguntaNotificacao/" + new PerguntaRespostaUsuarioId().toString()).header("token",
+						logar("wagnerju", "1234")))
+				.andExpect(jsonPath("$.error",
+						equalTo("A pergunta de notificação procurada não existe no banco de dados")))
+				.andExpect(status().isNotFound());
+
+		this.mockMvc
+				.perform(get("/perguntaNotificacao/" + new PerguntaRespostaUsuarioId().toString())
+						.accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+						.header("token", logarAdm("admin", "1234")))
+				.andExpect(jsonPath("$.error", equalTo("Acesso negado"))).andExpect(status().isForbidden());
 
 		perguntaService.salvar(criarPergunta("Como vc está se sentindo hj??"));
 		List<Pergunta> pergunta = repoPergunta.findAll();
@@ -279,6 +331,20 @@ public class TestPerguntaRespostaUsuarioController {
 
 	private SexoId criarSexo(String tipo) {
 		return repoSexo.save(new Sexo(new CriarSexo(tipo))).getIdGenero();
+	}
+
+	private CriarUsuarioAdm criarAdm() {
+		CriarUsuarioAdm adm = new CriarUsuarioAdm();
+		adm.setNome("admin");
+		adm.setSenha("1234");
+		return adm;
+	}
+
+	private String logarAdm(String nomeUsuario, String senha) {
+		LogarAdm corpoLogin = new LogarAdm();
+		corpoLogin.setIdentificador(nomeUsuario);
+		corpoLogin.setSenha(senha);
+		return login.loginAdm(corpoLogin).getBody();
 	}
 
 }

@@ -5,7 +5,6 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import br.minder.exceptions.comandos.CriarErrorDetail;
 
 @Service
@@ -20,10 +19,17 @@ public class ErrorDetailService {
 	}
 
 	public Optional<List<ErrorDetail>> encontrar() {
-		return Optional.of(repo.findAll());
+		List<ErrorDetail> erros = repo.findAll();
+		if (!erros.isEmpty())
+			return Optional.of(erros);
+		return Optional.empty();
 	}
 
 	public Optional<ErrorDetail> encontrar(ErrorDetailId id) {
-		return repo.findById(id);
+		Optional<ErrorDetail> error = repo.findById(id);
+		if (error.isPresent())
+			return error;
+		return Optional.empty();
 	}
+
 }

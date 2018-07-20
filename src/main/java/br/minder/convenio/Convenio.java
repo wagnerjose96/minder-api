@@ -15,13 +15,13 @@ import lombok.Setter;
 @Entity
 @Audited
 @Getter
-@Setter
 public class Convenio {
 	@EmbeddedId
 	@AttributeOverride(name = "value", column = @Column(name = "id"))
 	@Setter(AccessLevel.NONE)
 	private ConvenioId id;
 	private String nome;
+	@Setter
 	private int ativo;
 
 	public Convenio() {

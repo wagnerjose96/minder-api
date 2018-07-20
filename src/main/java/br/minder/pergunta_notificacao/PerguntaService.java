@@ -23,8 +23,11 @@ public class PerguntaService {
 	private RespostaService respostaService;
 
 	public Optional<PerguntaId> salvar(CriarPergunta comando) {
-		Pergunta novo = repo.save(new Pergunta(comando));
-		return Optional.of(novo.getIdPergunta());
+		if (comando.getDescricao() != null) {
+			Pergunta novo = repo.save(new Pergunta(comando));
+			return Optional.of(novo.getIdPergunta());
+		}
+		return Optional.empty();
 	}
 
 	public Optional<BuscarPergunta> encontrar(PerguntaId id) {
@@ -53,7 +56,7 @@ public class PerguntaService {
 
 	public Optional<PerguntaId> alterar(EditarPergunta comando) {
 		Optional<Pergunta> optional = repo.findById(comando.getIdPergunta());
-		if (optional.isPresent()) {
+		if (comando.getDescricao() != null && optional.isPresent()) {
 			Pergunta pergunta = optional.get();
 			pergunta.apply(comando);
 			repo.save(pergunta);

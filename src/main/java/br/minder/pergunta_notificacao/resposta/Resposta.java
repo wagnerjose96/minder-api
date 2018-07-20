@@ -16,7 +16,6 @@ import lombok.Setter;
 @Entity
 @Audited
 @Getter
-@Setter
 public class Resposta {
 	@EmbeddedId
 	@AttributeOverride(name = "value", column = @Column(name = "id_resposta"))

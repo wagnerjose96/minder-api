@@ -23,7 +23,7 @@ public class ErrorDetailController {
 		if (optionalError.isPresent()) {
 			return ResponseEntity.ok(optionalError.get());
 		}
-		return ResponseEntity.notFound().build();
+		throw new NullPointerException("Não existe nenhuma exceção cadastrada no banco de dados");
 	}
 
 	@GetMapping("/{id}")

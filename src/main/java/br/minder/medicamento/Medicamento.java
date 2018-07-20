@@ -14,7 +14,6 @@ import lombok.Setter;
 @Entity
 @Audited
 @Getter
-@Setter
 public class Medicamento {
 	@EmbeddedId
 	@AttributeOverride(name = "value", column = @Column(name = "id_medicamento"))
@@ -22,6 +21,7 @@ public class Medicamento {
 	private MedicamentoId idMedicamento;
 	private String nomeMedicamento;
 	private String composicao;
+	@Setter
 	private int ativo;
 
 	public Medicamento() {

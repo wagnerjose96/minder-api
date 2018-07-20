@@ -113,8 +113,8 @@ public class ContatoService {
 			ContatoEmergenciaId idContatoEmergencia = buscaId(idEmergencia.toString(), id.toString(),
 					sqlContatoEmergencia).get(0).getId();
 			repoContatoEmergencia.deleteById(idContatoEmergencia);
-			telefoneService.deletar(contato.get().getIdTelefone());
 			repo.deleteById(id);
+			telefoneService.deletar(contato.get().getIdTelefone());
 			return Optional.of("Contato ===> " + id + ": deletado com sucesso");
 		}
 		return Optional.empty();
