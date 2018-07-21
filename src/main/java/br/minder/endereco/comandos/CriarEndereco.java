@@ -1,6 +1,5 @@
 package br.minder.endereco.comandos;
 
-import br.minder.endereco.Endereco;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -15,14 +14,7 @@ public class CriarEndereco {
 	private String numero;
 	
 	public CriarEndereco() {
+		// default constructor
 	}
-	
-	public CriarEndereco(Endereco comando) {
-		this.rua = comando.getRua();
-		this.bairro = comando.getBairro();
-		this.cidade = comando.getCidade();
-		this.estado = comando.getEstado();
-		this.complemento = comando.getComplemento();
-		this.numero = comando.getNumero();
-	}
+
 }

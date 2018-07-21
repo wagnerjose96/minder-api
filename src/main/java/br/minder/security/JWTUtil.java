@@ -13,17 +13,6 @@ public class JWTUtil {
 		return Jwts.builder().setSubject(subject).signWith(SignatureAlgorithm.HS512, secret.getBytes()).compact();
 	}
 
-	public static boolean tokenValido(String token) {
-		Claims claims = getClaims(token);
-		if (claims != null) {
-			String username = claims.getSubject();
-			if (username != null) {
-				return true;
-			}
-		}
-		return false;
-	}
-
 	public static String getUsername(String token) {
 		Claims claims = getClaims(token);
 		if (claims != null) {

@@ -29,8 +29,7 @@ public class Autentica {
 				(rs, rowNum) -> {
 					String email = rs.getString(COLUNAEMAIL);
 					String nomeUsuario = rs.getString(COLUNAUSERNAME);
-					if (email.equals(identificador)
-							|| nomeUsuario.equals(identificador) && JWTUtil.tokenValido(token)) {
+					if (email.equals(identificador) || nomeUsuario.equals(identificador)) {
 						usuario.setIdentificador(rs.getString(COLUNAUSERNAME));
 					}
 					return usuario;
@@ -45,15 +44,12 @@ public class Autentica {
 				(rs, rowNum) -> {
 					String email = rs.getString(COLUNAEMAIL);
 					String nomeUsuario = rs.getString(COLUNAUSERNAME);
-					if (email.equals(identificador)
-							|| nomeUsuario.equals(identificador) && JWTUtil.tokenValido(token)) {
+					if (email.equals(identificador) || nomeUsuario.equals(identificador)) {
 						usuario.setId(new UsuarioId(rs.getString("id")));
 					}
 					return usuario;
 				});
-		if (user.size() == 1)
-			return user.get(0).getId();
-		return null;
+		return user.get(0).getId();
 	}
 
 	public boolean autenticaRequisicaoAdm(String token) {
@@ -61,7 +57,7 @@ public class Autentica {
 		LogarUsuario usuario = new LogarUsuario();
 		List<LogarUsuario> user = jdbcTemplate.query(selectAdm, new Object[] { identificador }, (rs, rowNum) -> {
 			String nomeUsuario = rs.getString(COLUNAUSERNAME);
-			if (nomeUsuario.equals(identificador) && JWTUtil.tokenValido(token)) {
+			if (nomeUsuario.equals(identificador)) {
 				usuario.setIdentificador(rs.getString(COLUNAUSERNAME));
 			}
 			return usuario;

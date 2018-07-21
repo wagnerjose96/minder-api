@@ -8,6 +8,4 @@ import lombok.Setter;
 @Setter
 public class IdentificarUsuario {
 	private UsuarioId id;
-	private String identificador;
-	private String senha;
 }

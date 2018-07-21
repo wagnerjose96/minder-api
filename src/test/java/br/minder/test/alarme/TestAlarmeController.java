@@ -127,7 +127,7 @@ public class TestAlarmeController {
 
 		this.mockMvc
 				.perform(post("/alarmes").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
-						.header("token", logar("wagnerju", "1234")).content(jsonString))
+						.header("token", logar("wagner@hotmail.com", "1234")).content(jsonString))
 				.andExpect(jsonPath("$", equalTo("O alarme foi cadastrado com sucesso")))
 				.andExpect(status().isCreated());
 

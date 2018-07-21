@@ -96,11 +96,26 @@ public class TestEsqueci_senhaController {
 
 		this.mockMvc.perform(put("/senha").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
 				.content(jsonString)).andExpect(jsonPath("$", notNullValue())).andExpect(status().isOk());
-		
+
 		jsonString = objectMapper.writeValueAsString(criarSenha("lathuanny@hotmail.com"));
 
-		this.mockMvc.perform(put("/senha").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
-				.content(jsonString)).andExpect(jsonPath("$.error", equalTo("Usuário não encontrado"))).andExpect(status().isNotFound());
+		this.mockMvc
+				.perform(put("/senha").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+						.content(jsonString))
+				.andExpect(jsonPath("$.error", equalTo("Usuário não encontrado"))).andExpect(status().isNotFound());
+
+		serviceUsuario.deletar(usuarios.get(0).getId());
+		usuarios = repo.findAll();
+		assertThat(usuarios.get(0).getAtivo(), equalTo(0));
+		assertThat(usuarios.get(0).getNomeUsuario(), equalTo("wagnerju"));
+
+		jsonString = objectMapper.writeValueAsString(criarSenha("wagner@hotmail.com"));
+
+		this.mockMvc
+				.perform(put("/senha").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+						.content(jsonString))
+				.andExpect(jsonPath("$.error", equalTo("Usuário não encontrado"))).andExpect(status().isNotFound());
+
 	}
 
 	private GerarSenha criarSenha(String email) {

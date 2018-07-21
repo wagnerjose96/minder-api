@@ -23,7 +23,7 @@ public class SenhaService {
 	@Autowired
 	private UsuarioRepository repo;
 
-	private String sqlSenha = "select email, id, ativo from usuario " + "where email = ?";
+	private String sqlSenha = "select email, id, ativo from usuario " + "where email = ? and ativo = 1";
 
 	private List<GerarSenha> consultarId(GerarSenha comando) {
 		String email = comando.getEmail();
@@ -55,7 +55,7 @@ public class SenhaService {
 
 	public Optional<String> gerarSenhaAleatoria(GerarSenha comando) {
 		List<GerarSenha> usuario = consultarId(comando);
-		if (!usuario.isEmpty() && usuario.get(0).getAtivo() == 1) {
+		if (!usuario.isEmpty()) {
 			Optional<Usuario> optional = repo.findById(usuario.get(0).getId());
 			if (optional.isPresent()) {
 				Usuario user = optional.get();

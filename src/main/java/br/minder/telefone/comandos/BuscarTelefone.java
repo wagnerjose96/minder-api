@@ -20,5 +20,4 @@ public class BuscarTelefone {
 
 	public BuscarTelefone() {
 	}
-
 }
