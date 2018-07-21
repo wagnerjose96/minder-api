@@ -125,6 +125,38 @@ public class TestPlanoDeSaudeController {
 						.header("token", logar("wagnerju", "1234")).content(jsonString))
 				.andExpect(jsonPath("$", equalTo("O plano de saúde foi cadastrado com sucesso")))
 				.andExpect(status().isCreated());
+
+		jsonString = objectMapper.writeValueAsString(criarPlanoErro1(convenio.get(0).getId()));
+
+		this.mockMvc
+				.perform(post("/planos").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+						.header("token", logar("wagnerju", "1234")).content(jsonString))
+				.andExpect(jsonPath("$.error", equalTo("O plano de saúde não foi salvo devido a um erro interno")))
+				.andExpect(status().isInternalServerError());
+
+		jsonString = objectMapper.writeValueAsString(criarPlanoErro2(convenio.get(0).getId()));
+
+		this.mockMvc
+				.perform(post("/planos").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+						.header("token", logar("wagnerju", "1234")).content(jsonString))
+				.andExpect(jsonPath("$.error", equalTo("O plano de saúde não foi salvo devido a um erro interno")))
+				.andExpect(status().isInternalServerError());
+
+		jsonString = objectMapper.writeValueAsString(criarPlanoErro3(convenio.get(0).getId()));
+
+		this.mockMvc
+				.perform(post("/planos").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+						.header("token", logar("wagnerju", "1234")).content(jsonString))
+				.andExpect(jsonPath("$.error", equalTo("O plano de saúde não foi salvo devido a um erro interno")))
+				.andExpect(status().isInternalServerError());
+
+		jsonString = objectMapper.writeValueAsString(criarPlanoErro4(convenio.get(0).getId()));
+
+		this.mockMvc
+				.perform(post("/planos").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+						.header("token", logar("wagnerju", "1234")).content(jsonString))
+				.andExpect(jsonPath("$.error", equalTo("O plano de saúde não foi salvo devido a um erro interno")))
+				.andExpect(status().isInternalServerError());
 	}
 
 	@Test
@@ -132,6 +164,7 @@ public class TestPlanoDeSaudeController {
 		SexoId idSexo = criarSexo("Masculino");
 		SangueId idSangue = criarSangue("A+");
 		usuarioService.salvar(criarUsuario("wagner@hotmail.com", "wagnerju", idSexo, idSangue));
+		usuarioService.salvar(criarUsuario("lathuanny@hotmail.com", "lathuanny", idSexo, idSangue));
 		List<Usuario> usuario = repoUsuario.findAll();
 		assertThat(usuario.get(0), notNullValue());
 
@@ -159,14 +192,57 @@ public class TestPlanoDeSaudeController {
 
 		this.mockMvc
 				.perform(put("/planos").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
-						.header("token", logar("wagnerju", "1234") + "TokenError").content(jsonString))
-				.andExpect(jsonPath("$.error", equalTo("Acesso negado"))).andExpect(status().isForbidden());
+						.header("token", logar("wagnerju", "1234")).content(jsonString))
+				.andExpect(jsonPath("$", equalTo("O plano de saúde foi alterado com sucesso")))
+				.andExpect(status().isOk());
+
+		jsonString = objectMapper.writeValueAsString(editarPlanoErroId(planos.get(0)));
 
 		this.mockMvc
 				.perform(put("/planos").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
 						.header("token", logar("wagnerju", "1234")).content(jsonString))
-				.andExpect(jsonPath("$", equalTo("O plano de saúde foi alterado com sucesso")))
-				.andExpect(status().isOk());
+				.andExpect(jsonPath("$.error", equalTo("O plano de saúde a ser alterado não existe no banco de dados")))
+				.andExpect(status().isNotFound());
+		
+		jsonString = objectMapper.writeValueAsString(editarPlanoErroId(planos.get(0)));
+
+		this.mockMvc
+				.perform(put("/planos").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+						.header("token", logar("lathuanny", "1234")).content(jsonString))
+				.andExpect(jsonPath("$.error", equalTo("O plano de saúde a ser alterado não existe no banco de dados")))
+				.andExpect(status().isNotFound());
+		
+		jsonString = objectMapper.writeValueAsString(editarPlanoErro1(planos.get(0)));
+
+		this.mockMvc
+				.perform(put("/planos").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+						.header("token", logar("wagnerju", "1234")).content(jsonString))
+				.andExpect(jsonPath("$.error", equalTo("Ocorreu um erro interno durante a alteração do plano de saúde")))
+				.andExpect(status().isInternalServerError());
+		
+		jsonString = objectMapper.writeValueAsString(editarPlanoErro2(planos.get(0)));
+
+		this.mockMvc
+				.perform(put("/planos").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+						.header("token", logar("wagnerju", "1234")).content(jsonString))
+				.andExpect(jsonPath("$.error", equalTo("Ocorreu um erro interno durante a alteração do plano de saúde")))
+				.andExpect(status().isInternalServerError());
+		
+		jsonString = objectMapper.writeValueAsString(editarPlanoErro3(planos.get(0)));
+
+		this.mockMvc
+				.perform(put("/planos").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+						.header("token", logar("wagnerju", "1234")).content(jsonString))
+				.andExpect(jsonPath("$.error", equalTo("Ocorreu um erro interno durante a alteração do plano de saúde")))
+				.andExpect(status().isInternalServerError());
+		
+		jsonString = objectMapper.writeValueAsString(editarPlanoErro4(planos.get(0)));
+
+		this.mockMvc
+				.perform(put("/planos").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+						.header("token", logar("wagnerju", "1234")).content(jsonString))
+				.andExpect(jsonPath("$.error", equalTo("Ocorreu um erro interno durante a alteração do plano de saúde")))
+				.andExpect(status().isInternalServerError());
 
 	}
 
@@ -182,12 +258,11 @@ public class TestPlanoDeSaudeController {
 		List<Convenio> convenio = repoConvenio.findAll();
 		assertThat(convenio.get(0), notNullValue());
 
-		this.mockMvc
-		.perform(get("/planos")
-				.header("token", logar("wagnerju", "1234")))
-		.andExpect(jsonPath("$.error", equalTo("Não existe nenhum plano de saúde cadastrado no banco de dados")))
-		.andExpect(status().isNotFound());
-		
+		this.mockMvc.perform(get("/planos").header("token", logar("wagnerju", "1234")))
+				.andExpect(
+						jsonPath("$.error", equalTo("Não existe nenhum plano de saúde cadastrado no banco de dados")))
+				.andExpect(status().isNotFound());
+
 		String jsonString = objectMapper.writeValueAsString(criarPlano(convenio.get(0).getId()));
 
 		this.mockMvc
@@ -252,10 +327,8 @@ public class TestPlanoDeSaudeController {
 						.header("token", logar("wagnerju", "1234") + "TokenError").content(jsonString))
 				.andExpect(jsonPath("$.error", equalTo("Acesso negado"))).andExpect(status().isForbidden());
 
-		this.mockMvc
-				.perform(get("/planos/" + new PlanoDeSaudeId().toString()).accept(MediaType.APPLICATION_JSON)
-						.contentType(MediaType.APPLICATION_JSON)
-						.header("token", logar("wagnerju", "1234")).content(jsonString))
+		this.mockMvc.perform(get("/planos/" + new PlanoDeSaudeId().toString()).accept(MediaType.APPLICATION_JSON)
+				.contentType(MediaType.APPLICATION_JSON).header("token", logar("wagnerju", "1234")).content(jsonString))
 				.andExpect(jsonPath("$.error", equalTo("O plano de saúde procurado não existe no banco de dados")))
 				.andExpect(status().isNotFound());
 
@@ -290,10 +363,8 @@ public class TestPlanoDeSaudeController {
 						.header("token", logar("wagnerju", "1234") + "TokenError").content(jsonString))
 				.andExpect(jsonPath("$.error", equalTo("Acesso negado"))).andExpect(status().isForbidden());
 
-		this.mockMvc
-				.perform(delete("/planos/" + new PlanoDeSaudeId().toString()).accept(MediaType.APPLICATION_JSON)
-						.contentType(MediaType.APPLICATION_JSON)
-						.header("token", logar("wagnerju", "1234")).content(jsonString))
+		this.mockMvc.perform(delete("/planos/" + new PlanoDeSaudeId().toString()).accept(MediaType.APPLICATION_JSON)
+				.contentType(MediaType.APPLICATION_JSON).header("token", logar("wagnerju", "1234")).content(jsonString))
 				.andExpect(jsonPath("$.error", equalTo("O plano de saúde a ser deletado não existe no banco de dados")))
 				.andExpect(status().isNotFound());
 
@@ -320,6 +391,38 @@ public class TestPlanoDeSaudeController {
 		return plano;
 	}
 
+	private CriarPlanoDeSaude criarPlanoErro1(ConvenioId idConvenio) {
+		CriarPlanoDeSaude plano = new CriarPlanoDeSaude();
+		plano.setNumeroCartao(new BigInteger("1122334455667788990"));
+		plano.setHabitacao("quarto");
+		plano.setTerritorio("nacional");
+		return plano;
+	}
+
+	private CriarPlanoDeSaude criarPlanoErro2(ConvenioId idConvenio) {
+		CriarPlanoDeSaude plano = new CriarPlanoDeSaude();
+		plano.setIdConvenio(idConvenio);
+		plano.setHabitacao("quarto");
+		plano.setTerritorio("nacional");
+		return plano;
+	}
+
+	private CriarPlanoDeSaude criarPlanoErro3(ConvenioId idConvenio) {
+		CriarPlanoDeSaude plano = new CriarPlanoDeSaude();
+		plano.setIdConvenio(idConvenio);
+		plano.setNumeroCartao(new BigInteger("1122334455667788990"));
+		plano.setTerritorio("nacional");
+		return plano;
+	}
+
+	private CriarPlanoDeSaude criarPlanoErro4(ConvenioId idConvenio) {
+		CriarPlanoDeSaude plano = new CriarPlanoDeSaude();
+		plano.setIdConvenio(idConvenio);
+		plano.setNumeroCartao(new BigInteger("1122334455667788990"));
+		plano.setHabitacao("quarto");
+		return plano;
+	}
+
 	private EditarPlanoDeSaude editarPlano(PlanoDeSaude plano) {
 		EditarPlanoDeSaude planoAtualizado = new EditarPlanoDeSaude();
 		planoAtualizado.setId(plano.getId());
@@ -327,6 +430,52 @@ public class TestPlanoDeSaudeController {
 		planoAtualizado.setNumeroCartao(plano.getNumeroCartao());
 		planoAtualizado.setHabitacao("apartamento");
 		planoAtualizado.setTerritorio(plano.getTerritorio());
+		return planoAtualizado;
+	}
+
+	private EditarPlanoDeSaude editarPlanoErroId(PlanoDeSaude plano) {
+		EditarPlanoDeSaude planoAtualizado = new EditarPlanoDeSaude();
+		planoAtualizado.setId(new PlanoDeSaudeId());
+		planoAtualizado.setIdConvenio(plano.getIdConvenio());
+		planoAtualizado.setNumeroCartao(plano.getNumeroCartao());
+		planoAtualizado.setHabitacao("apartamento");
+		planoAtualizado.setTerritorio(plano.getTerritorio());
+		return planoAtualizado;
+	}
+
+	private EditarPlanoDeSaude editarPlanoErro1(PlanoDeSaude plano) {
+		EditarPlanoDeSaude planoAtualizado = new EditarPlanoDeSaude();
+		planoAtualizado.setId(plano.getId());
+		planoAtualizado.setNumeroCartao(plano.getNumeroCartao());
+		planoAtualizado.setHabitacao("apartamento");
+		planoAtualizado.setTerritorio(plano.getTerritorio());
+		return planoAtualizado;
+	}
+
+	private EditarPlanoDeSaude editarPlanoErro2(PlanoDeSaude plano) {
+		EditarPlanoDeSaude planoAtualizado = new EditarPlanoDeSaude();
+		planoAtualizado.setId(plano.getId());
+		planoAtualizado.setIdConvenio(plano.getIdConvenio());
+		planoAtualizado.setHabitacao("apartamento");
+		planoAtualizado.setTerritorio(plano.getTerritorio());
+		return planoAtualizado;
+	}
+
+	private EditarPlanoDeSaude editarPlanoErro3(PlanoDeSaude plano) {
+		EditarPlanoDeSaude planoAtualizado = new EditarPlanoDeSaude();
+		planoAtualizado.setId(plano.getId());
+		planoAtualizado.setIdConvenio(plano.getIdConvenio());
+		planoAtualizado.setNumeroCartao(plano.getNumeroCartao());
+		planoAtualizado.setTerritorio(plano.getTerritorio());
+		return planoAtualizado;
+	}
+
+	private EditarPlanoDeSaude editarPlanoErro4(PlanoDeSaude plano) {
+		EditarPlanoDeSaude planoAtualizado = new EditarPlanoDeSaude();
+		planoAtualizado.setId(plano.getId());
+		planoAtualizado.setIdConvenio(plano.getIdConvenio());
+		planoAtualizado.setNumeroCartao(plano.getNumeroCartao());
+		planoAtualizado.setHabitacao("apartamento");
 		return planoAtualizado;
 	}
 

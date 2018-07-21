@@ -92,11 +92,9 @@ public class UsuarioAdmController {
 	public ResponseEntity<String> deleteUsuarioAdmin(@PathVariable UsuarioAdmId id, @RequestHeader String token)
 			throws AccessDeniedException {
 		if (autentica.autenticaRequisicaoAdm(token)) {
-			if (service.encontrar(id).isPresent()) {
-				Optional<String> resultado = service.deletar(id);
-				if (resultado.isPresent())
-					return ResponseEntity.ok(resultado.get());
-			}
+			Optional<String> resultado = service.deletar(id);
+			if (resultado.isPresent())
+				return ResponseEntity.ok(resultado.get());
 			throw new NullPointerException("O administrador a deletar não existe no banco de dados");
 		}
 		throw new AccessDeniedException(ACESSONEGADO);

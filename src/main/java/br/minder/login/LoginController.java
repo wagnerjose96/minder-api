@@ -7,8 +7,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import br.minder.login.comandos.LogarAdm;
 import br.minder.login.comandos.LogarUsuario;
 import br.minder.security.JWTUtil;
 import io.swagger.annotations.Api;
@@ -23,7 +21,7 @@ public class LoginController {
 
 	@Autowired
 	private LoginService service;
-	
+
 	@ApiOperation("Efetue o login de um usuário")
 	@PostMapping("/login")
 	public ResponseEntity<String> loginUsuario(@RequestBody LogarUsuario comando) {
@@ -42,11 +40,11 @@ public class LoginController {
 			throw new NullPointerException(LOGINRECUSADO);
 		}
 	}
-	
+
 	@ApiOperation("Efetue o login de um administrador")
 	@PostMapping("/loginAdm")
-	public ResponseEntity<String> loginAdm(@RequestBody LogarAdm comando) {
-		if (service.consultarUsuario(comando)) {
+	public ResponseEntity<String> loginAdm(@RequestBody LogarUsuario comando) {
+		if (service.consultarAdm(comando)) {
 			String token = JWTUtil.create(comando.getIdentificador());
 			return ResponseEntity.ok().body(token);
 		}

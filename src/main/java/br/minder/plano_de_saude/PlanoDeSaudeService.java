@@ -28,8 +28,11 @@ public class PlanoDeSaudeService {
 	private ConvenioService convService;
 
 	public Optional<String> deletar(PlanoDeSaudeId id) {
-		repo.deleteById(id);
-		return Optional.of("Plano de saúde ===> " + id + ": deletado com sucesso");
+		if (repo.findById(id).isPresent()) {
+			repo.deleteById(id);
+			return Optional.of("Plano de saúde ===> " + id + ": deletado com sucesso");
+		}
+		return Optional.empty();
 	}
 
 	public Optional<PlanoDeSaudeId> salvar(CriarPlanoDeSaude comando, UsuarioId id) {

@@ -3,17 +3,12 @@ package br.minder.usuario_adm.comandos;
 import br.minder.usuario_adm.UsuarioAdm;
 import br.minder.usuario_adm.UsuarioAdmId;
 import lombok.Getter;
-import lombok.Setter;
 
 @Getter
-@Setter
 public class BuscarUsuarioAdm {
 	private UsuarioAdmId id;
 	private String nome;
 	private String senha;
-
-	public BuscarUsuarioAdm() {
-	}
 
 	public BuscarUsuarioAdm(UsuarioAdm comandos) {
 		 this.id = comandos.getId();

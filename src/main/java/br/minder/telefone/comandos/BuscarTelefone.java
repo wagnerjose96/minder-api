@@ -5,8 +5,8 @@ import br.minder.telefone.TelefoneId;
 import lombok.Getter;
 import lombok.Setter;
 
-@Getter
 @Setter
+@Getter
 public class BuscarTelefone {
 	private TelefoneId id;
 	private int ddd;
@@ -20,4 +20,5 @@ public class BuscarTelefone {
 
 	public BuscarTelefone() {
 	}
+
 }

@@ -104,7 +104,7 @@ public class UsuarioService {
 
 	public Optional<String> deletar(UsuarioId id) {
 		Optional<Usuario> usuario = repo.findById(id);
-		if (usuario.isPresent()) {
+		if (usuario.isPresent() && usuario.get().getAtivo() == 1) {
 			usuario.get().setAtivo(0);
 			repo.save(usuario.get());
 			return Optional.of("Usuário ===> " + id + ": deletado com sucesso");

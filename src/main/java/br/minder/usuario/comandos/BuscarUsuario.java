@@ -36,6 +36,4 @@ public class BuscarUsuario {
 		this.imagem = comandos.getImagemUsuario();
 	}
 
-	public BuscarUsuario() {
-	}
 }

@@ -26,6 +26,7 @@ import org.springframework.web.context.WebApplicationContext;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import br.minder.MinderApplication;
 import br.minder.telefone.Telefone;
+import br.minder.telefone.TelefoneId;
 import br.minder.telefone.TelefoneRepository;
 import br.minder.telefone.comandos.CriarTelefone;
 import br.minder.telefone.comandos.EditarTelefone;
@@ -62,6 +63,30 @@ public class TestTelefoneController {
 						.content(jsonString))
 				.andExpect(jsonPath("$", equalTo("O telefone foi cadastrado com sucesso")))
 				.andExpect(status().isCreated());
+
+		jsonString = objectMapper.writeValueAsString(criarTelefoneErro1());
+
+		this.mockMvc
+				.perform(post("/telefones").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+						.content(jsonString))
+				.andExpect(jsonPath("$.error", equalTo("O telefone não foi salvo devido a um erro interno")))
+				.andExpect(status().isInternalServerError());
+
+		jsonString = objectMapper.writeValueAsString(criarTelefoneErro2());
+
+		this.mockMvc
+				.perform(post("/telefones").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+						.content(jsonString))
+				.andExpect(jsonPath("$.error", equalTo("O telefone não foi salvo devido a um erro interno")))
+				.andExpect(status().isInternalServerError());
+
+		jsonString = objectMapper.writeValueAsString(criarTelefoneErro3());
+
+		this.mockMvc
+				.perform(post("/telefones").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+						.content(jsonString))
+				.andExpect(jsonPath("$.error", equalTo("O telefone não foi salvo devido a um erro interno")))
+				.andExpect(status().isInternalServerError());
 	}
 
 	@Test
@@ -83,11 +108,45 @@ public class TestTelefoneController {
 				.perform(put("/telefones").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
 						.content(jsonString))
 				.andExpect(jsonPath("$", equalTo("O telefone foi alterado com sucesso"))).andExpect(status().isOk());
+
+		jsonString = objectMapper.writeValueAsString(editarTelefoneErroId(telefones.get(0)));
+
+		this.mockMvc
+				.perform(put("/telefones").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+						.content(jsonString))
+				.andExpect(jsonPath("$.error", equalTo("O telefone a ser alterado não existe no banco de dados")))
+				.andExpect(status().isNotFound());
+
+		jsonString = objectMapper.writeValueAsString(editarTelefoneErro1(telefones.get(0)));
+
+		this.mockMvc
+				.perform(put("/telefones").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+						.content(jsonString))
+				.andExpect(jsonPath("$.error", equalTo("Ocorreu um erro interno durante a alteração do telefone")))
+				.andExpect(status().isInternalServerError());
+
+		jsonString = objectMapper.writeValueAsString(editarTelefoneErro2(telefones.get(0)));
+
+		this.mockMvc
+				.perform(put("/telefones").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+						.content(jsonString))
+				.andExpect(jsonPath("$.error", equalTo("Ocorreu um erro interno durante a alteração do telefone")))
+				.andExpect(status().isInternalServerError());
+
+		jsonString = objectMapper.writeValueAsString(editarTelefoneErro3(telefones.get(0)));
+
+		this.mockMvc
+				.perform(put("/telefones").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+						.content(jsonString))
+				.andExpect(jsonPath("$.error", equalTo("Ocorreu um erro interno durante a alteração do telefone")))
+				.andExpect(status().isInternalServerError());
 	}
 
 	@Test
 	public void testBuscarTodos() throws Exception {
 		String jsonString = objectMapper.writeValueAsString(criarTelefone());
+
+		this.mockMvc.perform(get("/telefones")).andExpect(status().isNotFound());
 
 		this.mockMvc
 				.perform(post("/telefones").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
@@ -117,6 +176,10 @@ public class TestTelefoneController {
 	public void testBuscarPorId() throws Exception {
 		String jsonString = objectMapper.writeValueAsString(criarTelefone());
 
+		this.mockMvc.perform(get("/telefones/" + new TelefoneId().toString()))
+				.andExpect(jsonPath("$.error", equalTo("O telefone procurado não existe no banco de dados")))
+				.andExpect(status().isNotFound());
+
 		this.mockMvc
 				.perform(post("/telefones").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
 						.content(jsonString))
@@ -138,11 +201,56 @@ public class TestTelefoneController {
 		return telefone;
 	}
 
+	private CriarTelefone criarTelefoneErro1() {
+		CriarTelefone telefone = new CriarTelefone();
+		telefone.setDdd(44);
+		return telefone;
+	}
+
+	private CriarTelefone criarTelefoneErro2() {
+		CriarTelefone telefone = new CriarTelefone();
+		telefone.setNumero(999038860);
+		return telefone;
+	}
+
+	private CriarTelefone criarTelefoneErro3() {
+		CriarTelefone telefone = new CriarTelefone();
+		return telefone;
+	}
+
 	private EditarTelefone editarTelefone(Telefone telefone) {
 		EditarTelefone telefoneAtualizado = new EditarTelefone();
 		telefoneAtualizado.setId(telefone.getId());
 		telefoneAtualizado.setDdd(44);
 		telefoneAtualizado.setNumero(999038860);
+		return telefoneAtualizado;
+	}
+
+	private EditarTelefone editarTelefoneErroId(Telefone telefone) {
+		EditarTelefone telefoneAtualizado = new EditarTelefone();
+		telefoneAtualizado.setId(new TelefoneId());
+		telefoneAtualizado.setDdd(44);
+		telefoneAtualizado.setNumero(999038860);
+		return telefoneAtualizado;
+	}
+
+	private EditarTelefone editarTelefoneErro1(Telefone telefone) {
+		EditarTelefone telefoneAtualizado = new EditarTelefone();
+		telefoneAtualizado.setId(telefone.getId());
+		telefoneAtualizado.setNumero(999038860);
+		return telefoneAtualizado;
+	}
+
+	private EditarTelefone editarTelefoneErro2(Telefone telefone) {
+		EditarTelefone telefoneAtualizado = new EditarTelefone();
+		telefoneAtualizado.setId(telefone.getId());
+		telefoneAtualizado.setDdd(44);
+		return telefoneAtualizado;
+	}
+
+	private EditarTelefone editarTelefoneErro3(Telefone telefone) {
+		EditarTelefone telefoneAtualizado = new EditarTelefone();
+		telefoneAtualizado.setId(telefone.getId());
 		return telefoneAtualizado;
 	}
 

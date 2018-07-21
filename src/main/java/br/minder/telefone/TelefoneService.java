@@ -58,7 +58,10 @@ public class TelefoneService {
 	}
 
 	public Optional<String> deletar(TelefoneId idTelefone) {
-		repo.deleteById(idTelefone);
-		return Optional.of("Telefone ===> " + idTelefone + ": deletado com sucesso");
+		if (repo.findById(idTelefone).isPresent()) {
+			repo.deleteById(idTelefone);
+			return Optional.of("Telefone ===> " + idTelefone + ": deletado com sucesso");
+		}
+		return Optional.empty();
 	}
 }

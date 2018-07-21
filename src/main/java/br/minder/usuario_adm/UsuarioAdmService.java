@@ -51,10 +51,9 @@ public class UsuarioAdmService {
 	}
 
 	public Optional<String> deletar(UsuarioAdmId id) {
-		Optional<UsuarioAdm> usuario = repo.findById(id);
-		if (usuario.isPresent()) {
-			repo.delete(usuario.get());
-			return Optional.of("Usuário ===> " + id + ": deletado com sucesso");
+		if (repo.findById(id).isPresent()) {
+			repo.deleteById(id);
+			return Optional.of("Administrador ===> " + id + ": deletado com sucesso");
 		}
 		return Optional.empty();
 	}

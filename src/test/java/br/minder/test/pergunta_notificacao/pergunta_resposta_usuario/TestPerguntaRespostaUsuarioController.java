@@ -28,7 +28,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import br.minder.MinderApplication;
 import br.minder.endereco.comandos.CriarEndereco;
 import br.minder.login.LoginController;
-import br.minder.login.comandos.LogarAdm;
 import br.minder.login.comandos.LogarUsuario;
 import br.minder.pergunta_notificacao.Pergunta;
 import br.minder.pergunta_notificacao.PerguntaId;
@@ -391,7 +390,7 @@ public class TestPerguntaRespostaUsuarioController {
 	}
 
 	private String logarAdm(String nomeUsuario, String senha) {
-		LogarAdm corpoLogin = new LogarAdm();
+		LogarUsuario corpoLogin = new LogarUsuario();
 		corpoLogin.setIdentificador(nomeUsuario);
 		corpoLogin.setSenha(senha);
 		return login.loginAdm(corpoLogin).getBody();

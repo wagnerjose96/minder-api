@@ -6,11 +6,9 @@ import static org.junit.Assert.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
 import java.sql.Date;
 import java.time.LocalDate;
 import java.util.List;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -30,10 +28,8 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.WebApplicationContext;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.springtestdbunit.TransactionDbUnitTestExecutionListener;
-
 import br.minder.MinderApplication;
 import br.minder.endereco.comandos.CriarEndereco;
-import br.minder.login.comandos.LogarAdm;
 import br.minder.login.comandos.LogarUsuario;
 import br.minder.sangue.Sangue;
 import br.minder.sangue.SangueId;
@@ -121,6 +117,22 @@ public class TestLoginController {
 				.andExpect(jsonPath("$.error", equalTo("Login não realizado! Favor conferir os dados digitados")))
 				.andExpect(status().isNotFound());
 
+		jsonString = objectMapper.writeValueAsString(logar("lathuanny", "1235"));
+
+		this.mockMvc
+				.perform(post("/login").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+						.content(jsonString))
+				.andExpect(jsonPath("$.error", equalTo("Login não realizado! Favor conferir os dados digitados")))
+				.andExpect(status().isNotFound());
+
+		jsonString = objectMapper.writeValueAsString(logar("wagner@hotmail.com", "12345"));
+
+		this.mockMvc
+				.perform(post("/login").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+						.content(jsonString))
+				.andExpect(jsonPath("$.error", equalTo("Login não realizado! Favor conferir os dados digitados")))
+				.andExpect(status().isNotFound());
+
 		jsonString = objectMapper.writeValueAsString(logar("lathuanny@hotmail.com", "1234"));
 
 		this.mockMvc
@@ -128,7 +140,7 @@ public class TestLoginController {
 						.content(jsonString))
 				.andExpect(jsonPath("$.error", equalTo("Login não realizado! Favor conferir os dados digitados")))
 				.andExpect(status().isNotFound());
-		
+
 		jsonString = objectMapper.writeValueAsString(logar("lathuanny@", "1234"));
 
 		this.mockMvc
@@ -136,7 +148,7 @@ public class TestLoginController {
 						.content(jsonString))
 				.andExpect(jsonPath("$.error", equalTo("Login não realizado! Favor conferir os dados digitados")))
 				.andExpect(status().isNotFound());
-		
+
 		jsonString = objectMapper.writeValueAsString(logar("lathuannyhotmail.com", "1234"));
 
 		this.mockMvc
@@ -144,7 +156,7 @@ public class TestLoginController {
 						.content(jsonString))
 				.andExpect(jsonPath("$.error", equalTo("Login não realizado! Favor conferir os dados digitados")))
 				.andExpect(status().isNotFound());
-		
+
 		jsonString = objectMapper.writeValueAsString(logar("lathuanny@hotmail", "1234"));
 
 		this.mockMvc
@@ -152,7 +164,7 @@ public class TestLoginController {
 						.content(jsonString))
 				.andExpect(jsonPath("$.error", equalTo("Login não realizado! Favor conferir os dados digitados")))
 				.andExpect(status().isNotFound());
-		
+
 		jsonString = objectMapper.writeValueAsString(logar("@.com", "1234"));
 
 		this.mockMvc
@@ -160,8 +172,29 @@ public class TestLoginController {
 						.content(jsonString))
 				.andExpect(jsonPath("$.error", equalTo("Login não realizado! Favor conferir os dados digitados")))
 				.andExpect(status().isNotFound());
-		
+
 		jsonString = objectMapper.writeValueAsString(logar("lathuanny@.com", "1234"));
+
+		this.mockMvc
+				.perform(post("/login").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+						.content(jsonString))
+				.andExpect(jsonPath("$.error", equalTo("Login não realizado! Favor conferir os dados digitados")))
+				.andExpect(status().isNotFound());
+
+		serviceUsuario.deletar(usuarios.get(0).getId()).get();
+		usuarios = repo.findAll();
+		assertThat(usuarios.get(0).getAtivo(), equalTo(0));
+		assertThat(usuarios.get(0).getNomeUsuario(), equalTo("wagnerju"));
+
+		jsonString = objectMapper.writeValueAsString(logar("wagnerju", "1234"));
+
+		this.mockMvc
+				.perform(post("/login").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+						.content(jsonString))
+				.andExpect(jsonPath("$.error", equalTo("Login não realizado! Favor conferir os dados digitados")))
+				.andExpect(status().isNotFound());
+
+		jsonString = objectMapper.writeValueAsString(logar("wagner@hotmail.com", "1234"));
 
 		this.mockMvc
 				.perform(post("/login").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
@@ -184,6 +217,22 @@ public class TestLoginController {
 				.andExpect(status().isOk());
 
 		jsonString = objectMapper.writeValueAsString(logarAdm("adm", "1234"));
+
+		this.mockMvc
+				.perform(post("/loginAdm").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+						.content(jsonString))
+				.andExpect(jsonPath("$.error", equalTo("Login não realizado! Favor conferir os dados digitados")))
+				.andExpect(status().isNotFound());
+
+		jsonString = objectMapper.writeValueAsString(logarAdm("adm", "12345"));
+
+		this.mockMvc
+				.perform(post("/loginAdm").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+						.content(jsonString))
+				.andExpect(jsonPath("$.error", equalTo("Login não realizado! Favor conferir os dados digitados")))
+				.andExpect(status().isNotFound());
+
+		jsonString = objectMapper.writeValueAsString(logarAdm("admin", "12345"));
 
 		this.mockMvc
 				.perform(post("/loginAdm").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
@@ -242,8 +291,8 @@ public class TestLoginController {
 		return adm;
 	}
 
-	private LogarAdm logarAdm(String nomeUsuario, String senha) {
-		LogarAdm corpoLogin = new LogarAdm();
+	private LogarUsuario logarAdm(String nomeUsuario, String senha) {
+		LogarUsuario corpoLogin = new LogarUsuario();
 		corpoLogin.setIdentificador(nomeUsuario);
 		corpoLogin.setSenha(senha);
 		return corpoLogin;

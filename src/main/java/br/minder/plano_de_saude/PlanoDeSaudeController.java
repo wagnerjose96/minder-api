@@ -109,12 +109,10 @@ public class PlanoDeSaudeController {
 	public ResponseEntity<String> deletePlanoDeSaude(@PathVariable PlanoDeSaudeId id, @RequestHeader String token)
 			throws AccessDeniedException {
 		if (autentica.autenticaRequisicao(token)) {
-			if (!service.encontrar(id, autentica.idUser(token)).isPresent()) {
-				throw new NullPointerException("O plano de saúde a ser deletado não existe no banco de dados");
-			}
 			Optional<String> resultado = service.deletar(id);
 			if (resultado.isPresent())
 				return ResponseEntity.ok(resultado.get());
+			throw new NullPointerException("O plano de saúde a ser deletado não existe no banco de dados");
 		}
 		throw new AccessDeniedException(ACESSONEGADO);
 	}
