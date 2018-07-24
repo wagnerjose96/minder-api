@@ -9,7 +9,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -17,7 +16,6 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
-
 import br.minder.security.Autentica;
 import br.minder.usuario.comandos.BuscarUsuario;
 import br.minder.usuario.comandos.CriarUsuario;
@@ -46,17 +44,17 @@ public class UsuarioController {
 			if (optionalUsuarios.isPresent()) {
 				return ResponseEntity.ok(optionalUsuarios.get());
 			}
-			return ResponseEntity.notFound().build();
+			throw new NullPointerException("O usuário procurado não existe no banco de dados");
 		}
 		throw new AccessDeniedException(ACESSONEGADO);
 	}
 
 	@ApiOperation("Delete um usuário pelo ID")
-	@DeleteMapping("/{id}")
-	public ResponseEntity<String> deletarUsuario(@PathVariable UsuarioId id, @RequestHeader String token)
+	@DeleteMapping
+	public ResponseEntity<String> deletarUsuario(@RequestHeader String token)
 			throws AccessDeniedException {
 		if (autentica.autenticaRequisicao(token)) {
-			Optional<String> optionalUsuario = service.deletar(id);
+			Optional<String> optionalUsuario = service.deletar(autentica.idUser(token));
 			if (optionalUsuario.isPresent())
 				return ResponseEntity.ok(optionalUsuario.get());
 			throw new NullPointerException("O usuário a deletar não existe no banco de dados");

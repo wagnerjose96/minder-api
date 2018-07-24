@@ -9,11 +9,9 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
 import java.sql.Date;
 import java.time.LocalDate;
 import java.util.List;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -28,13 +26,11 @@ import org.springframework.test.context.support.DependencyInjectionTestExecution
 import org.springframework.test.context.support.DirtiesContextTestExecutionListener;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.WebApplicationContext;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.springtestdbunit.TransactionDbUnitTestExecutionListener;
-
 import br.minder.MinderApplication;
 import br.minder.contato.Contato;
 import br.minder.contato.ContatoId;
@@ -308,7 +304,7 @@ public class TestContatoController {
 		List<Emergencia> emergencias = repoEmergencia.findAll();
 		assertThat(emergencias.get(0), notNullValue());
 
-		this.mockMvc.perform(get("/contatos")).andDo(MockMvcResultHandlers.print()).andExpect(status().isNotFound());
+		this.mockMvc.perform(get("/contatos")).andExpect(status().isNotFound());
 
 		String jsonString = objectMapper.writeValueAsString(criarContato("Larissa Thuanny"));
 
@@ -367,12 +363,6 @@ public class TestContatoController {
 				.andExpect(jsonPath("$",
 						equalTo("Contato ===> " + contatos.get(0).getId().toString() + ": deletado com sucesso")))
 				.andExpect(status().isOk());
-
-		this.mockMvc
-				.perform(delete("/contatos/" + contatos.get(0).getId().toString()).header("token",
-						logar("wagnerju", "1234")))
-				.andExpect(jsonPath("$.error", equalTo("O contato a deletar não existe no banco de dados")))
-				.andExpect(status().isNotFound());
 
 		this.mockMvc
 				.perform(delete("/contatos/" + contatos.get(0).getId().toString()).header("token",
@@ -482,7 +472,7 @@ public class TestContatoController {
 		endereco.setBairro("Zona 6");
 		endereco.setCidade("Maringá");
 		endereco.setEstado("Paraná");
-		endereco.setNumero(1390);
+		endereco.setNumero("1390");
 		endereco.setRua("Castro Alves");
 
 		CriarTelefone telefone = new CriarTelefone();

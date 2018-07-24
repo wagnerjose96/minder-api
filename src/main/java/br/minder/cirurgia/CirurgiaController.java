@@ -46,6 +46,7 @@ public class CirurgiaController {
 			if (optionalCirurgias.isPresent()) {
 				return ResponseEntity.ok(optionalCirurgias.get());
 			}
+			throw new NullPointerException("Não existe nenhuma cirurgia cadastrada no banco de dados");
 		}
 		throw new AccessDeniedException(ACESSONEGADO);
 	}

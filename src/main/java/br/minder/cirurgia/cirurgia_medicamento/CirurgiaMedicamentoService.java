@@ -1,5 +1,6 @@
 package br.minder.cirurgia.cirurgia_medicamento;
 
+import java.util.List;
 import java.util.Optional;
 import javax.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +14,10 @@ public class CirurgiaMedicamentoService {
 
 	public void salvar(CirurgiaMedicamento novoCirurgiaMedicamento) {
 		repo.save(novoCirurgiaMedicamento);
+	}
+	
+	public List<CirurgiaMedicamento> encontrar() {
+		return repo.findAll();
 	}
 	
 	public Optional<CirurgiaMedicamento> encontrar(CirurgiaMedicamentoId id) {

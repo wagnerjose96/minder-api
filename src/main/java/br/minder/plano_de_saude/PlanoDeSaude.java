@@ -13,14 +13,12 @@ import br.minder.plano_de_saude.comandos.CriarPlanoDeSaude;
 import br.minder.plano_de_saude.comandos.EditarPlanoDeSaude;
 import br.minder.usuario.UsuarioId;
 import lombok.AccessLevel;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import lombok.Setter;
 
 @Entity
 @Audited
-@Data
-@EqualsAndHashCode(exclude = { "numeroCartao", "habitacao", "territorio" })
+@Getter
 public class PlanoDeSaude {
 	@EmbeddedId
 	@AttributeOverride(name = "value", column = @Column(name = "id"))

@@ -1,9 +1,8 @@
-package br.minder.test.doenca;
+package br.minder.test.cirurgia;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.junit.Assert.assertThat;
-
 import java.sql.Date;
 import java.time.LocalDate;
 import java.util.HashSet;
@@ -29,12 +28,12 @@ import org.springframework.web.context.WebApplicationContext;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.springtestdbunit.TransactionDbUnitTestExecutionListener;
 import br.minder.MinderApplication;
-import br.minder.doenca.Doenca;
-import br.minder.doenca.DoencaId;
-import br.minder.doenca.DoencaRepository;
-import br.minder.doenca.comandos.CriarDoenca;
-import br.minder.doenca.doenca_medicamento.DoencaMedicamento;
-import br.minder.doenca.doenca_medicamento.DoencaMedicamentoService;
+import br.minder.cirurgia.CirurgiaRepository;
+import br.minder.cirurgia.cirurgia_medicamento.CirurgiaMedicamentoService;
+import br.minder.cirurgia.Cirurgia;
+import br.minder.cirurgia.CirurgiaId;
+import br.minder.cirurgia.comandos.CriarCirurgia;
+import br.minder.cirurgia.cirurgia_medicamento.CirurgiaMedicamento;
 import br.minder.endereco.comandos.CriarEndereco;
 import br.minder.medicamento.MedicamentoId;
 import br.minder.medicamento.MedicamentoService;
@@ -60,7 +59,7 @@ import br.minder.usuario.comandos.CriarUsuario;
 @Rollback
 @WebAppConfiguration
 @SpringBootTest(classes = { MinderApplication.class }, webEnvironment = WebEnvironment.MOCK)
-public class TestDoencaMedicamentoService {
+public class TestCirurgiaMedicamentoService {
 
 	@Autowired
 	private WebApplicationContext context;
@@ -88,10 +87,10 @@ public class TestDoencaMedicamentoService {
 	private UsuarioRepository repo;
 
 	@Autowired
-	private DoencaRepository repoDoenca;
+	private CirurgiaRepository repoCirurgia;
 
 	@Autowired
-	private DoencaMedicamentoService doencaMedicamentoService;
+	private CirurgiaMedicamentoService cirurgiaMedicamentoService;
 
 	@Before
 	public void setup() {
@@ -111,22 +110,22 @@ public class TestDoencaMedicamentoService {
 		List<Usuario> usuarios = repo.findAll();
 		assertThat(usuarios.get(0), notNullValue());
 
-		Doenca doenca = new Doenca(criarDoenca(idsMedicamentos, "Asma"), usuarios.get(0).getId());
-		DoencaId idDoenca = repoDoenca.save(doenca).getIdDoenca();
+		Cirurgia cirurgia = new Cirurgia(criarCirurgia(idsMedicamentos, "Asma"), usuarios.get(0).getId());
+		CirurgiaId idCirurgia = repoCirurgia.save(cirurgia).getIdCirurgia();
 
-		DoencaMedicamento doencaMedicamento = new DoencaMedicamento();
-		doencaMedicamento.setIdDoenca(idDoenca);
-		doencaMedicamento.setIdMedicamento(idMedicamento);
+		CirurgiaMedicamento cirurgiaMedicamento = new CirurgiaMedicamento();
+		cirurgiaMedicamento.setIdCirurgia(idCirurgia);
+		cirurgiaMedicamento.setIdMedicamento(idMedicamento);
 
-		doencaMedicamentoService.salvar(doencaMedicamento);
+		cirurgiaMedicamentoService.salvar(cirurgiaMedicamento);
 
-		List<DoencaMedicamento> doencasMedicamentos = doencaMedicamentoService.encontrar();
-		assertThat(doencasMedicamentos.size(), equalTo(1));
-		assertThat(doencasMedicamentos.get(0).getId().toString(), equalTo(doencaMedicamento.getId().toString()));
-		assertThat(doencasMedicamentos.get(0).getIdDoenca().toString(),
-				equalTo(doencaMedicamento.getIdDoenca().toString()));
-		assertThat(doencasMedicamentos.get(0).getIdMedicamento().toString(),
-				equalTo(doencaMedicamento.getIdMedicamento().toString()));
+		List<CirurgiaMedicamento> cirurgiasMedicamentos = cirurgiaMedicamentoService.encontrar();
+		assertThat(cirurgiasMedicamentos.size(), equalTo(1));
+		assertThat(cirurgiasMedicamentos.get(0).getId().toString(), equalTo(cirurgiaMedicamento.getId().toString()));
+		assertThat(cirurgiasMedicamentos.get(0).getIdCirurgia().toString(),
+				equalTo(cirurgiaMedicamento.getIdCirurgia().toString()));
+		assertThat(cirurgiasMedicamentos.get(0).getIdMedicamento().toString(),
+				equalTo(cirurgiaMedicamento.getIdMedicamento().toString()));
 
 	}
 
@@ -143,30 +142,32 @@ public class TestDoencaMedicamentoService {
 		List<Usuario> usuarios = repo.findAll();
 		assertThat(usuarios.get(0), notNullValue());
 
-		Doenca doenca = new Doenca(criarDoenca(idsMedicamentos, "Asma"), usuarios.get(0).getId());
-		DoencaId idDoenca = repoDoenca.save(doenca).getIdDoenca();
+		Cirurgia cirurgia = new Cirurgia(criarCirurgia(idsMedicamentos, "Asma"), usuarios.get(0).getId());
+		CirurgiaId idCirurgia = repoCirurgia.save(cirurgia).getIdCirurgia();
 
-		DoencaMedicamento doencaMedicamento = new DoencaMedicamento();
-		doencaMedicamento.setIdDoenca(idDoenca);
-		doencaMedicamento.setIdMedicamento(idMedicamento);
+		CirurgiaMedicamento cirurgiaMedicamento = new CirurgiaMedicamento();
+		cirurgiaMedicamento.setIdCirurgia(idCirurgia);
+		cirurgiaMedicamento.setIdMedicamento(idMedicamento);
 
-		doencaMedicamentoService.salvar(doencaMedicamento);
+		cirurgiaMedicamentoService.salvar(cirurgiaMedicamento);
 
-		Optional<DoencaMedicamento> doencasMedicamentos = doencaMedicamentoService.encontrar(doencaMedicamento.getId());
-		assertThat(doencasMedicamentos.get(), notNullValue());
-		assertThat(doencasMedicamentos.get().getId().toString(), equalTo(doencaMedicamento.getId().toString()));
-		assertThat(doencasMedicamentos.get().getIdDoenca().toString(),
-				equalTo(doencaMedicamento.getIdDoenca().toString()));
-		assertThat(doencasMedicamentos.get().getIdMedicamento().toString(),
-				equalTo(doencaMedicamento.getIdMedicamento().toString()));		
+		Optional<CirurgiaMedicamento> cirurgiasMedicamentos = cirurgiaMedicamentoService.encontrar(cirurgiaMedicamento.getId());
+		assertThat(cirurgiasMedicamentos.get(), notNullValue());
+		assertThat(cirurgiasMedicamentos.get().getId().toString(), equalTo(cirurgiaMedicamento.getId().toString()));
+		assertThat(cirurgiasMedicamentos.get().getIdCirurgia().toString(),
+				equalTo(cirurgiaMedicamento.getIdCirurgia().toString()));
+		assertThat(cirurgiasMedicamentos.get().getIdMedicamento().toString(),
+				equalTo(cirurgiaMedicamento.getIdMedicamento().toString()));		
 	}
 
-	private CriarDoenca criarDoenca(Set<MedicamentoId> idsMedicamentos, String nomeDoenca) {
-		CriarDoenca doenca = new CriarDoenca();
-		doenca.setDataDescoberta(Date.valueOf(LocalDate.of(2018, 07, 10)));
-		doenca.setIdMedicamentos(idsMedicamentos);
-		doenca.setNomeDoenca(nomeDoenca);
-		return doenca;
+	private CriarCirurgia criarCirurgia(Set<MedicamentoId> idsMedicamentos, String nomeCirurgia) {
+		CriarCirurgia cirurgia = new CriarCirurgia();
+		cirurgia.setDataCirurgia(Date.valueOf(LocalDate.of(2018, 07, 10)));
+		cirurgia.setIdMedicamentos(idsMedicamentos);
+		cirurgia.setTipoCirurgia(nomeCirurgia);
+		cirurgia.setClinicaResponsavel("unimed");
+		cirurgia.setMedicoResponsavel("Junior");
+		return cirurgia;
 	}
 
 	private CriarMedicamento criarMedicamento(String nome, String composicao) {
@@ -212,3 +213,5 @@ public class TestDoencaMedicamentoService {
 		return id;
 	}
 }
+
+

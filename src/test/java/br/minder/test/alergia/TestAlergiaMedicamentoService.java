@@ -1,9 +1,8 @@
-package br.minder.test.doenca;
+package br.minder.test.alergia;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.junit.Assert.assertThat;
-
 import java.sql.Date;
 import java.time.LocalDate;
 import java.util.HashSet;
@@ -29,12 +28,12 @@ import org.springframework.web.context.WebApplicationContext;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.springtestdbunit.TransactionDbUnitTestExecutionListener;
 import br.minder.MinderApplication;
-import br.minder.doenca.Doenca;
-import br.minder.doenca.DoencaId;
-import br.minder.doenca.DoencaRepository;
-import br.minder.doenca.comandos.CriarDoenca;
-import br.minder.doenca.doenca_medicamento.DoencaMedicamento;
-import br.minder.doenca.doenca_medicamento.DoencaMedicamentoService;
+import br.minder.alergia.AlergiaRepository;
+import br.minder.alergia.alergia_medicamento.AlergiaMedicamentoService;
+import br.minder.alergia.Alergia;
+import br.minder.alergia.AlergiaId;
+import br.minder.alergia.comandos.CriarAlergia;
+import br.minder.alergia.alergia_medicamento.AlergiaMedicamento;
 import br.minder.endereco.comandos.CriarEndereco;
 import br.minder.medicamento.MedicamentoId;
 import br.minder.medicamento.MedicamentoService;
@@ -60,7 +59,7 @@ import br.minder.usuario.comandos.CriarUsuario;
 @Rollback
 @WebAppConfiguration
 @SpringBootTest(classes = { MinderApplication.class }, webEnvironment = WebEnvironment.MOCK)
-public class TestDoencaMedicamentoService {
+public class TestAlergiaMedicamentoService {
 
 	@Autowired
 	private WebApplicationContext context;
@@ -88,10 +87,10 @@ public class TestDoencaMedicamentoService {
 	private UsuarioRepository repo;
 
 	@Autowired
-	private DoencaRepository repoDoenca;
+	private AlergiaRepository repoAlergia;
 
 	@Autowired
-	private DoencaMedicamentoService doencaMedicamentoService;
+	private AlergiaMedicamentoService alergiaMedicamentoService;
 
 	@Before
 	public void setup() {
@@ -111,22 +110,22 @@ public class TestDoencaMedicamentoService {
 		List<Usuario> usuarios = repo.findAll();
 		assertThat(usuarios.get(0), notNullValue());
 
-		Doenca doenca = new Doenca(criarDoenca(idsMedicamentos, "Asma"), usuarios.get(0).getId());
-		DoencaId idDoenca = repoDoenca.save(doenca).getIdDoenca();
+		Alergia alergia = new Alergia(criarAlergia(idsMedicamentos, "Asma"), usuarios.get(0).getId());
+		AlergiaId idAlergia = repoAlergia.save(alergia).getIdAlergia();
 
-		DoencaMedicamento doencaMedicamento = new DoencaMedicamento();
-		doencaMedicamento.setIdDoenca(idDoenca);
-		doencaMedicamento.setIdMedicamento(idMedicamento);
+		AlergiaMedicamento alergiaMedicamento = new AlergiaMedicamento();
+		alergiaMedicamento.setIdAlergia(idAlergia);
+		alergiaMedicamento.setIdMedicamento(idMedicamento);
 
-		doencaMedicamentoService.salvar(doencaMedicamento);
+		alergiaMedicamentoService.salvar(alergiaMedicamento);
 
-		List<DoencaMedicamento> doencasMedicamentos = doencaMedicamentoService.encontrar();
-		assertThat(doencasMedicamentos.size(), equalTo(1));
-		assertThat(doencasMedicamentos.get(0).getId().toString(), equalTo(doencaMedicamento.getId().toString()));
-		assertThat(doencasMedicamentos.get(0).getIdDoenca().toString(),
-				equalTo(doencaMedicamento.getIdDoenca().toString()));
-		assertThat(doencasMedicamentos.get(0).getIdMedicamento().toString(),
-				equalTo(doencaMedicamento.getIdMedicamento().toString()));
+		List<AlergiaMedicamento> alergiasMedicamentos = alergiaMedicamentoService.encontrar();
+		assertThat(alergiasMedicamentos.size(), equalTo(1));
+		assertThat(alergiasMedicamentos.get(0).getId().toString(), equalTo(alergiaMedicamento.getId().toString()));
+		assertThat(alergiasMedicamentos.get(0).getIdAlergia().toString(),
+				equalTo(alergiaMedicamento.getIdAlergia().toString()));
+		assertThat(alergiasMedicamentos.get(0).getIdMedicamento().toString(),
+				equalTo(alergiaMedicamento.getIdMedicamento().toString()));
 
 	}
 
@@ -143,30 +142,32 @@ public class TestDoencaMedicamentoService {
 		List<Usuario> usuarios = repo.findAll();
 		assertThat(usuarios.get(0), notNullValue());
 
-		Doenca doenca = new Doenca(criarDoenca(idsMedicamentos, "Asma"), usuarios.get(0).getId());
-		DoencaId idDoenca = repoDoenca.save(doenca).getIdDoenca();
+		Alergia alergia = new Alergia(criarAlergia(idsMedicamentos, "Asma"), usuarios.get(0).getId());
+		AlergiaId idAlergia = repoAlergia.save(alergia).getIdAlergia();
 
-		DoencaMedicamento doencaMedicamento = new DoencaMedicamento();
-		doencaMedicamento.setIdDoenca(idDoenca);
-		doencaMedicamento.setIdMedicamento(idMedicamento);
+		AlergiaMedicamento alergiaMedicamento = new AlergiaMedicamento();
+		alergiaMedicamento.setIdAlergia(idAlergia);
+		alergiaMedicamento.setIdMedicamento(idMedicamento);
 
-		doencaMedicamentoService.salvar(doencaMedicamento);
+		alergiaMedicamentoService.salvar(alergiaMedicamento);
 
-		Optional<DoencaMedicamento> doencasMedicamentos = doencaMedicamentoService.encontrar(doencaMedicamento.getId());
-		assertThat(doencasMedicamentos.get(), notNullValue());
-		assertThat(doencasMedicamentos.get().getId().toString(), equalTo(doencaMedicamento.getId().toString()));
-		assertThat(doencasMedicamentos.get().getIdDoenca().toString(),
-				equalTo(doencaMedicamento.getIdDoenca().toString()));
-		assertThat(doencasMedicamentos.get().getIdMedicamento().toString(),
-				equalTo(doencaMedicamento.getIdMedicamento().toString()));		
+		Optional<AlergiaMedicamento> alergiasMedicamentos = alergiaMedicamentoService.encontrar(alergiaMedicamento.getId());
+		assertThat(alergiasMedicamentos.get(), notNullValue());
+		assertThat(alergiasMedicamentos.get().getId().toString(), equalTo(alergiaMedicamento.getId().toString()));
+		assertThat(alergiasMedicamentos.get().getIdAlergia().toString(),
+				equalTo(alergiaMedicamento.getIdAlergia().toString()));
+		assertThat(alergiasMedicamentos.get().getIdMedicamento().toString(),
+				equalTo(alergiaMedicamento.getIdMedicamento().toString()));		
 	}
 
-	private CriarDoenca criarDoenca(Set<MedicamentoId> idsMedicamentos, String nomeDoenca) {
-		CriarDoenca doenca = new CriarDoenca();
-		doenca.setDataDescoberta(Date.valueOf(LocalDate.of(2018, 07, 10)));
-		doenca.setIdMedicamentos(idsMedicamentos);
-		doenca.setNomeDoenca(nomeDoenca);
-		return doenca;
+	private CriarAlergia criarAlergia(Set<MedicamentoId> idsMedicamentos, String nomeAlergia) {
+		CriarAlergia alergia = new CriarAlergia();
+		alergia.setDataDescoberta(Date.valueOf(LocalDate.of(2018, 07, 10)));
+		alergia.setIdMedicamentos(idsMedicamentos);
+		alergia.setTipoAlergia(nomeAlergia);
+		alergia.setLocalAfetado("pulmao");
+		alergia.setEfeitos("dor");
+		return alergia;
 	}
 
 	private CriarMedicamento criarMedicamento(String nome, String composicao) {
@@ -212,3 +213,4 @@ public class TestDoencaMedicamentoService {
 		return id;
 	}
 }
+

@@ -7,9 +7,11 @@ import br.minder.sexo.comandos.BuscarSexo;
 import br.minder.telefone.comandos.BuscarTelefone;
 import br.minder.usuario.Usuario;
 import br.minder.usuario.UsuarioId;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
-@Data
+@Getter
+@Setter
 public class BuscarUsuario {
 	private UsuarioId id;
 	private String username;
@@ -34,6 +36,4 @@ public class BuscarUsuario {
 		this.imagem = comandos.getImagemUsuario();
 	}
 
-	public BuscarUsuario() {
-	}
 }

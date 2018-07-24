@@ -42,7 +42,8 @@ public class AlergiaService {
 
 	public Optional<AlergiaId> salvar(CriarAlergia comando, UsuarioId id) {
 		if (comando.getDataDescoberta() != null && comando.getTipoAlergia() != null
-				&& comando.getIdMedicamentos() != null && comando.getEfeitos() != null && comando.getLocalAfetado() != null) {
+				&& comando.getIdMedicamentos() != null && comando.getEfeitos() != null
+				&& comando.getLocalAfetado() != null) {
 			Alergia novo = repo.save(new Alergia(comando, id));
 			for (MedicamentoId idMedicamento : comando.getIdMedicamentos()) {
 				if (medService.encontrar(idMedicamento).isPresent()) {
@@ -71,20 +72,24 @@ public class AlergiaService {
 	public Optional<List<BuscarAlergia>> encontrar(UsuarioId id) {
 		List<Alergia> alergias = repo.findAll();
 		List<BuscarAlergia> rsAlergias = new ArrayList<>();
-		for (Alergia alergia : alergias) {
-			if (id.toString().equals(alergia.getIdUsuario().toString())) {
-				List<BuscarMedicamento> medicamentos = executeQuery(alergia.getIdAlergia().toString(), sql);
-				BuscarAlergia nova = new BuscarAlergia(alergia);
-				nova.setMedicamentos(medicamentos);
-				rsAlergias.add(nova);
+		if (!alergias.isEmpty()) {
+			for (Alergia alergia : alergias) {
+				if (id.toString().equals(alergia.getIdUsuario().toString())) {
+					List<BuscarMedicamento> medicamentos = executeQuery(alergia.getIdAlergia().toString(), sql);
+					BuscarAlergia nova = new BuscarAlergia(alergia);
+					nova.setMedicamentos(medicamentos);
+					rsAlergias.add(nova);
+				}
 			}
+			return Optional.of(rsAlergias);
 		}
-		return Optional.of(rsAlergias);
+		return Optional.empty();
 	}
 
 	public Optional<AlergiaId> alterar(EditarAlergia comando) {
 		if (comando.getDataDescoberta() != null && comando.getTipoAlergia() != null
-				&& comando.getIdMedicamentos() != null && comando.getEfeitos() != null && comando.getLocalAfetado() != null) {
+				&& comando.getIdMedicamentos() != null && comando.getEfeitos() != null
+				&& comando.getLocalAfetado() != null) {
 			Optional<Alergia> optional = repo.findById(comando.getIdAlergia());
 			if (optional.isPresent()) {
 				Alergia alergia = optional.get();

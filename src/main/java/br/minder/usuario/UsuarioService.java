@@ -40,66 +40,71 @@ public class UsuarioService {
 	private SexoService sexoService;
 
 	public Optional<UsuarioId> salvar(CriarUsuario comando) {
-		if (comando.getEndereco() != null && comando.getTelefone() != null) {
-			Optional<TelefoneId> idTelefone = telefoneService.salvar(comando.getTelefone());
-			Optional<EnderecoId> idEndereco = enderecoService.salvar(comando.getEndereco());
-			if (idEndereco.isPresent() && idTelefone.isPresent()) {
-				Usuario novo = new Usuario(comando);
-				novo.setIdEndereco(idEndereco.get());
-				novo.setIdTelefone(idTelefone.get());
-				repo.save(novo);
-				return Optional.of(novo.getId());
+		if (comando.getNome() != null) {
+			Usuario novo = new Usuario(comando);
+			if (comando.getEndereco() != null) {
+				Optional<EnderecoId> idEndereco = enderecoService.salvar(comando.getEndereco());
+				if (idEndereco.isPresent())
+					novo.setIdEndereco(idEndereco.get());
 			}
+			if (comando.getTelefone() != null) {
+				Optional<TelefoneId> idTelefone = telefoneService.salvar(comando.getTelefone());
+				if (idTelefone.isPresent())
+					novo.setIdTelefone(idTelefone.get());
+			}
+			repo.save(novo);
+			return Optional.of(novo.getId());
 		}
 		return Optional.empty();
 	}
-	
+
 	public Optional<List<BuscarUsuario>> encontrar() {
 		List<BuscarUsuario> resultados = new ArrayList<>();
 		List<Usuario> usuarios = repo.findAll();
-		for (Usuario usuario : usuarios) {
-			if (usuario.getAtivo() == 1) {
-				BuscarUsuario user = new BuscarUsuario(usuario);
-				Optional<BuscarSangue> sangue = sangueService.encontrar(usuario.getIdSangue());
-				Optional<BuscarEndereco> endereco = enderecoService.encontrar(usuario.getIdEndereco());
-				Optional<BuscarSexo> sexo = sexoService.encontrar(usuario.getIdSexo());
-				Optional<BuscarTelefone> telefone = telefoneService.encontrar(usuario.getIdTelefone());
-				if (sangue.isPresent() && endereco.isPresent() && sexo.isPresent() && telefone.isPresent()) {
-					user.setSexo(sexo.get());
-					user.setSangue(sangue.get());
-					user.setEndereco(endereco.get());
-					user.setTelefone(telefone.get());
-					resultados.add(user);
+		if (!usuarios.isEmpty()) {
+			for (Usuario usuario : usuarios) {
+				if (usuario.getAtivo() == 1) {
+					BuscarUsuario user = new BuscarUsuario(usuario);
+					Optional<BuscarSangue> sangue = sangueService.encontrar(usuario.getIdSangue());
+					Optional<BuscarEndereco> endereco = enderecoService.encontrar(usuario.getIdEndereco());
+					Optional<BuscarSexo> sexo = sexoService.encontrar(usuario.getIdSexo());
+					Optional<BuscarTelefone> telefone = telefoneService.encontrar(usuario.getIdTelefone());
+					if (sangue.isPresent() && endereco.isPresent() && sexo.isPresent() && telefone.isPresent()) {
+						user.setSexo(sexo.get());
+						user.setSangue(sangue.get());
+						user.setEndereco(endereco.get());
+						user.setTelefone(telefone.get());
+						resultados.add(user);
+					}
 				}
 			}
+			return Optional.of(resultados);
 		}
-		return Optional.of(resultados);
+		return Optional.empty();
 	}
 
 	public Optional<BuscarUsuario> encontrar(UsuarioId id) {
-		List<Usuario> usuarios = repo.findAll();
-		BuscarUsuario user = new BuscarUsuario();
-		for (Usuario usuario : usuarios) {
-			if (usuario.getId().toString().equals(id.toString()) && usuario.getAtivo() == 1) {
-				user = new BuscarUsuario(usuario);
-				Optional<BuscarSangue> sangue = sangueService.encontrar(usuario.getIdSangue());
-				Optional<BuscarEndereco> endereco = enderecoService.encontrar(usuario.getIdEndereco());
-				Optional<BuscarSexo> sexo = sexoService.encontrar(usuario.getIdSexo());
-				Optional<BuscarTelefone> telefone = telefoneService.encontrar(usuario.getIdTelefone());
-				if (sangue.isPresent() && endereco.isPresent() && sexo.isPresent() && telefone.isPresent()) {
-					user.setSexo(sexo.get());
-					user.setSangue(sangue.get());
-					user.setEndereco(endereco.get());
-					user.setTelefone(telefone.get());
-				}
+		Optional<Usuario> usuario = repo.findById(id);
+		if (usuario.isPresent() && usuario.get().getAtivo() == 1) {
+			BuscarUsuario user = new BuscarUsuario(usuario.get());
+			Optional<BuscarSangue> sangue = sangueService.encontrar(usuario.get().getIdSangue());
+			Optional<BuscarEndereco> endereco = enderecoService.encontrar(usuario.get().getIdEndereco());
+			Optional<BuscarSexo> sexo = sexoService.encontrar(usuario.get().getIdSexo());
+			Optional<BuscarTelefone> telefone = telefoneService.encontrar(usuario.get().getIdTelefone());
+			if (sangue.isPresent() && endereco.isPresent() && sexo.isPresent() && telefone.isPresent()) {
+				user.setSexo(sexo.get());
+				user.setSangue(sangue.get());
+				user.setEndereco(endereco.get());
+				user.setTelefone(telefone.get());
 			}
+			return Optional.of(user);
 		}
-		return Optional.of(user);
+		return Optional.empty();
 	}
 
 	public Optional<String> deletar(UsuarioId id) {
 		Optional<Usuario> usuario = repo.findById(id);
-		if (usuario.isPresent()) {
+		if (usuario.isPresent() && usuario.get().getAtivo() == 1) {
 			usuario.get().setAtivo(0);
 			repo.save(usuario.get());
 			return Optional.of("Usuário ===> " + id + ": deletado com sucesso");
@@ -109,7 +114,7 @@ public class UsuarioService {
 
 	public Optional<UsuarioId> alterar(EditarUsuario comando) {
 		Optional<Usuario> optional = repo.findById(comando.getId());
-		if (optional.isPresent()) {
+		if (comando.getNome() != null && optional.isPresent()) {
 			if (comando.getEndereco() != null)
 				enderecoService.alterar(comando.getEndereco());
 			if (comando.getTelefone() != null)

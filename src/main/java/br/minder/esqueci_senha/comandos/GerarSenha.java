@@ -1,9 +1,11 @@
 package br.minder.esqueci_senha.comandos;
 
 import br.minder.usuario.UsuarioId;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
-@Data
+@Getter
+@Setter
 public class GerarSenha {
 	private UsuarioId id;
 	private String senha;

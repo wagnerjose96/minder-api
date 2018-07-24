@@ -244,6 +244,10 @@ public class TestDoencaController {
 
 		List<Usuario> usuarios = repo.findAll();
 		assertThat(usuarios.get(0), notNullValue());
+		
+		this.mockMvc.perform(get("/doencas").header("token", logar("wagnerju", "1234")))
+		.andExpect(jsonPath("$.error", equalTo("Não existe nenhuma doença cadastrada no banco de dados")))
+		.andExpect(status().isNotFound());
 
 		String jsonString = objectMapper.writeValueAsString(criarDoenca(idsMedicamentos, "Miopia"));
 
@@ -270,6 +274,12 @@ public class TestDoencaController {
 
 		this.mockMvc.perform(get("/doencas").header("token", logar("wagnerju", "1234") + "TokenError"))
 				.andExpect(jsonPath("$.error", equalTo("Acesso negado"))).andExpect(status().isForbidden());
+		
+		serviceUsuario.salvar(criarUsuario("lathuanny@hotmail.com", "lathuanny", idSexo, idSangue)).get();
+		usuarios = repo.findAll();
+		assertThat(usuarios.get(1), notNullValue());
+
+		this.mockMvc.perform(get("/doencas").header("token", logar("lathuanny", "1234"))).andExpect(status().isOk());
 
 	}
 
@@ -314,7 +324,7 @@ public class TestDoencaController {
 		endereco.setBairro("Zona 6");
 		endereco.setCidade("Maringá");
 		endereco.setEstado("Paraná");
-		endereco.setNumero(1390);
+		endereco.setNumero("1390");
 		endereco.setRua("Castro Alves");
 
 		CriarTelefone telefone = new CriarTelefone();

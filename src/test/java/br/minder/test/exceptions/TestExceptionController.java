@@ -22,6 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.WebApplicationContext;
 import br.minder.MinderApplication;
 import br.minder.exceptions.ErrorDetail;
+import br.minder.exceptions.ErrorDetailId;
 import br.minder.exceptions.ErrorDetailRepository;
 import br.minder.exceptions.ErrorDetailService;
 import br.minder.exceptions.comandos.CriarErrorDetail;
@@ -51,6 +52,11 @@ public class TestExceptionController {
 
 	@Test
 	public void testBuscarTodos() throws Exception {
+
+		this.mockMvc.perform(get("/exceptions"))
+				.andExpect(jsonPath("$.error", equalTo("Não existe nenhuma exceção cadastrada no banco de dados")))
+				.andExpect(status().isNotFound());
+
 		service.salvar(criarErrorDetail());
 		service.salvar(criarErrorDetail());
 
@@ -66,15 +72,20 @@ public class TestExceptionController {
 
 	@Test
 	public void testBuscarPorId() throws Exception {
+
+		this.mockMvc.perform(get("/exceptions/" + new ErrorDetailId()))
+				.andExpect(jsonPath("$.error", equalTo("A Exceção buscada não existe no banco de dados")))
+				.andExpect(status().isNotFound());
+
 		service.salvar(criarErrorDetail());
 
 		List<ErrorDetail> erros = repo.findAll();
 		assertThat(erros.get(0), notNullValue());
-		
+
 		this.mockMvc.perform(get("/exceptions/" + erros.get(0).getIdErrorDetail().toString()))
-		.andExpect(jsonPath("$.idErrorDetail.value", equalTo(erros.get(0).getIdErrorDetail().toString())))
-		.andExpect(status().isOk());
-		
+				.andExpect(jsonPath("$.idErrorDetail.value", equalTo(erros.get(0).getIdErrorDetail().toString())))
+				.andExpect(status().isOk());
+
 	}
 
 	private CriarErrorDetail criarErrorDetail() {

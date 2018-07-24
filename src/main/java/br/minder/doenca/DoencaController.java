@@ -46,6 +46,7 @@ public class DoencaController {
 			if (optionalDoencas.isPresent()) {
 				return ResponseEntity.ok(optionalDoencas.get());
 			}
+			throw new NullPointerException("Não existe nenhuma doença cadastrada no banco de dados");
 		}
 		throw new AccessDeniedException(ACESSONEGADO);
 	}
@@ -55,7 +56,7 @@ public class DoencaController {
 	public ResponseEntity<BuscarDoenca> getDoencaPorId(@PathVariable DoencaId id, @RequestHeader String token)
 			throws AccessDeniedException {
 		if (autentica.autenticaRequisicao(token)) {
-			Optional<BuscarDoenca> optionalDoenca = doencaService.encontrar(id);
+			Optional<BuscarDoenca> optionalDoenca = doencaService.encontrar(id, autentica.idUser(token));
 			if (optionalDoenca.isPresent()) {
 				return ResponseEntity.ok(optionalDoenca.get());
 			}
@@ -85,7 +86,7 @@ public class DoencaController {
 	public ResponseEntity<String> putDoenca(@RequestBody EditarDoenca comando, @RequestHeader String token)
 			throws AccessDeniedException, SQLException {
 		if (autentica.autenticaRequisicao(token)) {
-			if (!doencaService.encontrar(comando.getIdDoenca()).isPresent()) {
+			if (!doencaService.encontrar(comando.getIdDoenca(), autentica.idUser(token)).isPresent()) {
 				throw new NullPointerException("A doença a ser alterada não existe no banco de dados");
 			}
 			Optional<DoencaId> optionalDoencaId = doencaService.alterar(comando);

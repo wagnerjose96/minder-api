@@ -46,7 +46,7 @@ public class ContatoController {
 		if (optionalContatos.isPresent()) {
 			return ResponseEntity.ok(optionalContatos.get());
 		}
-		return ResponseEntity.notFound().build();
+		throw new NullPointerException("Não existe nenhum contato cadastrado no banco de dados");
 	}
 
 	@ApiOperation("Busque um contato pelo ID")
@@ -99,11 +99,9 @@ public class ContatoController {
 	public ResponseEntity<String> deletarContato(@PathVariable ContatoId id, @RequestHeader String token)
 			throws AccessDeniedException {
 		if (autentica.autenticaRequisicao(token)) {
-			if (contatoService.encontrar(id).isPresent()) {
-				Optional<String> optionalContato = contatoService.deletar(id, autentica.idUser(token));
-				if (optionalContato.isPresent())
-					return ResponseEntity.ok(optionalContato.get());
-			}
+			Optional<String> optionalContato = contatoService.deletar(id, autentica.idUser(token));
+			if (optionalContato.isPresent())
+				return ResponseEntity.ok(optionalContato.get());
 			throw new NullPointerException("O contato a deletar não existe no banco de dados");
 		}
 		throw new AccessDeniedException(ACESSONEGADO);

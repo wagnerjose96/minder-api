@@ -8,6 +8,8 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import java.sql.Date;
+import java.time.LocalDate;
 import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
@@ -25,17 +27,32 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.WebApplicationContext;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import br.minder.MinderApplication;
+import br.minder.endereco.comandos.CriarEndereco;
 import br.minder.login.LoginController;
-import br.minder.login.comandos.LogarAdm;
+import br.minder.login.comandos.LogarUsuario;
 import br.minder.pergunta_notificacao.Pergunta;
 import br.minder.pergunta_notificacao.PerguntaId;
 import br.minder.pergunta_notificacao.PerguntaRepository;
 import br.minder.pergunta_notificacao.PerguntaService;
 import br.minder.pergunta_notificacao.comandos.CriarPergunta;
 import br.minder.pergunta_notificacao.resposta.Resposta;
+import br.minder.pergunta_notificacao.resposta.RespostaId;
 import br.minder.pergunta_notificacao.resposta.RespostaRepository;
 import br.minder.pergunta_notificacao.resposta.comandos.CriarResposta;
 import br.minder.pergunta_notificacao.resposta.comandos.EditarResposta;
+import br.minder.sangue.Sangue;
+import br.minder.sangue.SangueId;
+import br.minder.sangue.SangueRepository;
+import br.minder.sangue.comandos.CriarSangue;
+import br.minder.sexo.Sexo;
+import br.minder.sexo.SexoId;
+import br.minder.sexo.SexoRepository;
+import br.minder.sexo.comandos.CriarSexo;
+import br.minder.telefone.comandos.CriarTelefone;
+import br.minder.usuario.Usuario;
+import br.minder.usuario.UsuarioRepository;
+import br.minder.usuario.UsuarioService;
+import br.minder.usuario.comandos.CriarUsuario;
 import br.minder.usuario_adm.UsuarioAdm;
 import br.minder.usuario_adm.UsuarioAdmRepository;
 import br.minder.usuario_adm.UsuarioAdmService;
@@ -74,6 +91,18 @@ public class TestRespostaController {
 	@Autowired
 	private PerguntaRepository repoPergunta;
 
+	@Autowired
+	private SexoRepository repoSexo;
+
+	@Autowired
+	private SangueRepository repoSangue;
+
+	@Autowired
+	private UsuarioService serviceUsuario;
+
+	@Autowired
+	private UsuarioRepository repoUsuario;
+
 	@Before
 	public void setup() {
 		mockMvc = MockMvcBuilders.webAppContextSetup(context).build();
@@ -89,6 +118,12 @@ public class TestRespostaController {
 		List<UsuarioAdm> adm = repoAdm.findAll();
 		assertThat(adm.get(0), notNullValue());
 
+		SangueId idSangue = criarSangue("A+");
+		SexoId idSexo = criarSexo("Masculino");
+		serviceUsuario.salvar(criarUsuario("wagner@hotmail.com", "wagnerju", idSexo, idSangue)).get();
+		List<Usuario> usuarios = repoUsuario.findAll();
+		assertThat(usuarios.get(0), notNullValue());
+
 		String jsonString = objectMapper.writeValueAsString(criarResposta("Bem", pergunta.get(0).getIdPergunta()));
 
 		this.mockMvc
@@ -96,6 +131,28 @@ public class TestRespostaController {
 						.accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON).content(jsonString))
 				.andExpect(jsonPath("$", equalTo("A resposta foi cadastrada com sucesso")))
 				.andExpect(status().isCreated());
+
+		this.mockMvc
+				.perform(post("/respostas").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+						.header("token", logar("wagnerju", "1234")).content(jsonString))
+				.andExpect(jsonPath("$.error", equalTo("Acesso negado"))).andExpect(status().isForbidden());
+
+		jsonString = objectMapper.writeValueAsString(criarRespostaErro1("Bem", pergunta.get(0).getIdPergunta()));
+
+		this.mockMvc
+				.perform(post("/respostas").header("token", logarAdm("admin", "1234"))
+						.accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON).content(jsonString))
+				.andExpect(jsonPath("$.error", equalTo("A resposta não foi salva devido a um erro interno")))
+				.andExpect(status().isInternalServerError());
+
+		jsonString = objectMapper.writeValueAsString(criarRespostaErro2("Bem", pergunta.get(0).getIdPergunta()));
+
+		this.mockMvc
+				.perform(post("/respostas").header("token", logarAdm("admin", "1234"))
+						.accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON).content(jsonString))
+				.andExpect(jsonPath("$.error", equalTo("A resposta não foi salva devido a um erro interno")))
+				.andExpect(status().isInternalServerError());
+
 	}
 
 	@Test
@@ -107,6 +164,12 @@ public class TestRespostaController {
 		admService.salvar(criarAdm());
 		List<UsuarioAdm> adm = repoAdm.findAll();
 		assertThat(adm.get(0), notNullValue());
+
+		SangueId idSangue = criarSangue("A+");
+		SexoId idSexo = criarSexo("Masculino");
+		serviceUsuario.salvar(criarUsuario("wagner@hotmail.com", "wagnerju", idSexo, idSangue)).get();
+		List<Usuario> usuarios = repoUsuario.findAll();
+		assertThat(usuarios.get(0), notNullValue());
 
 		String jsonString = objectMapper.writeValueAsString(criarResposta("Bem", pergunta.get(0).getIdPergunta()));
 
@@ -125,6 +188,36 @@ public class TestRespostaController {
 				.perform(put("/respostas").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
 						.header("token", logarAdm("admin", "1234")).content(jsonString))
 				.andExpect(jsonPath("$", equalTo("A resposta foi alterada com sucesso"))).andExpect(status().isOk());
+
+		this.mockMvc
+				.perform(put("/respostas").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+						.header("token", logar("wagnerju", "1234")).content(jsonString))
+				.andExpect(jsonPath("$.error", equalTo("Acesso negado"))).andExpect(status().isForbidden());
+
+		jsonString = objectMapper.writeValueAsString(editarRespostaErro1(respostas.get(0)));
+
+		this.mockMvc
+				.perform(put("/respostas").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+						.header("token", logarAdm("admin", "1234")).content(jsonString))
+				.andExpect(jsonPath("$.error", equalTo("Ocorreu um erro interno durante a alteração da resposta")))
+				.andExpect(status().isInternalServerError());
+
+		jsonString = objectMapper.writeValueAsString(editarRespostaErro2(respostas.get(0)));
+
+		this.mockMvc
+				.perform(put("/respostas").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+						.header("token", logarAdm("admin", "1234")).content(jsonString))
+				.andExpect(jsonPath("$.error", equalTo("A resposta a ser alterada não existe no banco de dados")))
+				.andExpect(status().isNotFound());
+
+		jsonString = objectMapper.writeValueAsString(editarRespostaErro3(respostas.get(0)));
+
+		this.mockMvc
+				.perform(put("/respostas").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+						.header("token", logarAdm("admin", "1234")).content(jsonString))
+				.andExpect(jsonPath("$.error", equalTo("A resposta a ser alterada não existe no banco de dados")))
+				.andExpect(status().isNotFound());
+
 	}
 
 	@Test
@@ -136,6 +229,10 @@ public class TestRespostaController {
 		admService.salvar(criarAdm());
 		List<UsuarioAdm> adm = repoAdm.findAll();
 		assertThat(adm.get(0), notNullValue());
+
+		this.mockMvc.perform(get("/respostas").header("token", logarAdm("admin", "1234")))
+				.andExpect(jsonPath("$.error", equalTo("Não existe nenhuma resposta cadastrada no banco de dados")))
+				.andExpect(status().isNotFound());
 
 		String jsonString = objectMapper.writeValueAsString(criarResposta("Bem", pergunta.get(0).getIdPergunta()));
 
@@ -172,6 +269,11 @@ public class TestRespostaController {
 		List<UsuarioAdm> adm = repoAdm.findAll();
 		assertThat(adm.get(0), notNullValue());
 
+		this.mockMvc
+				.perform(get("/respostas/" + new RespostaId().toString()).header("token", logarAdm("admin", "1234")))
+				.andExpect(jsonPath("$.error", equalTo("A resposta procurada não existe no banco de dados")))
+				.andExpect(status().isNotFound());
+
 		String jsonString = objectMapper.writeValueAsString(criarResposta("Bem", pergunta.get(0).getIdPergunta()));
 
 		this.mockMvc
@@ -195,10 +297,41 @@ public class TestRespostaController {
 		return resposta;
 	}
 
+	private CriarResposta criarRespostaErro1(String descricao, PerguntaId perguntaId) {
+		CriarResposta resposta = new CriarResposta();
+		resposta.setDescricao(descricao);
+		return resposta;
+	}
+
+	private CriarResposta criarRespostaErro2(String descricao, PerguntaId perguntaId) {
+		CriarResposta resposta = new CriarResposta();
+		resposta.setIdPergunta(perguntaId);
+		return resposta;
+	}
+
 	private EditarResposta editarResposta(Resposta resposta) {
 		EditarResposta respostaAtualizada = new EditarResposta();
 		respostaAtualizada.setIdResposta(resposta.getIdResposta());
 		respostaAtualizada.setDescricao("Teste Put");
+		return respostaAtualizada;
+	}
+
+	private EditarResposta editarRespostaErro1(Resposta resposta) {
+		EditarResposta respostaAtualizada = new EditarResposta();
+		respostaAtualizada.setIdResposta(resposta.getIdResposta());
+		return respostaAtualizada;
+	}
+
+	private EditarResposta editarRespostaErro2(Resposta resposta) {
+		EditarResposta respostaAtualizada = new EditarResposta();
+		respostaAtualizada.setIdResposta(new RespostaId());
+		respostaAtualizada.setDescricao("Teste Put");
+		return respostaAtualizada;
+	}
+
+	private EditarResposta editarRespostaErro3(Resposta resposta) {
+		EditarResposta respostaAtualizada = new EditarResposta();
+		respostaAtualizada.setIdResposta(new RespostaId());
 		return respostaAtualizada;
 	}
 
@@ -210,7 +343,7 @@ public class TestRespostaController {
 	}
 
 	private String logarAdm(String nomeUsuario, String senha) {
-		LogarAdm corpoLogin = new LogarAdm();
+		LogarUsuario corpoLogin = new LogarUsuario();
 		corpoLogin.setIdentificador(nomeUsuario);
 		corpoLogin.setSenha(senha);
 		return login.loginAdm(corpoLogin).getBody();
@@ -220,6 +353,49 @@ public class TestRespostaController {
 		CriarPergunta pergunta = new CriarPergunta();
 		pergunta.setDescricao(descricao);
 		return pergunta;
+	}
+
+	private CriarUsuario criarUsuario(String email, String username, SexoId idSexo, SangueId idSangue) {
+		CriarEndereco endereco = new CriarEndereco();
+		endereco.setBairro("Zona 6");
+		endereco.setCidade("Maringá");
+		endereco.setEstado("Paraná");
+		endereco.setNumero("1390");
+		endereco.setRua("Castro Alves");
+
+		CriarTelefone telefone = new CriarTelefone();
+		telefone.setDdd(44);
+		telefone.setNumero(999038860);
+
+		CriarUsuario usuario = new CriarUsuario();
+		usuario.setNome("Wagner José");
+		usuario.setEmail(email);
+		usuario.setDataNascimento(Date.valueOf(LocalDate.of(1997, 03, 17)));
+		usuario.setEndereco(endereco);
+		usuario.setIdSangue(idSangue);
+		usuario.setIdSexo(idSexo);
+		usuario.setSenha("1234");
+		usuario.setTelefone(telefone);
+		usuario.setUsername(username);
+
+		return usuario;
+	}
+
+	private SangueId criarSangue(String tipo) {
+		SangueId id = repoSangue.save(new Sangue(new CriarSangue(tipo))).getIdSangue();
+		return id;
+	}
+
+	private SexoId criarSexo(String tipo) {
+		SexoId id = repoSexo.save(new Sexo(new CriarSexo(tipo))).getIdGenero();
+		return id;
+	}
+
+	private LogarUsuario logar(String nomeUsuario, String senha) {
+		LogarUsuario corpoLogin = new LogarUsuario();
+		corpoLogin.setIdentificador(nomeUsuario);
+		corpoLogin.setSenha(senha);
+		return corpoLogin;
 	}
 
 }

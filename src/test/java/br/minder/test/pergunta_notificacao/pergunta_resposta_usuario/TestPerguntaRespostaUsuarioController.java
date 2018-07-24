@@ -35,6 +35,7 @@ import br.minder.pergunta_notificacao.PerguntaRepository;
 import br.minder.pergunta_notificacao.PerguntaService;
 import br.minder.pergunta_notificacao.comandos.CriarPergunta;
 import br.minder.pergunta_notificacao.pergunta_resposta_usuario.PerguntaRespostaUsuario;
+import br.minder.pergunta_notificacao.pergunta_resposta_usuario.PerguntaRespostaUsuarioId;
 import br.minder.pergunta_notificacao.pergunta_resposta_usuario.PerguntaRespostaUsuarioRepository;
 import br.minder.pergunta_notificacao.pergunta_resposta_usuario.comandos.CriarPerguntaRespostaUsuario;
 import br.minder.pergunta_notificacao.resposta.Resposta;
@@ -55,6 +56,10 @@ import br.minder.usuario.Usuario;
 import br.minder.usuario.UsuarioRepository;
 import br.minder.usuario.UsuarioService;
 import br.minder.usuario.comandos.CriarUsuario;
+import br.minder.usuario_adm.UsuarioAdm;
+import br.minder.usuario_adm.UsuarioAdmRepository;
+import br.minder.usuario_adm.UsuarioAdmService;
+import br.minder.usuario_adm.comandos.CriarUsuarioAdm;
 
 @RunWith(SpringRunner.class)
 @Transactional
@@ -101,6 +106,12 @@ public class TestPerguntaRespostaUsuarioController {
 	@Autowired
 	private SexoRepository repoSexo;
 
+	@Autowired
+	private UsuarioAdmRepository repoAdm;
+
+	@Autowired
+	private UsuarioAdmService admService;
+
 	@Before
 	public void setup() {
 		mockMvc = MockMvcBuilders.webAppContextSetup(context).build();
@@ -113,6 +124,10 @@ public class TestPerguntaRespostaUsuarioController {
 		usuarioService.salvar((criarUsuario("wagner@hotmail.com", "wagnerju", idSexo, idSangue)));
 		List<Usuario> usuario = repoUsuario.findAll();
 		assertThat(usuario.get(0), notNullValue());
+
+		admService.salvar(criarAdm());
+		List<UsuarioAdm> adm = repoAdm.findAll();
+		assertThat(adm.get(0), notNullValue());
 
 		perguntaService.salvar(criarPergunta("Como vc está se sentindo hj??"));
 		List<Pergunta> pergunta = repoPergunta.findAll();
@@ -130,6 +145,41 @@ public class TestPerguntaRespostaUsuarioController {
 						.accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON).content(jsonString))
 				.andExpect(jsonPath("$", equalTo("A  pergunta de notificação foi respondida com sucesso")))
 				.andExpect(status().isCreated());
+
+		this.mockMvc.perform(post("/perguntaNotificacao").accept(MediaType.APPLICATION_JSON)
+				.contentType(MediaType.APPLICATION_JSON).header("token", logarAdm("admin", "1234")).content(jsonString))
+				.andExpect(jsonPath("$.error", equalTo("Acesso negado"))).andExpect(status().isForbidden());
+
+		jsonString = objectMapper.writeValueAsString(
+				criarPerguntaRespostaUsuarioErro1(pergunta.get(0).getIdPergunta(), resposta.get(0).getIdResposta()));
+
+		this.mockMvc
+				.perform(post("/perguntaNotificacao").header("token", logar("wagnerju", "1234"))
+						.accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON).content(jsonString))
+				.andExpect(jsonPath("$.error",
+						equalTo("A pergunta de notificação não foi respondida devido a um erro interno")))
+				.andExpect(status().isInternalServerError());
+
+		jsonString = objectMapper.writeValueAsString(
+				criarPerguntaRespostaUsuarioErro2(pergunta.get(0).getIdPergunta(), resposta.get(0).getIdResposta()));
+
+		this.mockMvc
+				.perform(post("/perguntaNotificacao").header("token", logar("wagnerju", "1234"))
+						.accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON).content(jsonString))
+				.andExpect(jsonPath("$.error",
+						equalTo("A pergunta de notificação não foi respondida devido a um erro interno")))
+				.andExpect(status().isInternalServerError());
+
+		jsonString = objectMapper.writeValueAsString(
+				criarPerguntaRespostaUsuarioErro3(pergunta.get(0).getIdPergunta(), resposta.get(0).getIdResposta()));
+
+		this.mockMvc
+				.perform(post("/perguntaNotificacao").header("token", logar("wagnerju", "1234"))
+						.accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON).content(jsonString))
+				.andExpect(jsonPath("$.error",
+						equalTo("A pergunta de notificação não foi respondida devido a um erro interno")))
+				.andExpect(status().isInternalServerError());
+
 	}
 
 	@Test
@@ -139,6 +189,20 @@ public class TestPerguntaRespostaUsuarioController {
 		usuarioService.salvar((criarUsuario("wagner@hotmail.com", "wagnerju", idSexo, idSangue)));
 		List<Usuario> usuario = repoUsuario.findAll();
 		assertThat(usuario.get(0), notNullValue());
+
+		admService.salvar(criarAdm());
+		List<UsuarioAdm> adm = repoAdm.findAll();
+		assertThat(adm.get(0), notNullValue());
+
+		this.mockMvc.perform(get("/perguntaNotificacao").header("token", logar("wagnerju", "1234")))
+				.andExpect(jsonPath("$.error",
+						equalTo("Não existe nenhuma pergunta de notificação respondida no banco de dados")))
+				.andExpect(status().isNotFound());
+
+		this.mockMvc
+				.perform(get("/perguntaNotificacao").accept(MediaType.APPLICATION_JSON)
+						.contentType(MediaType.APPLICATION_JSON).header("token", logarAdm("admin", "1234")))
+				.andExpect(jsonPath("$.error", equalTo("Acesso negado"))).andExpect(status().isForbidden());
 
 		perguntaService.salvar(criarPergunta("Como vc está se sentindo hj??"));
 		List<Pergunta> pergunta = repoPergunta.findAll();
@@ -193,6 +257,23 @@ public class TestPerguntaRespostaUsuarioController {
 		List<Usuario> usuario = repoUsuario.findAll();
 		assertThat(usuario.get(0), notNullValue());
 
+		admService.salvar(criarAdm());
+		List<UsuarioAdm> adm = repoAdm.findAll();
+		assertThat(adm.get(0), notNullValue());
+
+		this.mockMvc
+				.perform(get("/perguntaNotificacao/" + new PerguntaRespostaUsuarioId().toString()).header("token",
+						logar("wagnerju", "1234")))
+				.andExpect(jsonPath("$.error",
+						equalTo("A pergunta de notificação procurada não existe no banco de dados")))
+				.andExpect(status().isNotFound());
+
+		this.mockMvc
+				.perform(get("/perguntaNotificacao/" + new PerguntaRespostaUsuarioId().toString())
+						.accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+						.header("token", logarAdm("admin", "1234")))
+				.andExpect(jsonPath("$.error", equalTo("Acesso negado"))).andExpect(status().isForbidden());
+
 		perguntaService.salvar(criarPergunta("Como vc está se sentindo hj??"));
 		List<Pergunta> pergunta = repoPergunta.findAll();
 		assertThat(pergunta.get(0), notNullValue());
@@ -227,6 +308,26 @@ public class TestPerguntaRespostaUsuarioController {
 		return respostaUser;
 	}
 
+	private CriarPerguntaRespostaUsuario criarPerguntaRespostaUsuarioErro1(PerguntaId idPergunta,
+			RespostaId idResposta) {
+		CriarPerguntaRespostaUsuario respostaUser = new CriarPerguntaRespostaUsuario();
+		respostaUser.setIdResposta(idResposta);
+		return respostaUser;
+	}
+
+	private CriarPerguntaRespostaUsuario criarPerguntaRespostaUsuarioErro2(PerguntaId idPergunta,
+			RespostaId idResposta) {
+		CriarPerguntaRespostaUsuario respostaUser = new CriarPerguntaRespostaUsuario();
+		respostaUser.setIdPergunta(idPergunta);
+		return respostaUser;
+	}
+
+	private CriarPerguntaRespostaUsuario criarPerguntaRespostaUsuarioErro3(PerguntaId idPergunta,
+			RespostaId idResposta) {
+		CriarPerguntaRespostaUsuario respostaUser = new CriarPerguntaRespostaUsuario();
+		return respostaUser;
+	}
+
 	private CriarResposta criarResposta(String descricao, PerguntaId perguntaId) {
 		CriarResposta resposta = new CriarResposta();
 		resposta.setIdPergunta(perguntaId);
@@ -245,7 +346,7 @@ public class TestPerguntaRespostaUsuarioController {
 		endereco.setBairro("Zona 6");
 		endereco.setCidade("Maringá");
 		endereco.setEstado("Paraná");
-		endereco.setNumero(1390);
+		endereco.setNumero("1390");
 		endereco.setRua("Castro Alves");
 
 		CriarTelefone telefone = new CriarTelefone();
@@ -279,6 +380,20 @@ public class TestPerguntaRespostaUsuarioController {
 
 	private SexoId criarSexo(String tipo) {
 		return repoSexo.save(new Sexo(new CriarSexo(tipo))).getIdGenero();
+	}
+
+	private CriarUsuarioAdm criarAdm() {
+		CriarUsuarioAdm adm = new CriarUsuarioAdm();
+		adm.setNome("admin");
+		adm.setSenha("1234");
+		return adm;
+	}
+
+	private String logarAdm(String nomeUsuario, String senha) {
+		LogarUsuario corpoLogin = new LogarUsuario();
+		corpoLogin.setIdentificador(nomeUsuario);
+		corpoLogin.setSenha(senha);
+		return login.loginAdm(corpoLogin).getBody();
 	}
 
 }

@@ -5,18 +5,15 @@ import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import org.hibernate.envers.Audited;
-
 import br.minder.endereco.comandos.CriarEndereco;
 import br.minder.endereco.comandos.EditarEndereco;
 import lombok.AccessLevel;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import lombok.Setter;
 
 @Entity
 @Audited
-@Data
-@EqualsAndHashCode(exclude = { "rua", "bairro", "cidade", "estado", "complemento", "numero"})
+@Getter
 public class Endereco {
 	@EmbeddedId
 	@AttributeOverride(name = "value", column = @Column(name = "id"))
@@ -27,13 +24,13 @@ public class Endereco {
 	private String cidade;
 	private String estado;
 	private String complemento;
-	private int numero;
+	private String numero;
 
 	public Endereco() {
 	}
-	
+
 	public void apply(EditarEndereco comando) {
-		this.id =  comando.getId();
+		this.id = comando.getId();
 		this.rua = comando.getRua();
 		this.bairro = comando.getBairro();
 		this.cidade = comando.getCidade();
@@ -43,7 +40,7 @@ public class Endereco {
 	}
 
 	public Endereco(CriarEndereco comando) {
-		this.id =  new EnderecoId();
+		this.id = new EnderecoId();
 		this.rua = comando.getRua();
 		this.bairro = comando.getBairro();
 		this.cidade = comando.getCidade();

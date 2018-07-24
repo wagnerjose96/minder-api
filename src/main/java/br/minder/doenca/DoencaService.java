@@ -56,10 +56,10 @@ public class DoencaService {
 		return Optional.empty();
 	}
 
-	public Optional<BuscarDoenca> encontrar(DoencaId doencaId) {
+	public Optional<BuscarDoenca> encontrar(DoencaId doencaId, UsuarioId id) {
 		List<BuscarMedicamento> medicamentos = executeQuery(doencaId.toString(), sql);
 		Optional<Doenca> doenca = doencaRepo.findById(doencaId);
-		if (doenca.isPresent()) {
+		if (doenca.isPresent() && id.toString().equals(doenca.get().getIdUsuario().toString())) {
 			BuscarDoenca resultado = new BuscarDoenca(doenca.get());
 			resultado.setMedicamentos(medicamentos);
 			return Optional.of(resultado);
@@ -70,15 +70,18 @@ public class DoencaService {
 	public Optional<List<BuscarDoenca>> encontrar(UsuarioId id) {
 		List<Doenca> doencas = doencaRepo.findAll();
 		List<BuscarDoenca> rsDoencas = new ArrayList<>();
-		for (Doenca doenca : doencas) {
-			if (id.toString().equals(doenca.getIdUsuario().toString())) {
-				List<BuscarMedicamento> medicamentos = executeQuery(doenca.getIdDoenca().toString(), sql);
-				BuscarDoenca nova = new BuscarDoenca(doenca);
-				nova.setMedicamentos(medicamentos);
-				rsDoencas.add(nova);
+		if (!doencas.isEmpty()) {
+			for (Doenca doenca : doencas) {
+				if (id.toString().equals(doenca.getIdUsuario().toString())) {
+					List<BuscarMedicamento> medicamentos = executeQuery(doenca.getIdDoenca().toString(), sql);
+					BuscarDoenca nova = new BuscarDoenca(doenca);
+					nova.setMedicamentos(medicamentos);
+					rsDoencas.add(nova);
+				}
 			}
+			return Optional.of(rsDoencas);
 		}
-		return Optional.of(rsDoencas);
+		return Optional.empty();
 	}
 
 	public Optional<DoencaId> alterar(EditarDoenca comando) {

@@ -107,16 +107,18 @@ public class ContatoService {
 	}
 
 	public Optional<String> deletar(ContatoId id, UsuarioId idUsuario) {
-		EmergenciaId idEmergencia = executeQuery(idUsuario.toString(), sql).get(0).getId();
-		ContatoEmergenciaId idContatoEmergencia = buscaId(idEmergencia.toString(), id.toString(), sqlContatoEmergencia)
-				.get(0).getId();
-		repoContatoEmergencia.deleteById(idContatoEmergencia);
 		Optional<Contato> contato = repo.findById(id);
 		if (contato.isPresent()) {
-			telefoneService.deletar(contato.get().getIdTelefone());
+			EmergenciaId idEmergencia = executeQuery(idUsuario.toString(), sql).get(0).getId();
+			ContatoEmergenciaId idContatoEmergencia = buscaId(idEmergencia.toString(), id.toString(),
+					sqlContatoEmergencia).get(0).getId();
+			repoContatoEmergencia.deleteById(idContatoEmergencia);
 			repo.deleteById(id);
+			telefoneService.deletar(contato.get().getIdTelefone());
+			return Optional.of("Contato ===> " + id + ": deletado com sucesso");
 		}
-		return Optional.of("Contato ===> " + id + ": deletado com sucesso");
+		return Optional.empty();
+
 	}
 
 	private List<BuscarEmergencia> executeQuery(String id, String sql) {

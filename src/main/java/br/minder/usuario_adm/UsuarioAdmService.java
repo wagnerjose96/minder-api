@@ -21,8 +21,11 @@ public class UsuarioAdmService {
 	private UsuarioAdmRepository repo;
 
 	public Optional<UsuarioAdmId> salvar(CriarUsuarioAdm comando) {
-		UsuarioAdm novo = repo.save(new UsuarioAdm(comando));
-		return Optional.of(novo.getId());
+		if (comando.getNome() != null) {
+			UsuarioAdm novo = repo.save(new UsuarioAdm(comando));
+			return Optional.of(novo.getId());
+		}
+		return Optional.empty();
 	}
 
 	public Optional<BuscarUsuarioAdm> encontrar(UsuarioAdmId id) {
@@ -37,25 +40,27 @@ public class UsuarioAdmService {
 	public Optional<List<BuscarUsuarioAdm>> encontrar() {
 		List<UsuarioAdm> adms = repo.findAll();
 		List<BuscarUsuarioAdm> resultados = new ArrayList<>();
-		for (UsuarioAdm adm : adms) {
-			BuscarUsuarioAdm nova = new BuscarUsuarioAdm(adm);
-			resultados.add(nova);
+		if (!adms.isEmpty()) {
+			for (UsuarioAdm adm : adms) {
+				BuscarUsuarioAdm nova = new BuscarUsuarioAdm(adm);
+				resultados.add(nova);
+			}
+			return Optional.of(resultados);
 		}
-		return Optional.of(resultados);
+		return Optional.empty();
 	}
 
 	public Optional<String> deletar(UsuarioAdmId id) {
-		Optional<UsuarioAdm> usuario = repo.findById(id);
-		if (usuario.isPresent()) {
-			repo.delete(usuario.get());
-			return Optional.of("Usuário ===> " + id + ": deletado com sucesso");
+		if (repo.findById(id).isPresent()) {
+			repo.deleteById(id);
+			return Optional.of("Administrador ===> " + id + ": deletado com sucesso");
 		}
 		return Optional.empty();
 	}
 
 	public Optional<UsuarioAdmId> alterar(EditarUsuarioAdm comando) {
 		Optional<UsuarioAdm> optional = repo.findById(comando.getId());
-		if (optional.isPresent()) {
+		if (comando.getNome() != null && optional.isPresent()) {
 			UsuarioAdm user = optional.get();
 			user.apply(comando);
 			repo.save(user);

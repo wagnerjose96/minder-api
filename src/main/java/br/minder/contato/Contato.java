@@ -5,7 +5,6 @@ import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import org.hibernate.envers.Audited;
-
 import br.minder.contato.comandos.CriarContato;
 import br.minder.contato.comandos.EditarContato;
 import br.minder.telefone.TelefoneId;
@@ -16,7 +15,6 @@ import lombok.Setter;
 @Entity
 @Audited
 @Getter
-@Setter
 public class Contato {
 	@EmbeddedId
 	@AttributeOverride(name = "value", column = @Column(name = "id"))
@@ -24,6 +22,7 @@ public class Contato {
 	private ContatoId id;
 	private String nome;
 	@AttributeOverride(name = "value", column = @Column(name = "id_telefone"))
+	@Setter
 	private TelefoneId idTelefone;
 
 	public Contato() {

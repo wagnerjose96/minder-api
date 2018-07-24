@@ -16,15 +16,12 @@ import br.minder.telefone.TelefoneId;
 import br.minder.usuario.comandos.CriarUsuario;
 import br.minder.usuario.comandos.EditarUsuario;
 import lombok.AccessLevel;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import lombok.Setter;
 
 @Entity
 @Audited
-@Data
-@EqualsAndHashCode(exclude = { "nomeCompleto", "nomeUsuario", "email", "senha", "idSangue", "idEndereco",
-		"idTelefone", "dataNascimento", "idSexo", "imagemUsuario", "ativo" })
+@Getter
 public class Usuario {
 	@EmbeddedId
 	@AttributeOverride(name = "value", column = @Column(name = "id"))
@@ -39,8 +36,10 @@ public class Usuario {
 	@AttributeOverride(name = "value", column = @Column(name = "id_sangue"))
 	private SangueId idSangue;
 	@AttributeOverride(name = "value", column = @Column(name = "id_endereco"))
+	@Setter
 	private EnderecoId idEndereco;
 	@AttributeOverride(name = "value", column = @Column(name = "id_telefone"))
+	@Setter
 	private TelefoneId idTelefone;
 	@Column(name = "data_nascimento")
 	private Date dataNascimento;
@@ -48,6 +47,7 @@ public class Usuario {
 	private SexoId idSexo;
 	@Column(name = "imagem_usuario")
 	private String imagemUsuario;
+	@Setter
 	private int ativo;
 
 	public Usuario() {
@@ -74,7 +74,6 @@ public class Usuario {
 	}
 
 	public void applySenha(GerarSenha comando) {
-		this.email = comando.getEmail();
 		this.senha = Criptografia.criptografa(comando.getSenha());
 	}
 

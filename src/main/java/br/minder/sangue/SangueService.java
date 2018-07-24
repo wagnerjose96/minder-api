@@ -18,8 +18,11 @@ public class SangueService {
 	private SangueRepository repo;
 
 	public Optional<SangueId> salvar(CriarSangue comando) {
-		Sangue novo = repo.save(new Sangue(comando));
-		return Optional.of(novo.getIdSangue());
+		if (comando.getTipoSanguineo() != null) {
+			Sangue novo = repo.save(new Sangue(comando));
+			return Optional.of(novo.getIdSangue());
+		}
+		return Optional.empty();
 	}
 
 	public Optional<BuscarSangue> encontrar(SangueId id) {
@@ -34,16 +37,19 @@ public class SangueService {
 	public Optional<List<BuscarSangue>> encontrar() {
 		List<Sangue> sangues = repo.findAll();
 		List<BuscarSangue> resultados = new ArrayList<>();
-		for (Sangue sangue : sangues) {
-			BuscarSangue nova = new BuscarSangue(sangue);
-			resultados.add(nova);
+		if (!sangues.isEmpty()) {
+			for (Sangue sangue : sangues) {
+				BuscarSangue nova = new BuscarSangue(sangue);
+				resultados.add(nova);
+			}
+			return Optional.of(resultados);
 		}
-		return Optional.of(resultados);
+		return Optional.empty();
 	}
 
 	public Optional<SangueId> alterar(EditarSangue comando) {
 		Optional<Sangue> optional = repo.findById(comando.getIdSangue());
-		if (optional.isPresent()) {
+		if (comando.getTipoSanguineo() != null && optional.isPresent()) {
 			Sangue sangue = optional.get();
 			sangue.apply(comando);
 			repo.save(sangue);

@@ -1,9 +1,11 @@
 package br.minder.pergunta_notificacao.resposta.comandos;
 
 import br.minder.pergunta_notificacao.resposta.RespostaId;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
-@Data
+@Getter
+@Setter
 public class EditarResposta {
 	private RespostaId idResposta;
 	private String descricao;

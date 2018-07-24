@@ -28,18 +28,25 @@ public class PlanoDeSaudeService {
 	private ConvenioService convService;
 
 	public Optional<String> deletar(PlanoDeSaudeId id) {
-		repo.deleteById(id);
-		return Optional.of("Plano de saúde ===> " + id + ": deletado com sucesso");
+		if (repo.findById(id).isPresent()) {
+			repo.deleteById(id);
+			return Optional.of("Plano de saúde ===> " + id + ": deletado com sucesso");
+		}
+		return Optional.empty();
 	}
 
 	public Optional<PlanoDeSaudeId> salvar(CriarPlanoDeSaude comando, UsuarioId id) {
-		PlanoDeSaude novo = repo.save(new PlanoDeSaude(comando, id));
-		return Optional.of(novo.getId());
+		if (comando.getHabitacao() != null && comando.getIdConvenio() != null && comando.getNumeroCartao() != null
+				&& comando.getTerritorio() != null) {
+			PlanoDeSaude novo = repo.save(new PlanoDeSaude(comando, id));
+			return Optional.of(novo.getId());
+		}
+		return Optional.empty();
 	}
 
-	public Optional<BuscarPlanoDeSaude> encontrar(PlanoDeSaudeId planoId) {
+	public Optional<BuscarPlanoDeSaude> encontrar(PlanoDeSaudeId planoId, UsuarioId id) {
 		Optional<PlanoDeSaude> plano = repo.findById(planoId);
-		if (plano.isPresent()) {
+		if (plano.isPresent() && id.toString().equals(plano.get().getIdUsuario().toString())) {
 			BuscarPlanoDeSaude resultado = new BuscarPlanoDeSaude(plano.get());
 			Optional<BuscarConvenio> convenio = convService.encontrar(plano.get().getIdConvenio());
 			if (convenio.isPresent()) {
@@ -53,22 +60,26 @@ public class PlanoDeSaudeService {
 	public Optional<List<BuscarPlanoDeSaude>> encontrar(UsuarioId id) {
 		List<BuscarPlanoDeSaude> rsPlanos = new ArrayList<>();
 		List<PlanoDeSaude> planos = repo.findAll();
-		for (PlanoDeSaude plano : planos) {
-			if (id.toString().equals(plano.getIdUsuario().toString())) {
-				Optional<BuscarConvenio> convenio = convService.encontrar(plano.getIdConvenio());
-				BuscarPlanoDeSaude nova = new BuscarPlanoDeSaude(plano);
-				if (convenio.isPresent()) {
-					nova.setConvenio(convenio.get());
-					rsPlanos.add(nova);
+		if (!planos.isEmpty()) {
+			for (PlanoDeSaude plano : planos) {
+				if (id.toString().equals(plano.getIdUsuario().toString())) {
+					Optional<BuscarConvenio> convenio = convService.encontrar(plano.getIdConvenio());
+					BuscarPlanoDeSaude nova = new BuscarPlanoDeSaude(plano);
+					if (convenio.isPresent()) {
+						nova.setConvenio(convenio.get());
+						rsPlanos.add(nova);
+					}
 				}
 			}
+			return Optional.of(rsPlanos);
 		}
-		return Optional.of(rsPlanos);
+		return Optional.empty();
 	}
 
 	public Optional<PlanoDeSaudeId> alterar(EditarPlanoDeSaude comando) {
 		Optional<PlanoDeSaude> optional = repo.findById(comando.getId());
-		if (optional.isPresent()) {
+		if (comando.getHabitacao() != null && comando.getIdConvenio() != null && comando.getNumeroCartao() != null
+				&& comando.getTerritorio() != null && optional.isPresent()) {
 			PlanoDeSaude plano = optional.get();
 			plano.apply(comando);
 			repo.save(plano);

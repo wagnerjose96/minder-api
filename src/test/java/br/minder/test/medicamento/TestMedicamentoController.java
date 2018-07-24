@@ -27,7 +27,7 @@ import org.springframework.web.context.WebApplicationContext;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import br.minder.MinderApplication;
 import br.minder.login.LoginController;
-import br.minder.login.comandos.LogarAdm;
+import br.minder.login.comandos.LogarUsuario;
 import br.minder.medicamento.Medicamento;
 import br.minder.medicamento.MedicamentoId;
 import br.minder.medicamento.MedicamentoRepository;
@@ -415,7 +415,7 @@ public class TestMedicamentoController {
 	}
 
 	private String logarAdm(String nomeUsuario, String senha) {
-		LogarAdm corpoLogin = new LogarAdm();
+		LogarUsuario corpoLogin = new LogarUsuario();
 		corpoLogin.setIdentificador(nomeUsuario);
 		corpoLogin.setSenha(senha);
 		return login.loginAdm(corpoLogin).getBody();

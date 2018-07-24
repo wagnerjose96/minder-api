@@ -69,15 +69,18 @@ public class CirurgiaService {
 	public Optional<List<BuscarCirurgia>> encontrar(UsuarioId id) {
 		List<Cirurgia> cirurgias = cirurgiaRepo.findAll();
 		List<BuscarCirurgia> rsCirurgias = new ArrayList<>();
-		for (Cirurgia cirurgia : cirurgias) {
-			if (id.toString().equals(cirurgia.getIdUsuario().toString())) {
-				List<BuscarMedicamento> medicamentos = executeQuery(cirurgia.getIdCirurgia().toString(), sql);
-				BuscarCirurgia nova = new BuscarCirurgia(cirurgia);
-				nova.setMedicamentos(medicamentos);
-				rsCirurgias.add(nova);
+		if (!cirurgias.isEmpty()) {
+			for (Cirurgia cirurgia : cirurgias) {
+				if (id.toString().equals(cirurgia.getIdUsuario().toString())) {
+					List<BuscarMedicamento> medicamentos = executeQuery(cirurgia.getIdCirurgia().toString(), sql);
+					BuscarCirurgia nova = new BuscarCirurgia(cirurgia);
+					nova.setMedicamentos(medicamentos);
+					rsCirurgias.add(nova);
+				}
 			}
+			return Optional.of(rsCirurgias);
 		}
-		return Optional.of(rsCirurgias);
+		return Optional.empty();
 	}
 
 	public Optional<CirurgiaId> alterar(EditarCirurgia comando) {

@@ -43,6 +43,7 @@ import br.minder.sexo.comandos.CriarSexo;
 import br.minder.telefone.comandos.CriarTelefone;
 import br.minder.telefone.comandos.EditarTelefone;
 import br.minder.usuario.Usuario;
+import br.minder.usuario.UsuarioId;
 import br.minder.usuario.UsuarioRepository;
 import br.minder.usuario.comandos.CriarUsuario;
 import br.minder.usuario.comandos.EditarUsuario;
@@ -92,6 +93,15 @@ public class TestUsuarioController {
 						.content(jsonString))
 				.andExpect(jsonPath("$", equalTo("O usuário foi cadastrado com sucesso")))
 				.andExpect(status().isCreated());
+
+		jsonString = objectMapper
+				.writeValueAsString(criarUsuarioErro("wagner@hotmail.com", "wagnerju", idSexo, idSangue));
+
+		this.mockMvc
+				.perform(post("/usuarios").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+						.content(jsonString))
+				.andExpect(jsonPath("$.error", equalTo("O usuário não foi salvo devido a um erro interno")))
+				.andExpect(status().isInternalServerError());
 	}
 
 	@Test
@@ -115,8 +125,29 @@ public class TestUsuarioController {
 
 		this.mockMvc
 				.perform(put("/usuarios").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+						.header("token", logar("wagnerju", "1234") + "erroToken").content(jsonString))
+				.andExpect(jsonPath("$.error", equalTo("Acesso negado"))).andExpect(status().isForbidden());
+
+		this.mockMvc
+				.perform(put("/usuarios").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
 						.header("token", logar("wagnerju", "1234")).content(jsonString))
 				.andExpect(jsonPath("$", equalTo("O usuário foi alterado com sucesso"))).andExpect(status().isOk());
+
+		jsonString = objectMapper.writeValueAsString(editarUsuarioErroId(usuarios.get(0)));
+
+		this.mockMvc
+				.perform(put("/usuarios").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+						.header("token", logar("wagnerju", "1234")).content(jsonString))
+				.andExpect(jsonPath("$.error", equalTo("O usuário a ser alterado não existe no banco de dados")))
+				.andExpect(status().isNotFound());
+
+		jsonString = objectMapper.writeValueAsString(editarUsuarioErro1(usuarios.get(0)));
+
+		this.mockMvc
+				.perform(put("/usuarios").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+						.header("token", logar("wagnerju", "1234")).content(jsonString))
+				.andExpect(jsonPath("$.error", equalTo("Ocorreu um erro interno durante a alteração do usuário")))
+				.andExpect(status().isInternalServerError());
 	}
 
 	@Test
@@ -133,11 +164,38 @@ public class TestUsuarioController {
 				.andExpect(jsonPath("$", equalTo("O usuário foi cadastrado com sucesso")))
 				.andExpect(status().isCreated());
 
+		jsonString = objectMapper
+				.writeValueAsString(criarUsuario("lathuanny@hotmail.com", "lathuanny", idSexo, idSangue));
+
+		this.mockMvc
+				.perform(post("/usuarios").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+						.content(jsonString))
+				.andExpect(jsonPath("$", equalTo("O usuário foi cadastrado com sucesso")))
+				.andExpect(status().isCreated());
+
 		List<Usuario> usuarios = repo.findAll();
 		assertThat(usuarios.get(0), notNullValue());
+		assertThat(usuarios.get(1), notNullValue());
+
+		String token = logar("lathuanny", "1234");
+
+		this.mockMvc
+				.perform(delete("/usuarios").header("token",
+						logar("lathuanny", "1234")))
+				.andExpect(jsonPath("$",
+						equalTo("Usuário ===> " + usuarios.get(1).getId().toString() + ": deletado com sucesso")))
+				.andExpect(status().isOk());
 
 		this.mockMvc.perform(get("/usuarios").header("token", logar("wagnerju", "1234")))
 				.andExpect(jsonPath("$.username", equalTo("wagnerju"))).andExpect(status().isOk());
+
+		this.mockMvc.perform(get("/usuarios").header("token", logar("wagnerju", "1234") + "erroToken"))
+				.andExpect(jsonPath("$.error", equalTo("Acesso negado"))).andExpect(status().isForbidden());
+
+		this.mockMvc.perform(get("/usuarios").header("token", token))
+				.andExpect(jsonPath("$.error", equalTo("O usuário procurado não existe no banco de dados")))
+				.andExpect(status().isNotFound());
+
 	}
 
 	@Test
@@ -153,12 +211,40 @@ public class TestUsuarioController {
 						.content(jsonString))
 				.andExpect(jsonPath("$", equalTo("O usuário foi cadastrado com sucesso")))
 				.andExpect(status().isCreated());
+		
+		jsonString = objectMapper
+				.writeValueAsString(criarUsuario("lathuanny@hotmail.com", "lathuanny", idSexo, idSangue));
+
+		this.mockMvc
+				.perform(post("/usuarios").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+						.content(jsonString))
+				.andExpect(jsonPath("$", equalTo("O usuário foi cadastrado com sucesso")))
+				.andExpect(status().isCreated());
 
 		List<Usuario> usuarios = repo.findAll();
 		assertThat(usuarios.get(0), notNullValue());
+		
+		String token = logar("lathuanny", "1234");
 
 		this.mockMvc
-				.perform(delete("/usuarios/" + usuarios.get(0).getId().toString()).header("token",
+				.perform(delete("/usuarios").header("token",
+						logar("lathuanny", "1234")))
+				.andExpect(jsonPath("$",
+						equalTo("Usuário ===> " + usuarios.get(1).getId().toString() + ": deletado com sucesso")))
+				.andExpect(status().isOk());
+
+		this.mockMvc
+				.perform(delete("/usuarios").header("token",
+						logar("wagnerju", "1234") + "erroToken"))
+				.andExpect(jsonPath("$.error", equalTo("Acesso negado"))).andExpect(status().isForbidden());
+
+		this.mockMvc
+				.perform(delete("/usuarios").header("token", token))
+				.andExpect(jsonPath("$.error", equalTo("O usuário a deletar não existe no banco de dados")))
+				.andExpect(status().isNotFound());
+
+		this.mockMvc
+				.perform(delete("/usuarios").header("token",
 						logar("wagnerju", "1234")))
 				.andExpect(jsonPath("$",
 						equalTo("Usuário ===> " + usuarios.get(0).getId().toString() + ": deletado com sucesso")))
@@ -170,7 +256,7 @@ public class TestUsuarioController {
 		endereco.setBairro("Zona 6");
 		endereco.setCidade("Maringá");
 		endereco.setEstado("Paraná");
-		endereco.setNumero(1390);
+		endereco.setNumero("1390");
 		endereco.setRua("Castro Alves");
 
 		CriarTelefone telefone = new CriarTelefone();
@@ -191,13 +277,38 @@ public class TestUsuarioController {
 		return usuario;
 	}
 
+	private CriarUsuario criarUsuarioErro(String email, String username, SexoId idSexo, SangueId idSangue) {
+		CriarEndereco endereco = new CriarEndereco();
+		endereco.setBairro("Zona 6");
+		endereco.setCidade("Maringá");
+		endereco.setEstado("Paraná");
+		endereco.setNumero("1390");
+		endereco.setRua("Castro Alves");
+
+		CriarTelefone telefone = new CriarTelefone();
+		telefone.setDdd(44);
+		telefone.setNumero(999038860);
+
+		CriarUsuario usuario = new CriarUsuario();
+		usuario.setEmail(email);
+		usuario.setDataNascimento(Date.valueOf(LocalDate.of(1997, 03, 17)));
+		usuario.setEndereco(endereco);
+		usuario.setIdSangue(idSangue);
+		usuario.setIdSexo(idSexo);
+		usuario.setSenha("1234");
+		usuario.setTelefone(telefone);
+		usuario.setUsername(username);
+
+		return usuario;
+	}
+
 	private EditarUsuario editarUsuario(Usuario usuario) {
 		EditarEndereco endereco = new EditarEndereco();
 		endereco.setId(usuario.getIdEndereco());
 		endereco.setBairro("Zona 6");
 		endereco.setCidade("Maringá");
 		endereco.setEstado("Paraná");
-		endereco.setNumero(1390);
+		endereco.setNumero("1390");
 		endereco.setRua("Castro Alves");
 
 		EditarTelefone telefone = new EditarTelefone();
@@ -209,6 +320,55 @@ public class TestUsuarioController {
 		usuarioEditado.setId(usuario.getId());
 		usuarioEditado.setSenha(usuario.getSenha());
 		usuarioEditado.setNome("Wagner Junior");
+		usuarioEditado.setEndereco(endereco);
+		usuarioEditado.setTelefone(telefone);
+		usuarioEditado.setImagem(usuario.getImagemUsuario());
+
+		return usuarioEditado;
+	}
+
+	private EditarUsuario editarUsuarioErroId(Usuario usuario) {
+		EditarEndereco endereco = new EditarEndereco();
+		endereco.setId(usuario.getIdEndereco());
+		endereco.setBairro("Zona 6");
+		endereco.setCidade("Maringá");
+		endereco.setEstado("Paraná");
+		endereco.setNumero("1390");
+		endereco.setRua("Castro Alves");
+
+		EditarTelefone telefone = new EditarTelefone();
+		telefone.setId(usuario.getIdTelefone());
+		telefone.setDdd(44);
+		telefone.setNumero(999038860);
+
+		EditarUsuario usuarioEditado = new EditarUsuario();
+		usuarioEditado.setId(new UsuarioId());
+		usuarioEditado.setSenha(usuario.getSenha());
+		usuarioEditado.setNome("Wagner Junior");
+		usuarioEditado.setEndereco(endereco);
+		usuarioEditado.setTelefone(telefone);
+		usuarioEditado.setImagem(usuario.getImagemUsuario());
+
+		return usuarioEditado;
+	}
+
+	private EditarUsuario editarUsuarioErro1(Usuario usuario) {
+		EditarEndereco endereco = new EditarEndereco();
+		endereco.setId(usuario.getIdEndereco());
+		endereco.setBairro("Zona 6");
+		endereco.setCidade("Maringá");
+		endereco.setEstado("Paraná");
+		endereco.setNumero("1390");
+		endereco.setRua("Castro Alves");
+
+		EditarTelefone telefone = new EditarTelefone();
+		telefone.setId(usuario.getIdTelefone());
+		telefone.setDdd(44);
+		telefone.setNumero(999038860);
+
+		EditarUsuario usuarioEditado = new EditarUsuario();
+		usuarioEditado.setId(usuario.getId());
+		usuarioEditado.setSenha(usuario.getSenha());
 		usuarioEditado.setEndereco(endereco);
 		usuarioEditado.setTelefone(telefone);
 		usuarioEditado.setImagem(usuario.getImagemUsuario());

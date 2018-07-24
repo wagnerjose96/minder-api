@@ -378,6 +378,10 @@ public class TestCirurgiaController {
 
 		List<Usuario> usuarios = repo.findAll();
 		assertThat(usuarios.get(0), notNullValue());
+		
+		this.mockMvc.perform(get("/cirurgias").header("token", logar("wagnerju", "1234")))
+		.andExpect(jsonPath("$.error", equalTo("Não existe nenhuma cirurgia cadastrada no banco de dados")))
+		.andExpect(status().isNotFound());
 
 		String jsonString = objectMapper.writeValueAsString(criarCirurgia(idsMedicamentos, "Pedra no rim"));
 
@@ -614,7 +618,7 @@ public class TestCirurgiaController {
 		endereco.setBairro("Zona 6");
 		endereco.setCidade("Maringá");
 		endereco.setEstado("Paraná");
-		endereco.setNumero(1390);
+		endereco.setNumero("1390");
 		endereco.setRua("Castro Alves");
 
 		CriarTelefone telefone = new CriarTelefone();

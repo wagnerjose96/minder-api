@@ -6,9 +6,11 @@ import br.minder.endereco.comandos.CriarEndereco;
 import br.minder.sangue.SangueId;
 import br.minder.sexo.SexoId;
 import br.minder.telefone.comandos.CriarTelefone;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
-@Data
+@Getter
+@Setter
 public class CriarUsuario {
 	private String username;
 	private String email;

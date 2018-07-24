@@ -18,8 +18,11 @@ public class RespostaService {
 	private RespostaRepository repo;
 
 	public Optional<RespostaId> salvar(CriarResposta comando) {
-		Resposta novo = repo.save(new Resposta(comando));	
-		return Optional.of(novo.getIdResposta());
+		if (comando.getDescricao() != null && comando.getIdPergunta() != null) {
+			Resposta novo = repo.save(new Resposta(comando));
+			return Optional.of(novo.getIdResposta());
+		}
+		return Optional.empty();
 	}
 
 	public Optional<BuscarResposta> encontrar(RespostaId id) {
@@ -34,16 +37,19 @@ public class RespostaService {
 	public Optional<List<BuscarResposta>> encontrar() {
 		List<BuscarResposta> resultados = new ArrayList<>();
 		List<Resposta> respostas = repo.findAll();
-		for (Resposta resposta : respostas) {
-			BuscarResposta res = new BuscarResposta(resposta);
-			resultados.add(res);
+		if (!respostas.isEmpty()) {
+			for (Resposta resposta : respostas) {
+				BuscarResposta res = new BuscarResposta(resposta);
+				resultados.add(res);
+			}
+			return Optional.of(resultados);
 		}
-		return Optional.of(resultados);
+		return Optional.empty();
 	}
-	
+
 	public Optional<RespostaId> alterar(EditarResposta comando) {
 		Optional<Resposta> optional = repo.findById(comando.getIdResposta());
-		if (optional.isPresent()) {
+		if (comando.getDescricao() != null && optional.isPresent()) {
 			Resposta resposta = optional.get();
 			resposta.apply(comando);
 			repo.save(resposta);

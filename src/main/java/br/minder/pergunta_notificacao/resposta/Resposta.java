@@ -10,14 +10,12 @@ import br.minder.pergunta_notificacao.PerguntaId;
 import br.minder.pergunta_notificacao.resposta.comandos.CriarResposta;
 import br.minder.pergunta_notificacao.resposta.comandos.EditarResposta;
 import lombok.AccessLevel;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import lombok.Setter;
 
 @Entity
 @Audited
-@Data
-@EqualsAndHashCode(exclude = { "descricao", "idPergunta"})
+@Getter
 public class Resposta {
 	@EmbeddedId
 	@AttributeOverride(name = "value", column = @Column(name = "id_resposta"))

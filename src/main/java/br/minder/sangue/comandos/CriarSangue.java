@@ -1,8 +1,10 @@
 package br.minder.sangue.comandos;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
-@Data
+@Getter
+@Setter
 public class CriarSangue {
 	private String tipoSanguineo;
 

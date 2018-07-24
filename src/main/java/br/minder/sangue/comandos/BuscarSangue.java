@@ -2,9 +2,9 @@ package br.minder.sangue.comandos;
 
 import br.minder.sangue.Sangue;
 import br.minder.sangue.SangueId;
-import lombok.Data;
+import lombok.Getter;
 
-@Data
+@Getter
 public class BuscarSangue {
 	private SangueId idSangue;
 	private String tipoSanguineo;

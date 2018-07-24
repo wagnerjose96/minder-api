@@ -9,9 +9,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
 import java.util.List;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -31,7 +29,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.WebApplicationContext;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.springtestdbunit.TransactionDbUnitTestExecutionListener;
-
 import br.minder.MinderApplication;
 import br.minder.convenio.Convenio;
 import br.minder.convenio.ConvenioId;
@@ -39,7 +36,7 @@ import br.minder.convenio.ConvenioRepository;
 import br.minder.convenio.comandos.CriarConvenio;
 import br.minder.convenio.comandos.EditarConvenio;
 import br.minder.login.LoginController;
-import br.minder.login.comandos.LogarAdm;
+import br.minder.login.comandos.LogarUsuario;
 import br.minder.usuario_adm.UsuarioAdm;
 import br.minder.usuario_adm.UsuarioAdmRepository;
 import br.minder.usuario_adm.UsuarioAdmService;
@@ -287,7 +284,7 @@ public class TestConvenioController {
 	}
 
 	private String logarAdm(String nomeUsuario, String senha) {
-		LogarAdm corpoLogin = new LogarAdm();
+		LogarUsuario corpoLogin = new LogarUsuario();
 		corpoLogin.setIdentificador(nomeUsuario);
 		corpoLogin.setSenha(senha);
 		return login.loginAdm(corpoLogin).getBody();

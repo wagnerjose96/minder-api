@@ -47,6 +47,7 @@ public class AlarmeController {
 			if (optionalAlarmes.isPresent()) {
 				return ResponseEntity.ok(optionalAlarmes.get());
 			}
+			throw new NullPointerException("Não existe nenhum alarme cadastrado no banco de dados");
 		}
 		throw new AccessDeniedException(ACESSONEGADO);
 	}
@@ -104,12 +105,10 @@ public class AlarmeController {
 	public ResponseEntity<String> deleteAlarme(@PathVariable AlarmeId id, @RequestHeader String token)
 			throws AccessDeniedException {
 		if (autentica.autenticaRequisicao(token)) {
-			if (!alarmeService.encontrar(id, autentica.idUser(token)).isPresent()) {
-				throw new NullPointerException("O alarme a ser deletado não existe no banco de dados");
-			}
 			Optional<String> resultado = alarmeService.deletar(id);
 			if (resultado.isPresent())
 				return ResponseEntity.ok(resultado.get());
+			throw new NullPointerException("O alarme a ser deletado não existe no banco de dados");
 		}
 		throw new AccessDeniedException(ACESSONEGADO);
 	}

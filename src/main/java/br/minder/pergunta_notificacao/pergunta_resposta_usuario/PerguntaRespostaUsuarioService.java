@@ -28,8 +28,11 @@ public class PerguntaRespostaUsuarioService {
 	private RespostaService respostaService;
 
 	public Optional<PerguntaRespostaUsuarioId> salvar(CriarPerguntaRespostaUsuario comando, UsuarioId id) {
-		PerguntaRespostaUsuario novo = repo.save(new PerguntaRespostaUsuario(comando, id));
-		return Optional.of(novo.getId());
+		if (comando.getIdPergunta() != null && comando.getIdResposta() != null) {
+			PerguntaRespostaUsuario novo = repo.save(new PerguntaRespostaUsuario(comando, id));
+			return Optional.of(novo.getId());
+		}
+		return Optional.empty();
 	}
 
 	public Optional<BuscarPerguntaRespostaUsuario> encontrar(PerguntaRespostaUsuarioId id) {
@@ -43,12 +46,15 @@ public class PerguntaRespostaUsuarioService {
 	public Optional<List<BuscarPerguntaRespostaUsuario>> encontrar(UsuarioId id) {
 		List<BuscarPerguntaRespostaUsuario> resultados = new ArrayList<>();
 		List<PerguntaRespostaUsuario> perguntaRespostas = repo.findAll();
-		for (PerguntaRespostaUsuario perguntaResposta : perguntaRespostas) {
-			if (id.toString().equals(perguntaResposta.getIdUsuario().toString())) {
-				resultados.add(construir(perguntaResposta));
+		if (!perguntaRespostas.isEmpty()) {
+			for (PerguntaRespostaUsuario perguntaResposta : perguntaRespostas) {
+				if (id.toString().equals(perguntaResposta.getIdUsuario().toString())) {
+					resultados.add(construir(perguntaResposta));
+				}
 			}
+			return Optional.of(resultados);
 		}
-		return Optional.of(resultados);
+		return Optional.empty();
 	}
 
 	private BuscarPerguntaRespostaUsuario construir(PerguntaRespostaUsuario resultado) {

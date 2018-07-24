@@ -23,8 +23,11 @@ public class PerguntaService {
 	private RespostaService respostaService;
 
 	public Optional<PerguntaId> salvar(CriarPergunta comando) {
-		Pergunta novo = repo.save(new Pergunta(comando));
-		return Optional.of(novo.getIdPergunta());
+		if (comando.getDescricao() != null) {
+			Pergunta novo = repo.save(new Pergunta(comando));
+			return Optional.of(novo.getIdPergunta());
+		}
+		return Optional.empty();
 	}
 
 	public Optional<BuscarPergunta> encontrar(PerguntaId id) {
@@ -40,17 +43,20 @@ public class PerguntaService {
 	public Optional<List<BuscarPergunta>> encontrar() {
 		List<BuscarPergunta> resultados = new ArrayList<>();
 		List<Pergunta> perguntas = repo.findAll();
-		for (Pergunta pergunta : perguntas) {
-			BuscarPergunta resultado = new BuscarPergunta(pergunta);
-			resultado.setRespostas(construir(resultado));
-			resultados.add(resultado);
+		if (!perguntas.isEmpty()) {
+			for (Pergunta pergunta : perguntas) {
+				BuscarPergunta resultado = new BuscarPergunta(pergunta);
+				resultado.setRespostas(construir(resultado));
+				resultados.add(resultado);
+			}
+			return Optional.of(resultados);
 		}
-		return Optional.of(resultados);
+		return Optional.empty();
 	}
 
 	public Optional<PerguntaId> alterar(EditarPergunta comando) {
 		Optional<Pergunta> optional = repo.findById(comando.getIdPergunta());
-		if (optional.isPresent()) {
+		if (comando.getDescricao() != null && optional.isPresent()) {
 			Pergunta pergunta = optional.get();
 			pergunta.apply(comando);
 			repo.save(pergunta);

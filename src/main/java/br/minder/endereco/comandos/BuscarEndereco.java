@@ -2,9 +2,9 @@ package br.minder.endereco.comandos;
 
 import br.minder.endereco.Endereco;
 import br.minder.endereco.EnderecoId;
-import lombok.Data;
+import lombok.Getter;
 
-@Data
+@Getter
 public class BuscarEndereco {
 	private EnderecoId id;
 	private String rua;
@@ -12,11 +12,8 @@ public class BuscarEndereco {
 	private String cidade;
 	private String estado;
 	private String complemento;
-	private int numero;
+	private String numero;
 
-	public BuscarEndereco() {
-	}
-	
 	public BuscarEndereco(Endereco comandos) {
 		this.id = comandos.getId();
 		this.rua = comandos.getRua();
