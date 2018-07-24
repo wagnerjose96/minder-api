@@ -18,7 +18,7 @@
 				<constraints nullable="false"
 					foreignKeyName="FK_PLANODESAUDE_CONVENIO" references="convenio(id)" />
 			</column>
-			<column name="numero_cartao" type="${TYPE_NUMBER}">
+			<column name="numero_cartao" type="${TYPE_BIG_INTEGER}">
 				<constraints nullable="false" />
 			</column>
 			<column name="habitacao" type="${TYPE_DESCRICAO}">
@@ -39,24 +39,24 @@
 		author="larissa.andrade">
 		<createTable tableName="plano_de_saude_aud">
 			<column name="id" type="${TYPE_ID}">
-				<constraints nullable="true" />
+				<constraints nullable="false" />
 			</column>
-			<column name="numero_cartao" type="${TYPE_NUMBER}">
-				<constraints nullable="true" />
+			<column name="numero_cartao" type="${TYPE_BIG_INTEGER}">
+				<constraints nullable="false" />
 			</column>
 			<column name="habitacao" type="${TYPE_DESCRICAO}">
-				<constraints nullable="true" />
+				<constraints nullable="false" />
 			</column>
 			<column name="territorio" type="${TYPE_DESCRICAO}">
-				<constraints nullable="true" />
+				<constraints nullable="false" />
 			</column>
 			<column name="rev" type="${TYPE_NUMBER}">
-				<constraints nullable="true"
+				<constraints nullable="false"
 					referencedTableName="revinfo" referencedColumnNames="rev"
 					foreignKeyName="planodesaude_revinfo_fk" />
 			</column>
 			<column name="revtype" type="${TYPE_NUMBER}">
-				<constraints nullable="true" />
+				<constraints nullable="false" />
 			</column>
 		</createTable>
 		<addPrimaryKey constraintName="PK_PLANODESAUDE_AUD"
