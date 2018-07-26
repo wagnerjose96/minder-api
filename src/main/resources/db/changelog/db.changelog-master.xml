@@ -21,7 +21,7 @@
 	
 	<include file="db/changelog/entidades/db.changelog-revinfo.xml" />
 	<include file="db/changelog/entidades/db.changelog-sangue.xml" />
-	<include file="db/changelog/entidades/db.changelog-sexo.xml" />
+	<include file="db/changelog/entidades/db.changelog-genero.xml" />
 	<include file="db/changelog/entidades/db.changelog-endereco.xml" />
 	<include file="db/changelog/entidades/db.changelog-telefone.xml" />
 	<include file="db/changelog/entidades/db.changelog-usuario_adm.xml" />

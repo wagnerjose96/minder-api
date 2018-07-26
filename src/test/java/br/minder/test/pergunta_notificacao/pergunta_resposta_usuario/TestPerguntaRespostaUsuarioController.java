@@ -27,6 +27,10 @@ import org.springframework.web.context.WebApplicationContext;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import br.minder.MinderApplication;
 import br.minder.endereco.comandos.CriarEndereco;
+import br.minder.genero.Genero;
+import br.minder.genero.GeneroId;
+import br.minder.genero.GeneroRepository;
+import br.minder.genero.comandos.CriarGenero;
 import br.minder.login.LoginController;
 import br.minder.login.comandos.LogarUsuario;
 import br.minder.pergunta_notificacao.Pergunta;
@@ -47,10 +51,6 @@ import br.minder.sangue.Sangue;
 import br.minder.sangue.SangueId;
 import br.minder.sangue.SangueRepository;
 import br.minder.sangue.comandos.CriarSangue;
-import br.minder.sexo.Sexo;
-import br.minder.sexo.SexoId;
-import br.minder.sexo.SexoRepository;
-import br.minder.sexo.comandos.CriarSexo;
 import br.minder.telefone.comandos.CriarTelefone;
 import br.minder.usuario.Usuario;
 import br.minder.usuario.UsuarioRepository;
@@ -104,7 +104,7 @@ public class TestPerguntaRespostaUsuarioController {
 	private SangueRepository repoSangue;
 
 	@Autowired
-	private SexoRepository repoSexo;
+	private GeneroRepository repoGenero;
 
 	@Autowired
 	private UsuarioAdmRepository repoAdm;
@@ -119,9 +119,9 @@ public class TestPerguntaRespostaUsuarioController {
 
 	@Test
 	public void testCadastrar() throws Exception {
-		SexoId idSexo = criarSexo("Masculino");
+		GeneroId idGenero = criarGenero("Masculino");
 		SangueId idSangue = criarSangue("A+");
-		usuarioService.salvar((criarUsuario("wagner@hotmail.com", "wagnerju", idSexo, idSangue)));
+		usuarioService.salvar((criarUsuario("wagner@hotmail.com", "wagnerju", idGenero, idSangue)));
 		List<Usuario> usuario = repoUsuario.findAll();
 		assertThat(usuario.get(0), notNullValue());
 
@@ -184,9 +184,9 @@ public class TestPerguntaRespostaUsuarioController {
 
 	@Test
 	public void testBuscarTodos() throws Exception {
-		SexoId idSexo = criarSexo("Masculino");
+		GeneroId idGenero = criarGenero("Masculino");
 		SangueId idSangue = criarSangue("A+");
-		usuarioService.salvar((criarUsuario("wagner@hotmail.com", "wagnerju", idSexo, idSangue)));
+		usuarioService.salvar((criarUsuario("wagner@hotmail.com", "wagnerju", idGenero, idSangue)));
 		List<Usuario> usuario = repoUsuario.findAll();
 		assertThat(usuario.get(0), notNullValue());
 
@@ -251,9 +251,9 @@ public class TestPerguntaRespostaUsuarioController {
 
 	@Test
 	public void testBuscarPorId() throws Exception {
-		SexoId idSexo = criarSexo("Masculino");
+		GeneroId idGenero = criarGenero("Masculino");
 		SangueId idSangue = criarSangue("A+");
-		usuarioService.salvar((criarUsuario("wagner@hotmail.com", "wagnerju", idSexo, idSangue)));
+		usuarioService.salvar((criarUsuario("wagner@hotmail.com", "wagnerju", idGenero, idSangue)));
 		List<Usuario> usuario = repoUsuario.findAll();
 		assertThat(usuario.get(0), notNullValue());
 
@@ -341,7 +341,7 @@ public class TestPerguntaRespostaUsuarioController {
 		return pergunta;
 	}
 
-	private CriarUsuario criarUsuario(String email, String username, SexoId idSexo, SangueId idSangue) {
+	private CriarUsuario criarUsuario(String email, String username, GeneroId idGenero, SangueId idSangue) {
 		CriarEndereco endereco = new CriarEndereco();
 		endereco.setBairro("Zona 6");
 		endereco.setCidade("Maringá");
@@ -359,7 +359,7 @@ public class TestPerguntaRespostaUsuarioController {
 		usuario.setDataNascimento(Date.valueOf(LocalDate.of(1997, 03, 17)));
 		usuario.setEndereco(endereco);
 		usuario.setIdSangue(idSangue);
-		usuario.setIdSexo(idSexo);
+		usuario.setIdGenero(idGenero);
 		usuario.setSenha("1234");
 		usuario.setTelefone(telefone);
 		usuario.setUsername(username);
@@ -378,8 +378,8 @@ public class TestPerguntaRespostaUsuarioController {
 		return repoSangue.save(new Sangue(new CriarSangue(tipo))).getIdSangue();
 	}
 
-	private SexoId criarSexo(String tipo) {
-		return repoSexo.save(new Sexo(new CriarSexo(tipo))).getIdGenero();
+	private GeneroId criarGenero(String tipo) {
+		return repoGenero.save(new Genero(new CriarGenero(tipo))).getIdGenero();
 	}
 
 	private CriarUsuarioAdm criarAdm() {

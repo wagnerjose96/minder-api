@@ -28,6 +28,10 @@ import org.springframework.web.context.WebApplicationContext;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import br.minder.MinderApplication;
 import br.minder.endereco.comandos.CriarEndereco;
+import br.minder.genero.Genero;
+import br.minder.genero.GeneroId;
+import br.minder.genero.GeneroRepository;
+import br.minder.genero.comandos.CriarGenero;
 import br.minder.login.LoginController;
 import br.minder.login.comandos.LogarUsuario;
 import br.minder.pergunta_notificacao.Pergunta;
@@ -39,10 +43,6 @@ import br.minder.sangue.Sangue;
 import br.minder.sangue.SangueId;
 import br.minder.sangue.SangueRepository;
 import br.minder.sangue.comandos.CriarSangue;
-import br.minder.sexo.Sexo;
-import br.minder.sexo.SexoId;
-import br.minder.sexo.SexoRepository;
-import br.minder.sexo.comandos.CriarSexo;
 import br.minder.telefone.comandos.CriarTelefone;
 import br.minder.usuario.Usuario;
 import br.minder.usuario.UsuarioRepository;
@@ -81,7 +81,7 @@ public class TestPerguntaController {
 	private UsuarioAdmService admService;
 
 	@Autowired
-	private SexoRepository repoSexo;
+	private GeneroRepository repoGenero;
 
 	@Autowired
 	private SangueRepository repoSangue;
@@ -104,8 +104,8 @@ public class TestPerguntaController {
 		assertThat(adm.get(0), notNullValue());
 
 		SangueId idSangue = criarSangue("A+");
-		SexoId idSexo = criarSexo("Masculino");
-		serviceUsuario.salvar(criarUsuario("wagner@hotmail.com", "wagnerju", idSexo, idSangue)).get();
+		GeneroId idGenero = criarGenero("Masculino");
+		serviceUsuario.salvar(criarUsuario("wagner@hotmail.com", "wagnerju", idGenero, idSangue)).get();
 		List<Usuario> usuarios = repoUsuario.findAll();
 		assertThat(usuarios.get(0), notNullValue());
 
@@ -138,8 +138,8 @@ public class TestPerguntaController {
 		assertThat(adm.get(0), notNullValue());
 
 		SangueId idSangue = criarSangue("A+");
-		SexoId idSexo = criarSexo("Masculino");
-		serviceUsuario.salvar(criarUsuario("wagner@hotmail.com", "wagnerju", idSexo, idSangue)).get();
+		GeneroId idGenero = criarGenero("Masculino");
+		serviceUsuario.salvar(criarUsuario("wagner@hotmail.com", "wagnerju", idGenero, idSangue)).get();
 		List<Usuario> usuarios = repoUsuario.findAll();
 		assertThat(usuarios.get(0), notNullValue());
 
@@ -306,7 +306,7 @@ public class TestPerguntaController {
 		return login.loginAdm(corpoLogin).getBody();
 	}
 
-	private CriarUsuario criarUsuario(String email, String username, SexoId idSexo, SangueId idSangue) {
+	private CriarUsuario criarUsuario(String email, String username, GeneroId idGenero, SangueId idSangue) {
 		CriarEndereco endereco = new CriarEndereco();
 		endereco.setBairro("Zona 6");
 		endereco.setCidade("Maringá");
@@ -324,7 +324,7 @@ public class TestPerguntaController {
 		usuario.setDataNascimento(Date.valueOf(LocalDate.of(1997, 03, 17)));
 		usuario.setEndereco(endereco);
 		usuario.setIdSangue(idSangue);
-		usuario.setIdSexo(idSexo);
+		usuario.setIdGenero(idGenero);
 		usuario.setSenha("1234");
 		usuario.setTelefone(telefone);
 		usuario.setUsername(username);
@@ -337,8 +337,8 @@ public class TestPerguntaController {
 		return id;
 	}
 
-	private SexoId criarSexo(String tipo) {
-		SexoId id = repoSexo.save(new Sexo(new CriarSexo(tipo))).getIdGenero();
+	private GeneroId criarGenero(String tipo) {
+		GeneroId id = repoGenero.save(new Genero(new CriarGenero(tipo))).getIdGenero();
 		return id;
 	}
 

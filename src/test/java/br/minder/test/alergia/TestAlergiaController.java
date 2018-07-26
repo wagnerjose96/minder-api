@@ -40,6 +40,10 @@ import br.minder.alergia.AlergiaRepository;
 import br.minder.alergia.comandos.CriarAlergia;
 import br.minder.alergia.comandos.EditarAlergia;
 import br.minder.endereco.comandos.CriarEndereco;
+import br.minder.genero.Genero;
+import br.minder.genero.GeneroId;
+import br.minder.genero.GeneroRepository;
+import br.minder.genero.comandos.CriarGenero;
 import br.minder.login.LoginController;
 import br.minder.login.comandos.LogarUsuario;
 import br.minder.medicamento.MedicamentoId;
@@ -49,10 +53,6 @@ import br.minder.sangue.Sangue;
 import br.minder.sangue.SangueId;
 import br.minder.sangue.SangueRepository;
 import br.minder.sangue.comandos.CriarSangue;
-import br.minder.sexo.Sexo;
-import br.minder.sexo.SexoId;
-import br.minder.sexo.SexoRepository;
-import br.minder.sexo.comandos.CriarSexo;
 import br.minder.telefone.comandos.CriarTelefone;
 import br.minder.usuario.Usuario;
 import br.minder.usuario.UsuarioRepository;
@@ -80,7 +80,7 @@ public class TestAlergiaController {
 	private SangueRepository repoSangue;
 
 	@Autowired
-	private SexoRepository repoSexo;
+	private GeneroRepository repoGenero;
 
 	@Autowired
 	private LoginController login;
@@ -105,9 +105,9 @@ public class TestAlergiaController {
 	@Test
 	public void testCadastrar() throws Exception {
 		SangueId idSangue = criarSangue("A+");
-		SexoId idSexo = criarSexo("Masculino");
+		GeneroId idGenero = criarGenero("Masculino");
 
-		serviceUsuario.salvar(criarUsuario("wagner@hotmail.com", "wagnerju", idSexo, idSangue)).get();
+		serviceUsuario.salvar(criarUsuario("wagner@hotmail.com", "wagnerju", idGenero, idSangue)).get();
 		MedicamentoId idMedicamento = serviceMedicamento.salvar(criarMedicamento("DorFlex", "100mg")).get();
 		MedicamentoId idMedicamento1 = serviceMedicamento.salvar(criarMedicamento("DorFlex", "100mg")).get();
 		Set<MedicamentoId> idsMedicamentos = new HashSet<MedicamentoId>();
@@ -194,9 +194,9 @@ public class TestAlergiaController {
 	@Test
 	public void testEditar() throws Exception {
 		SangueId idSangue = criarSangue("A+");
-		SexoId idSexo = criarSexo("Masculino");
+		GeneroId idGenero = criarGenero("Masculino");
 
-		serviceUsuario.salvar(criarUsuario("wagner@hotmail.com", "wagnerju", idSexo, idSangue)).get();
+		serviceUsuario.salvar(criarUsuario("wagner@hotmail.com", "wagnerju", idGenero, idSangue)).get();
 		MedicamentoId idMedicamento = serviceMedicamento.salvar(criarMedicamento("DorFlex", "100mg")).get();
 		Set<MedicamentoId> idsMedicamentos = new HashSet<MedicamentoId>();
 		idsMedicamentos.add(idMedicamento);
@@ -243,7 +243,7 @@ public class TestAlergiaController {
 				.andExpect(jsonPath("$.error", equalTo("Ocorreu um erro interno durante a alteração da alergia")))
 				.andExpect(status().isInternalServerError());
 
-		serviceUsuario.salvar(criarUsuario("lathuanny@hotmail.com", "lathuanny", idSexo, idSangue)).get();
+		serviceUsuario.salvar(criarUsuario("lathuanny@hotmail.com", "lathuanny", idGenero, idSangue)).get();
 		usuarios = repo.findAll();
 
 		this.mockMvc
@@ -361,9 +361,9 @@ public class TestAlergiaController {
 	@Test
 	public void testBuscarPorId() throws Exception {
 		SangueId idSangue = criarSangue("A+");
-		SexoId idSexo = criarSexo("Masculino");
+		GeneroId idGenero = criarGenero("Masculino");
 
-		serviceUsuario.salvar(criarUsuario("wagner@hotmail.com", "wagnerju", idSexo, idSangue)).get();
+		serviceUsuario.salvar(criarUsuario("wagner@hotmail.com", "wagnerju", idGenero, idSangue)).get();
 		MedicamentoId idMedicamento = serviceMedicamento.salvar(criarMedicamento("DorFlex", "100mg")).get();
 		MedicamentoId idMedicamento1 = serviceMedicamento.salvar(criarMedicamento("DorFlex", "100mg")).get();
 		Set<MedicamentoId> idsMedicamentos = new HashSet<MedicamentoId>();
@@ -399,7 +399,7 @@ public class TestAlergiaController {
 				.andExpect(jsonPath("$.error", equalTo("A alergia procurada não existe no banco de dados")))
 				.andExpect(status().isNotFound());
 
-		serviceUsuario.salvar(criarUsuario("lathuanny@hotmail.com", "lathuanny", idSexo, idSangue)).get();
+		serviceUsuario.salvar(criarUsuario("lathuanny@hotmail.com", "lathuanny", idGenero, idSangue)).get();
 		usuarios = repo.findAll();
 
 		this.mockMvc
@@ -412,9 +412,9 @@ public class TestAlergiaController {
 	@Test
 	public void testBurcarTodos() throws Exception {
 		SangueId idSangue = criarSangue("A+");
-		SexoId idSexo = criarSexo("Masculino");
+		GeneroId idGenero = criarGenero("Masculino");
 
-		serviceUsuario.salvar(criarUsuario("wagner@hotmail.com", "wagnerju", idSexo, idSangue)).get();
+		serviceUsuario.salvar(criarUsuario("wagner@hotmail.com", "wagnerju", idGenero, idSangue)).get();
 		MedicamentoId idMedicamento = serviceMedicamento.salvar(criarMedicamento("DorFlex", "100mg")).get();
 		Set<MedicamentoId> idsMedicamentos = new HashSet<MedicamentoId>();
 		idsMedicamentos.add(idMedicamento);
@@ -452,7 +452,7 @@ public class TestAlergiaController {
 		this.mockMvc.perform(get("/alergias").header("token", logar("wagnerju", "1234") + "TokenError"))
 				.andExpect(jsonPath("$.error", equalTo("Acesso negado"))).andExpect(status().isForbidden());
 
-		serviceUsuario.salvar(criarUsuario("lathuanny@hotmail.com", "lathuanny", idSexo, idSangue)).get();
+		serviceUsuario.salvar(criarUsuario("lathuanny@hotmail.com", "lathuanny", idGenero, idSangue)).get();
 		usuarios = repo.findAll();
 		assertThat(usuarios.get(1), notNullValue());
 
@@ -676,7 +676,7 @@ public class TestAlergiaController {
 		return alergiaEditada;
 	}
 
-	private CriarUsuario criarUsuario(String email, String username, SexoId idSexo, SangueId idSangue) {
+	private CriarUsuario criarUsuario(String email, String username, GeneroId idGenero, SangueId idSangue) {
 		CriarEndereco endereco = new CriarEndereco();
 		endereco.setBairro("Zona 6");
 		endereco.setCidade("Maringá");
@@ -694,7 +694,7 @@ public class TestAlergiaController {
 		usuario.setDataNascimento(Date.valueOf(LocalDate.of(1997, 03, 17)));
 		usuario.setEndereco(endereco);
 		usuario.setIdSangue(idSangue);
-		usuario.setIdSexo(idSexo);
+		usuario.setIdGenero(idGenero);
 		usuario.setSenha("1234");
 		usuario.setTelefone(telefone);
 		usuario.setUsername(username);
@@ -707,8 +707,8 @@ public class TestAlergiaController {
 		return id;
 	}
 
-	private SexoId criarSexo(String tipo) {
-		SexoId id = repoSexo.save(new Sexo(new CriarSexo(tipo))).getIdGenero();
+	private GeneroId criarGenero(String tipo) {
+		GeneroId id = repoGenero.save(new Genero(new CriarGenero(tipo))).getIdGenero();
 		return id;
 	}
 

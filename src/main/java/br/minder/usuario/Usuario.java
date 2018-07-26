@@ -6,12 +6,11 @@ import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import org.hibernate.envers.Audited;
-
 import br.minder.endereco.EnderecoId;
 import br.minder.esqueci_senha.comandos.GerarSenha;
+import br.minder.genero.GeneroId;
 import br.minder.sangue.SangueId;
 import br.minder.security.Criptografia;
-import br.minder.sexo.SexoId;
 import br.minder.telefone.TelefoneId;
 import br.minder.usuario.comandos.CriarUsuario;
 import br.minder.usuario.comandos.EditarUsuario;
@@ -43,8 +42,8 @@ public class Usuario {
 	private TelefoneId idTelefone;
 	@Column(name = "data_nascimento")
 	private Date dataNascimento;
-	@AttributeOverride(name = "value", column = @Column(name = "id_sexo"))
-	private SexoId idSexo;
+	@AttributeOverride(name = "value", column = @Column(name = "id_genero"))
+	private GeneroId idGenero;
 	@Column(name = "imagem_usuario")
 	private String imagemUsuario;
 	@Setter
@@ -61,7 +60,7 @@ public class Usuario {
 		this.senha = Criptografia.criptografa(comando.getSenha());
 		this.idSangue = comando.getIdSangue();
 		this.dataNascimento = comando.getDataNascimento();
-		this.idSexo = comando.getIdSexo();
+		this.idGenero = comando.getIdGenero();
 		this.imagemUsuario = comando.getImagem();
 		this.ativo = 1;
 	}

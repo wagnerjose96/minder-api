@@ -25,13 +25,13 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.WebApplicationContext;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import br.minder.MinderApplication;
+import br.minder.genero.Genero;
+import br.minder.genero.GeneroId;
+import br.minder.genero.GeneroRepository;
+import br.minder.genero.comandos.CriarGenero;
+import br.minder.genero.comandos.EditarGenero;
 import br.minder.login.LoginController;
 import br.minder.login.comandos.LogarUsuario;
-import br.minder.sexo.Sexo;
-import br.minder.sexo.SexoId;
-import br.minder.sexo.SexoRepository;
-import br.minder.sexo.comandos.CriarSexo;
-import br.minder.sexo.comandos.EditarSexo;
 import br.minder.usuario_adm.UsuarioAdm;
 import br.minder.usuario_adm.UsuarioAdmRepository;
 import br.minder.usuario_adm.UsuarioAdmService;
@@ -42,7 +42,7 @@ import br.minder.usuario_adm.comandos.CriarUsuarioAdm;
 @Rollback
 @WebAppConfiguration
 @SpringBootTest(classes = { MinderApplication.class }, webEnvironment = WebEnvironment.MOCK)
-public class TestSexoController {
+public class TestGeneroController {
 
 	@Autowired
 	private WebApplicationContext context;
@@ -53,7 +53,7 @@ public class TestSexoController {
 	private MockMvc mockMvc;
 
 	@Autowired
-	private SexoRepository repo;
+	private GeneroRepository repo;
 
 	@Autowired
 	private LoginController login;
@@ -75,7 +75,7 @@ public class TestSexoController {
 		List<UsuarioAdm> adm = repoAdm.findAll();
 		assertThat(adm.get(0), notNullValue());
 
-		String jsonString = objectMapper.writeValueAsString(criarSexo("Masculino"));
+		String jsonString = objectMapper.writeValueAsString(criarGenero("Masculino"));
 
 		this.mockMvc
 				.perform(post("/generos").header("token", logarAdm("admin", "1234")).accept(MediaType.APPLICATION_JSON)
@@ -83,7 +83,7 @@ public class TestSexoController {
 				.andExpect(jsonPath("$", equalTo("O genêro foi cadastrado com sucesso")))
 				.andExpect(status().isCreated());
 
-		jsonString = objectMapper.writeValueAsString(criarSexoErro());
+		jsonString = objectMapper.writeValueAsString(criarGeneroErro());
 
 		this.mockMvc
 				.perform(post("/generos").header("token", logarAdm("admin", "1234")).accept(MediaType.APPLICATION_JSON)
@@ -99,7 +99,7 @@ public class TestSexoController {
 		List<UsuarioAdm> adm = repoAdm.findAll();
 		assertThat(adm.get(0), notNullValue());
 
-		String jsonString = objectMapper.writeValueAsString(criarSexo("Masculino"));
+		String jsonString = objectMapper.writeValueAsString(criarGenero("Masculino"));
 
 		this.mockMvc
 				.perform(post("/generos").header("token", logarAdm("admin", "1234") + "erroToken")
@@ -112,10 +112,10 @@ public class TestSexoController {
 				.andExpect(jsonPath("$", equalTo("O genêro foi cadastrado com sucesso")))
 				.andExpect(status().isCreated());
 
-		List<Sexo> sexos = repo.findAll();
+		List<Genero> sexos = repo.findAll();
 		assertThat(sexos.get(0), notNullValue());
 
-		jsonString = objectMapper.writeValueAsString(editarSexo(sexos.get(0)));
+		jsonString = objectMapper.writeValueAsString(editarGenero(sexos.get(0)));
 
 		this.mockMvc
 				.perform(put("/generos").header("token", logarAdm("admin", "1234") + "erroToken")
@@ -127,7 +127,7 @@ public class TestSexoController {
 						.header("token", logarAdm("admin", "1234")).content(jsonString))
 				.andExpect(jsonPath("$", equalTo("O genêro foi alterado com sucesso"))).andExpect(status().isOk());
 
-		jsonString = objectMapper.writeValueAsString(editarSexoErroId(sexos.get(0)));
+		jsonString = objectMapper.writeValueAsString(editarGeneroErroId(sexos.get(0)));
 
 		this.mockMvc
 				.perform(put("/generos").header("token", logarAdm("admin", "1234")).accept(MediaType.APPLICATION_JSON)
@@ -135,7 +135,7 @@ public class TestSexoController {
 				.andExpect(jsonPath("$.error", equalTo("O genêro a ser alterado não existe no banco de dados")))
 				.andExpect(status().isNotFound());
 
-		jsonString = objectMapper.writeValueAsString(editarSexoErro(sexos.get(0)));
+		jsonString = objectMapper.writeValueAsString(editarGeneroErro(sexos.get(0)));
 
 		this.mockMvc
 				.perform(put("/generos").header("token", logarAdm("admin", "1234")).accept(MediaType.APPLICATION_JSON)
@@ -155,7 +155,7 @@ public class TestSexoController {
 				.andExpect(jsonPath("$.error", equalTo("Não existe nenhum genêro cadastrado no banco de dados")))
 				.andExpect(status().isNotFound());
 
-		String jsonString = objectMapper.writeValueAsString(criarSexo("Masculino"));
+		String jsonString = objectMapper.writeValueAsString(criarGenero("Masculino"));
 
 		this.mockMvc
 				.perform(post("/generos").header("token", logarAdm("admin", "1234")).accept(MediaType.APPLICATION_JSON)
@@ -163,7 +163,7 @@ public class TestSexoController {
 				.andExpect(jsonPath("$", equalTo("O genêro foi cadastrado com sucesso")))
 				.andExpect(status().isCreated());
 
-		jsonString = objectMapper.writeValueAsString(criarSexo("Feminino"));
+		jsonString = objectMapper.writeValueAsString(criarGenero("Feminino"));
 
 		this.mockMvc
 				.perform(post("/generos").header("token", logarAdm("admin", "1234")).accept(MediaType.APPLICATION_JSON)
@@ -171,7 +171,7 @@ public class TestSexoController {
 				.andExpect(jsonPath("$", equalTo("O genêro foi cadastrado com sucesso")))
 				.andExpect(status().isCreated());
 
-		List<Sexo> sexos = repo.findAll();
+		List<Genero> sexos = repo.findAll();
 		assertThat(sexos.get(0), notNullValue());
 		assertThat(sexos.get(1), notNullValue());
 
@@ -185,7 +185,7 @@ public class TestSexoController {
 		List<UsuarioAdm> adm = repoAdm.findAll();
 		assertThat(adm.get(0), notNullValue());
 
-		String jsonString = objectMapper.writeValueAsString(criarSexo("Masculino"));
+		String jsonString = objectMapper.writeValueAsString(criarGenero("Masculino"));
 
 		this.mockMvc
 				.perform(post("/generos").header("token", logarAdm("admin", "1234")).accept(MediaType.APPLICATION_JSON)
@@ -193,13 +193,13 @@ public class TestSexoController {
 				.andExpect(jsonPath("$", equalTo("O genêro foi cadastrado com sucesso")))
 				.andExpect(status().isCreated());
 
-		List<Sexo> sexos = repo.findAll();
+		List<Genero> sexos = repo.findAll();
 		assertThat(sexos.get(0), notNullValue());
 
 		this.mockMvc.perform(get("/generos/" + sexos.get(0).getIdGenero().toString()))
 				.andExpect(jsonPath("$.genero", equalTo("Masculino"))).andExpect(status().isOk());
 
-		this.mockMvc.perform(get("/generos/" + new SexoId().toString()))
+		this.mockMvc.perform(get("/generos/" + new GeneroId().toString()))
 				.andExpect(jsonPath("$.error", equalTo("O genêro procurado não existe no banco de dados")))
 				.andExpect(status().isNotFound());
 
@@ -219,30 +219,30 @@ public class TestSexoController {
 		return login.loginAdm(corpoLogin).getBody();
 	}
 
-	private CriarSexo criarSexo(String tipo) {
-		return new CriarSexo(tipo);
+	private CriarGenero criarGenero(String tipo) {
+		return new CriarGenero(tipo);
 	}
 
-	private CriarSexo criarSexoErro() {
-		return new CriarSexo();
+	private CriarGenero criarGeneroErro() {
+		return new CriarGenero();
 	}
 
-	private EditarSexo editarSexo(Sexo sexo) {
-		EditarSexo sexoAtualizado = new EditarSexo();
+	private EditarGenero editarGenero(Genero sexo) {
+		EditarGenero sexoAtualizado = new EditarGenero();
 		sexoAtualizado.setId(sexo.getIdGenero());
 		sexoAtualizado.setGenero("Outros");
 		return sexoAtualizado;
 	}
 
-	private EditarSexo editarSexoErroId(Sexo sexo) {
-		EditarSexo sexoAtualizado = new EditarSexo();
-		sexoAtualizado.setId(new SexoId());
+	private EditarGenero editarGeneroErroId(Genero sexo) {
+		EditarGenero sexoAtualizado = new EditarGenero();
+		sexoAtualizado.setId(new GeneroId());
 		sexoAtualizado.setGenero("Outros");
 		return sexoAtualizado;
 	}
 
-	private EditarSexo editarSexoErro(Sexo sexo) {
-		EditarSexo sexoAtualizado = new EditarSexo();
+	private EditarGenero editarGeneroErro(Genero sexo) {
+		EditarGenero sexoAtualizado = new EditarGenero();
 		sexoAtualizado.setId(sexo.getIdGenero());
 		return sexoAtualizado;
 	}

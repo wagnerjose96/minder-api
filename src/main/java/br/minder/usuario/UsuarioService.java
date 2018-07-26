@@ -10,10 +10,10 @@ import org.springframework.transaction.annotation.Transactional;
 import br.minder.endereco.EnderecoId;
 import br.minder.endereco.EnderecoService;
 import br.minder.endereco.comandos.BuscarEndereco;
+import br.minder.genero.GeneroService;
+import br.minder.genero.comandos.BuscarGenero;
 import br.minder.sangue.SangueService;
 import br.minder.sangue.comandos.BuscarSangue;
-import br.minder.sexo.SexoService;
-import br.minder.sexo.comandos.BuscarSexo;
 import br.minder.telefone.TelefoneId;
 import br.minder.telefone.TelefoneService;
 import br.minder.telefone.comandos.BuscarTelefone;
@@ -37,7 +37,7 @@ public class UsuarioService {
 	private SangueService sangueService;
 
 	@Autowired
-	private SexoService sexoService;
+	private GeneroService generoService;
 
 	public Optional<UsuarioId> salvar(CriarUsuario comando) {
 		if (comando.getNome() != null) {
@@ -67,10 +67,10 @@ public class UsuarioService {
 					BuscarUsuario user = new BuscarUsuario(usuario);
 					Optional<BuscarSangue> sangue = sangueService.encontrar(usuario.getIdSangue());
 					Optional<BuscarEndereco> endereco = enderecoService.encontrar(usuario.getIdEndereco());
-					Optional<BuscarSexo> sexo = sexoService.encontrar(usuario.getIdSexo());
+					Optional<BuscarGenero> genero = generoService.encontrar(usuario.getIdGenero());
 					Optional<BuscarTelefone> telefone = telefoneService.encontrar(usuario.getIdTelefone());
-					if (sangue.isPresent() && endereco.isPresent() && sexo.isPresent() && telefone.isPresent()) {
-						user.setSexo(sexo.get());
+					if (sangue.isPresent() && endereco.isPresent() && genero.isPresent() && telefone.isPresent()) {
+						user.setGenero(genero.get());
 						user.setSangue(sangue.get());
 						user.setEndereco(endereco.get());
 						user.setTelefone(telefone.get());
@@ -89,10 +89,10 @@ public class UsuarioService {
 			BuscarUsuario user = new BuscarUsuario(usuario.get());
 			Optional<BuscarSangue> sangue = sangueService.encontrar(usuario.get().getIdSangue());
 			Optional<BuscarEndereco> endereco = enderecoService.encontrar(usuario.get().getIdEndereco());
-			Optional<BuscarSexo> sexo = sexoService.encontrar(usuario.get().getIdSexo());
+			Optional<BuscarGenero> genero = generoService.encontrar(usuario.get().getIdGenero());
 			Optional<BuscarTelefone> telefone = telefoneService.encontrar(usuario.get().getIdTelefone());
-			if (sangue.isPresent() && endereco.isPresent() && sexo.isPresent() && telefone.isPresent()) {
-				user.setSexo(sexo.get());
+			if (sangue.isPresent() && endereco.isPresent() && genero.isPresent() && telefone.isPresent()) {
+				user.setGenero(genero.get());
 				user.setSangue(sangue.get());
 				user.setEndereco(endereco.get());
 				user.setTelefone(telefone.get());

@@ -2,8 +2,8 @@ package br.minder.usuario.comandos;
 
 import br.minder.conversor.ConverterData;
 import br.minder.endereco.comandos.BuscarEndereco;
+import br.minder.genero.comandos.BuscarGenero;
 import br.minder.sangue.comandos.BuscarSangue;
-import br.minder.sexo.comandos.BuscarSexo;
 import br.minder.telefone.comandos.BuscarTelefone;
 import br.minder.usuario.Usuario;
 import br.minder.usuario.UsuarioId;
@@ -22,7 +22,7 @@ public class BuscarUsuario {
 	private BuscarEndereco endereco;
 	private BuscarTelefone telefone;
 	private String dataNascimento;
-	private BuscarSexo sexo;
+	private BuscarGenero genero;
 	private String imagem;
 
 	public BuscarUsuario(Usuario comandos) {

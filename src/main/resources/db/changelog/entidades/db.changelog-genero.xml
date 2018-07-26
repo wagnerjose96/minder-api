@@ -7,38 +7,38 @@
 	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd
         http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
 
-	<changeSet id="create_table_sexo" author="douglas.mendonca">
-		<createTable tableName="sexo">
-			<column name="id_sexo" type="${TYPE_ID}">
+	<changeSet id="create_table_genero" author="douglas.mendonca">
+		<createTable tableName="genero">
+			<column name="id_genero" type="${TYPE_ID}">
 				<constraints nullable="false" primaryKey="true"
-					primaryKeyName="PK_SEXO" />
+					primaryKeyName="PK_GENERO" />
 			</column>
-			<column name="sexo" type="${TYPE_DESCRICAO}">
+			<column name="genero" type="${TYPE_DESCRICAO}">
 				<constraints nullable="false" unique="true" />
 			</column>
 		</createTable>
 	</changeSet>
 
-	<changeSet id="create_table_sexo_aud"
+	<changeSet id="create_table_genero_aud"
 		author="douglas.mendonca">
-		<createTable tableName="sexo_aud">
-			<column name="id_sexo" type="${TYPE_ID}">
+		<createTable tableName="genero_aud">
+			<column name="id_genero" type="${TYPE_ID}">
 				<constraints nullable="false" />
 			</column>
-			<column name="sexo" type="${TYPE_DESCRICAO}">
+			<column name="genero" type="${TYPE_DESCRICAO}">
 				<constraints nullable="false" unique="true" />
 			</column>
 			<column name="rev" type="${TYPE_NUMBER}">
 				<constraints nullable="false"
 					referencedTableName="revinfo" referencedColumnNames="rev"
-					foreignKeyName="sexo_revinfo_fk" />
+					foreignKeyName="genero_revinfo_fk" />
 			</column>
 			<column name="revtype" type="${TYPE_NUMBER}">
 				<constraints nullable="false" />
 			</column>
 		</createTable>
-		<addPrimaryKey constraintName="sexo_aud_pkey"
-			tableName="sexo_aud" columnNames="id_sexo, rev" />
+		<addPrimaryKey constraintName="genero_aud_pkey"
+			tableName="genero_aud" columnNames="id_genero, rev" />
 	</changeSet>
 
 </databaseChangeLog>

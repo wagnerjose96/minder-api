@@ -3,8 +3,8 @@ package br.minder.usuario.comandos;
 import java.sql.Date;
 
 import br.minder.endereco.comandos.CriarEndereco;
+import br.minder.genero.GeneroId;
 import br.minder.sangue.SangueId;
-import br.minder.sexo.SexoId;
 import br.minder.telefone.comandos.CriarTelefone;
 import lombok.Getter;
 import lombok.Setter;
@@ -20,6 +20,6 @@ public class CriarUsuario {
 	private CriarEndereco endereco;
 	private CriarTelefone telefone;
 	private Date dataNascimento;
-	private SexoId idSexo;
+	private GeneroId idGenero;
 	private String imagem;
 }
