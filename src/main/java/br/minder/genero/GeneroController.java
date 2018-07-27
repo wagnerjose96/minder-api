@@ -25,7 +25,7 @@ import br.minder.security.Autentica;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 
-@Api("Basic Genêro Controller")
+@Api("Basic Gênero Controller")
 @RestController
 @RequestMapping("/generos")
 @CrossOrigin
@@ -38,27 +38,27 @@ public class GeneroController {
 	@Autowired
 	private Autentica autentica;
 
-	@ApiOperation("Busque todos os genêros")
+	@ApiOperation("Busque todos os gêneros")
 	@GetMapping
 	public ResponseEntity<List<BuscarGenero>> getSexo() {
 		Optional<List<BuscarGenero>> optionalGeneros = service.encontrar();
 		if (optionalGeneros.isPresent()) {
 			return ResponseEntity.ok(optionalGeneros.get());
 		}
-		throw new NullPointerException("Não existe nenhum genêro cadastrado no banco de dados");
+		throw new NullPointerException("Não existe nenhum gênero cadastrado no banco de dados");
 	}
 
-	@ApiOperation("Busque um genêro pelo ID")
+	@ApiOperation("Busque um gênero pelo ID")
 	@GetMapping("/{id}")
 	public ResponseEntity<BuscarGenero> getSexoPorId(@PathVariable GeneroId id) {
 		Optional<BuscarGenero> optionalGenero = service.encontrar(id);
 		if (optionalGenero.isPresent()) {
 			return ResponseEntity.ok(optionalGenero.get());
 		}
-		throw new NullPointerException("O genêro procurado não existe no banco de dados");
+		throw new NullPointerException("O gênero procurado não existe no banco de dados");
 	}
 
-	@ApiOperation("Cadastre um novo genêro")
+	@ApiOperation("Cadastre um novo gênero")
 	@PostMapping
 	public ResponseEntity<String> postSexo(@RequestBody CriarGenero comando, @RequestHeader String token)
 			throws SQLException, AccessDeniedException {
@@ -67,26 +67,26 @@ public class GeneroController {
 			if (optionalGeneroId.isPresent()) {
 				URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
 						.buildAndExpand(optionalGeneroId.get()).toUri();
-				return ResponseEntity.created(location).body("O genêro foi cadastrado com sucesso");
+				return ResponseEntity.created(location).body("O gênero foi cadastrado com sucesso");
 			}
-			throw new SQLException("O genêro não foi salvo devido a um erro interno");
+			throw new SQLException("O gênero não foi salvo devido a um erro interno");
 		}
 		throw new AccessDeniedException(ACESSONEGADO);
 	}
 
-	@ApiOperation("Altere um genêro")
+	@ApiOperation("Altere um gênero")
 	@PutMapping
 	public ResponseEntity<String> putSexo(@RequestBody EditarGenero comando, @RequestHeader String token)
 			throws SQLException, AccessDeniedException {
 		if (autentica.autenticaRequisicaoAdm(token)) {
 			if (!service.encontrar(comando.getId()).isPresent()) {
-				throw new NullPointerException("O genêro a ser alterado não existe no banco de dados");
+				throw new NullPointerException("O gênero a ser alterado não existe no banco de dados");
 			}
 			Optional<GeneroId> optionalSexoId = service.alterar(comando);
 			if (optionalSexoId.isPresent()) {
-				return ResponseEntity.ok().body("O genêro foi alterado com sucesso");
+				return ResponseEntity.ok().body("O gênero foi alterado com sucesso");
 			} else {
-				throw new SQLException("Ocorreu um erro interno durante a alteração do genêro");
+				throw new SQLException("Ocorreu um erro interno durante a alteração do gênero");
 			}
 		}
 		throw new AccessDeniedException(ACESSONEGADO);

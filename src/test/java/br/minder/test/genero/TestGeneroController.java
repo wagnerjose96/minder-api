@@ -1,4 +1,4 @@
-package br.minder.test.sexo;
+package br.minder.test.genero;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.notNullValue;
@@ -80,7 +80,7 @@ public class TestGeneroController {
 		this.mockMvc
 				.perform(post("/generos").header("token", logarAdm("admin", "1234")).accept(MediaType.APPLICATION_JSON)
 						.contentType(MediaType.APPLICATION_JSON).content(jsonString))
-				.andExpect(jsonPath("$", equalTo("O genêro foi cadastrado com sucesso")))
+				.andExpect(jsonPath("$", equalTo("O gênero foi cadastrado com sucesso")))
 				.andExpect(status().isCreated());
 
 		jsonString = objectMapper.writeValueAsString(criarGeneroErro());
@@ -88,7 +88,7 @@ public class TestGeneroController {
 		this.mockMvc
 				.perform(post("/generos").header("token", logarAdm("admin", "1234")).accept(MediaType.APPLICATION_JSON)
 						.contentType(MediaType.APPLICATION_JSON).content(jsonString))
-				.andExpect(jsonPath("$.error", equalTo("O genêro não foi salvo devido a um erro interno")))
+				.andExpect(jsonPath("$.error", equalTo("O gênero não foi salvo devido a um erro interno")))
 				.andExpect(status().isInternalServerError());
 
 	}
@@ -109,7 +109,7 @@ public class TestGeneroController {
 		this.mockMvc
 				.perform(post("/generos").header("token", logarAdm("admin", "1234")).accept(MediaType.APPLICATION_JSON)
 						.contentType(MediaType.APPLICATION_JSON).content(jsonString))
-				.andExpect(jsonPath("$", equalTo("O genêro foi cadastrado com sucesso")))
+				.andExpect(jsonPath("$", equalTo("O gênero foi cadastrado com sucesso")))
 				.andExpect(status().isCreated());
 
 		List<Genero> sexos = repo.findAll();
@@ -125,14 +125,14 @@ public class TestGeneroController {
 		this.mockMvc
 				.perform(put("/generos").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
 						.header("token", logarAdm("admin", "1234")).content(jsonString))
-				.andExpect(jsonPath("$", equalTo("O genêro foi alterado com sucesso"))).andExpect(status().isOk());
+				.andExpect(jsonPath("$", equalTo("O gênero foi alterado com sucesso"))).andExpect(status().isOk());
 
 		jsonString = objectMapper.writeValueAsString(editarGeneroErroId(sexos.get(0)));
 
 		this.mockMvc
 				.perform(put("/generos").header("token", logarAdm("admin", "1234")).accept(MediaType.APPLICATION_JSON)
 						.contentType(MediaType.APPLICATION_JSON).content(jsonString))
-				.andExpect(jsonPath("$.error", equalTo("O genêro a ser alterado não existe no banco de dados")))
+				.andExpect(jsonPath("$.error", equalTo("O gênero a ser alterado não existe no banco de dados")))
 				.andExpect(status().isNotFound());
 
 		jsonString = objectMapper.writeValueAsString(editarGeneroErro(sexos.get(0)));
@@ -140,7 +140,7 @@ public class TestGeneroController {
 		this.mockMvc
 				.perform(put("/generos").header("token", logarAdm("admin", "1234")).accept(MediaType.APPLICATION_JSON)
 						.contentType(MediaType.APPLICATION_JSON).content(jsonString))
-				.andExpect(jsonPath("$.error", equalTo("Ocorreu um erro interno durante a alteração do genêro")))
+				.andExpect(jsonPath("$.error", equalTo("Ocorreu um erro interno durante a alteração do gênero")))
 				.andExpect(status().isInternalServerError());
 
 	}
@@ -152,7 +152,7 @@ public class TestGeneroController {
 		assertThat(adm.get(0), notNullValue());
 
 		this.mockMvc.perform(get("/generos"))
-				.andExpect(jsonPath("$.error", equalTo("Não existe nenhum genêro cadastrado no banco de dados")))
+				.andExpect(jsonPath("$.error", equalTo("Não existe nenhum gênero cadastrado no banco de dados")))
 				.andExpect(status().isNotFound());
 
 		String jsonString = objectMapper.writeValueAsString(criarGenero("Masculino"));
@@ -160,7 +160,7 @@ public class TestGeneroController {
 		this.mockMvc
 				.perform(post("/generos").header("token", logarAdm("admin", "1234")).accept(MediaType.APPLICATION_JSON)
 						.contentType(MediaType.APPLICATION_JSON).content(jsonString))
-				.andExpect(jsonPath("$", equalTo("O genêro foi cadastrado com sucesso")))
+				.andExpect(jsonPath("$", equalTo("O gênero foi cadastrado com sucesso")))
 				.andExpect(status().isCreated());
 
 		jsonString = objectMapper.writeValueAsString(criarGenero("Feminino"));
@@ -168,7 +168,7 @@ public class TestGeneroController {
 		this.mockMvc
 				.perform(post("/generos").header("token", logarAdm("admin", "1234")).accept(MediaType.APPLICATION_JSON)
 						.contentType(MediaType.APPLICATION_JSON).content(jsonString))
-				.andExpect(jsonPath("$", equalTo("O genêro foi cadastrado com sucesso")))
+				.andExpect(jsonPath("$", equalTo("O gênero foi cadastrado com sucesso")))
 				.andExpect(status().isCreated());
 
 		List<Genero> sexos = repo.findAll();
@@ -190,7 +190,7 @@ public class TestGeneroController {
 		this.mockMvc
 				.perform(post("/generos").header("token", logarAdm("admin", "1234")).accept(MediaType.APPLICATION_JSON)
 						.contentType(MediaType.APPLICATION_JSON).content(jsonString))
-				.andExpect(jsonPath("$", equalTo("O genêro foi cadastrado com sucesso")))
+				.andExpect(jsonPath("$", equalTo("O gênero foi cadastrado com sucesso")))
 				.andExpect(status().isCreated());
 
 		List<Genero> sexos = repo.findAll();
@@ -200,7 +200,7 @@ public class TestGeneroController {
 				.andExpect(jsonPath("$.genero", equalTo("Masculino"))).andExpect(status().isOk());
 
 		this.mockMvc.perform(get("/generos/" + new GeneroId().toString()))
-				.andExpect(jsonPath("$.error", equalTo("O genêro procurado não existe no banco de dados")))
+				.andExpect(jsonPath("$.error", equalTo("O gênero procurado não existe no banco de dados")))
 				.andExpect(status().isNotFound());
 
 	}

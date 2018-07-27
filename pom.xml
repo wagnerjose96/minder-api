@@ -251,7 +251,7 @@
 			</activation>
 			<properties>
 				<sonar.host.url>
-					http://ip172-18-0-11-bdchni8r37a000enhftg-9000.direct.labs.play-with-docker.com/
+					http://ip172-18-0-9-bddh0hnmgqu00099saag-9000.direct.labs.play-with-docker.com/
 				</sonar.host.url>
 			</properties>
 		</profile>
