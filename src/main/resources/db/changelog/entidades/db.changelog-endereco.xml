@@ -54,7 +54,7 @@
 			<column name="complemento" type="${TYPE_DESCRICAO}">
 				<constraints nullable="true" />
 			</column>
-			<column name="numero" type="${TYPE_NUMBER}">
+			<column name="numero" type="${TYPE_DESCRICAO}">
 				<constraints nullable="true" />
 			</column>
 			<column name="rev" type="${TYPE_NUMBER}">	
