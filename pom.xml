@@ -25,7 +25,7 @@
 
 		<sonar.core.codeCoveragePlugin>jacoco</sonar.core.codeCoveragePlugin>
 		<sonar.jacoco.reportPath>${project.basedir}/../target/jacoco.exec</sonar.jacoco.reportPath>
-		<sonar.language>java</sonar.language>
+		<sonar.languages>java, xml</sonar.languages>
 	</properties>
 
 	<dependencies>
@@ -250,8 +250,11 @@
 				<activeByDefault>true</activeByDefault>
 			</activation>
 			<properties>
+				<sonar.login>
+					6746e909fd7b9b5e4c96930ca5697c65077f4f8b
+				</sonar.login>
 				<sonar.host.url>
-					http://ip172-18-0-9-bddh0hnmgqu00099saag-9000.direct.labs.play-with-docker.com/
+					http://sonarqube.eastus.cloudapp.azure.com:9000/
 				</sonar.host.url>
 			</properties>
 		</profile>
