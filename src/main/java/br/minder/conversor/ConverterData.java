@@ -22,15 +22,9 @@ public class ConverterData {
 
 	}
 
-	public static Date converterDataVencimentoSalvar(String string) {
+	public static Date converterDataVencimentoSalvar(String string) throws ParseException {
 		SimpleDateFormat formato = new SimpleDateFormat("yyyy-MM");
-		Date data = null;
-		try {
-			data = formato.parse(string);
-		} catch (ParseException e) {
-			e.printStackTrace();
-		}
-		return data;
+		return formato.parse(string);
 	}
 
 	public static String converterDataVencimento(Long data) {

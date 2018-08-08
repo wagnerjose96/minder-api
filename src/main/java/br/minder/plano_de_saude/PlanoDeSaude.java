@@ -1,6 +1,7 @@
 package br.minder.plano_de_saude;
 
 import java.math.BigInteger;
+import java.text.ParseException;
 import java.util.Date;
 
 import javax.persistence.AttributeOverride;
@@ -39,7 +40,7 @@ public class PlanoDeSaude {
 
 	}
 
-	public PlanoDeSaude(CriarPlanoDeSaude comando, UsuarioId id) {
+	public PlanoDeSaude(CriarPlanoDeSaude comando, UsuarioId id) throws ParseException {
 		this.id = new PlanoDeSaudeId();
 		this.idConvenio = comando.getIdConvenio();
 		this.numeroCartao = comando.getNumeroCartao();
@@ -49,7 +50,7 @@ public class PlanoDeSaude {
 		this.dataVencimento = ConverterData.converterDataVencimentoSalvar(comando.getDataVencimento());
 	}
 
-	public void apply(EditarPlanoDeSaude comando) {
+	public void apply(EditarPlanoDeSaude comando) throws ParseException {
 		this.id = comando.getId();
 		this.idConvenio = comando.getIdConvenio();
 		this.numeroCartao = comando.getNumeroCartao();
