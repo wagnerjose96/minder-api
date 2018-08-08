@@ -19,4 +19,5 @@ public class EditarPlanoDeSaude {
 	private BigInteger numeroCartao;
 	private String habitacao;
 	private String territorio;
+	private String dataVencimento;
 }
