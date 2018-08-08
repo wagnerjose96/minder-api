@@ -30,7 +30,7 @@ import br.minder.usuario_adm.comandos.EditarUsuarioAdm;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 
-@Api("Basic Usuário Admin Controller")
+@Api(description = "Basic Usuário Admin Controller")
 @RestController
 @RequestMapping("/adm")
 @CrossOrigin

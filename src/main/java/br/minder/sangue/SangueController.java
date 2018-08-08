@@ -25,7 +25,7 @@ import br.minder.security.Autentica;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 
-@Api("Basic Tipo Sanguíneo Controller")
+@Api(description = "Basic Tipo Sanguíneo Controller")
 @RestController
 @RequestMapping("/sangues")
 @CrossOrigin

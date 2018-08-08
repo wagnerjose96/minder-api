@@ -25,7 +25,7 @@ import br.minder.security.Autentica;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 
-@Api("Basic Perguntas Controller")
+@Api(description = "Basic Perguntas Controller")
 @RestController
 @RequestMapping("/perguntas")
 @CrossOrigin

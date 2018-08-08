@@ -26,7 +26,7 @@ import br.minder.security.Autentica;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 
-@Api("Basic Medicamento Controller")
+@Api(description = "Basic Medicamento Controller")
 @RestController
 @RequestMapping("/medicamentos")
 @CrossOrigin

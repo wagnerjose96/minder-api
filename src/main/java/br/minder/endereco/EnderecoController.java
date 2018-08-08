@@ -21,7 +21,7 @@ import br.minder.endereco.comandos.EditarEndereco;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 
-@Api("Basic Endereço Controller")
+@Api(description = "Basic Endereço Controller")
 @RestController
 @RequestMapping("/enderecos")
 @CrossOrigin

@@ -21,7 +21,7 @@ import br.minder.telefone.comandos.EditarTelefone;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 
-@Api("Basic Telefone Controller")
+@Api(description = "Basic Telefone Controller")
 @RestController
 @RequestMapping("/telefones")
 @CrossOrigin
