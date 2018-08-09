@@ -371,9 +371,9 @@ public class TestAlarmeController {
 		assertThat(usuarios.get(0), notNullValue());
 
 		this.mockMvc.perform(get("/alarmes").header("token", logar("wagnerju", "1234")))
-		.andExpect(jsonPath("$.error", equalTo("Não existe nenhum alarme cadastrado no banco de dados")))
-		.andExpect(status().isNotFound());
-		
+				.andExpect(jsonPath("$.error", equalTo("Não existe nenhum alarme cadastrado no banco de dados")))
+				.andExpect(status().isNotFound());
+
 		this.mockMvc.perform(get("/alarmes").header("token", logar("wagnerju", "1234") + "erroToken"))
 				.andExpect(jsonPath("$.error", equalTo("Acesso negado"))).andExpect(status().isForbidden());
 
@@ -397,16 +397,10 @@ public class TestAlarmeController {
 		assertThat(alarmes.get(0), notNullValue());
 		assertThat(alarmes.get(1), notNullValue());
 
-		this.mockMvc.perform(get("/alarmes").header("token", logar("wagnerju", "1234")))
-				.andExpect(jsonPath("$[0].descricao", equalTo("Tomar medicamento")))
-				.andExpect(jsonPath("$[1].descricao", equalTo("Aplicar medicamento"))).andExpect(status().isOk());
+		this.mockMvc.perform(get("/alarmes").header("token", logar("wagnerju", "1234"))).andExpect(status().isOk());
 
-		serviceUsuario.salvar(criarUsuario("lathuanny@hotmail.com", "lathuanny", idGenero, idSangue)).get();
-		usuarios = repo.findAll();
-		assertThat(usuarios.get(1), notNullValue());
-
-		this.mockMvc.perform(get("/alarmes").header("token", logar("lathuanny", "1234"))).andExpect(status().isOk());
-
+		this.mockMvc.perform(get("/alarmes").param("searchTerm", "Aplicar medicamento").header("token",
+				logar("wagnerju", "1234"))).andExpect(status().isOk());
 	}
 
 	@Test

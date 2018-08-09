@@ -6,7 +6,6 @@ import static org.junit.Assert.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import java.sql.Date;
@@ -445,7 +444,7 @@ public class TestAlergiaController {
 		List<Alergia> alergias = repoAlergia.findAll();
 		assertThat(alergias.get(0), notNullValue());
 
-		this.mockMvc.perform(get("/alergias").header("token", logar("wagnerju", "1234"))).andDo(print())
+		this.mockMvc.perform(get("/alergias").header("token", logar("wagnerju", "1234")))
 				.andExpect(jsonPath("$[0].tipoAlergia", equalTo("Alergia de pele")))
 				.andExpect(jsonPath("$[1].tipoAlergia", equalTo("Alergia nas pernas"))).andExpect(status().isOk());
 

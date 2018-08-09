@@ -1,7 +1,5 @@
 package br.minder.alarme;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 import javax.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,24 +45,6 @@ public class AlarmeService {
 		return Optional.empty();
 	}
 
-	public Optional<List<BuscarAlarme>> encontrar(UsuarioId id) {
-		List<BuscarAlarme> resultados = new ArrayList<>();
-		List<Alarme> alarmes = repo.findAll();
-		if (!alarmes.isEmpty()) {
-			for (Alarme alarme : alarmes) {
-				if (alarme.getIdUsuario().toString().equals(id.toString())) {
-					BuscarAlarme nova = new BuscarAlarme(alarme);
-					Optional<Medicamento> medicamento = medRepo.findById(alarme.getIdMedicamento());
-					if (medicamento.isPresent())
-						nova.setMedicamento(new BuscarMedicamento(medicamento.get()));
-					resultados.add(nova);
-				}
-			}
-			return Optional.of(resultados);
-		}
-		return Optional.empty();
-	}
-
 	public Optional<AlarmeId> alterar(EditarAlarme comando) {
 		Optional<Alarme> optional = repo.findById(comando.getId());
 		if (comando.getDataInicio() != null && comando.getDataFim() != null && comando.getIdMedicamento() != null
@@ -84,4 +64,5 @@ public class AlarmeService {
 		}
 		return Optional.empty();
 	}
+
 }

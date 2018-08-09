@@ -48,7 +48,7 @@ public class EmergenciaController {
 		throw new AccessDeniedException(ACESSONEGADO);
 	}
 	
-	@ApiOperation("Busque a sua emergência")
+	@ApiOperation("Gere o PDF da sua emergência")
 	@GetMapping("/pdf")
 	public ResponseEntity<BuscarEmergenciaPdf> getEmergenciaPdf(@RequestHeader String token) throws AccessDeniedException {
 		if (autentica.autenticaRequisicao(token)) {

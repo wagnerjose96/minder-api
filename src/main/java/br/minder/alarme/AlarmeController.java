@@ -3,7 +3,6 @@ package br.minder.alarme;
 import java.net.URI;
 import java.nio.file.AccessDeniedException;
 import java.sql.SQLException;
-import java.util.List;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -16,9 +15,11 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
-
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import br.minder.alarme.comandos.BuscarAlarme;
 import br.minder.alarme.comandos.CriarAlarme;
 import br.minder.alarme.comandos.EditarAlarme;
@@ -37,17 +38,25 @@ public class AlarmeController {
 	@Autowired
 	private Autentica autentica;
 
+	@Autowired
+	private AlarmeRepository repo;
+
 	private static final String ACESSONEGADO = "Acesso negado";
 
 	@ApiOperation("Busque todos os alarmes")
 	@GetMapping
-	public ResponseEntity<List<BuscarAlarme>> getAlarmes(@RequestHeader String token) throws AccessDeniedException {
+	public Page<Alarme> getAlarmes(@RequestHeader String token, Pageable p,
+			@RequestParam(name = "searchTerm", defaultValue = "", required = false) String searchTerm)
+			throws AccessDeniedException {
 		if (autentica.autenticaRequisicao(token)) {
-			Optional<List<BuscarAlarme>> optionalAlarmes = alarmeService.encontrar(autentica.idUser(token));
-			if (optionalAlarmes.isPresent()) {
-				return ResponseEntity.ok(optionalAlarmes.get());
+			if (repo.findAll(autentica.idUser(token).toString()).isEmpty())
+				throw new NullPointerException("Não existe nenhum alarme cadastrado no banco de dados");
+			else {
+				if (searchTerm.isEmpty()) {
+					return repo.findAll(p, autentica.idUser(token).toString());
+				}
+				return repo.findAll(p, "%" + searchTerm + "%", autentica.idUser(token).toString());
 			}
-			throw new NullPointerException("Não existe nenhum alarme cadastrado no banco de dados");
 		}
 		throw new AccessDeniedException(ACESSONEGADO);
 	}
