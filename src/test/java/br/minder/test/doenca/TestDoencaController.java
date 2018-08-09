@@ -167,7 +167,6 @@ public class TestDoencaController {
 		this.mockMvc
 				.perform(put("/doencas").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
 						.header("token", logar("wagnerju", "1234")).content(error))
-				.andDo(MockMvcResultHandlers.print())
 				.andExpect(jsonPath("$.error", equalTo("Ocorreu um erro interno durante a alteração da doença")))
 				.andExpect(status().isInternalServerError());
 

@@ -1,5 +1,9 @@
 package br.minder.esqueci_senha;
 
+import java.io.UnsupportedEncodingException;
+
+import javax.mail.MessagingException;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -21,7 +25,7 @@ public class SenhaController {
 
 	@ApiOperation(value = "Crie uma senha aleatória para um usuário")
 	@PutMapping
-	public ResponseEntity<String> putUSenha(@RequestBody EsqueciSenha comando) {
+	public ResponseEntity<String> putUSenha(@RequestBody EsqueciSenha comando) throws MessagingException, UnsupportedEncodingException {
 		if (service.gerarSenhaAleatoria(comando))
 			return ResponseEntity.ok("Nova senha criada com sucesso, verifique a caixa de entrada do seu email");
 		else

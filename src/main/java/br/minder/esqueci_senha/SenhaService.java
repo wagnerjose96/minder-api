@@ -1,8 +1,10 @@
 package br.minder.esqueci_senha;
 
+import java.io.UnsupportedEncodingException;
 import java.util.*;
 
 import javax.mail.Message;
+import javax.mail.MessagingException;
 import javax.mail.Session;
 import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
@@ -57,7 +59,7 @@ public class SenhaService {
 		return senha;
 	}
 
-	public boolean gerarSenhaAleatoria(EsqueciSenha comando) {
+	public boolean gerarSenhaAleatoria(EsqueciSenha comando) throws MessagingException, UnsupportedEncodingException {
 		List<GerarSenha> usuario = consultarId(comando);
 		String senha = null;
 		if (!usuario.isEmpty()) {
@@ -71,37 +73,33 @@ public class SenhaService {
 				sendEmail(senha, usuario.get(0).getEmail(), usuario.get(0).getNome());
 			}
 		}
-		return !senha.isEmpty();
+		return senha != null;
 	}
 
-	public static void sendEmail(String senha, String email, String nome) {
+	public static void sendEmail(String senha, String email, String nome) throws MessagingException, UnsupportedEncodingException {
 		Properties mailServerProperties;
 		Session getMailSession;
 		MimeMessage generateMailMessage;
-		try {
-			mailServerProperties = System.getProperties();
-			mailServerProperties.put("mail.smtp.port", "587");
-			mailServerProperties.put("mail.smtp.auth", "true");
-			mailServerProperties.put("mail.smtp.starttls.enable", "true");
+		mailServerProperties = System.getProperties();
+		mailServerProperties.put("mail.smtp.port", "587");
+		mailServerProperties.put("mail.smtp.auth", "true");
+		mailServerProperties.put("mail.smtp.starttls.enable", "true");
 
-			getMailSession = Session.getDefaultInstance(mailServerProperties, null);
-			generateMailMessage = new MimeMessage(getMailSession);
-			generateMailMessage.setFrom(new InternetAddress("minder.application@gmail.com", "Minder"));
-			generateMailMessage.addRecipient(Message.RecipientType.TO, new InternetAddress(email));
-			generateMailMessage.setSubject("Minder - Recuperação de senha");
-			String emailBody = "<br><br>Prezado(a) <b>" + nome.toUpperCase() + "</b>,"
-					+ "<br><br> A sua solicitação de geração de nova senha foi concluída com sucesso."
-					+ "<br><b> Sua nova senha é: </b>" + senha
-					+ "<br> Este é um e-mail automático. Não é necessário respondê-lo." + "<br><br> Atenciosamente,"
-					+ " <br><b> Equipe Minder </b>";
-			generateMailMessage.setContent(emailBody, "text/html; charset=UTF-8");
+		getMailSession = Session.getDefaultInstance(mailServerProperties, null);
+		generateMailMessage = new MimeMessage(getMailSession);
+		generateMailMessage.setFrom(new InternetAddress("minder.application@gmail.com", "Minder"));
+		generateMailMessage.addRecipient(Message.RecipientType.TO, new InternetAddress(email));
+		generateMailMessage.setSubject("Minder - Recuperação de senha");
+		String emailBody = "<br><br>Prezado(a) <b>" + nome.toUpperCase() + "</b>,"
+				+ "<br><br> A sua solicitação de geração de nova senha foi concluída com sucesso."
+				+ "<br><b> Sua nova senha é: </b>" + senha
+				+ "<br> Este é um e-mail automático. Não é necessário respondê-lo." + "<br><br> Atenciosamente,"
+				+ " <br><b> Equipe Minder </b>";
+		generateMailMessage.setContent(emailBody, "text/html; charset=UTF-8");
 
-			Transport transport = getMailSession.getTransport("smtp");
-			transport.connect("smtp.gmail.com", "minder.application@gmail.com", "15065132");
-			transport.sendMessage(generateMailMessage, generateMailMessage.getAllRecipients());
-			transport.close();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+		Transport transport = getMailSession.getTransport("smtp");
+		transport.connect("smtp.gmail.com", "minder.application@gmail.com", "15065132");
+		transport.sendMessage(generateMailMessage, generateMailMessage.getAllRecipients());
+		transport.close();
 	}
 }
