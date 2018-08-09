@@ -159,7 +159,7 @@ public class TestEmergenciaController {
 	}
 
 	@Test
-	public void testBurcarTodos() throws Exception {
+	public void testBurcar() throws Exception {
 		SangueId idSangue = criarSangue("A+");
 		GeneroId idGenero = criarGenero("Masculino");
 
@@ -187,6 +187,38 @@ public class TestEmergenciaController {
 		assertThat(emergencias.get(0), notNullValue());
 
 		this.mockMvc.perform(get("/emergencias").header("token", logar("wagnerju", "1234")))
+				.andExpect(jsonPath("$.problemasCardiacos", equalTo("Arritmia"))).andExpect(status().isOk());
+	}
+	
+	@Test
+	public void testBurcarPdf() throws Exception {
+		SangueId idSangue = criarSangue("A+");
+		GeneroId idGenero = criarGenero("Masculino");
+
+		serviceUsuario.salvar(criarUsuario("wagner@hotmail.com", "wagnerju", idGenero, idSangue)).get();
+
+		List<Usuario> usuarios = repo.findAll();
+		assertThat(usuarios.get(0), notNullValue());
+
+		this.mockMvc.perform(get("/emergencias/pdf").header("token", logar("wagnerju", "1234")))
+				.andExpect(jsonPath("$.error", equalTo("Não existe nenhuma emergência cadastrada no banco de dados")))
+				.andExpect(status().isNotFound());
+
+		this.mockMvc.perform(get("/emergencias/pdf").header("token", logar("wagnerju", "1234") + "erroToken"))
+				.andExpect(jsonPath("$.error", equalTo("Acesso negado"))).andExpect(status().isForbidden());
+
+		String jsonString = objectMapper.writeValueAsString(criarEmergencia(1));
+
+		this.mockMvc
+				.perform(post("/emergencias").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+						.header("token", logar("wagnerju", "1234")).content(jsonString))
+				.andExpect(jsonPath("$", equalTo("A emergência foi cadastrada com sucesso")))
+				.andExpect(status().isCreated());
+
+		List<Emergencia> emergencias = repoEmergencia.findAll();
+		assertThat(emergencias.get(0), notNullValue());
+
+		this.mockMvc.perform(get("/emergencias/pdf").header("token", logar("wagnerju", "1234")))
 				.andExpect(jsonPath("$.problemasCardiacos", equalTo("Arritmia"))).andExpect(status().isOk());
 	}
 

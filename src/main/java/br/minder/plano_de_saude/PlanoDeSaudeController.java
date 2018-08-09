@@ -29,7 +29,7 @@ import br.minder.security.Autentica;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 
-@Api(description = "Basic Plano De Saúde Controller")
+@Api("Basic Plano De Saúde Controller")
 @Controller
 @RequestMapping("/planos")
 @CrossOrigin
