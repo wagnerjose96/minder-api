@@ -16,6 +16,7 @@ import br.minder.contato.comandos.BuscarContato;
 import br.minder.doenca.DoencaService;
 import br.minder.doenca.comandos.BuscarDoenca;
 import br.minder.emergencia.comandos.BuscarEmergencia;
+import br.minder.emergencia.comandos.BuscarEmergenciaPdf;
 import br.minder.emergencia.comandos.CriarEmergencia;
 import br.minder.emergencia.comandos.EditarEmergencia;
 import br.minder.endereco.comandos.BuscarEndereco;
@@ -57,16 +58,7 @@ public class EmergenciaService {
 		return Optional.of(novo.getIdEmergencia());
 	}
 
-	public Optional<BuscarEmergencia> encontrar(EmergenciaId id, UsuarioId idUsuario) {
-		Optional<Emergencia> emergencia = repo.findById(id);
-		if (emergencia.isPresent() && emergencia.get().getIdUsuario().toString().equals(idUsuario.toString())) {
-			return Optional.of(
-					construirEmergencia(usuarioService.encontrar(idUsuario), new BuscarEmergencia(emergencia.get())));
-		}
-		return Optional.empty();
-	}
-
-	private BuscarEmergencia construirEmergencia(Optional<BuscarUsuario> user, BuscarEmergencia resultado) {
+	private BuscarEmergenciaPdf construirEmergencia(Optional<BuscarUsuario> user, BuscarEmergenciaPdf resultado) {
 		List<BuscarContato> contatos = executeQuery(resultado.getId().toString(), sql);
 		if (user.isPresent()) {
 			String nome = user.get().getNome();
@@ -89,13 +81,23 @@ public class EmergenciaService {
 		return resultado;
 	}
 
+	public Optional<BuscarEmergenciaPdf> encontrarPdf(UsuarioId id) {
+		List<Emergencia> emergencias = repo.findAll();
+		for (Emergencia emergencia : emergencias) {
+			if (id.toString().equals(emergencia.getIdUsuario().toString())) {
+				BuscarEmergenciaPdf resultados = construirEmergencia(usuarioService.encontrar(id),
+						new BuscarEmergenciaPdf(emergencia));
+				return Optional.of(resultados);
+			}
+		}
+		return Optional.empty();
+	}
+	
 	public Optional<BuscarEmergencia> encontrar(UsuarioId id) {
 		List<Emergencia> emergencias = repo.findAll();
 		for (Emergencia emergencia : emergencias) {
 			if (id.toString().equals(emergencia.getIdUsuario().toString())) {
-				BuscarEmergencia resultados = construirEmergencia(usuarioService.encontrar(id),
-						new BuscarEmergencia(emergencia));
-				return Optional.of(resultados);
+				return Optional.of(new BuscarEmergencia(emergencia));
 			}
 		}
 		return Optional.empty();

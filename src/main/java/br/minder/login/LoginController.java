@@ -12,7 +12,7 @@ import br.minder.security.JWTUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 
-@Api(description = "Basic Login Controller")
+@Api("Basic Login Controller")
 @RestController
 @RequestMapping
 @CrossOrigin

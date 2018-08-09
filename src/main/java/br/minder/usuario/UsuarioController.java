@@ -23,7 +23,7 @@ import br.minder.usuario.comandos.EditarUsuario;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 
-@Api(description = "Basic Usuário Controller")
+@Api("Basic Usuário Controller")
 @RestController
 @RequestMapping("/usuarios")
 @CrossOrigin

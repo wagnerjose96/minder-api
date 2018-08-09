@@ -24,7 +24,7 @@ import br.minder.security.Autentica;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 
-@Api(description = "Basic Respostas de Notificação Controller")
+@Api("Basic Respostas de Notificação Controller")
 @RestController
 @RequestMapping("/perguntaNotificacao")
 @CrossOrigin

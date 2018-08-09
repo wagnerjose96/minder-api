@@ -13,7 +13,7 @@ import br.minder.esqueci_senha.comandos.GerarSenha;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 
-@Api(description = "Basic Senha Controller")
+@Api("Basic Senha Controller")
 @RestController
 @RequestMapping("/senha")
 @CrossOrigin

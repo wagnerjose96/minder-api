@@ -26,7 +26,7 @@ import br.minder.security.Autentica;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 
-@Api(description = "Basic Alarme Controller")
+@Api("Basic Alarme Controller")
 @RestController
 @RequestMapping("/alarmes")
 @CrossOrigin
