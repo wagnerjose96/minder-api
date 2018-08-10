@@ -322,7 +322,7 @@ public class TestAlergiaController {
 						.header("token", logar("wagnerju", "1234")).content(error))
 				.andExpect(jsonPath("$.error", equalTo("A alergia a ser alterada não existe no banco de dados")))
 				.andExpect(status().isNotFound());
-		
+
 		error = objectMapper.writeValueAsString(editarAlergiaError10(alergias.get(0), idsMedicamentos));
 
 		this.mockMvc
@@ -330,7 +330,7 @@ public class TestAlergiaController {
 						.header("token", logar("wagnerju", "1234")).content(error))
 				.andExpect(jsonPath("$.error", equalTo("A alergia a ser alterada não existe no banco de dados")))
 				.andExpect(status().isNotFound());
-		
+
 		error = objectMapper.writeValueAsString(editarAlergiaError11(alergias.get(0), idsMedicamentos));
 
 		this.mockMvc
@@ -338,16 +338,14 @@ public class TestAlergiaController {
 						.header("token", logar("wagnerju", "1234")).content(error))
 				.andExpect(jsonPath("$.error", equalTo("A alergia a ser alterada não existe no banco de dados")))
 				.andExpect(status().isNotFound());
-		
+
 		idsMedicamentos.add(new MedicamentoId());
-		
+
 		error = objectMapper.writeValueAsString(editarAlergiaError12(alergias.get(0), idsMedicamentos));
 
-		this.mockMvc
-				.perform(put("/alergias").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
-						.header("token", logar("wagnerju", "1234")).content(error))
-				.andExpect(status().isOk());
-		
+		this.mockMvc.perform(put("/alergias").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+				.header("token", logar("wagnerju", "1234")).content(error)).andExpect(status().isOk());
+
 		error = objectMapper.writeValueAsString(editarAlergiaError13(alergias.get(0), idsMedicamentos));
 
 		this.mockMvc
@@ -420,11 +418,11 @@ public class TestAlergiaController {
 
 		List<Usuario> usuarios = repo.findAll();
 		assertThat(usuarios.get(0), notNullValue());
-		
+
 		this.mockMvc.perform(get("/alergias").header("token", logar("wagnerju", "1234")))
 				.andExpect(jsonPath("$.error", equalTo("Não existe nenhuma alergia cadastrada no banco de dados")))
 				.andExpect(status().isNotFound());
-		
+
 		String jsonString = objectMapper.writeValueAsString(criarAlergia(idsMedicamentos, "Alergia de pele"));
 
 		this.mockMvc
@@ -444,18 +442,14 @@ public class TestAlergiaController {
 		List<Alergia> alergias = repoAlergia.findAll();
 		assertThat(alergias.get(0), notNullValue());
 
-		this.mockMvc.perform(get("/alergias").header("token", logar("wagnerju", "1234")))
-				.andExpect(jsonPath("$[0].tipoAlergia", equalTo("Alergia de pele")))
-				.andExpect(jsonPath("$[1].tipoAlergia", equalTo("Alergia nas pernas"))).andExpect(status().isOk());
+		this.mockMvc.perform(get("/alergias").header("token", logar("wagnerju", "1234"))).andExpect(status().isOk());
+
+		this.mockMvc.perform(
+				get("/alergias").param("searchTerm", "Alergia nas pernas").header("token", logar("wagnerju", "1234")))
+				.andExpect(status().isOk());
 
 		this.mockMvc.perform(get("/alergias").header("token", logar("wagnerju", "1234") + "TokenError"))
 				.andExpect(jsonPath("$.error", equalTo("Acesso negado"))).andExpect(status().isForbidden());
-
-		serviceUsuario.salvar(criarUsuario("lathuanny@hotmail.com", "lathuanny", idGenero, idSangue)).get();
-		usuarios = repo.findAll();
-		assertThat(usuarios.get(1), notNullValue());
-
-		this.mockMvc.perform(get("/alergias").header("token", logar("lathuanny", "1234"))).andExpect(status().isOk());
 	}
 
 	private CriarAlergia criarAlergia(Set<MedicamentoId> idsMedicamentos, String tipoAlergia) {
@@ -664,7 +658,7 @@ public class TestAlergiaController {
 		alergiaEditada.setLocalAfetado("Pernas");
 		return alergiaEditada;
 	}
-	
+
 	private EditarAlergia editarAlergiaError13(Alergia alergia, Set<MedicamentoId> idsMedicamentos) {
 		EditarAlergia alergiaEditada = new EditarAlergia();
 		alergiaEditada.setIdAlergia(new AlergiaId());

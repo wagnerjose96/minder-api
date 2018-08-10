@@ -1,13 +1,11 @@
 package br.minder.contato;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import javax.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
-
 import br.minder.contato.Contato;
 import br.minder.contato.ContatoId;
 import br.minder.contato.comandos.BuscarContato;
@@ -74,23 +72,6 @@ public class ContatoService {
 			}
 		}
 		return Optional.empty();
-	}
-
-	public Optional<List<BuscarContato>> encontrar() {
-		List<Contato> contatos = repo.findAll();
-		if (contatos.isEmpty()) {
-			return Optional.empty();
-		}
-		List<BuscarContato> resultados = new ArrayList<>();
-		for (Contato contato : contatos) {
-			BuscarContato nova = new BuscarContato(contato);
-			Optional<BuscarTelefone> telefone = telefoneService.encontrar(contato.getIdTelefone());
-			if (telefone.isPresent()) {
-				nova.setTelefone(telefone.get());
-				resultados.add(nova);
-			}
-		}
-		return Optional.of(resultados);
 	}
 
 	public Optional<ContatoId> alterar(EditarContato comando) {

@@ -371,7 +371,6 @@ public class TestCirurgiaController {
 		GeneroId idGenero = criarGenero("Masculino");
 
 		serviceUsuario.salvar(criarUsuario("wagner@hotmail.com", "wagnerju", idGenero, idSangue)).get();
-		serviceUsuario.salvar(criarUsuario("lathuanny@hotmail.com", "lathuanny", idGenero, idSangue)).get();
 		MedicamentoId idMedicamento = serviceMedicamento.salvar(criarMedicamento("DorFlex", "100mg")).get();
 		Set<MedicamentoId> idsMedicamentos = new HashSet<MedicamentoId>();
 		idsMedicamentos.add(idMedicamento);
@@ -402,14 +401,14 @@ public class TestCirurgiaController {
 		List<Cirurgia> cirurgias = repoCirurgia.findAll();
 		assertThat(cirurgias.get(0), notNullValue());
 
-		this.mockMvc.perform(get("/cirurgias").header("token", logar("wagnerju", "1234")))
-				.andExpect(jsonPath("$[0].tipoCirurgia", equalTo("Pedra no rim")))
-				.andExpect(jsonPath("$[1].tipoCirurgia", equalTo("Báriatrica"))).andExpect(status().isOk());
+		this.mockMvc.perform(get("/cirurgias").header("token", logar("wagnerju", "1234"))).andExpect(status().isOk());
 		
 		this.mockMvc.perform(get("/cirurgias").header("token", logar("wagnerju", "1234") + "TokenError"))
 		.andExpect(jsonPath("$.error", equalTo("Acesso negado"))).andExpect(status().isForbidden());
-		
-		this.mockMvc.perform(get("/cirurgias").header("token", logar("lathuanny", "1234"))).andExpect(status().isOk());
+			
+		this.mockMvc.perform(
+				get("/cirurgias").param("searchTerm", "Báriatrica").header("token", logar("wagnerju", "1234")))
+				.andExpect(status().isOk());
 
 	}
 

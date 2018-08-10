@@ -39,24 +39,25 @@ public class AlarmeController {
 	private Autentica autentica;
 
 	@Autowired
-	private AlarmeRepository repo;
+	private AlarmeRepository alarmeRepo;
 
 	private static final String ACESSONEGADO = "Acesso negado";
 
 	@ApiOperation("Busque todos os alarmes")
 	@GetMapping
-	public Page<Alarme> getAlarmes(@RequestHeader String token, Pageable p,
-			@RequestParam(name = "searchTerm", defaultValue = "", required = false) String searchTerm)
-			throws AccessDeniedException {
+	public Page<Alarme> getAlarmes(Pageable p,
+			@RequestParam(name = "searchTerm", defaultValue = "", required = false) String searchTerm,
+			@RequestHeader String token) throws AccessDeniedException {
 		if (autentica.autenticaRequisicao(token)) {
-			if (repo.findAll(autentica.idUser(token).toString()).isEmpty())
+			if (alarmeRepo.findAll(autentica.idUser(token).toString()).isEmpty())
 				throw new NullPointerException("Não existe nenhum alarme cadastrado no banco de dados");
 			else {
 				if (searchTerm.isEmpty()) {
-					return repo.findAll(p, autentica.idUser(token).toString());
+					return alarmeRepo.findAll(p, autentica.idUser(token).toString());
 				}
-				return repo.findAll(p, "%" + searchTerm + "%", autentica.idUser(token).toString());
+				return alarmeRepo.findAll(p, "%" + searchTerm + "%", autentica.idUser(token).toString());
 			}
+
 		}
 		throw new AccessDeniedException(ACESSONEGADO);
 	}

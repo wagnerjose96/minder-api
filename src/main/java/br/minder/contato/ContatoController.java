@@ -3,9 +3,10 @@ package br.minder.contato;
 import java.net.URI;
 import java.nio.file.AccessDeniedException;
 import java.sql.SQLException;
-import java.util.List;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -16,9 +17,9 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
-
 import br.minder.contato.comandos.BuscarContato;
 import br.minder.contato.comandos.CriarContato;
 import br.minder.contato.comandos.EditarContato;
@@ -39,14 +40,21 @@ public class ContatoController {
 	@Autowired
 	private Autentica autentica;
 
+	@Autowired
+	private ContatoRepository repo;
+
 	@ApiOperation("Busque todos os contatos")
 	@GetMapping
-	public ResponseEntity<List<BuscarContato>> getContatos() {
-		Optional<List<BuscarContato>> optionalContatos = contatoService.encontrar();
-		if (optionalContatos.isPresent()) {
-			return ResponseEntity.ok(optionalContatos.get());
+	public Page<Contato> getContatos(Pageable p,
+			@RequestParam(name = "searchTerm", defaultValue = "", required = false) String searchTerm) {
+		if (repo.findAll().isEmpty())
+			throw new NullPointerException("Não existe nenhum contato cadastrado no banco de dados");
+		else {
+			if (searchTerm.isEmpty()) {
+				return repo.findAll(p);
+			}
+			return repo.findAll(p, "%" + searchTerm + "%");
 		}
-		throw new NullPointerException("Não existe nenhum contato cadastrado no banco de dados");
 	}
 
 	@ApiOperation("Busque um contato pelo ID")

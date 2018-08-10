@@ -2,11 +2,10 @@ package br.minder.emergencia.comandos;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import br.minder.alergia.comandos.BuscarAlergia;
-import br.minder.cirurgia.comandos.BuscarCirurgia;
+import br.minder.alergia.Alergia;
+import br.minder.cirurgia.Cirurgia;
 import br.minder.contato.comandos.BuscarContato;
-import br.minder.doenca.comandos.BuscarDoenca;
+import br.minder.doenca.Doenca;
 import br.minder.emergencia.Emergencia;
 import br.minder.emergencia.EmergenciaId;
 import br.minder.endereco.comandos.BuscarEndereco;
@@ -21,9 +20,9 @@ public class BuscarEmergenciaPdf {
 	private String nomeDoUsuario;
 	private BuscarEndereco endereco;
 	private BuscarSangue tipoSanguineo;
-	private List<BuscarAlergia> alergias = new ArrayList<>();
-	private List<BuscarCirurgia> cirurgias = new ArrayList<>();
-	private List<BuscarDoenca> doencas = new ArrayList<>();
+	private List<Alergia> alergias = new ArrayList<>();
+	private List<Cirurgia> cirurgias = new ArrayList<>();
+	private List<Doenca> doencas = new ArrayList<>();
 	private int ataqueConvulsivos;
 	private String problemasCardiacos;
 	private int doadorDeOrgaos;

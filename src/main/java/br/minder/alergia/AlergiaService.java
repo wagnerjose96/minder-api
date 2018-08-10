@@ -1,6 +1,5 @@
 package br.minder.alergia;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import javax.transaction.Transactional;
@@ -65,23 +64,6 @@ public class AlergiaService {
 			BuscarAlergia resultado = new BuscarAlergia(result.get());
 			resultado.setMedicamentos(medicamentos);
 			return Optional.of(resultado);
-		}
-		return Optional.empty();
-	}
-
-	public Optional<List<BuscarAlergia>> encontrar(UsuarioId id) {
-		List<Alergia> alergias = repo.findAll();
-		List<BuscarAlergia> rsAlergias = new ArrayList<>();
-		if (!alergias.isEmpty()) {
-			for (Alergia alergia : alergias) {
-				if (id.toString().equals(alergia.getIdUsuario().toString())) {
-					List<BuscarMedicamento> medicamentos = executeQuery(alergia.getIdAlergia().toString(), sql);
-					BuscarAlergia nova = new BuscarAlergia(alergia);
-					nova.setMedicamentos(medicamentos);
-					rsAlergias.add(nova);
-				}
-			}
-			return Optional.of(rsAlergias);
 		}
 		return Optional.empty();
 	}

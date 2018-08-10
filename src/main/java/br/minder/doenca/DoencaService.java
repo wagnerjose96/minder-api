@@ -1,6 +1,5 @@
 package br.minder.doenca;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -63,23 +62,6 @@ public class DoencaService {
 			BuscarDoenca resultado = new BuscarDoenca(doenca.get());
 			resultado.setMedicamentos(medicamentos);
 			return Optional.of(resultado);
-		}
-		return Optional.empty();
-	}
-
-	public Optional<List<BuscarDoenca>> encontrar(UsuarioId id) {
-		List<Doenca> doencas = doencaRepo.findAll();
-		List<BuscarDoenca> rsDoencas = new ArrayList<>();
-		if (!doencas.isEmpty()) {
-			for (Doenca doenca : doencas) {
-				if (id.toString().equals(doenca.getIdUsuario().toString())) {
-					List<BuscarMedicamento> medicamentos = executeQuery(doenca.getIdDoenca().toString(), sql);
-					BuscarDoenca nova = new BuscarDoenca(doenca);
-					nova.setMedicamentos(medicamentos);
-					rsDoencas.add(nova);
-				}
-			}
-			return Optional.of(rsDoencas);
 		}
 		return Optional.empty();
 	}

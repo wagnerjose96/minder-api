@@ -266,19 +266,14 @@ public class TestDoencaController {
 		List<Doenca> doencas = repoDoenca.findAll();
 		assertThat(doencas.get(0), notNullValue());
 
-		this.mockMvc.perform(get("/doencas").header("token", logar("wagnerju", "1234")))
-				.andExpect(jsonPath("$[0].nomeDoenca", equalTo("Miopia")))
-				.andExpect(jsonPath("$[1].nomeDoenca", equalTo("Asma"))).andExpect(status().isOk());
+		this.mockMvc.perform(get("/doencas").header("token", logar("wagnerju", "1234"))).andExpect(status().isOk());
 
 		this.mockMvc.perform(get("/doencas").header("token", logar("wagnerju", "1234") + "TokenError"))
 				.andExpect(jsonPath("$.error", equalTo("Acesso negado"))).andExpect(status().isForbidden());
 		
-		serviceUsuario.salvar(criarUsuario("lathuanny@hotmail.com", "lathuanny", idGenero, idSangue)).get();
-		usuarios = repo.findAll();
-		assertThat(usuarios.get(1), notNullValue());
-
-		this.mockMvc.perform(get("/doencas").header("token", logar("lathuanny", "1234"))).andExpect(status().isOk());
-
+		this.mockMvc.perform(
+				get("/doencas").param("searchTerm", "Asma").header("token", logar("wagnerju", "1234")))
+				.andExpect(status().isOk());
 	}
 
 	private CriarDoenca criarDoenca(Set<MedicamentoId> idsMedicamentos, String nomeDoenca) {

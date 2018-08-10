@@ -6,15 +6,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import br.minder.alergia.AlergiaService;
-import br.minder.alergia.comandos.BuscarAlergia;
-import br.minder.cirurgia.CirurgiaService;
-import br.minder.cirurgia.comandos.BuscarCirurgia;
+import br.minder.alergia.Alergia;
+import br.minder.alergia.AlergiaRepository;
+import br.minder.cirurgia.Cirurgia;
+import br.minder.cirurgia.CirurgiaRepository;
 import br.minder.contato.ContatoId;
 import br.minder.contato.comandos.BuscarContato;
-import br.minder.doenca.DoencaService;
-import br.minder.doenca.comandos.BuscarDoenca;
+import br.minder.doenca.Doenca;
+import br.minder.doenca.DoencaRepository;
 import br.minder.emergencia.comandos.BuscarEmergencia;
 import br.minder.emergencia.comandos.BuscarEmergenciaPdf;
 import br.minder.emergencia.comandos.CriarEmergencia;
@@ -39,13 +38,13 @@ public class EmergenciaService {
 			+ "group by e.id_emergencia, c.id, b.id_contato, t.id having e.id_emergencia = ? ";
 
 	@Autowired
-	private AlergiaService alergiaService;
+	private AlergiaRepository alergiaRepo;
 
 	@Autowired
-	private CirurgiaService cirurgiaService;
+	private CirurgiaRepository cirurgiaRepo;
 
 	@Autowired
-	private DoencaService doencaService;
+	private DoencaRepository doencaRepo;
 
 	@Autowired
 	private UsuarioService usuarioService;
@@ -64,13 +63,13 @@ public class EmergenciaService {
 			String nome = user.get().getNome();
 			BuscarEndereco endereco = user.get().getEndereco();
 			BuscarSangue sangue = user.get().getSangue();
-			Optional<List<BuscarAlergia>> alergias = alergiaService.encontrar(user.get().getId());
-			Optional<List<BuscarCirurgia>> cirurgias = cirurgiaService.encontrar(user.get().getId());
-			Optional<List<BuscarDoenca>> doencas = doencaService.encontrar(user.get().getId());
-			if (alergias.isPresent() && cirurgias.isPresent() && doencas.isPresent()) {
-				resultado.setAlergias(alergias.get());
-				resultado.setCirurgias(cirurgias.get());
-				resultado.setDoencas(doencas.get());
+			List<Alergia> alergias = alergiaRepo.findAll(user.get().getId().toString());
+			List<Cirurgia> cirurgias = cirurgiaRepo.findAll(user.get().getId().toString());
+			List<Doenca> doencas = doencaRepo.findAll(user.get().getId().toString());
+			if (!alergias.isEmpty() && !cirurgias.isEmpty() && !doencas.isEmpty()) {
+				resultado.setAlergias(alergias);
+				resultado.setCirurgias(cirurgias);
+				resultado.setDoencas(doencas);
 			}
 			resultado.setNomeDoUsuario(nome);
 			resultado.setTipoSanguineo(sangue);

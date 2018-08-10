@@ -3,9 +3,10 @@ package br.minder.cirurgia;
 import java.net.URI;
 import java.nio.file.AccessDeniedException;
 import java.sql.SQLException;
-import java.util.List;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
@@ -37,16 +39,24 @@ public class CirurgiaController {
 
 	@Autowired
 	private Autentica autentica;
+	
+	@Autowired
+	private CirurgiaRepository repo;
 
 	@ApiOperation("Busque todas as cirurgias")
 	@GetMapping
-	public ResponseEntity<List<BuscarCirurgia>> getCirurgias(@RequestHeader String token) throws AccessDeniedException {
+	public Page<Cirurgia> getCirurgias(@RequestHeader String token, Pageable p,
+			@RequestParam(name = "searchTerm", defaultValue = "", required = false) String searchTerm)
+			throws AccessDeniedException {
 		if (autentica.autenticaRequisicao(token)) {
-			Optional<List<BuscarCirurgia>> optionalCirurgias = cirurgiaService.encontrar(autentica.idUser(token));
-			if (optionalCirurgias.isPresent()) {
-				return ResponseEntity.ok(optionalCirurgias.get());
+			if (repo.findAll(autentica.idUser(token).toString()).isEmpty())
+				throw new NullPointerException("Não existe nenhuma cirurgia cadastrada no banco de dados");
+			else {
+				if (searchTerm.isEmpty()) {
+					return repo.findAll(p, autentica.idUser(token).toString());
+				}
+				return repo.findAll(p, "%" + searchTerm + "%", autentica.idUser(token).toString());
 			}
-			throw new NullPointerException("Não existe nenhuma cirurgia cadastrada no banco de dados");
 		}
 		throw new AccessDeniedException(ACESSONEGADO);
 	}

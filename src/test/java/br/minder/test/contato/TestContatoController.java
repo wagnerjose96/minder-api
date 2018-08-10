@@ -325,9 +325,9 @@ public class TestContatoController {
 		List<Contato> contatos = repoContato.findAll();
 		assertThat(contatos.get(0), notNullValue());
 
-		this.mockMvc.perform(get("/contatos").header("token", logar("wagnerju", "1234")))
-				.andExpect(jsonPath("$[0].nome", equalTo("Larissa Thuanny")))
-				.andExpect(jsonPath("$[1].nome", equalTo("Wagner Junior"))).andExpect(status().isOk());
+		this.mockMvc.perform(get("/contatos")).andExpect(status().isOk());
+
+		this.mockMvc.perform(get("/contatos").param("searchTerm", "Wagner Junior")).andExpect(status().isOk());
 
 	}
 

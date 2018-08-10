@@ -93,7 +93,7 @@ public class SenhaService {
 		String emailBody = "<br><br>Prezado(a) <b>" + nome.toUpperCase() + "</b>,"
 				+ "<br><br> A sua solicitação de geração de nova senha foi concluída com sucesso."
 				+ "<br><b> Sua nova senha é: </b>" + senha
-				+ "<br> Este é um e-mail automático. Não é necessário respondê-lo." + "<br><br> Atenciosamente,"
+				+ "<br> Este é um e-mail automático, não é necessário respondê-lo." + "<br><br> Atenciosamente,"
 				+ " <br><b> Equipe Minder </b>";
 		generateMailMessage.setContent(emailBody, "text/html; charset=UTF-8");
 

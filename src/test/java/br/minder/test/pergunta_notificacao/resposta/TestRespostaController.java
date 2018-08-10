@@ -111,6 +111,7 @@ public class TestRespostaController {
 	@Test
 	public void testCadastrar() throws Exception {
 		perguntaService.salvar(criarPergunta("Como vc está se sentindo hj??"));
+		perguntaService.salvar(criarPergunta("Como vc está se sentindo hj??"));
 		List<Pergunta> pergunta = repoPergunta.findAll();
 		assertThat(pergunta.get(0), notNullValue());
 
@@ -131,6 +132,46 @@ public class TestRespostaController {
 						.accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON).content(jsonString))
 				.andExpect(jsonPath("$", equalTo("A resposta foi cadastrada com sucesso")))
 				.andExpect(status().isCreated());
+		
+		jsonString = objectMapper.writeValueAsString(criarResposta("Bem", pergunta.get(1).getIdPergunta()));
+
+		this.mockMvc
+				.perform(post("/respostas").header("token", logarAdm("admin", "1234"))
+						.accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON).content(jsonString))
+				.andExpect(jsonPath("$", equalTo("A resposta foi cadastrada com sucesso")))
+				.andExpect(status().isCreated());
+
+		jsonString = objectMapper.writeValueAsString(criarResposta("Mal", pergunta.get(0).getIdPergunta()));
+
+		this.mockMvc
+				.perform(post("/respostas").header("token", logarAdm("admin", "1234"))
+						.accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON).content(jsonString))
+				.andExpect(jsonPath("$", equalTo("A resposta foi cadastrada com sucesso")))
+				.andExpect(status().isCreated());
+
+		jsonString = objectMapper.writeValueAsString(criarResposta("Triste", pergunta.get(0).getIdPergunta()));
+
+		this.mockMvc
+				.perform(post("/respostas").header("token", logarAdm("admin", "1234"))
+						.accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON).content(jsonString))
+				.andExpect(jsonPath("$", equalTo("A resposta foi cadastrada com sucesso")))
+				.andExpect(status().isCreated());
+
+		jsonString = objectMapper.writeValueAsString(criarResposta("Alegre", pergunta.get(0).getIdPergunta()));
+
+		this.mockMvc
+				.perform(post("/respostas").header("token", logarAdm("admin", "1234"))
+						.accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON).content(jsonString))
+				.andExpect(jsonPath("$", equalTo("A resposta foi cadastrada com sucesso")))
+				.andExpect(status().isCreated());
+
+		jsonString = objectMapper.writeValueAsString(criarResposta("Erro", pergunta.get(0).getIdPergunta()));
+
+		this.mockMvc
+				.perform(post("/respostas").header("token", logarAdm("admin", "1234"))
+						.accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON).content(jsonString))
+				.andExpect(jsonPath("$.error", equalTo("A resposta não foi salva devido a um erro interno")))
+				.andExpect(status().isInternalServerError());
 
 		this.mockMvc
 				.perform(post("/respostas").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)

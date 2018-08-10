@@ -1,12 +1,9 @@
 package br.minder.convenio;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 import javax.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import br.minder.convenio.Convenio;
 import br.minder.convenio.ConvenioId;
 import br.minder.convenio.ConvenioRepository;
@@ -33,21 +30,6 @@ public class ConvenioService {
 		if (convenio.isPresent() && convenio.get().getAtivo() == 1) {
 			BuscarConvenio resultado = new BuscarConvenio(convenio.get());
 			return Optional.of(resultado);
-		}
-		return Optional.empty();
-	}
-
-	public Optional<List<BuscarConvenio>> encontrar() {
-		List<BuscarConvenio> resultados = new ArrayList<>();
-		List<Convenio> convenios = convenioRepo.findAll();
-		if (!convenios.isEmpty()) {
-			for (Convenio convenio : convenios) {
-				if (convenio.getAtivo() == 1) {
-					BuscarConvenio nova = new BuscarConvenio(convenio);
-					resultados.add(nova);
-				}
-			}
-			return Optional.of(resultados);
 		}
 		return Optional.empty();
 	}

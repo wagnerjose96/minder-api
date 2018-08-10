@@ -209,8 +209,9 @@ public class TestConvenioController {
 		List<Convenio> convenios = repoConvenio.findAll();
 		assertThat(convenios.get(0), notNullValue());
 
-		this.mockMvc.perform(get("/convenios")).andExpect(jsonPath("$[0].nome", equalTo("Unimed")))
-				.andExpect(jsonPath("$[1].nome", equalTo("Santa Casa"))).andExpect(status().isOk());
+		this.mockMvc.perform(get("/convenios")).andExpect(status().isOk());
+		
+		this.mockMvc.perform(get("/convenios").param("searchTerm", "Santa Casa")).andExpect(status().isOk());
 
 	}
 
