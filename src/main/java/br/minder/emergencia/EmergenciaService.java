@@ -3,15 +3,12 @@ package br.minder.emergencia;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import br.minder.alergia.Alergia;
 import br.minder.alergia.AlergiaRepository;
 import br.minder.cirurgia.Cirurgia;
 import br.minder.cirurgia.CirurgiaRepository;
-import br.minder.contato.ContatoId;
-import br.minder.contato.comandos.BuscarContato;
 import br.minder.doenca.Doenca;
 import br.minder.doenca.DoencaRepository;
 import br.minder.emergencia.comandos.BuscarEmergencia;
@@ -20,8 +17,6 @@ import br.minder.emergencia.comandos.CriarEmergencia;
 import br.minder.emergencia.comandos.EditarEmergencia;
 import br.minder.endereco.comandos.BuscarEndereco;
 import br.minder.sangue.comandos.BuscarSangue;
-import br.minder.telefone.TelefoneId;
-import br.minder.telefone.comandos.BuscarTelefone;
 import br.minder.usuario.UsuarioId;
 import br.minder.usuario.UsuarioService;
 import br.minder.usuario.comandos.BuscarUsuario;
@@ -29,13 +24,6 @@ import br.minder.usuario.comandos.BuscarUsuario;
 @Service
 @Transactional
 public class EmergenciaService {
-	@Autowired
-	private JdbcTemplate jdbcTemplate;
-
-	private String sql = "select e.id_emergencia, b.id_contato, c.id, c.nome, t.ddd, t.numero, t.id as id_telefone "
-			+ "from emergencia e " + "inner join contato_emergencia b on e.id_emergencia = b.id_emergencia "
-			+ "inner join contato c on c.id = b.id_contato " + "inner join telefone t on c.id_telefone = t.id "
-			+ "group by e.id_emergencia, c.id, b.id_contato, t.id having e.id_emergencia = ? ";
 
 	@Autowired
 	private AlergiaRepository alergiaRepo;
@@ -58,7 +46,6 @@ public class EmergenciaService {
 	}
 
 	private BuscarEmergenciaPdf construirEmergencia(Optional<BuscarUsuario> user, BuscarEmergenciaPdf resultado) {
-		List<BuscarContato> contatos = executeQuery(resultado.getId().toString(), sql);
 		if (user.isPresent()) {
 			String nome = user.get().getNome();
 			BuscarEndereco endereco = user.get().getEndereco();
@@ -74,7 +61,6 @@ public class EmergenciaService {
 			resultado.setNomeDoUsuario(nome);
 			resultado.setTipoSanguineo(sangue);
 			resultado.setEndereco(endereco);
-			resultado.setContatos(contatos);
 
 		}
 		return resultado;
@@ -91,7 +77,7 @@ public class EmergenciaService {
 		}
 		return Optional.empty();
 	}
-	
+
 	public Optional<BuscarEmergencia> encontrar(UsuarioId id) {
 		List<Emergencia> emergencias = repo.findAll();
 		for (Emergencia emergencia : emergencias) {
@@ -111,22 +97,5 @@ public class EmergenciaService {
 			return Optional.of(comando.getId());
 		}
 		return Optional.empty();
-	}
-
-	private List<BuscarContato> executeQuery(String id, String sql) {
-		return jdbcTemplate.query(sql, new Object[] { id }, (rs, rowNum) -> {
-			BuscarContato contato = new BuscarContato();
-			BuscarTelefone telefone = new BuscarTelefone();
-			String idEmergencia = rs.getString("id_emergencia");
-			if (id.equals(idEmergencia)) {
-				contato.setId(new ContatoId(rs.getString("id")));
-				contato.setNome(rs.getString("nome"));
-				telefone.setId(new TelefoneId(rs.getString("id_telefone")));
-				telefone.setDdd(rs.getInt("ddd"));
-				telefone.setNumero(rs.getInt("numero"));
-				contato.setTelefone(telefone);
-			}
-			return contato;
-		});
 	}
 }

@@ -61,9 +61,11 @@ public class ContatoService {
 		return Optional.empty();
 	}
 
-	public Optional<BuscarContato> encontrar(ContatoId contatoId) {
+	public Optional<BuscarContato> encontrar(ContatoId contatoId, UsuarioId usuarioId) {
 		Optional<Contato> contato = repo.findById(contatoId);
-		if (contato.isPresent()) {
+		EmergenciaId idEmergencia = executeQuery(usuarioId.toString(), sql).get(0).getId();
+		if (contato.isPresent()
+				&& !buscaId(idEmergencia.toString(), contatoId.toString(), sqlContatoEmergencia).isEmpty()) {
 			BuscarContato resultado = new BuscarContato(contato.get());
 			Optional<BuscarTelefone> telefone = telefoneService.encontrar(contato.get().getIdTelefone());
 			if (telefone.isPresent()) {
@@ -120,6 +122,7 @@ public class ContatoService {
 			String contato = rs.getString("id_contato");
 			if (emergencia.equals(idEmergencia) && contato.equals(idContato)) {
 				emer.setId(new ContatoEmergenciaId(rs.getString("id")));
+				emer.setIdContato(new ContatoId(rs.getString("id_contato")));
 			}
 			return emer;
 		});

@@ -281,12 +281,20 @@ public class TestContatoController {
 		List<Contato> contatos = repoContato.findAll();
 		assertThat(contatos.get(0), notNullValue());
 
-		this.mockMvc.perform(get("/contatos/" + contatos.get(0).getId().toString()))
+		this.mockMvc
+				.perform(get("/contatos/" + contatos.get(0).getId().toString()).header("token",
+						logar("wagnerju", "1234")))
 				.andExpect(jsonPath("$.nome", equalTo("Larissa Thuanny"))).andExpect(status().isOk());
 
-		this.mockMvc.perform(get("/contatos/" + new ContatoId().toString()))
+		this.mockMvc.perform(get("/contatos/" + new ContatoId().toString()).header("token", logar("wagnerju", "1234")))
 				.andExpect(jsonPath("$.error", equalTo("O contato procurado não existe no banco de dados")))
 				.andExpect(status().isNotFound());
+
+		this.mockMvc
+				.perform(get("/contatos/" + contatos.get(0).getId().toString()).header("token",
+						logar("wagnerju", "1234") + "erroToken"))
+				.andExpect(jsonPath("$.error", equalTo("Acesso negado"))).andExpect(status().isForbidden());
+
 	}
 
 	@Test
@@ -304,7 +312,11 @@ public class TestContatoController {
 		List<Emergencia> emergencias = repoEmergencia.findAll();
 		assertThat(emergencias.get(0), notNullValue());
 
-		this.mockMvc.perform(get("/contatos")).andExpect(status().isNotFound());
+		this.mockMvc.perform(get("/contatos").header("token", logar("wagnerju", "1234")))
+				.andExpect(status().isNotFound());
+
+		this.mockMvc.perform(get("/contatos").header("token", logar("wagnerju", "1234") + "erroToken"))
+				.andExpect(jsonPath("$.error", equalTo("Acesso negado"))).andExpect(status().isForbidden());
 
 		String jsonString = objectMapper.writeValueAsString(criarContato("Larissa Thuanny"));
 
@@ -325,9 +337,11 @@ public class TestContatoController {
 		List<Contato> contatos = repoContato.findAll();
 		assertThat(contatos.get(0), notNullValue());
 
-		this.mockMvc.perform(get("/contatos")).andExpect(status().isOk());
+		this.mockMvc.perform(get("/contatos").header("token", logar("wagnerju", "1234"))).andExpect(status().isOk());
 
-		this.mockMvc.perform(get("/contatos").param("searchTerm", "Wagner Junior")).andExpect(status().isOk());
+		this.mockMvc.perform(
+				get("/contatos").header("token", logar("wagnerju", "1234")).param("searchTerm", "Wagner Junior"))
+				.andExpect(status().isOk());
 
 	}
 
