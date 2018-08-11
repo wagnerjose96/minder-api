@@ -54,12 +54,10 @@ public class ContatoController {
 					return repo.findAll(p, autentica.idUser(token).toString());
 				}
 				return repo.findAll(p, "%" + searchTerm + "%", autentica.idUser(token).toString());
-			}
-		} else {
-			throw new NullPointerException("Não existe nenhum contato cadastrado no banco de dados");
+			} else
+				throw new NullPointerException("Não existe nenhum contato cadastrado no banco de dados");
 		}
 		throw new AccessDeniedException(ACESSONEGADO);
-
 	}
 
 	@ApiOperation("Busque um contato pelo ID")
