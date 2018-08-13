@@ -4,6 +4,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -34,7 +38,7 @@ public class MedicamentoService {
 		return Optional.empty();
 	}
 
-	public Optional<List<BuscarMedicamento>> encontrar() {
+	public Optional<Page<BuscarMedicamento>> encontrar(Pageable pageable) {
 		List<BuscarMedicamento> resultados = new ArrayList<>();
 		List<Medicamento> medicamentos = medicamentoRepo.findAll();
 		if (!medicamentos.isEmpty()) {
@@ -44,7 +48,11 @@ public class MedicamentoService {
 					resultados.add(med);
 				}
 			}
-			return Optional.of(resultados);
+			@SuppressWarnings("deprecation")
+			Page<BuscarMedicamento> page = new PageImpl<>(resultados,
+					new PageRequest(pageable.getPageNumber(), pageable.getPageSize(), pageable.getSort()),
+					resultados.size());
+			return Optional.of(page);
 		}
 		return Optional.empty();
 	}

@@ -18,8 +18,6 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import br.minder.convenio.ConvenioId;
@@ -44,21 +42,14 @@ public class ConvenioController {
 	@Autowired
 	private Autentica autentica;
 
-	@Autowired
-	private ConvenioRepository repo;
-
 	@ApiOperation("Busque todos os convênios")
 	@GetMapping
-	public @ResponseBody Page<Convenio> getConvenios(Pageable p,
-			@RequestParam(name = "searchTerm", defaultValue = "", required = false) String searchTerm) {
-		if (repo.findAll().isEmpty())
-			throw new NullPointerException("Não existe nenhum convênio cadastrado no banco de dados");
-		else {
-			if (searchTerm.isEmpty()) {
-				return repo.findAll(p);
-			}
-			return repo.findAll(p, "%" + searchTerm + "%");
+	public ResponseEntity<Page<BuscarConvenio>> getConvenio(Pageable p) {
+		Optional<Page<BuscarConvenio>> optionalConvenios = service.encontrar(p);
+		if (optionalConvenios.isPresent()) {
+			return ResponseEntity.ok(optionalConvenios.get());
 		}
+		throw new NullPointerException("Não existe nenhum convênio cadastrado no banco de dados");
 	}
 
 	@ApiOperation("Busque um convênio pelo ID")

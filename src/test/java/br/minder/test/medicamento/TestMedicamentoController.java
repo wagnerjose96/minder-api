@@ -229,10 +229,7 @@ public class TestMedicamentoController {
 		assertThat(medicamentos.get(0), notNullValue());
 		assertThat(medicamentos.get(1), notNullValue());
 
-		this.mockMvc.perform(get("/medicamentos"))
-				.andExpect(jsonPath("$[0].nomeMedicamento", equalTo("Medicamento de Teste")))
-				.andExpect(jsonPath("$[1].nomeMedicamento", equalTo("Medicamento de Teste 2")))
-				.andExpect(status().isOk());
+		this.mockMvc.perform(get("/medicamentos")).andExpect(status().isOk());
 
 		this.mockMvc
 				.perform(delete("/medicamentos/" + medicamentos.get(0).getIdMedicamento().toString()).header("token",
@@ -241,9 +238,7 @@ public class TestMedicamentoController {
 						+ ": deletado com sucesso")))
 				.andExpect(status().isOk());
 
-		this.mockMvc.perform(get("/medicamentos"))
-				.andExpect(jsonPath("$[0].nomeMedicamento", equalTo("Medicamento de Teste 2")))
-				.andExpect(status().isOk());
+		this.mockMvc.perform(get("/medicamentos")).andExpect(status().isOk());
 
 		this.mockMvc
 				.perform(delete("/medicamentos/" + medicamentos.get(1).getIdMedicamento().toString()).header("token",

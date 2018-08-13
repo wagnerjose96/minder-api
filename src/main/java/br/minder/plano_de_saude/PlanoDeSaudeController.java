@@ -4,9 +4,10 @@ import java.net.URI;
 import java.nio.file.AccessDeniedException;
 import java.sql.SQLException;
 import java.text.ParseException;
-import java.util.List;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -44,10 +45,10 @@ public class PlanoDeSaudeController {
 
 	@ApiOperation("Busque todos os planos de saúde")
 	@GetMapping
-	public ResponseEntity<List<BuscarPlanoDeSaude>> getPlanoDeSaudes(@RequestHeader String token)
+	public ResponseEntity<Page<BuscarPlanoDeSaude>> getPlanoDeSaudes(Pageable p, @RequestHeader String token)
 			throws AccessDeniedException {
 		if (autentica.autenticaRequisicao(token)) {
-			Optional<List<BuscarPlanoDeSaude>> optionalPlanoDeSaude = service.encontrar(autentica.idUser(token));
+			Optional<Page<BuscarPlanoDeSaude>> optionalPlanoDeSaude = service.encontrar(p, autentica.idUser(token));
 			if (optionalPlanoDeSaude.isPresent()) {
 				return ResponseEntity.ok(optionalPlanoDeSaude.get());
 			}

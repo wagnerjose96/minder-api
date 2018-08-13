@@ -16,7 +16,6 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import br.minder.alergia.comandos.BuscarAlergia;
@@ -39,23 +38,15 @@ public class AlergiaController {
 	@Autowired
 	private Autentica autentica;
 
-	@Autowired
-	private AlergiaRepository alergiaRepo;
-
 	@ApiOperation("Busque todas as alergias")
 	@GetMapping
-	public Page<Alergia> getAlergias(@RequestHeader String token, Pageable p,
-			@RequestParam(name = "searchTerm", defaultValue = "", required = false) String searchTerm)
-			throws AccessDeniedException {
+	public ResponseEntity<Page<BuscarAlergia>> getAlergias(Pageable p, @RequestHeader String token) throws AccessDeniedException {
 		if (autentica.autenticaRequisicao(token)) {
-			if (alergiaRepo.findAll(autentica.idUser(token).toString()).isEmpty())
-				throw new NullPointerException("Não existe nenhuma alergia cadastrada no banco de dados");
-			else {
-				if (searchTerm.isEmpty()) {
-					return alergiaRepo.findAll(p, autentica.idUser(token).toString());
-				}
-				return alergiaRepo.findAll(p, "%" + searchTerm + "%", autentica.idUser(token).toString());
+			Optional<Page<BuscarAlergia>> optionalAlergias = alergiaService.encontrar(p, autentica.idUser(token));
+			if (optionalAlergias.isPresent()) {
+				return ResponseEntity.ok(optionalAlergias.get());
 			}
+			throw new NullPointerException("Não existe nenhuma alergia cadastrada no banco de dados");
 		}
 		throw new AccessDeniedException(ACESSONEGADO);
 	}

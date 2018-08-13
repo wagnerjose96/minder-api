@@ -1,8 +1,13 @@
 package br.minder.cirurgia;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -63,6 +68,43 @@ public class CirurgiaService {
 			return Optional.of(resultado);
 		}
 		return Optional.empty();
+	}
+
+	public Optional<Page<BuscarCirurgia>> encontrar(Pageable pageable, UsuarioId id) {
+		List<Cirurgia> cirurgias = cirurgiaRepo.findAll();
+		List<BuscarCirurgia> rsCirurgias = new ArrayList<>();
+		if (!cirurgias.isEmpty()) {
+			for (Cirurgia cirurgia : cirurgias) {
+				if (id.toString().equals(cirurgia.getIdUsuario().toString())) {
+					List<BuscarMedicamento> medicamentos = executeQuery(cirurgia.getIdCirurgia().toString(), sql);
+					BuscarCirurgia nova = new BuscarCirurgia(cirurgia);
+					nova.setMedicamentos(medicamentos);
+					rsCirurgias.add(nova);
+				}
+			}
+			@SuppressWarnings("deprecation")
+			Page<BuscarCirurgia> page = new PageImpl<>(rsCirurgias,
+					new PageRequest(pageable.getPageNumber(), pageable.getPageSize(), pageable.getSort()),
+					rsCirurgias.size());
+			return Optional.of(page);
+		}
+		return Optional.empty();
+	}
+
+	public List<BuscarCirurgia> encontrar(UsuarioId id) {
+		List<Cirurgia> cirurgias = cirurgiaRepo.findAll();
+		List<BuscarCirurgia> rsCirurgias = new ArrayList<>();
+		if (!cirurgias.isEmpty()) {
+			for (Cirurgia cirurgia : cirurgias) {
+				if (id.toString().equals(cirurgia.getIdUsuario().toString())) {
+					List<BuscarMedicamento> medicamentos = executeQuery(cirurgia.getIdCirurgia().toString(), sql);
+					BuscarCirurgia nova = new BuscarCirurgia(cirurgia);
+					nova.setMedicamentos(medicamentos);
+					rsCirurgias.add(nova);
+				}
+			}
+		}
+		return rsCirurgias;
 	}
 
 	public Optional<CirurgiaId> alterar(EditarCirurgia comando) {

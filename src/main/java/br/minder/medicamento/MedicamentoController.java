@@ -3,9 +3,10 @@ package br.minder.medicamento;
 import java.net.URI;
 import java.nio.file.AccessDeniedException;
 import java.sql.SQLException;
-import java.util.List;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -41,10 +42,10 @@ public class MedicamentoController {
 
 	@ApiOperation("Busque todos os medicamentos")
 	@GetMapping
-	public ResponseEntity<List<BuscarMedicamento>> getMedicamento() {
-		Optional<List<BuscarMedicamento>> optionalMedicamentos = service.encontrar();
-		if (optionalMedicamentos.isPresent()) {
-			return ResponseEntity.ok(optionalMedicamentos.get());
+	public ResponseEntity<Optional<Page<BuscarMedicamento>>> getMedicamento(Pageable pageable) {
+		Optional<Page<BuscarMedicamento>> medicamentos = service.encontrar(pageable);
+		if (medicamentos.isPresent()) {
+			return ResponseEntity.ok(medicamentos);
 		}
 		throw new NullPointerException("Não existe nenhum medicamento cadastrado no banco de dados");
 	}

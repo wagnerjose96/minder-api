@@ -1,8 +1,14 @@
 package br.minder.convenio;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import javax.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import br.minder.convenio.Convenio;
 import br.minder.convenio.ConvenioId;
@@ -30,6 +36,25 @@ public class ConvenioService {
 		if (convenio.isPresent() && convenio.get().getAtivo() == 1) {
 			BuscarConvenio resultado = new BuscarConvenio(convenio.get());
 			return Optional.of(resultado);
+		}
+		return Optional.empty();
+	}
+
+	public Optional<Page<BuscarConvenio>> encontrar(Pageable pageable) {
+		List<BuscarConvenio> resultados = new ArrayList<>();
+		List<Convenio> convenios = convenioRepo.findAll();
+		if (!convenios.isEmpty()) {
+			for (Convenio convenio : convenios) {
+				if (convenio.getAtivo() == 1) {
+					BuscarConvenio nova = new BuscarConvenio(convenio);
+					resultados.add(nova);
+				}
+			}
+			@SuppressWarnings("deprecation")
+			Page<BuscarConvenio> page = new PageImpl<>(resultados,
+					new PageRequest(pageable.getPageNumber(), pageable.getPageSize(), pageable.getSort()),
+					resultados.size());
+			return Optional.of(page);
 		}
 		return Optional.empty();
 	}

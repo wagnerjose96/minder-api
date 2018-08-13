@@ -214,11 +214,11 @@ public class TestAlergiaController {
 		List<Alergia> alergias = repoAlergia.findAll();
 		assertThat(alergias.get(0), notNullValue());
 
-		String error = objectMapper.writeValueAsString(editarAlergia(alergias.get(0), idsMedicamentos));
+		jsonString = objectMapper.writeValueAsString(editarAlergia(alergias.get(0), idsMedicamentos));
 
 		this.mockMvc
 				.perform(put("/alergias").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
-						.header("token", logar("wagnerju", "1234")).content(error))
+						.header("token", logar("wagnerju", "1234")).content(jsonString))
 				.andExpect(jsonPath("$", equalTo("A alergia foi alterada com sucesso"))).andExpect(status().isOk());
 
 		this.mockMvc
@@ -226,7 +226,7 @@ public class TestAlergiaController {
 						.header("token", logar("wagnerju", "1234") + "TokenErrado").content(jsonString))
 				.andExpect(jsonPath("$.error", equalTo("Acesso negado"))).andExpect(status().isForbidden());
 
-		error = objectMapper.writeValueAsString(editarAlergiaError(alergias.get(0).getIdAlergia()));
+		String error = objectMapper.writeValueAsString(editarAlergiaError(alergias.get(0).getIdAlergia()));
 
 		this.mockMvc
 				.perform(put("/alergias").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
@@ -384,8 +384,8 @@ public class TestAlergiaController {
 
 		this.mockMvc
 				.perform(get("/alergias/" + alergias.get(0).getIdAlergia().toString()).header("token",
-						logar("wagnerju", "1234")))
-				.andExpect(jsonPath("$.tipoAlergia", equalTo("Alergia de pele"))).andExpect(status().isOk());
+						logar("wagnerju", "1234"))).andExpect(jsonPath("$.tipoAlergia", equalTo("Alergia de pele")))
+				.andExpect(status().isOk());
 
 		this.mockMvc
 				.perform(get("/alergias/" + alergias.get(0).getIdAlergia().toString()).header("token",

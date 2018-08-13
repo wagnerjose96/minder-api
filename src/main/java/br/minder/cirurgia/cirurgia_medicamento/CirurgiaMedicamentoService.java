@@ -15,17 +15,12 @@ public class CirurgiaMedicamentoService {
 	public void salvar(CirurgiaMedicamento novoCirurgiaMedicamento) {
 		repo.save(novoCirurgiaMedicamento);
 	}
-	
+
 	public List<CirurgiaMedicamento> encontrar() {
 		return repo.findAll();
 	}
-	
+
 	public Optional<CirurgiaMedicamento> encontrar(CirurgiaMedicamentoId id) {
-		Optional<CirurgiaMedicamento> cirurgia = repo.findById(id);
-		if (cirurgia.isPresent()) {
-			CirurgiaMedicamento resultado = new CirurgiaMedicamento(cirurgia.get());
-			return Optional.of(resultado);
-		}
-		return Optional.empty();
+		return repo.findById(id);
 	}
 }

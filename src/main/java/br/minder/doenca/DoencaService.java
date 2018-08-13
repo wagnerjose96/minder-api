@@ -1,8 +1,13 @@
 package br.minder.doenca;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -64,6 +69,43 @@ public class DoencaService {
 			return Optional.of(resultado);
 		}
 		return Optional.empty();
+	}
+
+	public Optional<Page<BuscarDoenca>> encontrar(Pageable pageable, UsuarioId id) {
+		List<Doenca> doencas = doencaRepo.findAll();
+		List<BuscarDoenca> rsDoencas = new ArrayList<>();
+		if (!doencas.isEmpty()) {
+			for (Doenca doenca : doencas) {
+				if (id.toString().equals(doenca.getIdUsuario().toString())) {
+					List<BuscarMedicamento> medicamentos = executeQuery(doenca.getIdDoenca().toString(), sql);
+					BuscarDoenca nova = new BuscarDoenca(doenca);
+					nova.setMedicamentos(medicamentos);
+					rsDoencas.add(nova);
+				}
+			}
+			@SuppressWarnings("deprecation")
+			Page<BuscarDoenca> page = new PageImpl<>(rsDoencas,
+					new PageRequest(pageable.getPageNumber(), pageable.getPageSize(), pageable.getSort()),
+					rsDoencas.size());
+			return Optional.of(page);
+		}
+		return Optional.empty();
+	}
+
+	public List<BuscarDoenca> encontrar(UsuarioId id) {
+		List<Doenca> doencas = doencaRepo.findAll();
+		List<BuscarDoenca> rsDoencas = new ArrayList<>();
+		if (!doencas.isEmpty()) {
+			for (Doenca doenca : doencas) {
+				if (id.toString().equals(doenca.getIdUsuario().toString())) {
+					List<BuscarMedicamento> medicamentos = executeQuery(doenca.getIdDoenca().toString(), sql);
+					BuscarDoenca nova = new BuscarDoenca(doenca);
+					nova.setMedicamentos(medicamentos);
+					rsDoencas.add(nova);
+				}
+			}
+		}
+		return rsDoencas;
 	}
 
 	public Optional<DoencaId> alterar(EditarDoenca comando) {

@@ -291,10 +291,7 @@ public class TestPlanoDeSaudeController {
 				.perform(get("/planos").header("token", logar("wagnerju", "1234") + "TokenError").content(jsonString))
 				.andExpect(jsonPath("$.error", equalTo("Acesso negado"))).andExpect(status().isForbidden());
 
-		this.mockMvc.perform(get("/planos").header("token", logar("wagnerju", "1234")))
-				.andExpect(jsonPath("$[0].convenio.id.value", equalTo(convenio.get(0).getId().toString())))
-				.andExpect(jsonPath("$[1].convenio.id.value", equalTo(convenio.get(0).getId().toString())))
-				.andExpect(status().isOk());
+		this.mockMvc.perform(get("/planos").header("token", logar("wagnerju", "1234"))).andExpect(status().isOk());
 	}
 
 	@Test

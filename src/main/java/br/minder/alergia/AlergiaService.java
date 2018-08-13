@@ -1,9 +1,14 @@
 package br.minder.alergia;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import javax.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 import br.minder.alergia.Alergia;
@@ -66,6 +71,43 @@ public class AlergiaService {
 			return Optional.of(resultado);
 		}
 		return Optional.empty();
+	}
+
+	public Optional<Page<BuscarAlergia>> encontrar(Pageable pageable, UsuarioId id) {
+		List<Alergia> alergias = repo.findAll();
+		List<BuscarAlergia> rsAlergias = new ArrayList<>();
+		if (!alergias.isEmpty()) {
+			for (Alergia alergia : alergias) {
+				if (id.toString().equals(alergia.getIdUsuario().toString())) {
+					List<BuscarMedicamento> medicamentos = executeQuery(alergia.getIdAlergia().toString(), sql);
+					BuscarAlergia nova = new BuscarAlergia(alergia);
+					nova.setMedicamentos(medicamentos);
+					rsAlergias.add(nova);
+				}
+			}
+			@SuppressWarnings("deprecation")
+			Page<BuscarAlergia> page = new PageImpl<>(rsAlergias,
+					new PageRequest(pageable.getPageNumber(), pageable.getPageSize(), pageable.getSort()),
+					rsAlergias.size());
+			return Optional.of(page);
+		}
+		return Optional.empty();
+	}
+
+	public List<BuscarAlergia> encontrar(UsuarioId id) {
+		List<Alergia> alergias = repo.findAll();
+		List<BuscarAlergia> rsAlergias = new ArrayList<>();
+		if (!alergias.isEmpty()) {
+			for (Alergia alergia : alergias) {
+				if (id.toString().equals(alergia.getIdUsuario().toString())) {
+					List<BuscarMedicamento> medicamentos = executeQuery(alergia.getIdAlergia().toString(), sql);
+					BuscarAlergia nova = new BuscarAlergia(alergia);
+					nova.setMedicamentos(medicamentos);
+					rsAlergias.add(nova);
+				}
+			}
+		}
+		return rsAlergias;
 	}
 
 	public Optional<AlergiaId> alterar(EditarAlergia comando) {

@@ -17,9 +17,9 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+
 import br.minder.contato.comandos.BuscarContato;
 import br.minder.contato.comandos.CriarContato;
 import br.minder.contato.comandos.EditarContato;
@@ -40,32 +40,26 @@ public class ContatoController {
 	@Autowired
 	private Autentica autentica;
 
-	@Autowired
-	private ContatoRepository repo;
-
 	@ApiOperation("Busque todos os contatos")
 	@GetMapping
-	public Page<Contato> getContatos(Pageable p,
-			@RequestParam(name = "searchTerm", defaultValue = "", required = false) String searchTerm,
-			@RequestHeader String token) throws AccessDeniedException {
+	public ResponseEntity<Page<BuscarContato>> getContatos(Pageable p, @RequestHeader String token) throws AccessDeniedException {
 		if (autentica.autenticaRequisicao(token)) {
-			if (!repo.findAll(autentica.idUser(token).toString()).isEmpty()) {
-				if (searchTerm.isEmpty()) {
-					return repo.findAll(p, autentica.idUser(token).toString());
-				}
-				return repo.findAll(p, "%" + searchTerm + "%", autentica.idUser(token).toString());
-			} else
-				throw new NullPointerException("Não existe nenhum contato cadastrado no banco de dados");
+			Optional<Page<BuscarContato>> optionalContatos = contatoService
+					.encontrar(p, autentica.idUser(token).toString());
+			if (optionalContatos.isPresent()) {
+				return ResponseEntity.ok(optionalContatos.get());
+			}
+			throw new NullPointerException("Não existe nenhum contato cadastrado no banco de dados");
 		}
 		throw new AccessDeniedException(ACESSONEGADO);
 	}
 
 	@ApiOperation("Busque um contato pelo ID")
 	@GetMapping("/{id}")
-	public ResponseEntity<BuscarContato> getContatoPorId(@PathVariable ContatoId id, @RequestHeader String token)
+	public ResponseEntity<BuscarContato> getContatoPorId(@RequestHeader String token, @PathVariable ContatoId id)
 			throws AccessDeniedException {
 		if (autentica.autenticaRequisicao(token)) {
-			Optional<BuscarContato> optionalContato = contatoService.encontrar(id, autentica.idUser(token));
+			Optional<BuscarContato> optionalContato = contatoService.encontrar(id, autentica.idUser(token).toString());
 			if (optionalContato.isPresent()) {
 				return ResponseEntity.ok(optionalContato.get());
 			}
@@ -95,7 +89,7 @@ public class ContatoController {
 	public ResponseEntity<String> putContato(@RequestBody EditarContato comando, @RequestHeader String token)
 			throws AccessDeniedException, SQLException {
 		if (autentica.autenticaRequisicao(token)) {
-			if (!contatoService.encontrar(comando.getId(), autentica.idUser(token)).isPresent()) {
+			if (!contatoService.encontrar(comando.getId(), autentica.idUser(token).toString()).isPresent()) {
 				throw new NullPointerException("O contato a ser alterado não existe no banco de dados");
 			}
 

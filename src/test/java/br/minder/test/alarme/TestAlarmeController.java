@@ -340,6 +340,7 @@ public class TestAlarmeController {
 		this.mockMvc
 				.perform(
 						get("/alarmes/" + alarmes.get(0).getId().toString()).header("token", logar("wagnerju", "1234")))
+
 				.andExpect(jsonPath("$.descricao", equalTo("Tomar medicamento"))).andExpect(status().isOk());
 
 		this.mockMvc

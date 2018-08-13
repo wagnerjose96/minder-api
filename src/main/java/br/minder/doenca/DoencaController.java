@@ -16,9 +16,9 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+
 import br.minder.doenca.comandos.BuscarDoenca;
 import br.minder.doenca.comandos.CriarDoenca;
 import br.minder.doenca.comandos.EditarDoenca;
@@ -39,23 +39,15 @@ public class DoencaController {
 	@Autowired
 	private Autentica autentica;
 
-	@Autowired
-	private DoencaRepository doencaRepo;
-
 	@ApiOperation("Busque todas as doenças")
 	@GetMapping
-	public Page<Doenca> getDoencas(@RequestHeader String token, Pageable p,
-			@RequestParam(name = "searchTerm", defaultValue = "", required = false) String searchTerm)
-			throws AccessDeniedException {
+	public ResponseEntity<Page<BuscarDoenca>> getDoencas(Pageable p, @RequestHeader String token) throws AccessDeniedException {
 		if (autentica.autenticaRequisicao(token)) {
-			if (doencaRepo.findAll(autentica.idUser(token).toString()).isEmpty())
-				throw new NullPointerException("Não existe nenhuma doença cadastrada no banco de dados");
-			else {
-				if (searchTerm.isEmpty()) {
-					return doencaRepo.findAll(p, autentica.idUser(token).toString());
-				}
-				return doencaRepo.findAll(p, "%" + searchTerm + "%", autentica.idUser(token).toString());
+			Optional<Page<BuscarDoenca>> optionalDoencas = doencaService.encontrar(p, autentica.idUser(token));
+			if (optionalDoencas.isPresent()) {
+				return ResponseEntity.ok(optionalDoencas.get());
 			}
+			throw new NullPointerException("Não existe nenhuma doença cadastrada no banco de dados");
 		}
 		throw new AccessDeniedException(ACESSONEGADO);
 	}

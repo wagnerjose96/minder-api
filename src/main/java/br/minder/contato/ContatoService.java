@@ -1,9 +1,14 @@
 package br.minder.contato;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import javax.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 import br.minder.contato.Contato;
@@ -61,19 +66,38 @@ public class ContatoService {
 		return Optional.empty();
 	}
 
-	public Optional<BuscarContato> encontrar(ContatoId contatoId, UsuarioId usuarioId) {
-		Optional<Contato> contato = repo.findById(contatoId);
-		EmergenciaId idEmergencia = executeQuery(usuarioId.toString(), sql).get(0).getId();
-		if (contato.isPresent()
-				&& !buscaId(idEmergencia.toString(), contatoId.toString(), sqlContatoEmergencia).isEmpty()) {
-			BuscarContato resultado = new BuscarContato(contato.get());
-			Optional<BuscarTelefone> telefone = telefoneService.encontrar(contato.get().getIdTelefone());
+	public Optional<BuscarContato> encontrar(ContatoId contatoId, String usuarioId) {
+		Contato contato = repo.findById(contatoId.toString(), usuarioId);
+		if (contato != null) {
+			BuscarContato resultado = new BuscarContato(contato);
+			Optional<BuscarTelefone> telefone = telefoneService.encontrar(contato.getIdTelefone());
 			if (telefone.isPresent()) {
 				resultado.setTelefone(telefone.get());
 				return Optional.of(resultado);
 			}
 		}
 		return Optional.empty();
+	}
+
+	public Optional<Page<BuscarContato>> encontrar(Pageable pageable, String usuarioId) {
+		List<Contato> contatos = repo.findAll(usuarioId);
+		if (contatos.isEmpty()) {
+			return Optional.empty();
+		}
+		List<BuscarContato> resultados = new ArrayList<>();
+		for (Contato contato : contatos) {
+			BuscarContato nova = new BuscarContato(contato);
+			Optional<BuscarTelefone> telefone = telefoneService.encontrar(contato.getIdTelefone());
+			if (telefone.isPresent()) {
+				nova.setTelefone(telefone.get());
+				resultados.add(nova);
+			}
+		}
+		@SuppressWarnings("deprecation")
+		Page<BuscarContato> page = new PageImpl<>(resultados,
+				new PageRequest(pageable.getPageNumber(), pageable.getPageSize(), pageable.getSort()),
+				resultados.size());
+		return Optional.of(page);
 	}
 
 	public Optional<ContatoId> alterar(EditarContato comando) {
@@ -122,7 +146,6 @@ public class ContatoService {
 			String contato = rs.getString("id_contato");
 			if (emergencia.equals(idEmergencia) && contato.equals(idContato)) {
 				emer.setId(new ContatoEmergenciaId(rs.getString("id")));
-				emer.setIdContato(new ContatoId(rs.getString("id_contato")));
 			}
 			return emer;
 		});

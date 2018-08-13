@@ -5,12 +5,12 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import br.minder.alergia.Alergia;
-import br.minder.alergia.AlergiaRepository;
-import br.minder.cirurgia.Cirurgia;
-import br.minder.cirurgia.CirurgiaRepository;
-import br.minder.doenca.Doenca;
-import br.minder.doenca.DoencaRepository;
+import br.minder.alergia.AlergiaService;
+import br.minder.alergia.comandos.BuscarAlergia;
+import br.minder.cirurgia.CirurgiaService;
+import br.minder.cirurgia.comandos.BuscarCirurgia;
+import br.minder.doenca.DoencaService;
+import br.minder.doenca.comandos.BuscarDoenca;
 import br.minder.emergencia.comandos.BuscarEmergencia;
 import br.minder.emergencia.comandos.BuscarEmergenciaPdf;
 import br.minder.emergencia.comandos.CriarEmergencia;
@@ -26,16 +26,16 @@ import br.minder.usuario.comandos.BuscarUsuario;
 public class EmergenciaService {
 
 	@Autowired
-	private AlergiaRepository alergiaRepo;
+	private AlergiaService alergia;
 
 	@Autowired
-	private CirurgiaRepository cirurgiaRepo;
+	private CirurgiaService cirurgia;
 
 	@Autowired
-	private DoencaRepository doencaRepo;
+	private DoencaService doenca;
 
 	@Autowired
-	private UsuarioService usuarioService;
+	private UsuarioService usuario;
 
 	@Autowired
 	private EmergenciaRepository repo;
@@ -50,9 +50,9 @@ public class EmergenciaService {
 			String nome = user.get().getNome();
 			BuscarEndereco endereco = user.get().getEndereco();
 			BuscarSangue sangue = user.get().getSangue();
-			List<Alergia> alergias = alergiaRepo.findAll(user.get().getId().toString());
-			List<Cirurgia> cirurgias = cirurgiaRepo.findAll(user.get().getId().toString());
-			List<Doenca> doencas = doencaRepo.findAll(user.get().getId().toString());
+			List<BuscarAlergia> alergias = alergia.encontrar(user.get().getId());
+			List<BuscarCirurgia> cirurgias = cirurgia.encontrar(user.get().getId());
+			List<BuscarDoenca> doencas = doenca.encontrar(user.get().getId());
 			if (!alergias.isEmpty() && !cirurgias.isEmpty() && !doencas.isEmpty()) {
 				resultado.setAlergias(alergias);
 				resultado.setCirurgias(cirurgias);
@@ -70,7 +70,7 @@ public class EmergenciaService {
 		List<Emergencia> emergencias = repo.findAll();
 		for (Emergencia emergencia : emergencias) {
 			if (id.toString().equals(emergencia.getIdUsuario().toString())) {
-				BuscarEmergenciaPdf resultados = construirEmergencia(usuarioService.encontrar(id),
+				BuscarEmergenciaPdf resultados = construirEmergencia(usuario.encontrar(id),
 						new BuscarEmergenciaPdf(emergencia));
 				return Optional.of(resultados);
 			}
