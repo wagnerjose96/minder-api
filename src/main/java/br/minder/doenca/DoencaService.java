@@ -83,9 +83,8 @@ public class DoencaService {
 					rsDoencas.add(nova);
 				}
 			}
-			@SuppressWarnings("deprecation")
 			Page<BuscarDoenca> page = new PageImpl<>(rsDoencas,
-					new PageRequest(pageable.getPageNumber(), pageable.getPageSize(), pageable.getSort()),
+					PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), pageable.getSort()),
 					rsDoencas.size());
 			return Optional.of(page);
 		}

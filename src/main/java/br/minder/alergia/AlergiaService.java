@@ -85,9 +85,8 @@ public class AlergiaService {
 					rsAlergias.add(nova);
 				}
 			}
-			@SuppressWarnings("deprecation")
 			Page<BuscarAlergia> page = new PageImpl<>(rsAlergias,
-					new PageRequest(pageable.getPageNumber(), pageable.getPageSize(), pageable.getSort()),
+				 PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), pageable.getSort()),
 					rsAlergias.size());
 			return Optional.of(page);
 		}

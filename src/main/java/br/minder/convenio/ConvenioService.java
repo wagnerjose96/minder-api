@@ -50,9 +50,8 @@ public class ConvenioService {
 					resultados.add(nova);
 				}
 			}
-			@SuppressWarnings("deprecation")
 			Page<BuscarConvenio> page = new PageImpl<>(resultados,
-					new PageRequest(pageable.getPageNumber(), pageable.getPageSize(), pageable.getSort()),
+					PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), pageable.getSort()),
 					resultados.size());
 			return Optional.of(page);
 		}

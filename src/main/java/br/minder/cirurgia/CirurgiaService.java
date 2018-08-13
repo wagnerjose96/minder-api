@@ -82,9 +82,8 @@ public class CirurgiaService {
 					rsCirurgias.add(nova);
 				}
 			}
-			@SuppressWarnings("deprecation")
 			Page<BuscarCirurgia> page = new PageImpl<>(rsCirurgias,
-					new PageRequest(pageable.getPageNumber(), pageable.getPageSize(), pageable.getSort()),
+					PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), pageable.getSort()),
 					rsCirurgias.size());
 			return Optional.of(page);
 		}

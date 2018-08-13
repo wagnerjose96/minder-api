@@ -72,9 +72,8 @@ public class PlanoDeSaudeService {
 					}
 				}
 			}
-			@SuppressWarnings("deprecation")
 			Page<BuscarPlanoDeSaude> page = new PageImpl<>(rsPlanos,
-					new PageRequest(pageable.getPageNumber(), pageable.getPageSize(), pageable.getSort()),
+					PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), pageable.getSort()),
 					rsPlanos.size());
 			return Optional.of(page);
 		}

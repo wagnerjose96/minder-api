@@ -93,9 +93,8 @@ public class ContatoService {
 				resultados.add(nova);
 			}
 		}
-		@SuppressWarnings("deprecation")
 		Page<BuscarContato> page = new PageImpl<>(resultados,
-				new PageRequest(pageable.getPageNumber(), pageable.getPageSize(), pageable.getSort()),
+				PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), pageable.getSort()),
 				resultados.size());
 		return Optional.of(page);
 	}

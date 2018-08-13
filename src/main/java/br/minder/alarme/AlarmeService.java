@@ -64,9 +64,8 @@ public class AlarmeService {
 					resultados.add(nova);
 				}
 			}
-			@SuppressWarnings("deprecation")
 			Page<BuscarAlarme> page = new PageImpl<>(resultados,
-					new PageRequest(pageable.getPageNumber(), pageable.getPageSize(), pageable.getSort()),
+					 PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), pageable.getSort()),
 					resultados.size());
 			return Optional.of(page);
 		}
