@@ -23,6 +23,7 @@ import br.minder.conversor.TermoDeBusca;
 import br.minder.emergencia.EmergenciaId;
 import br.minder.emergencia.comandos.BuscarEmergencia;
 import br.minder.telefone.TelefoneId;
+import br.minder.telefone.TelefoneRepository;
 import br.minder.telefone.TelefoneService;
 import br.minder.telefone.comandos.BuscarTelefone;
 import br.minder.usuario.UsuarioId;
@@ -35,6 +36,9 @@ public class ContatoService {
 
 	@Autowired
 	private TelefoneService telefoneService;
+
+	@Autowired
+	private TelefoneRepository telefoneRepo;
 
 	@Autowired
 	private ContatoEmergenciaRepository repoContatoEmergencia;
@@ -123,7 +127,7 @@ public class ContatoService {
 					sqlContatoEmergencia).get(0).getId();
 			repoContatoEmergencia.deleteById(idContatoEmergencia);
 			repo.deleteById(id);
-			telefoneService.deletar(contato.getIdTelefone());
+			telefoneRepo.deleteById(contato.getIdTelefone());
 			return Optional.of("Contato ===> " + id + ": deletado com sucesso");
 		}
 		return Optional.empty();

@@ -85,8 +85,8 @@ public class AlarmeService {
 		return Optional.empty();
 	}
 
-	public Optional<String> deletar(AlarmeId id) {
-		if (repo.findById(id).isPresent()) {
+	public Optional<String> deletar(AlarmeId id, UsuarioId usuarioId) {
+		if (repo.findById(id.toString(), usuarioId.toString()) != null) {
 			repo.deleteById(id);
 			return Optional.of("Alarme ===> " + id + ": deletado com sucesso");
 		}

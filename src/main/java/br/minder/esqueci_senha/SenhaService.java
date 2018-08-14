@@ -1,6 +1,7 @@
 package br.minder.esqueci_senha;
 
 import java.io.UnsupportedEncodingException;
+import java.security.NoSuchAlgorithmException;
 import java.util.*;
 
 import javax.mail.Message;
@@ -59,7 +60,8 @@ public class SenhaService {
 		return senha;
 	}
 
-	public boolean gerarSenhaAleatoria(EsqueciSenha comando) throws MessagingException, UnsupportedEncodingException {
+	public boolean gerarSenhaAleatoria(EsqueciSenha comando)
+			throws MessagingException, UnsupportedEncodingException, NoSuchAlgorithmException {
 		List<GerarSenha> usuario = consultarId(comando);
 		String senha = null;
 		if (!usuario.isEmpty()) {

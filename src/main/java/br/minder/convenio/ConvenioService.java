@@ -70,9 +70,9 @@ public class ConvenioService {
 	}
 
 	public Optional<ConvenioId> alterar(EditarConvenio comando) {
-		Convenio optional = convenioRepo.findById(comando.getId().toString());
-		if (optional != null && comando.getNome() != null) {
-			Convenio conv = optional;
+		Optional<Convenio> optional = convenioRepo.findById(comando.getId());
+		if (optional.isPresent() && comando.getNome() != null) {
+			Convenio conv = optional.get();
 			conv.apply(comando);
 			convenioRepo.save(conv);
 			return Optional.of(comando.getId());

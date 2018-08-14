@@ -9,6 +9,8 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+import java.security.NoSuchAlgorithmException;
 import java.sql.Date;
 import java.time.LocalDate;
 import java.util.List;
@@ -447,7 +449,7 @@ public class TestAlarmeController {
 				.andExpect(status().isNotFound());
 
 		this.mockMvc
-				.perform(delete("/api/alarme/" + alarmes.get(0).getId().toString()).header("token",
+				.perform(delete("/api/alarme/" + new AlarmeId().toString()).header("token",
 						logar("wagnerju", "1234") + "erroToken"))
 				.andExpect(jsonPath("$.error", equalTo("Acesso negado"))).andExpect(status().isForbidden());
 
@@ -691,7 +693,7 @@ public class TestAlarmeController {
 		return id;
 	}
 
-	private String logar(String nomeUsuario, String senha) {
+	private String logar(String nomeUsuario, String senha) throws NoSuchAlgorithmException {
 		LogarUsuario corpoLogin = new LogarUsuario();
 		corpoLogin.setIdentificador(nomeUsuario);
 		corpoLogin.setSenha(senha);

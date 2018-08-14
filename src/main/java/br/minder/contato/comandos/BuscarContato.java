@@ -17,7 +17,4 @@ public class BuscarContato {
 		this.id = comandos.getId();
 		this.nome = comandos.getNome();
 	}
-
-	public BuscarContato() {
-	}
 }

@@ -7,6 +7,8 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+import java.security.NoSuchAlgorithmException;
 import java.sql.Date;
 import java.time.LocalDate;
 import java.util.List;
@@ -367,7 +369,7 @@ public class TestPerguntaRespostaUsuarioController {
 		return usuario;
 	}
 
-	private String logar(String nomeUsuario, String senha) {
+	private String logar(String nomeUsuario, String senha) throws NoSuchAlgorithmException {
 		LogarUsuario corpoLogin = new LogarUsuario();
 		corpoLogin.setIdentificador(nomeUsuario);
 		corpoLogin.setSenha(senha);
@@ -389,7 +391,7 @@ public class TestPerguntaRespostaUsuarioController {
 		return adm;
 	}
 
-	private String logarAdm(String nomeUsuario, String senha) {
+	private String logarAdm(String nomeUsuario, String senha) throws NoSuchAlgorithmException {
 		LogarUsuario corpoLogin = new LogarUsuario();
 		corpoLogin.setIdentificador(nomeUsuario);
 		corpoLogin.setSenha(senha);

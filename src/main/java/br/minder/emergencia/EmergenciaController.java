@@ -80,10 +80,8 @@ public class EmergenciaController {
 	public ResponseEntity<String> putEmergencia(@RequestBody EditarEmergencia comando, @RequestHeader String token)
 			throws AccessDeniedException {
 		if (autentica.autenticaRequisicao(token)) {
-			if (service.encontrar(autentica.idUser(token)).isPresent()) {
-				service.alterar(comando);
+			if (service.alterar(comando, autentica.idUser(token)).isPresent())
 				return ResponseEntity.ok().body("A emergência foi alterada com sucesso");
-			}
 			throw new NullPointerException("A emergência a ser alterada não existe no banco de dados");
 		}
 		throw new AccessDeniedException(ACESSONEGADO);

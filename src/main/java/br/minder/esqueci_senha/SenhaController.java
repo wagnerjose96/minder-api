@@ -1,6 +1,7 @@
 package br.minder.esqueci_senha;
 
 import java.io.UnsupportedEncodingException;
+import java.security.NoSuchAlgorithmException;
 
 import javax.mail.MessagingException;
 
@@ -25,7 +26,8 @@ public class SenhaController {
 
 	@ApiOperation(value = "Crie uma senha aleatória para um usuário")
 	@PutMapping
-	public ResponseEntity<String> putUSenha(@RequestBody EsqueciSenha comando) throws MessagingException, UnsupportedEncodingException {
+	public ResponseEntity<String> putUSenha(@RequestBody EsqueciSenha comando)
+			throws MessagingException, UnsupportedEncodingException, NoSuchAlgorithmException {
 		if (service.gerarSenhaAleatoria(comando))
 			return ResponseEntity.ok("Nova senha criada com sucesso, verifique a caixa de entrada do seu email");
 		else

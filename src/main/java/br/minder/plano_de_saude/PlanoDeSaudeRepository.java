@@ -10,4 +10,6 @@ public interface PlanoDeSaudeRepository extends JpaRepository<PlanoDeSaude, Plan
 	@Query(nativeQuery = true, countQuery = "select count(id) from plano_de_saude", value = "select * from plano_de_saude where id_usuario = :usuarioId")
 	Page<PlanoDeSaude> findAll(Pageable pageable, @Param("usuarioId") String usuarioId);
 
+	@Query(nativeQuery = true, countQuery = "select count(id) from plano_de_saude", value = "select * from plano_de_saude where id_usuario = :usuarioId and id = :id")
+	PlanoDeSaude findById(@Param("id") String id, @Param("usuarioId") String usuarioId);
 }

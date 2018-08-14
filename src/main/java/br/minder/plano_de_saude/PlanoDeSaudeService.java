@@ -29,8 +29,8 @@ public class PlanoDeSaudeService {
 	@Autowired
 	private ConvenioRepository convRepo;
 
-	public Optional<String> deletar(PlanoDeSaudeId id) {
-		if (repo.findById(id).isPresent()) {
+	public Optional<String> deletar(PlanoDeSaudeId id, UsuarioId usuarioId) {
+		if (repo.findById(id.toString(), usuarioId.toString()) != null) {
 			repo.deleteById(id);
 			return Optional.of("Plano de saúde ===> " + id + ": deletado com sucesso");
 		}
@@ -64,12 +64,12 @@ public class PlanoDeSaudeService {
 		Page<PlanoDeSaude> planos = repo.findAll(pageable, id.toString());
 		if (planos.hasContent()) {
 			for (PlanoDeSaude plano : planos) {
-					Convenio convenio = convRepo.findById(plano.getIdConvenio().toString());
-					BuscarPlanoDeSaude nova = new BuscarPlanoDeSaude(plano);
-					if (convenio != null) {
-						nova.setConvenio(new BuscarConvenio(convenio));
-						rsPlanos.add(nova);
-					}
+				Convenio convenio = convRepo.findById(plano.getIdConvenio().toString());
+				BuscarPlanoDeSaude nova = new BuscarPlanoDeSaude(plano);
+				if (convenio != null) {
+					nova.setConvenio(new BuscarConvenio(convenio));
+					rsPlanos.add(nova);
+				}
 			}
 			Page<BuscarPlanoDeSaude> page = new PageImpl<>(rsPlanos,
 					PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), pageable.getSort()),

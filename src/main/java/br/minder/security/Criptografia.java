@@ -7,16 +7,12 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class Criptografia {
-	public static String criptografa(String senha) {
+	public static String criptografa(String senha) throws NoSuchAlgorithmException {
 		String senhaCriptografada = null;
 		MessageDigest digest;
-		try {
-			digest = MessageDigest.getInstance("MD5");
-			digest.update(senha.getBytes(), 0, senha.length());
-			senhaCriptografada = new BigInteger(1, digest.digest()).toString(16);
-		} catch (NoSuchAlgorithmException e) {
-			e.getMessage();
-		}
+		digest = MessageDigest.getInstance("MD5");
+		digest.update(senha.getBytes(), 0, senha.length());
+		senhaCriptografada = new BigInteger(1, digest.digest()).toString(16);
 		return senhaCriptografada;
 	}
 

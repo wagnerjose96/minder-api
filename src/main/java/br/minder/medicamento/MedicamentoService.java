@@ -68,9 +68,9 @@ public class MedicamentoService {
 	}
 
 	public Optional<MedicamentoId> alterar(EditarMedicamento comando) {
-		Medicamento optional = medicamentoRepo.findById(comando.getIdMedicamento().toString());
-		if (optional != null && comando.getComposicao() != null && comando.getNomeMedicamento() != null) {
-			Medicamento med = optional;
+		Optional<Medicamento> optional = medicamentoRepo.findById(comando.getIdMedicamento());
+		if (optional.isPresent() && comando.getComposicao() != null && comando.getNomeMedicamento() != null) {
+			Medicamento med = optional.get();
 			med.apply(comando);
 			medicamentoRepo.save(med);
 			return Optional.of(comando.getIdMedicamento());

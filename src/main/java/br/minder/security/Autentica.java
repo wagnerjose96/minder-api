@@ -7,10 +7,8 @@ import org.springframework.stereotype.Component;
 import br.minder.login.comandos.IdentificarUsuario;
 import br.minder.login.comandos.LogarUsuario;
 import br.minder.usuario.UsuarioId;
-import lombok.Getter;
 
 @Component
-@Getter
 public class Autentica {
 	@Autowired
 	private JdbcTemplate jdbcTemplate;

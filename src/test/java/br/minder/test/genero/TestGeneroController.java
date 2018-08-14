@@ -8,6 +8,8 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+import java.security.NoSuchAlgorithmException;
 import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
@@ -212,7 +214,7 @@ public class TestGeneroController {
 		return adm;
 	}
 
-	private String logarAdm(String nomeUsuario, String senha) {
+	private String logarAdm(String nomeUsuario, String senha) throws NoSuchAlgorithmException {
 		LogarUsuario corpoLogin = new LogarUsuario();
 		corpoLogin.setIdentificador(nomeUsuario);
 		corpoLogin.setSenha(senha);

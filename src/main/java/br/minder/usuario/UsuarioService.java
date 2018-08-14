@@ -1,5 +1,6 @@
 package br.minder.usuario;
 
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -39,7 +40,7 @@ public class UsuarioService {
 	@Autowired
 	private GeneroService generoService;
 
-	public Optional<UsuarioId> salvar(CriarUsuario comando) {
+	public Optional<UsuarioId> salvar(CriarUsuario comando) throws NoSuchAlgorithmException {
 		if (comando.getNome() != null) {
 			Usuario novo = new Usuario(comando);
 			if (comando.getEndereco() != null) {
@@ -112,7 +113,7 @@ public class UsuarioService {
 		return Optional.empty();
 	}
 
-	public Optional<UsuarioId> alterar(EditarUsuario comando) {
+	public Optional<UsuarioId> alterar(EditarUsuario comando) throws NoSuchAlgorithmException {
 		Optional<Usuario> optional = repo.findById(comando.getId());
 		if (comando.getNome() != null && optional.isPresent()) {
 			if (comando.getEndereco() != null)

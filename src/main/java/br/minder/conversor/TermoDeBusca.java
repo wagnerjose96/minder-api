@@ -1,7 +1,9 @@
 package br.minder.conversor;
 
 import java.text.Normalizer;
+import org.springframework.stereotype.Component;
 
+@Component
 public class TermoDeBusca {
 
 	private TermoDeBusca() {

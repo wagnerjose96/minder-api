@@ -11,6 +11,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.math.BigInteger;
+import java.security.NoSuchAlgorithmException;
 import java.sql.Date;
 import java.time.LocalDate;
 import java.util.List;
@@ -517,7 +518,7 @@ public class TestPlanoDeSaudeController {
 		return usuario;
 	}
 
-	private String logar(String nomeUsuario, String senha) {
+	private String logar(String nomeUsuario, String senha) throws NoSuchAlgorithmException {
 		LogarUsuario corpoLogin = new LogarUsuario();
 		corpoLogin.setIdentificador(nomeUsuario);
 		corpoLogin.setSenha(senha);

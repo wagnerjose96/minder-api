@@ -1,5 +1,7 @@
 package br.minder.login;
 
+import java.security.NoSuchAlgorithmException;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -24,7 +26,7 @@ public class LoginController {
 
 	@ApiOperation("Efetue o login de um usuário")
 	@PostMapping("/api/login")
-	public ResponseEntity<String> loginUsuario(@RequestBody LogarUsuario comando) {
+	public ResponseEntity<String> loginUsuario(@RequestBody LogarUsuario comando) throws NoSuchAlgorithmException {
 		String username = comando.getIdentificador();
 		if (username.indexOf('@') > -1 && username.indexOf(".com") > -1 && username.indexOf("@.com") == -1) {
 			if (service.consultarEmail(comando)) {
@@ -43,7 +45,7 @@ public class LoginController {
 
 	@ApiOperation("Efetue o login de um administrador")
 	@PostMapping("/api/loginAdm")
-	public ResponseEntity<String> loginAdm(@RequestBody LogarUsuario comando) {
+	public ResponseEntity<String> loginAdm(@RequestBody LogarUsuario comando) throws NoSuchAlgorithmException {
 		if (service.consultarAdm(comando)) {
 			String token = JWTUtil.create(comando.getIdentificador());
 			return ResponseEntity.ok().body(token);
