@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
@@ -29,7 +30,7 @@ import io.swagger.annotations.ApiOperation;
 
 @Api("Basic Medicamento Controller")
 @RestController
-@RequestMapping("/medicamentos")
+@RequestMapping("/api/medicamento")
 @CrossOrigin
 public class MedicamentoController {
 	private static final String ACESSONEGADO = "Acesso negado";
@@ -42,8 +43,9 @@ public class MedicamentoController {
 
 	@ApiOperation("Busque todos os medicamentos")
 	@GetMapping
-	public ResponseEntity<Optional<Page<BuscarMedicamento>>> getMedicamento(Pageable pageable) {
-		Optional<Page<BuscarMedicamento>> medicamentos = service.encontrar(pageable);
+	public ResponseEntity<Optional<Page<BuscarMedicamento>>> getMedicamento(Pageable pageable,
+			@RequestParam(name = "searchTerm", defaultValue = "", required = false) String searchTerm) {
+		Optional<Page<BuscarMedicamento>> medicamentos = service.encontrar(pageable, searchTerm);
 		if (medicamentos.isPresent()) {
 			return ResponseEntity.ok(medicamentos);
 		}

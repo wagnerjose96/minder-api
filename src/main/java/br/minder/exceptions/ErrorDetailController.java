@@ -12,7 +12,7 @@ import springfox.documentation.annotations.ApiIgnore;
 
 @ApiIgnore
 @RestController
-@RequestMapping("/exceptions")
+@RequestMapping("/api/exception")
 public class ErrorDetailController {
 	@Autowired
 	private ErrorDetailService service;

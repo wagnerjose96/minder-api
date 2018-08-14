@@ -23,7 +23,7 @@ import io.swagger.annotations.ApiOperation;
 
 @Api("Basic Endereço Controller")
 @RestController
-@RequestMapping("/enderecos")
+@RequestMapping("/api/endereco")
 @CrossOrigin
 public class EnderecoController {
 	@Autowired

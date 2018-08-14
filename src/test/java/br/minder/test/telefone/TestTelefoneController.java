@@ -59,7 +59,7 @@ public class TestTelefoneController {
 		String jsonString = objectMapper.writeValueAsString(criarTelefone());
 
 		this.mockMvc
-				.perform(post("/telefones").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+				.perform(post("/api/telefone").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
 						.content(jsonString))
 				.andExpect(jsonPath("$", equalTo("O telefone foi cadastrado com sucesso")))
 				.andExpect(status().isCreated());
@@ -67,7 +67,7 @@ public class TestTelefoneController {
 		jsonString = objectMapper.writeValueAsString(criarTelefoneErro1());
 
 		this.mockMvc
-				.perform(post("/telefones").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+				.perform(post("/api/telefone").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
 						.content(jsonString))
 				.andExpect(jsonPath("$.error", equalTo("O telefone não foi salvo devido a um erro interno")))
 				.andExpect(status().isInternalServerError());
@@ -75,7 +75,7 @@ public class TestTelefoneController {
 		jsonString = objectMapper.writeValueAsString(criarTelefoneErro2());
 
 		this.mockMvc
-				.perform(post("/telefones").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+				.perform(post("/api/telefone").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
 						.content(jsonString))
 				.andExpect(jsonPath("$.error", equalTo("O telefone não foi salvo devido a um erro interno")))
 				.andExpect(status().isInternalServerError());
@@ -83,7 +83,7 @@ public class TestTelefoneController {
 		jsonString = objectMapper.writeValueAsString(criarTelefoneErro3());
 
 		this.mockMvc
-				.perform(post("/telefones").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+				.perform(post("/api/telefone").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
 						.content(jsonString))
 				.andExpect(jsonPath("$.error", equalTo("O telefone não foi salvo devido a um erro interno")))
 				.andExpect(status().isInternalServerError());
@@ -94,7 +94,7 @@ public class TestTelefoneController {
 		String jsonString = objectMapper.writeValueAsString(criarTelefone());
 
 		this.mockMvc
-				.perform(post("/telefones").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+				.perform(post("/api/telefone").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
 						.content(jsonString))
 				.andExpect(jsonPath("$", equalTo("O telefone foi cadastrado com sucesso")))
 				.andExpect(status().isCreated());
@@ -105,14 +105,14 @@ public class TestTelefoneController {
 		jsonString = objectMapper.writeValueAsString(editarTelefone(telefones.get(0)));
 
 		this.mockMvc
-				.perform(put("/telefones").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+				.perform(put("/api/telefone").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
 						.content(jsonString))
 				.andExpect(jsonPath("$", equalTo("O telefone foi alterado com sucesso"))).andExpect(status().isOk());
 
 		jsonString = objectMapper.writeValueAsString(editarTelefoneErroId(telefones.get(0)));
 
 		this.mockMvc
-				.perform(put("/telefones").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+				.perform(put("/api/telefone").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
 						.content(jsonString))
 				.andExpect(jsonPath("$.error", equalTo("O telefone a ser alterado não existe no banco de dados")))
 				.andExpect(status().isNotFound());
@@ -120,7 +120,7 @@ public class TestTelefoneController {
 		jsonString = objectMapper.writeValueAsString(editarTelefoneErro1(telefones.get(0)));
 
 		this.mockMvc
-				.perform(put("/telefones").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+				.perform(put("/api/telefone").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
 						.content(jsonString))
 				.andExpect(jsonPath("$.error", equalTo("Ocorreu um erro interno durante a alteração do telefone")))
 				.andExpect(status().isInternalServerError());
@@ -128,7 +128,7 @@ public class TestTelefoneController {
 		jsonString = objectMapper.writeValueAsString(editarTelefoneErro2(telefones.get(0)));
 
 		this.mockMvc
-				.perform(put("/telefones").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+				.perform(put("/api/telefone").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
 						.content(jsonString))
 				.andExpect(jsonPath("$.error", equalTo("Ocorreu um erro interno durante a alteração do telefone")))
 				.andExpect(status().isInternalServerError());
@@ -136,7 +136,7 @@ public class TestTelefoneController {
 		jsonString = objectMapper.writeValueAsString(editarTelefoneErro3(telefones.get(0)));
 
 		this.mockMvc
-				.perform(put("/telefones").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+				.perform(put("/api/telefone").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
 						.content(jsonString))
 				.andExpect(jsonPath("$.error", equalTo("Ocorreu um erro interno durante a alteração do telefone")))
 				.andExpect(status().isInternalServerError());
@@ -146,10 +146,10 @@ public class TestTelefoneController {
 	public void testBuscarTodos() throws Exception {
 		String jsonString = objectMapper.writeValueAsString(criarTelefone());
 
-		this.mockMvc.perform(get("/telefones")).andExpect(status().isNotFound());
+		this.mockMvc.perform(get("/api/telefone")).andExpect(status().isNotFound());
 
 		this.mockMvc
-				.perform(post("/telefones").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+				.perform(post("/api/telefone").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
 						.content(jsonString))
 				.andExpect(jsonPath("$", equalTo("O telefone foi cadastrado com sucesso")))
 				.andExpect(status().isCreated());
@@ -157,7 +157,7 @@ public class TestTelefoneController {
 		jsonString = objectMapper.writeValueAsString(criarTelefone());
 
 		this.mockMvc
-				.perform(post("/telefones").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+				.perform(post("/api/telefone").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
 						.content(jsonString))
 				.andExpect(jsonPath("$", equalTo("O telefone foi cadastrado com sucesso")))
 				.andExpect(status().isCreated());
@@ -166,7 +166,7 @@ public class TestTelefoneController {
 		assertThat(telefones.get(0), notNullValue());
 		assertThat(telefones.get(1), notNullValue());
 
-		this.mockMvc.perform(get("/telefones"))
+		this.mockMvc.perform(get("/api/telefone"))
 				.andExpect(jsonPath("$[0].id.value", equalTo(telefones.get(0).getId().toString())))
 				.andExpect(jsonPath("$[1].id.value", equalTo(telefones.get(1).getId().toString())))
 				.andExpect(status().isOk());
@@ -176,12 +176,12 @@ public class TestTelefoneController {
 	public void testBuscarPorId() throws Exception {
 		String jsonString = objectMapper.writeValueAsString(criarTelefone());
 
-		this.mockMvc.perform(get("/telefones/" + new TelefoneId().toString()))
+		this.mockMvc.perform(get("/api/telefone/" + new TelefoneId().toString()))
 				.andExpect(jsonPath("$.error", equalTo("O telefone procurado não existe no banco de dados")))
 				.andExpect(status().isNotFound());
 
 		this.mockMvc
-				.perform(post("/telefones").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+				.perform(post("/api/telefone").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
 						.content(jsonString))
 				.andExpect(jsonPath("$", equalTo("O telefone foi cadastrado com sucesso")))
 				.andExpect(status().isCreated());
@@ -189,7 +189,7 @@ public class TestTelefoneController {
 		List<Telefone> telefones = repo.findAll();
 		assertThat(telefones.get(0), notNullValue());
 
-		this.mockMvc.perform(get("/telefones/" + telefones.get(0).getId().toString()))
+		this.mockMvc.perform(get("/api/telefone/" + telefones.get(0).getId().toString()))
 				.andExpect(jsonPath("$.id.value", equalTo(telefones.get(0).getId().toString())))
 				.andExpect(status().isOk());
 	}

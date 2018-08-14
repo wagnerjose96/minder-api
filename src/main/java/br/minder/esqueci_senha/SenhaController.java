@@ -17,7 +17,7 @@ import io.swagger.annotations.ApiOperation;
 
 @Api("Basic Senha Controller")
 @RestController
-@RequestMapping("/senha")
+@RequestMapping("/api/senha")
 @CrossOrigin
 public class SenhaController {
 	@Autowired

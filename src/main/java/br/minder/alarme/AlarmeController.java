@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import br.minder.alarme.comandos.BuscarAlarme;
@@ -28,7 +29,7 @@ import io.swagger.annotations.ApiOperation;
 
 @Api("Basic Alarme Controller")
 @RestController
-@RequestMapping("/alarmes")
+@RequestMapping("/api/alarme")
 @CrossOrigin
 public class AlarmeController {
 	@Autowired
@@ -41,9 +42,12 @@ public class AlarmeController {
 
 	@ApiOperation("Busque todos os alarmes")
 	@GetMapping
-	public ResponseEntity<Page<BuscarAlarme>> getAlarmes(Pageable p, @RequestHeader String token) throws AccessDeniedException {
+	public ResponseEntity<Page<BuscarAlarme>> getAlarmes(Pageable p, @RequestHeader String token,
+			@RequestParam(name = "searchTerm", defaultValue = "", required = false) String searchTerm)
+			throws AccessDeniedException {
 		if (autentica.autenticaRequisicao(token)) {
-			Optional<Page<BuscarAlarme>> optionalAlarmes = alarmeService.encontrar(p, autentica.idUser(token));
+			Optional<Page<BuscarAlarme>> optionalAlarmes = alarmeService.encontrar(p, autentica.idUser(token),
+					searchTerm);
 			if (optionalAlarmes.isPresent()) {
 				return ResponseEntity.ok(optionalAlarmes.get());
 			}

@@ -18,6 +18,7 @@ import br.minder.alergia.alergia_medicamento.AlergiaMedicamentoService;
 import br.minder.alergia.comandos.BuscarAlergia;
 import br.minder.alergia.comandos.CriarAlergia;
 import br.minder.alergia.comandos.EditarAlergia;
+import br.minder.conversor.TermoDeBusca;
 import br.minder.medicamento.MedicamentoId;
 import br.minder.medicamento.MedicamentoService;
 import br.minder.medicamento.comandos.BuscarMedicamento;
@@ -73,12 +74,13 @@ public class AlergiaService {
 		return Optional.empty();
 	}
 
-	public Optional<Page<BuscarAlergia>> encontrar(Pageable pageable, UsuarioId id) {
+	public Optional<Page<BuscarAlergia>> encontrar(Pageable pageable, UsuarioId id, String searchTerm) {
 		List<Alergia> alergias = repo.findAll();
 		List<BuscarAlergia> rsAlergias = new ArrayList<>();
 		if (!alergias.isEmpty()) {
 			for (Alergia alergia : alergias) {
-				if (id.toString().equals(alergia.getIdUsuario().toString())) {
+				if (id.toString().equals(alergia.getIdUsuario().toString())
+						&& TermoDeBusca.searchTerm(alergia.getTipoAlergia(), searchTerm)) {
 					List<BuscarMedicamento> medicamentos = executeQuery(alergia.getIdAlergia().toString(), sql);
 					BuscarAlergia nova = new BuscarAlergia(alergia);
 					nova.setMedicamentos(medicamentos);
@@ -86,7 +88,7 @@ public class AlergiaService {
 				}
 			}
 			Page<BuscarAlergia> page = new PageImpl<>(rsAlergias,
-				 PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), pageable.getSort()),
+					PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), pageable.getSort()),
 					rsAlergias.size());
 			return Optional.of(page);
 		}

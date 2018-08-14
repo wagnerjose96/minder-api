@@ -16,6 +16,7 @@ import br.minder.cirurgia.cirurgia_medicamento.CirurgiaMedicamentoService;
 import br.minder.cirurgia.comandos.BuscarCirurgia;
 import br.minder.cirurgia.comandos.CriarCirurgia;
 import br.minder.cirurgia.comandos.EditarCirurgia;
+import br.minder.conversor.TermoDeBusca;
 import br.minder.medicamento.MedicamentoId;
 import br.minder.medicamento.MedicamentoService;
 import br.minder.medicamento.comandos.BuscarMedicamento;
@@ -70,12 +71,13 @@ public class CirurgiaService {
 		return Optional.empty();
 	}
 
-	public Optional<Page<BuscarCirurgia>> encontrar(Pageable pageable, UsuarioId id) {
+	public Optional<Page<BuscarCirurgia>> encontrar(Pageable pageable, UsuarioId id, String searchTerm) {
 		List<Cirurgia> cirurgias = cirurgiaRepo.findAll();
 		List<BuscarCirurgia> rsCirurgias = new ArrayList<>();
 		if (!cirurgias.isEmpty()) {
 			for (Cirurgia cirurgia : cirurgias) {
-				if (id.toString().equals(cirurgia.getIdUsuario().toString())) {
+				if (id.toString().equals(cirurgia.getIdUsuario().toString())
+						&& TermoDeBusca.searchTerm(cirurgia.getTipoCirurgia(), searchTerm)) {
 					List<BuscarMedicamento> medicamentos = executeQuery(cirurgia.getIdCirurgia().toString(), sql);
 					BuscarCirurgia nova = new BuscarCirurgia(cirurgia);
 					nova.setMedicamentos(medicamentos);

@@ -25,7 +25,7 @@ import io.swagger.annotations.ApiOperation;
 
 @Api("Basic Usuário Controller")
 @RestController
-@RequestMapping("/usuarios")
+@RequestMapping("/api/usuario")
 @CrossOrigin
 public class UsuarioController {
 	private static final String ACESSONEGADO = "Acesso negado";

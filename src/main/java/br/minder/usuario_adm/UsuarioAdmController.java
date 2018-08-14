@@ -32,7 +32,7 @@ import io.swagger.annotations.ApiOperation;
 
 @Api("Basic Usuário Admin Controller")
 @RestController
-@RequestMapping("/adm")
+@RequestMapping("/api/adm")
 @CrossOrigin
 public class UsuarioAdmController {
 	private static final String ACESSONEGADO = "Acesso negado";

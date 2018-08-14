@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
@@ -28,7 +29,7 @@ import io.swagger.annotations.ApiOperation;
 
 @Api("Basic Cirurgia Controller")
 @RestController
-@RequestMapping("/cirurgias")
+@RequestMapping("/api/cirurgia")
 @CrossOrigin
 public class CirurgiaController {
 	private static final String ACESSONEGADO = "Acesso negado";
@@ -41,9 +42,12 @@ public class CirurgiaController {
 
 	@ApiOperation("Busque todas as cirurgias")
 	@GetMapping
-	public ResponseEntity<Page<BuscarCirurgia>> getCirurgias(Pageable p, @RequestHeader String token) throws AccessDeniedException {
+	public ResponseEntity<Page<BuscarCirurgia>> getCirurgias(Pageable p, @RequestHeader String token,
+			@RequestParam(name = "searchTerm", defaultValue = "", required = false) String searchTerm)
+			throws AccessDeniedException {
 		if (autentica.autenticaRequisicao(token)) {
-			Optional<Page<BuscarCirurgia>> optionalCirurgias = cirurgiaService.encontrar(p, autentica.idUser(token));
+			Optional<Page<BuscarCirurgia>> optionalCirurgias = cirurgiaService.encontrar(p, autentica.idUser(token),
+					searchTerm);
 			if (optionalCirurgias.isPresent()) {
 				return ResponseEntity.ok(optionalCirurgias.get());
 			}

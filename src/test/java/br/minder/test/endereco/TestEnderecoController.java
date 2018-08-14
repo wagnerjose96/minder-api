@@ -68,7 +68,7 @@ public class TestEnderecoController {
 		String jsonString = objectMapper.writeValueAsString(criarEndereco("Apartamento"));
 
 		this.mockMvc
-				.perform(post("/enderecos").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+				.perform(post("/api/endereco").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
 						.content(jsonString))
 				.andExpect(jsonPath("$", equalTo("O endereço foi cadastrado com sucesso")))
 				.andExpect(status().isCreated());
@@ -76,7 +76,7 @@ public class TestEnderecoController {
 		jsonString = objectMapper.writeValueAsString(criarEnderecoErro1());
 
 		this.mockMvc
-				.perform(post("/enderecos").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+				.perform(post("/api/endereco").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
 						.content(jsonString))
 				.andExpect(jsonPath("$.error", equalTo("O endereço não foi salvo devido a um erro interno")))
 				.andExpect(status().isInternalServerError());
@@ -84,7 +84,7 @@ public class TestEnderecoController {
 		jsonString = objectMapper.writeValueAsString(criarEnderecoErro2());
 
 		this.mockMvc
-				.perform(post("/enderecos").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+				.perform(post("/api/endereco").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
 						.content(jsonString))
 				.andExpect(jsonPath("$.error", equalTo("O endereço não foi salvo devido a um erro interno")))
 				.andExpect(status().isInternalServerError());
@@ -92,7 +92,7 @@ public class TestEnderecoController {
 		jsonString = objectMapper.writeValueAsString(criarEnderecoErro3());
 
 		this.mockMvc
-				.perform(post("/enderecos").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+				.perform(post("/api/endereco").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
 						.content(jsonString))
 				.andExpect(jsonPath("$.error", equalTo("O endereço não foi salvo devido a um erro interno")))
 				.andExpect(status().isInternalServerError());
@@ -100,7 +100,7 @@ public class TestEnderecoController {
 		jsonString = objectMapper.writeValueAsString(criarEnderecoErro4());
 
 		this.mockMvc
-				.perform(post("/enderecos").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+				.perform(post("/api/endereco").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
 						.content(jsonString))
 				.andExpect(jsonPath("$.error", equalTo("O endereço não foi salvo devido a um erro interno")))
 				.andExpect(status().isInternalServerError());
@@ -108,7 +108,7 @@ public class TestEnderecoController {
 		jsonString = objectMapper.writeValueAsString(criarEnderecoErro5());
 
 		this.mockMvc
-				.perform(post("/enderecos").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+				.perform(post("/api/endereco").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
 						.content(jsonString))
 				.andExpect(jsonPath("$.error", equalTo("O endereço não foi salvo devido a um erro interno")))
 				.andExpect(status().isInternalServerError());
@@ -119,7 +119,7 @@ public class TestEnderecoController {
 		String jsonString = objectMapper.writeValueAsString(criarEndereco("Apartamento"));
 
 		this.mockMvc
-				.perform(post("/enderecos").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+				.perform(post("/api/endereco").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
 						.content(jsonString))
 				.andExpect(jsonPath("$", equalTo("O endereço foi cadastrado com sucesso")))
 				.andExpect(status().isCreated());
@@ -130,14 +130,14 @@ public class TestEnderecoController {
 		jsonString = objectMapper.writeValueAsString(editarEndereco(enderecos.get(0)));
 
 		this.mockMvc
-				.perform(put("/enderecos").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+				.perform(put("/api/endereco").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
 						.content(jsonString))
 				.andExpect(jsonPath("$", equalTo("O endereço foi alterado com sucesso"))).andExpect(status().isOk());
 
 		jsonString = objectMapper.writeValueAsString(editarEnderecoErroId());
 
 		this.mockMvc
-				.perform(put("/enderecos").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+				.perform(put("/api/endereco").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
 						.content(jsonString))
 				.andExpect(jsonPath("$.error", equalTo("O endereço a ser alterado não existe no banco de dados")))
 				.andExpect(status().isNotFound());
@@ -145,7 +145,7 @@ public class TestEnderecoController {
 		jsonString = objectMapper.writeValueAsString(editarEnderecoErro1(enderecos.get(0)));
 
 		this.mockMvc
-				.perform(put("/enderecos").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+				.perform(put("/api/endereco").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
 						.content(jsonString))
 				.andExpect(jsonPath("$.error", equalTo("Ocorreu um erro interno durante a alteração do endereço")))
 				.andExpect(status().isInternalServerError());
@@ -153,7 +153,7 @@ public class TestEnderecoController {
 		jsonString = objectMapper.writeValueAsString(editarEnderecoErro3(enderecos.get(0)));
 
 		this.mockMvc
-				.perform(put("/enderecos").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+				.perform(put("/api/endereco").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
 						.content(jsonString))
 				.andExpect(jsonPath("$.error", equalTo("Ocorreu um erro interno durante a alteração do endereço")))
 				.andExpect(status().isInternalServerError());
@@ -161,7 +161,7 @@ public class TestEnderecoController {
 		jsonString = objectMapper.writeValueAsString(editarEnderecoErro4(enderecos.get(0)));
 
 		this.mockMvc
-				.perform(put("/enderecos").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+				.perform(put("/api/endereco").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
 						.content(jsonString))
 				.andExpect(jsonPath("$.error", equalTo("Ocorreu um erro interno durante a alteração do endereço")))
 				.andExpect(status().isInternalServerError());
@@ -169,7 +169,7 @@ public class TestEnderecoController {
 		jsonString = objectMapper.writeValueAsString(editarEnderecoErro5(enderecos.get(0)));
 
 		this.mockMvc
-				.perform(put("/enderecos").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+				.perform(put("/api/endereco").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
 						.content(jsonString))
 				.andExpect(jsonPath("$.error", equalTo("Ocorreu um erro interno durante a alteração do endereço")))
 				.andExpect(status().isInternalServerError());
@@ -177,7 +177,7 @@ public class TestEnderecoController {
 		jsonString = objectMapper.writeValueAsString(editarEnderecoErroId1(enderecos.get(0)));
 
 		this.mockMvc
-				.perform(put("/enderecos").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+				.perform(put("/api/endereco").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
 						.content(jsonString))
 				.andExpect(jsonPath("$.error", equalTo("O endereço a ser alterado não existe no banco de dados")))
 				.andExpect(status().isNotFound());
@@ -185,7 +185,7 @@ public class TestEnderecoController {
 		jsonString = objectMapper.writeValueAsString(editarEnderecoErroId3(enderecos.get(0)));
 
 		this.mockMvc
-				.perform(put("/enderecos").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+				.perform(put("/api/endereco").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
 						.content(jsonString))
 				.andExpect(jsonPath("$.error", equalTo("O endereço a ser alterado não existe no banco de dados")))
 				.andExpect(status().isNotFound());
@@ -193,7 +193,7 @@ public class TestEnderecoController {
 		jsonString = objectMapper.writeValueAsString(editarEnderecoErroId4(enderecos.get(0)));
 
 		this.mockMvc
-				.perform(put("/enderecos").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+				.perform(put("/api/endereco").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
 						.content(jsonString))
 				.andExpect(jsonPath("$.error", equalTo("O endereço a ser alterado não existe no banco de dados")))
 				.andExpect(status().isNotFound());
@@ -201,7 +201,7 @@ public class TestEnderecoController {
 		jsonString = objectMapper.writeValueAsString(editarEnderecoErroId5(enderecos.get(0)));
 
 		this.mockMvc
-				.perform(put("/enderecos").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+				.perform(put("/api/endereco").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
 						.content(jsonString))
 				.andExpect(jsonPath("$.error", equalTo("O endereço a ser alterado não existe no banco de dados")))
 				.andExpect(status().isNotFound());
@@ -209,7 +209,7 @@ public class TestEnderecoController {
 		jsonString = objectMapper.writeValueAsString(editarEnderecoErroId6(enderecos.get(0)));
 
 		this.mockMvc
-				.perform(put("/enderecos").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+				.perform(put("/api/endereco").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
 						.content(jsonString))
 				.andExpect(jsonPath("$.error", equalTo("O endereço a ser alterado não existe no banco de dados")))
 				.andExpect(status().isNotFound());
@@ -221,7 +221,7 @@ public class TestEnderecoController {
 		final String jsonString = objectMapper.writeValueAsString(criarEndereco("Apartamento"));
 
 		this.mockMvc
-				.perform(post("/enderecos").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+				.perform(post("/api/endereco").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
 						.content(jsonString))
 				.andExpect(jsonPath("$", equalTo("O endereço foi cadastrado com sucesso")))
 				.andExpect(status().isCreated());
@@ -229,11 +229,11 @@ public class TestEnderecoController {
 		List<Endereco> enderecos = repoEndereco.findAll();
 		assertThat(enderecos.get(0), notNullValue());
 
-		this.mockMvc.perform(get("/enderecos/" + enderecos.get(0).getId().toString()))
+		this.mockMvc.perform(get("/api/endereco/" + enderecos.get(0).getId().toString()))
 				.andExpect(jsonPath("$.bairro", equalTo("Zona 6"))).andExpect(jsonPath("$.cidade", equalTo("Maringá")))
 				.andExpect(status().isOk());
 
-		this.mockMvc.perform(get("/enderecos/" + new EnderecoId().toString()))
+		this.mockMvc.perform(get("/api/endereco/" + new EnderecoId().toString()))
 				.andExpect(jsonPath("$.error", equalTo("O endereço procurado não existe no banco de dados")))
 				.andExpect(status().isNotFound());
 	}
@@ -242,12 +242,12 @@ public class TestEnderecoController {
 	public void testBurcarTodos() throws Exception {
 		String jsonString = objectMapper.writeValueAsString(criarEndereco("Apartamento"));
 
-		this.mockMvc.perform(get("/enderecos"))
+		this.mockMvc.perform(get("/api/endereco"))
 				.andExpect(jsonPath("$.error", equalTo("Não existe nenhum endereço cadastrado no banco de dados")))
 				.andExpect(status().isNotFound());
 
 		this.mockMvc
-				.perform(post("/enderecos").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+				.perform(post("/api/endereco").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
 						.content(jsonString))
 				.andExpect(jsonPath("$", equalTo("O endereço foi cadastrado com sucesso")))
 				.andExpect(status().isCreated());
@@ -255,7 +255,7 @@ public class TestEnderecoController {
 		jsonString = objectMapper.writeValueAsString(criarEndereco("Casa"));
 
 		this.mockMvc
-				.perform(post("/enderecos").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+				.perform(post("/api/endereco").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
 						.content(jsonString))
 				.andExpect(jsonPath("$", equalTo("O endereço foi cadastrado com sucesso")))
 				.andExpect(status().isCreated());
@@ -263,7 +263,7 @@ public class TestEnderecoController {
 		List<Endereco> enderecos = repoEndereco.findAll();
 		assertThat(enderecos.get(0), notNullValue());
 
-		this.mockMvc.perform(get("/enderecos")).andExpect(jsonPath("$[0].complemento", equalTo("Apartamento")))
+		this.mockMvc.perform(get("/api/endereco")).andExpect(jsonPath("$[0].complemento", equalTo("Apartamento")))
 				.andExpect(jsonPath("$[1].complemento", equalTo("Casa"))).andExpect(status().isOk());
 	}
 

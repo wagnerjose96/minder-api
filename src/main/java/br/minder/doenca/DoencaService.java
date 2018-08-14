@@ -11,6 +11,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import br.minder.conversor.TermoDeBusca;
 import br.minder.doenca.Doenca;
 import br.minder.doenca.DoencaId;
 import br.minder.doenca.comandos.BuscarDoenca;
@@ -71,12 +73,13 @@ public class DoencaService {
 		return Optional.empty();
 	}
 
-	public Optional<Page<BuscarDoenca>> encontrar(Pageable pageable, UsuarioId id) {
+	public Optional<Page<BuscarDoenca>> encontrar(Pageable pageable, UsuarioId id, String searchTerm) {
 		List<Doenca> doencas = doencaRepo.findAll();
 		List<BuscarDoenca> rsDoencas = new ArrayList<>();
 		if (!doencas.isEmpty()) {
 			for (Doenca doenca : doencas) {
-				if (id.toString().equals(doenca.getIdUsuario().toString())) {
+				if (id.toString().equals(doenca.getIdUsuario().toString())
+						&& TermoDeBusca.searchTerm(doenca.getNomeDoenca(), searchTerm)) {
 					List<BuscarMedicamento> medicamentos = executeQuery(doenca.getIdDoenca().toString(), sql);
 					BuscarDoenca nova = new BuscarDoenca(doenca);
 					nova.setMedicamentos(medicamentos);

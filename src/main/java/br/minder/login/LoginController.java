@@ -23,7 +23,7 @@ public class LoginController {
 	private LoginService service;
 
 	@ApiOperation("Efetue o login de um usuário")
-	@PostMapping("/login")
+	@PostMapping("/api/login")
 	public ResponseEntity<String> loginUsuario(@RequestBody LogarUsuario comando) {
 		String username = comando.getIdentificador();
 		if (username.indexOf('@') > -1 && username.indexOf(".com") > -1 && username.indexOf("@.com") == -1) {
@@ -42,7 +42,7 @@ public class LoginController {
 	}
 
 	@ApiOperation("Efetue o login de um administrador")
-	@PostMapping("/loginAdm")
+	@PostMapping("/api/loginAdm")
 	public ResponseEntity<String> loginAdm(@RequestBody LogarUsuario comando) {
 		if (service.consultarAdm(comando)) {
 			String token = JWTUtil.create(comando.getIdentificador());

@@ -16,6 +16,7 @@ import br.minder.convenio.ConvenioRepository;
 import br.minder.convenio.comandos.BuscarConvenio;
 import br.minder.convenio.comandos.CriarConvenio;
 import br.minder.convenio.comandos.EditarConvenio;
+import br.minder.conversor.TermoDeBusca;
 
 @Service
 @Transactional
@@ -40,12 +41,12 @@ public class ConvenioService {
 		return Optional.empty();
 	}
 
-	public Optional<Page<BuscarConvenio>> encontrar(Pageable pageable) {
+	public Optional<Page<BuscarConvenio>> encontrar(Pageable pageable, String searchTerm) {
 		List<BuscarConvenio> resultados = new ArrayList<>();
 		List<Convenio> convenios = convenioRepo.findAll();
 		if (!convenios.isEmpty()) {
 			for (Convenio convenio : convenios) {
-				if (convenio.getAtivo() == 1) {
+				if (convenio.getAtivo() == 1 && TermoDeBusca.searchTerm(convenio.getNome(), searchTerm)) {
 					BuscarConvenio nova = new BuscarConvenio(convenio);
 					resultados.add(nova);
 				}

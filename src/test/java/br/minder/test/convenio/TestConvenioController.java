@@ -87,20 +87,20 @@ public class TestConvenioController {
 		final String jsonString = objectMapper.writeValueAsString(criarConvenio("Unimed"));
 
 		this.mockMvc
-				.perform(post("/convenios").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+				.perform(post("/api/convenio").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
 						.header("token", logarAdm("admin", "1234")).content(jsonString))
 				.andExpect(jsonPath("$", equalTo("O convênio foi cadastrado com sucesso")))
 				.andExpect(status().isCreated());
 
 		this.mockMvc
-				.perform(post("/convenios").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+				.perform(post("/api/convenio").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
 						.header("token", logarAdm("admin", "1234") + "TokenEror").content(jsonString))
 				.andExpect(jsonPath("$.error", equalTo("Acesso negado"))).andExpect(status().isForbidden());
 
 		String error = objectMapper.writeValueAsString(new CriarConvenio());
 
 		this.mockMvc
-				.perform(post("/convenios").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+				.perform(post("/api/convenio").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
 						.header("token", logarAdm("admin", "1234")).content(error))
 				.andExpect(jsonPath("$.error", equalTo("O convênio não foi salvo devido a um erro interno")))
 				.andExpect(status().isInternalServerError());
@@ -116,7 +116,7 @@ public class TestConvenioController {
 		String jsonString = objectMapper.writeValueAsString(criarConvenio("Unimed"));
 
 		this.mockMvc
-				.perform(post("/convenios").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+				.perform(post("/api/convenio").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
 						.header("token", logarAdm("admin", "1234")).content(jsonString))
 				.andExpect(jsonPath("$", equalTo("O convênio foi cadastrado com sucesso")))
 				.andExpect(status().isCreated());
@@ -127,19 +127,19 @@ public class TestConvenioController {
 		jsonString = objectMapper.writeValueAsString(editarConvenio(convenios.get(0)));
 
 		this.mockMvc
-				.perform(put("/convenios").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+				.perform(put("/api/convenio").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
 						.header("token", logarAdm("admin", "1234")).content(jsonString))
 				.andExpect(jsonPath("$", equalTo("O convênio foi alterado com sucesso"))).andExpect(status().isOk());
 
 		this.mockMvc
-				.perform(put("/convenios").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+				.perform(put("/api/convenio").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
 						.header("token", logarAdm("admin", "1234") + "TokenError").content(jsonString))
 				.andExpect(jsonPath("$.error", equalTo("Acesso negado"))).andExpect(status().isForbidden());
 
 		String error = objectMapper.writeValueAsString(editarConvenioError());
 
 		this.mockMvc
-				.perform(put("/convenios").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+				.perform(put("/api/convenio").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
 						.header("token", logarAdm("admin", "1234")).content(error))
 				.andExpect(jsonPath("$.error", equalTo("O convênio a ser alterado não existe no banco de dados")))
 				.andExpect(status().isNotFound());
@@ -147,7 +147,7 @@ public class TestConvenioController {
 		error = objectMapper.writeValueAsString(editarConvenioError(convenios.get(0).getId()));
 
 		this.mockMvc
-				.perform(put("/convenios").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+				.perform(put("/api/convenio").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
 						.header("token", logarAdm("admin", "1234")).content(error))
 				.andExpect(jsonPath("$.error", equalTo("Ocorreu um erro interno durante a alteração do convênio")))
 				.andExpect(status().isInternalServerError());
@@ -160,14 +160,14 @@ public class TestConvenioController {
 		List<UsuarioAdm> usuarios = repoAdm.findAll();
 		assertThat(usuarios.get(0), notNullValue());
 
-		this.mockMvc.perform(get("/convenios/" + new ConvenioId().toString()))
+		this.mockMvc.perform(get("/api/convenio/" + new ConvenioId().toString()))
 				.andExpect(jsonPath("$.error", equalTo("O convênio procurado não existe no banco de dados")))
 				.andExpect(status().isNotFound());
 
 		String jsonString = objectMapper.writeValueAsString(criarConvenio("Unimed"));
 
 		this.mockMvc
-				.perform(post("/convenios").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+				.perform(post("/api/convenio").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
 						.header("token", logarAdm("admin", "1234")).content(jsonString))
 				.andExpect(jsonPath("$", equalTo("O convênio foi cadastrado com sucesso")))
 				.andExpect(status().isCreated());
@@ -175,7 +175,7 @@ public class TestConvenioController {
 		List<Convenio> convenios = repoConvenio.findAll();
 		assertThat(convenios.get(0), notNullValue());
 
-		this.mockMvc.perform(get("/convenios/" + convenios.get(0).getId().toString()))
+		this.mockMvc.perform(get("/api/convenio/" + convenios.get(0).getId().toString()))
 				.andExpect(jsonPath("$.nome", equalTo("Unimed"))).andExpect(status().isOk());
 	}
 
@@ -186,14 +186,14 @@ public class TestConvenioController {
 		List<UsuarioAdm> usuarios = repoAdm.findAll();
 		assertThat(usuarios.get(0), notNullValue());
 
-		this.mockMvc.perform(get("/convenios"))
+		this.mockMvc.perform(get("/api/convenio"))
 				.andExpect(jsonPath("$.error", equalTo("Não existe nenhum convênio cadastrado no banco de dados")))
 				.andExpect(status().isNotFound());
 
 		String jsonString = objectMapper.writeValueAsString(criarConvenio("Unimed"));
 
 		this.mockMvc
-				.perform(post("/convenios").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+				.perform(post("/api/convenio").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
 						.header("token", logarAdm("admin", "1234")).content(jsonString))
 				.andExpect(jsonPath("$", equalTo("O convênio foi cadastrado com sucesso")))
 				.andExpect(status().isCreated());
@@ -201,7 +201,7 @@ public class TestConvenioController {
 		jsonString = objectMapper.writeValueAsString(criarConvenio("Santa Casa"));
 
 		this.mockMvc
-				.perform(post("/convenios").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+				.perform(post("/api/convenio").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
 						.header("token", logarAdm("admin", "1234")).content(jsonString))
 				.andExpect(jsonPath("$", equalTo("O convênio foi cadastrado com sucesso")))
 				.andExpect(status().isCreated());
@@ -209,9 +209,9 @@ public class TestConvenioController {
 		List<Convenio> convenios = repoConvenio.findAll();
 		assertThat(convenios.get(0), notNullValue());
 
-		this.mockMvc.perform(get("/convenios")).andExpect(status().isOk());
+		this.mockMvc.perform(get("/api/convenio")).andExpect(status().isOk());
 		
-		this.mockMvc.perform(get("/convenios").param("searchTerm", "Santa Casa")).andExpect(status().isOk());
+		this.mockMvc.perform(get("/api/convenio").param("searchTerm", "Santa Casa")).andExpect(status().isOk());
 
 	}
 
@@ -225,7 +225,7 @@ public class TestConvenioController {
 		String jsonString = objectMapper.writeValueAsString(criarConvenio("Unimed"));
 
 		this.mockMvc
-				.perform(post("/convenios").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+				.perform(post("/api/convenio").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
 						.header("token", logarAdm("admin", "1234")).content(jsonString))
 				.andExpect(jsonPath("$", equalTo("O convênio foi cadastrado com sucesso")))
 				.andExpect(status().isCreated());
@@ -234,19 +234,19 @@ public class TestConvenioController {
 		assertThat(convenios.get(0), notNullValue());
 
 		this.mockMvc
-				.perform(delete("/convenios/" + convenios.get(0).getId().toString()).header("token",
+				.perform(delete("/api/convenio/" + convenios.get(0).getId().toString()).header("token",
 						logarAdm("admin", "1234")))
 				.andExpect(jsonPath("$",
 						equalTo("Convênio ===> " + convenios.get(0).getId().toString() + ": deletado com sucesso")))
 				.andExpect(status().isOk());
 
 		this.mockMvc
-				.perform(delete("/convenios/" + new ConvenioId().toString()).header("token", logarAdm("admin", "1234")))
+				.perform(delete("/api/convenio/" + new ConvenioId().toString()).header("token", logarAdm("admin", "1234")))
 				.andExpect(jsonPath("$.error", equalTo("O convênio a deletar não existe no banco de dados")))
 				.andExpect(status().isNotFound());
 
 		this.mockMvc
-				.perform(delete("/convenios/" + convenios.get(0).getId().toString()).header("token",
+				.perform(delete("/api/convenio/" + convenios.get(0).getId().toString()).header("token",
 						logarAdm("admin", "1234") + "TokenError"))
 				.andExpect(jsonPath("$.error", equalTo("Acesso negado"))).andExpect(status().isForbidden());
 	}

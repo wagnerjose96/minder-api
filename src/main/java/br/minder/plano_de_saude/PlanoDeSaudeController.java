@@ -20,7 +20,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
-
 import br.minder.plano_de_saude.PlanoDeSaudeId;
 import br.minder.plano_de_saude.PlanoDeSaudeService;
 import br.minder.plano_de_saude.comandos.BuscarPlanoDeSaude;
@@ -32,7 +31,7 @@ import io.swagger.annotations.ApiOperation;
 
 @Api("Basic Plano De Saúde Controller")
 @Controller
-@RequestMapping("/planos")
+@RequestMapping("/api/plano")
 @CrossOrigin
 public class PlanoDeSaudeController {
 	private static final String ACESSONEGADO = "Acesso negado";

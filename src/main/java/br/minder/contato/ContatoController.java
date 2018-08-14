@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
@@ -29,7 +30,7 @@ import io.swagger.annotations.ApiOperation;
 
 @Api("Basic Contato Controller")
 @RestController
-@RequestMapping("/contatos")
+@RequestMapping("/api/contato")
 @CrossOrigin
 public class ContatoController {
 	private static final String ACESSONEGADO = "Acesso negado";
@@ -42,10 +43,12 @@ public class ContatoController {
 
 	@ApiOperation("Busque todos os contatos")
 	@GetMapping
-	public ResponseEntity<Page<BuscarContato>> getContatos(Pageable p, @RequestHeader String token) throws AccessDeniedException {
+	public ResponseEntity<Page<BuscarContato>> getContatos(Pageable p, @RequestHeader String token,
+			@RequestParam(name = "searchTerm", defaultValue = "", required = false) String searchTerm)
+			throws AccessDeniedException {
 		if (autentica.autenticaRequisicao(token)) {
-			Optional<Page<BuscarContato>> optionalContatos = contatoService
-					.encontrar(p, autentica.idUser(token).toString());
+			Optional<Page<BuscarContato>> optionalContatos = contatoService.encontrar(p,
+					autentica.idUser(token).toString(), searchTerm);
 			if (optionalContatos.isPresent()) {
 				return ResponseEntity.ok(optionalContatos.get());
 			}

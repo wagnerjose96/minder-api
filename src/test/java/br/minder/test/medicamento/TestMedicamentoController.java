@@ -79,7 +79,7 @@ public class TestMedicamentoController {
 		String jsonString = objectMapper.writeValueAsString(criarMedicamento("Medicamento de Teste"));
 
 		this.mockMvc
-				.perform(post("/medicamentos").header("token", logarAdm("admin", "1234"))
+				.perform(post("/api/medicamento").header("token", logarAdm("admin", "1234"))
 						.accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON).content(jsonString))
 				.andExpect(jsonPath("$", equalTo("O medicamento foi cadastrado com sucesso")))
 				.andExpect(status().isCreated());
@@ -88,13 +88,13 @@ public class TestMedicamentoController {
 
 		this.mockMvc
 				.perform(
-						post("/medicamentos").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+						post("/api/medicamento").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
 								.header("token", logarAdm("admin", "1234") + "erroToken").content(jsonString))
 				.andExpect(jsonPath("$.error", equalTo("Acesso negado"))).andExpect(status().isForbidden());
 
 		this.mockMvc
 				.perform(
-						post("/medicamentos").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+						post("/api/medicamento").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
 								.header("token", logarAdm("admin", "1234")).content(jsonString))
 				.andExpect(jsonPath("$.error", equalTo("O medicamento não foi salvo devido a um erro interno")))
 				.andExpect(status().isInternalServerError());
@@ -102,7 +102,7 @@ public class TestMedicamentoController {
 		jsonString = objectMapper.writeValueAsString(criarMedicamentoErro1("Medicamento de Teste"));
 		this.mockMvc
 				.perform(
-						post("/medicamentos").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+						post("/api/medicamento").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
 								.header("token", logarAdm("admin", "1234")).content(jsonString))
 				.andExpect(jsonPath("$.error", equalTo("O medicamento não foi salvo devido a um erro interno")))
 				.andExpect(status().isInternalServerError());
@@ -110,7 +110,7 @@ public class TestMedicamentoController {
 		jsonString = objectMapper.writeValueAsString(criarMedicamentoErro2());
 		this.mockMvc
 				.perform(
-						post("/medicamentos").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+						post("/api/medicamento").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
 								.header("token", logarAdm("admin", "1234")).content(jsonString))
 				.andExpect(jsonPath("$.error", equalTo("O medicamento não foi salvo devido a um erro interno")))
 				.andExpect(status().isInternalServerError());
@@ -126,7 +126,7 @@ public class TestMedicamentoController {
 		String jsonString = objectMapper.writeValueAsString(criarMedicamento("Medicamento de Teste"));
 
 		this.mockMvc
-				.perform(post("/medicamentos").header("token", logarAdm("admin", "1234"))
+				.perform(post("/api/medicamento").header("token", logarAdm("admin", "1234"))
 						.accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON).content(jsonString))
 				.andExpect(jsonPath("$", equalTo("O medicamento foi cadastrado com sucesso")))
 				.andExpect(status().isCreated());
@@ -137,19 +137,19 @@ public class TestMedicamentoController {
 		jsonString = objectMapper.writeValueAsString(editarMedicamento(medicamentos.get(0)));
 
 		this.mockMvc
-				.perform(put("/medicamentos").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+				.perform(put("/api/medicamento").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
 						.header("token", logarAdm("admin", "1234")).content(jsonString))
 				.andExpect(jsonPath("$", equalTo("O medicamento foi alterado com sucesso"))).andExpect(status().isOk());
 
 		this.mockMvc
-				.perform(put("/medicamentos").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+				.perform(put("/api/medicamento").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
 						.header("token", logarAdm("admin", "1234") + "erroToken").content(jsonString))
 				.andExpect(jsonPath("$.error", equalTo("Acesso negado"))).andExpect(status().isForbidden());
 
 		jsonString = objectMapper.writeValueAsString(editarMedicamentoErro());
 
 		this.mockMvc
-				.perform(put("/medicamentos").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+				.perform(put("/api/medicamento").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
 						.header("token", logarAdm("admin", "1234")).content(jsonString))
 				.andExpect(jsonPath("$.error", equalTo("O medicamento a ser alterado não existe no banco de dados")))
 				.andExpect(status().isNotFound());
@@ -157,42 +157,42 @@ public class TestMedicamentoController {
 		jsonString = objectMapper.writeValueAsString(editarMedicamentoErroId());
 
 		this.mockMvc
-				.perform(put("/medicamentos").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+				.perform(put("/api/medicamento").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
 						.header("token", logarAdm("admin", "1234")).content(jsonString))
 				.andExpect(jsonPath("$.error", equalTo("O medicamento a ser alterado não existe no banco de dados")))
 				.andExpect(status().isNotFound());
 
 		jsonString = objectMapper.writeValueAsString(editarMedicamentoErro1(medicamentos.get(0)));
 		this.mockMvc
-				.perform(put("/medicamentos").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+				.perform(put("/api/medicamento").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
 						.header("token", logarAdm("admin", "1234")).content(jsonString))
 				.andExpect(jsonPath("$.error", equalTo("Ocorreu um erro interno durante a alteração do medicamento")))
 				.andExpect(status().isInternalServerError());
 
 		jsonString = objectMapper.writeValueAsString(editarMedicamentoErro2(medicamentos.get(0)));
 		this.mockMvc
-				.perform(put("/medicamentos").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+				.perform(put("/api/medicamento").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
 						.header("token", logarAdm("admin", "1234")).content(jsonString))
 				.andExpect(jsonPath("$.error", equalTo("Ocorreu um erro interno durante a alteração do medicamento")))
 				.andExpect(status().isInternalServerError());
 
 		jsonString = objectMapper.writeValueAsString(editarMedicamentoErro3(medicamentos.get(0)));
 		this.mockMvc
-				.perform(put("/medicamentos").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+				.perform(put("/api/medicamento").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
 						.header("token", logarAdm("admin", "1234")).content(jsonString))
 				.andExpect(jsonPath("$.error", equalTo("Ocorreu um erro interno durante a alteração do medicamento")))
 				.andExpect(status().isInternalServerError());
 
 		jsonString = objectMapper.writeValueAsString(editarMedicamentoErroId1());
 		this.mockMvc
-				.perform(put("/medicamentos").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+				.perform(put("/api/medicamento").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
 						.header("token", logarAdm("admin", "1234")).content(jsonString))
 				.andExpect(jsonPath("$.error", equalTo("O medicamento a ser alterado não existe no banco de dados")))
 				.andExpect(status().isNotFound());
 
 		jsonString = objectMapper.writeValueAsString(editarMedicamentoErroId2());
 		this.mockMvc
-				.perform(put("/medicamentos").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+				.perform(put("/api/medicamento").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
 						.header("token", logarAdm("admin", "1234")).content(jsonString))
 				.andExpect(jsonPath("$.error", equalTo("O medicamento a ser alterado não existe no banco de dados")))
 				.andExpect(status().isNotFound());
@@ -205,14 +205,14 @@ public class TestMedicamentoController {
 		List<UsuarioAdm> adm = repoAdm.findAll();
 		assertThat(adm.get(0), notNullValue());
 
-		this.mockMvc.perform(get("/medicamentos"))
+		this.mockMvc.perform(get("/api/medicamento"))
 				.andExpect(jsonPath("$.error", equalTo("Não existe nenhum medicamento cadastrado no banco de dados")))
 				.andExpect(status().isNotFound());
 
 		String jsonString = objectMapper.writeValueAsString(criarMedicamento("Medicamento de Teste"));
 
 		this.mockMvc
-				.perform(post("/medicamentos").header("token", logarAdm("admin", "1234"))
+				.perform(post("/api/medicamento").header("token", logarAdm("admin", "1234"))
 						.accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON).content(jsonString))
 				.andExpect(jsonPath("$", equalTo("O medicamento foi cadastrado com sucesso")))
 				.andExpect(status().isCreated());
@@ -220,7 +220,7 @@ public class TestMedicamentoController {
 		jsonString = objectMapper.writeValueAsString(criarMedicamento("Medicamento de Teste 2"));
 
 		this.mockMvc
-				.perform(post("/medicamentos").header("token", logarAdm("admin", "1234"))
+				.perform(post("/api/medicamento").header("token", logarAdm("admin", "1234"))
 						.accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON).content(jsonString))
 				.andExpect(jsonPath("$", equalTo("O medicamento foi cadastrado com sucesso")))
 				.andExpect(status().isCreated());
@@ -229,25 +229,27 @@ public class TestMedicamentoController {
 		assertThat(medicamentos.get(0), notNullValue());
 		assertThat(medicamentos.get(1), notNullValue());
 
-		this.mockMvc.perform(get("/medicamentos")).andExpect(status().isOk());
+		this.mockMvc.perform(get("/api/medicamento")).andExpect(status().isOk());
 
 		this.mockMvc
-				.perform(delete("/medicamentos/" + medicamentos.get(0).getIdMedicamento().toString()).header("token",
+				.perform(delete("/api/medicamento/" + medicamentos.get(0).getIdMedicamento().toString()).header("token",
 						logarAdm("admin", "1234")))
 				.andExpect(jsonPath("$", equalTo("Medicamento ===> " + medicamentos.get(0).getIdMedicamento().toString()
 						+ ": deletado com sucesso")))
 				.andExpect(status().isOk());
 
-		this.mockMvc.perform(get("/medicamentos")).andExpect(status().isOk());
+		this.mockMvc.perform(get("/api/medicamento")).andExpect(status().isOk());
 
 		this.mockMvc
-				.perform(delete("/medicamentos/" + medicamentos.get(1).getIdMedicamento().toString()).header("token",
+				.perform(delete("/api/medicamento/" + medicamentos.get(1).getIdMedicamento().toString()).header("token",
 						logarAdm("admin", "1234")))
 				.andExpect(jsonPath("$", equalTo("Medicamento ===> " + medicamentos.get(1).getIdMedicamento().toString()
 						+ ": deletado com sucesso")))
 				.andExpect(status().isOk());
 
-		this.mockMvc.perform(get("/medicamentos")).andExpect(status().isOk());
+		this.mockMvc.perform(get("/api/medicamento")).andExpect(status().isOk());
+
+		this.mockMvc.perform(get("/api/medicamento").param("searchTerm", "Teste 2")).andExpect(status().isOk());
 	}
 
 	@Test
@@ -259,7 +261,7 @@ public class TestMedicamentoController {
 		String jsonString = objectMapper.writeValueAsString(criarMedicamento("Medicamento de Teste"));
 
 		this.mockMvc
-				.perform(post("/medicamentos").header("token", logarAdm("admin", "1234"))
+				.perform(post("/api/medicamento").header("token", logarAdm("admin", "1234"))
 						.accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON).content(jsonString))
 				.andExpect(jsonPath("$", equalTo("O medicamento foi cadastrado com sucesso")))
 				.andExpect(status().isCreated());
@@ -267,21 +269,21 @@ public class TestMedicamentoController {
 		List<Medicamento> medicamentos = repo.findAll();
 		assertThat(medicamentos.get(0), notNullValue());
 
-		this.mockMvc.perform(get("/medicamentos/" + medicamentos.get(0).getIdMedicamento().toString()))
+		this.mockMvc.perform(get("/api/medicamento/" + medicamentos.get(0).getIdMedicamento().toString()))
 				.andExpect(jsonPath("$.nomeMedicamento", equalTo("Medicamento de Teste"))).andExpect(status().isOk());
 
-		this.mockMvc.perform(get("/medicamentos/" + new MedicamentoId().toString()))
+		this.mockMvc.perform(get("/api/medicamento/" + new MedicamentoId().toString()))
 				.andExpect(jsonPath("$.error", equalTo("O medicamento procurado não existe no banco de dados")))
 				.andExpect(status().isNotFound());
 
 		this.mockMvc
-				.perform(delete("/medicamentos/" + medicamentos.get(0).getIdMedicamento().toString()).header("token",
+				.perform(delete("/api/medicamento/" + medicamentos.get(0).getIdMedicamento().toString()).header("token",
 						logarAdm("admin", "1234")))
 				.andExpect(jsonPath("$", equalTo("Medicamento ===> " + medicamentos.get(0).getIdMedicamento().toString()
 						+ ": deletado com sucesso")))
 				.andExpect(status().isOk());
 
-		this.mockMvc.perform(get("/medicamentos/" + medicamentos.get(0).getIdMedicamento().toString()))
+		this.mockMvc.perform(get("/api/medicamento/" + medicamentos.get(0).getIdMedicamento().toString()))
 				.andExpect(jsonPath("$.error", equalTo("O medicamento procurado não existe no banco de dados")))
 				.andExpect(status().isNotFound());
 	}
@@ -295,7 +297,7 @@ public class TestMedicamentoController {
 		String jsonString = objectMapper.writeValueAsString(criarMedicamento("Medicamento de Teste"));
 
 		this.mockMvc
-				.perform(post("/medicamentos").header("token", logarAdm("admin", "1234"))
+				.perform(post("/api/medicamento").header("token", logarAdm("admin", "1234"))
 						.accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON).content(jsonString))
 				.andExpect(jsonPath("$", equalTo("O medicamento foi cadastrado com sucesso")))
 				.andExpect(status().isCreated());
@@ -304,20 +306,20 @@ public class TestMedicamentoController {
 		assertThat(medicamentos.get(0), notNullValue());
 
 		this.mockMvc
-				.perform(delete("/medicamentos/" + medicamentos.get(0).getIdMedicamento().toString()).header("token",
+				.perform(delete("/api/medicamento/" + medicamentos.get(0).getIdMedicamento().toString()).header("token",
 						logarAdm("admin", "1234")))
 				.andExpect(jsonPath("$", equalTo("Medicamento ===> " + medicamentos.get(0).getIdMedicamento().toString()
 						+ ": deletado com sucesso")))
 				.andExpect(status().isOk());
 
 		this.mockMvc
-				.perform(delete("/medicamentos/" + new MedicamentoId().toString()).header("token",
+				.perform(delete("/api/medicamento/" + new MedicamentoId().toString()).header("token",
 						logarAdm("admin", "1234")))
 				.andExpect(jsonPath("$.error", equalTo("O medicamento a deletar não existe no banco de dados")))
 				.andExpect(status().isNotFound());
 
 		this.mockMvc
-				.perform(delete("/medicamentos/" + medicamentos.get(0).getIdMedicamento().toString()).header("token",
+				.perform(delete("/api/medicamento/" + medicamentos.get(0).getIdMedicamento().toString()).header("token",
 						logarAdm("admin", "1234") + "erroToken"))
 				.andExpect(jsonPath("$.error", equalTo("Acesso negado"))).andExpect(status().isForbidden());
 

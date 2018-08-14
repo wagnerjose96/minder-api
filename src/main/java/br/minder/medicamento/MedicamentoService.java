@@ -11,6 +11,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import br.minder.conversor.TermoDeBusca;
 import br.minder.medicamento.comandos.BuscarMedicamento;
 import br.minder.medicamento.comandos.CriarMedicamento;
 import br.minder.medicamento.comandos.EditarMedicamento;
@@ -38,12 +39,13 @@ public class MedicamentoService {
 		return Optional.empty();
 	}
 
-	public Optional<Page<BuscarMedicamento>> encontrar(Pageable pageable) {
+	public Optional<Page<BuscarMedicamento>> encontrar(Pageable pageable, String searchTerm) {
 		List<BuscarMedicamento> resultados = new ArrayList<>();
 		List<Medicamento> medicamentos = medicamentoRepo.findAll();
 		if (!medicamentos.isEmpty()) {
 			for (Medicamento medicamento : medicamentos) {
-				if (medicamento.getAtivo() == 1) {
+				if (medicamento.getAtivo() == 1
+						&& TermoDeBusca.searchTerm(medicamento.getNomeMedicamento(), searchTerm)) {
 					BuscarMedicamento med = new BuscarMedicamento(medicamento);
 					resultados.add(med);
 				}

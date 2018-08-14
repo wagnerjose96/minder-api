@@ -53,7 +53,7 @@ public class TestExceptionController {
 	@Test
 	public void testBuscarTodos() throws Exception {
 
-		this.mockMvc.perform(get("/exceptions"))
+		this.mockMvc.perform(get("/api/exception"))
 				.andExpect(jsonPath("$.error", equalTo("Não existe nenhuma exceção cadastrada no banco de dados")))
 				.andExpect(status().isNotFound());
 
@@ -64,7 +64,7 @@ public class TestExceptionController {
 		assertThat(erros.get(0), notNullValue());
 		assertThat(erros.get(1), notNullValue());
 
-		this.mockMvc.perform(get("/exceptions"))
+		this.mockMvc.perform(get("/api/exception"))
 				.andExpect(jsonPath("$[0].idErrorDetail.value", equalTo(erros.get(0).getIdErrorDetail().toString())))
 				.andExpect(jsonPath("$[1].idErrorDetail.value", equalTo(erros.get(1).getIdErrorDetail().toString())))
 				.andExpect(status().isOk());
@@ -73,7 +73,7 @@ public class TestExceptionController {
 	@Test
 	public void testBuscarPorId() throws Exception {
 
-		this.mockMvc.perform(get("/exceptions/" + new ErrorDetailId()))
+		this.mockMvc.perform(get("/api/exception/" + new ErrorDetailId()))
 				.andExpect(jsonPath("$.error", equalTo("A Exceção buscada não existe no banco de dados")))
 				.andExpect(status().isNotFound());
 
@@ -82,7 +82,7 @@ public class TestExceptionController {
 		List<ErrorDetail> erros = repo.findAll();
 		assertThat(erros.get(0), notNullValue());
 
-		this.mockMvc.perform(get("/exceptions/" + erros.get(0).getIdErrorDetail().toString()))
+		this.mockMvc.perform(get("/api/exception/" + erros.get(0).getIdErrorDetail().toString()))
 				.andExpect(jsonPath("$.idErrorDetail.value", equalTo(erros.get(0).getIdErrorDetail().toString())))
 				.andExpect(status().isOk());
 

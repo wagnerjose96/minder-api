@@ -15,6 +15,7 @@ import br.minder.alarme.AlarmeId;
 import br.minder.alarme.comandos.BuscarAlarme;
 import br.minder.alarme.comandos.CriarAlarme;
 import br.minder.alarme.comandos.EditarAlarme;
+import br.minder.conversor.TermoDeBusca;
 import br.minder.medicamento.Medicamento;
 import br.minder.medicamento.MedicamentoRepository;
 import br.minder.medicamento.comandos.BuscarMedicamento;
@@ -51,12 +52,13 @@ public class AlarmeService {
 		return Optional.empty();
 	}
 
-	public Optional<Page<BuscarAlarme>> encontrar(Pageable pageable, UsuarioId id) {
+	public Optional<Page<BuscarAlarme>> encontrar(Pageable pageable, UsuarioId id, String searchTerm) {
 		List<BuscarAlarme> resultados = new ArrayList<>();
 		List<Alarme> alarmes = repo.findAll();
 		if (!alarmes.isEmpty()) {
 			for (Alarme alarme : alarmes) {
-				if (alarme.getIdUsuario().toString().equals(id.toString())) {
+				if (alarme.getIdUsuario().toString().equals(id.toString())
+						&& TermoDeBusca.searchTerm(alarme.getDescricao(), searchTerm)) {
 					BuscarAlarme nova = new BuscarAlarme(alarme);
 					Optional<Medicamento> medicamento = medRepo.findById(alarme.getIdMedicamento());
 					if (medicamento.isPresent())
@@ -65,7 +67,7 @@ public class AlarmeService {
 				}
 			}
 			Page<BuscarAlarme> page = new PageImpl<>(resultados,
-					 PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), pageable.getSort()),
+					PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), pageable.getSort()),
 					resultados.size());
 			return Optional.of(page);
 		}

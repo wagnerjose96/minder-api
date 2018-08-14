@@ -19,6 +19,7 @@ import br.minder.contato.comandos.EditarContato;
 import br.minder.contato.contato_emergencia.ContatoEmergencia;
 import br.minder.contato.contato_emergencia.ContatoEmergenciaId;
 import br.minder.contato.contato_emergencia.ContatoEmergenciaRepository;
+import br.minder.conversor.TermoDeBusca;
 import br.minder.emergencia.EmergenciaId;
 import br.minder.emergencia.comandos.BuscarEmergencia;
 import br.minder.telefone.TelefoneId;
@@ -79,18 +80,20 @@ public class ContatoService {
 		return Optional.empty();
 	}
 
-	public Optional<Page<BuscarContato>> encontrar(Pageable pageable, String usuarioId) {
+	public Optional<Page<BuscarContato>> encontrar(Pageable pageable, String usuarioId, String searchTerm) {
 		List<Contato> contatos = repo.findAll(usuarioId);
 		if (contatos.isEmpty()) {
 			return Optional.empty();
 		}
 		List<BuscarContato> resultados = new ArrayList<>();
 		for (Contato contato : contatos) {
-			BuscarContato nova = new BuscarContato(contato);
-			Optional<BuscarTelefone> telefone = telefoneService.encontrar(contato.getIdTelefone());
-			if (telefone.isPresent()) {
-				nova.setTelefone(telefone.get());
-				resultados.add(nova);
+			if (TermoDeBusca.searchTerm(contato.getNome(), searchTerm)) {
+				BuscarContato nova = new BuscarContato(contato);
+				Optional<BuscarTelefone> telefone = telefoneService.encontrar(contato.getIdTelefone());
+				if (telefone.isPresent()) {
+					nova.setTelefone(telefone.get());
+					resultados.add(nova);
+				}
 			}
 		}
 		Page<BuscarContato> page = new PageImpl<>(resultados,

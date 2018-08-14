@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import br.minder.alergia.comandos.BuscarAlergia;
@@ -27,7 +28,7 @@ import io.swagger.annotations.ApiOperation;
 
 @Api("Basic Alergia Controller")
 @RestController
-@RequestMapping("/alergias")
+@RequestMapping("/api/alergia")
 @CrossOrigin
 public class AlergiaController {
 	private static final String ACESSONEGADO = "Acesso negado";
@@ -40,9 +41,11 @@ public class AlergiaController {
 
 	@ApiOperation("Busque todas as alergias")
 	@GetMapping
-	public ResponseEntity<Page<BuscarAlergia>> getAlergias(Pageable p, @RequestHeader String token) throws AccessDeniedException {
+	public ResponseEntity<Page<BuscarAlergia>> getAlergias(Pageable p, @RequestHeader String token,
+			@RequestParam(name = "searchTerm", defaultValue = "", required = false) String searchTerm)
+			throws AccessDeniedException {
 		if (autentica.autenticaRequisicao(token)) {
-			Optional<Page<BuscarAlergia>> optionalAlergias = alergiaService.encontrar(p, autentica.idUser(token));
+			Optional<Page<BuscarAlergia>> optionalAlergias = alergiaService.encontrar(p, autentica.idUser(token), searchTerm);
 			if (optionalAlergias.isPresent()) {
 				return ResponseEntity.ok(optionalAlergias.get());
 			}

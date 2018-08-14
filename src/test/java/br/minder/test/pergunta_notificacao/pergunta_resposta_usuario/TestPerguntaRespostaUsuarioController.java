@@ -141,12 +141,12 @@ public class TestPerguntaRespostaUsuarioController {
 				criarPerguntaRespostaUsuario(pergunta.get(0).getIdPergunta(), resposta.get(0).getIdResposta()));
 
 		this.mockMvc
-				.perform(post("/perguntaNotificacao").header("token", logar("wagnerju", "1234"))
+				.perform(post("/api/perguntaNotificacao").header("token", logar("wagnerju", "1234"))
 						.accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON).content(jsonString))
 				.andExpect(jsonPath("$", equalTo("A  pergunta de notificação foi respondida com sucesso")))
 				.andExpect(status().isCreated());
 
-		this.mockMvc.perform(post("/perguntaNotificacao").accept(MediaType.APPLICATION_JSON)
+		this.mockMvc.perform(post("/api/perguntaNotificacao").accept(MediaType.APPLICATION_JSON)
 				.contentType(MediaType.APPLICATION_JSON).header("token", logarAdm("admin", "1234")).content(jsonString))
 				.andExpect(jsonPath("$.error", equalTo("Acesso negado"))).andExpect(status().isForbidden());
 
@@ -154,7 +154,7 @@ public class TestPerguntaRespostaUsuarioController {
 				criarPerguntaRespostaUsuarioErro1(pergunta.get(0).getIdPergunta(), resposta.get(0).getIdResposta()));
 
 		this.mockMvc
-				.perform(post("/perguntaNotificacao").header("token", logar("wagnerju", "1234"))
+				.perform(post("/api/perguntaNotificacao").header("token", logar("wagnerju", "1234"))
 						.accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON).content(jsonString))
 				.andExpect(jsonPath("$.error",
 						equalTo("A pergunta de notificação não foi respondida devido a um erro interno")))
@@ -164,7 +164,7 @@ public class TestPerguntaRespostaUsuarioController {
 				criarPerguntaRespostaUsuarioErro2(pergunta.get(0).getIdPergunta(), resposta.get(0).getIdResposta()));
 
 		this.mockMvc
-				.perform(post("/perguntaNotificacao").header("token", logar("wagnerju", "1234"))
+				.perform(post("/api/perguntaNotificacao").header("token", logar("wagnerju", "1234"))
 						.accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON).content(jsonString))
 				.andExpect(jsonPath("$.error",
 						equalTo("A pergunta de notificação não foi respondida devido a um erro interno")))
@@ -174,7 +174,7 @@ public class TestPerguntaRespostaUsuarioController {
 				criarPerguntaRespostaUsuarioErro3(pergunta.get(0).getIdPergunta(), resposta.get(0).getIdResposta()));
 
 		this.mockMvc
-				.perform(post("/perguntaNotificacao").header("token", logar("wagnerju", "1234"))
+				.perform(post("/api/perguntaNotificacao").header("token", logar("wagnerju", "1234"))
 						.accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON).content(jsonString))
 				.andExpect(jsonPath("$.error",
 						equalTo("A pergunta de notificação não foi respondida devido a um erro interno")))
@@ -194,13 +194,13 @@ public class TestPerguntaRespostaUsuarioController {
 		List<UsuarioAdm> adm = repoAdm.findAll();
 		assertThat(adm.get(0), notNullValue());
 
-		this.mockMvc.perform(get("/perguntaNotificacao").header("token", logar("wagnerju", "1234")))
+		this.mockMvc.perform(get("/api/perguntaNotificacao").header("token", logar("wagnerju", "1234")))
 				.andExpect(jsonPath("$.error",
 						equalTo("Não existe nenhuma pergunta de notificação respondida no banco de dados")))
 				.andExpect(status().isNotFound());
 
 		this.mockMvc
-				.perform(get("/perguntaNotificacao").accept(MediaType.APPLICATION_JSON)
+				.perform(get("/api/perguntaNotificacao").accept(MediaType.APPLICATION_JSON)
 						.contentType(MediaType.APPLICATION_JSON).header("token", logarAdm("admin", "1234")))
 				.andExpect(jsonPath("$.error", equalTo("Acesso negado"))).andExpect(status().isForbidden());
 
@@ -216,7 +216,7 @@ public class TestPerguntaRespostaUsuarioController {
 				criarPerguntaRespostaUsuario(pergunta.get(0).getIdPergunta(), resposta.get(0).getIdResposta()));
 
 		this.mockMvc
-				.perform(post("/perguntaNotificacao").header("token", logar("wagnerju", "1234"))
+				.perform(post("/api/perguntaNotificacao").header("token", logar("wagnerju", "1234"))
 						.accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON).content(jsonString))
 				.andExpect(jsonPath("$", equalTo("A  pergunta de notificação foi respondida com sucesso")))
 				.andExpect(status().isCreated());
@@ -233,7 +233,7 @@ public class TestPerguntaRespostaUsuarioController {
 				criarPerguntaRespostaUsuario(pergunta.get(1).getIdPergunta(), resposta.get(1).getIdResposta()));
 
 		this.mockMvc
-				.perform(post("/perguntaNotificacao").header("token", logar("wagnerju", "1234"))
+				.perform(post("/api/perguntaNotificacao").header("token", logar("wagnerju", "1234"))
 						.accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON).content(jsonString))
 				.andExpect(jsonPath("$", equalTo("A  pergunta de notificação foi respondida com sucesso")))
 				.andExpect(status().isCreated());
@@ -241,7 +241,7 @@ public class TestPerguntaRespostaUsuarioController {
 		List<PerguntaRespostaUsuario> respostasUser = repo.findAll();
 		assertThat(respostasUser.get(0), notNullValue());
 
-		this.mockMvc.perform(get("/perguntaNotificacao").header("token", logar("wagnerju", "1234")))
+		this.mockMvc.perform(get("/api/perguntaNotificacao").header("token", logar("wagnerju", "1234")))
 				.andExpect(
 						jsonPath("$[0].pergunta.idPergunta.value", equalTo(pergunta.get(0).getIdPergunta().toString())))
 				.andExpect(
@@ -262,14 +262,14 @@ public class TestPerguntaRespostaUsuarioController {
 		assertThat(adm.get(0), notNullValue());
 
 		this.mockMvc
-				.perform(get("/perguntaNotificacao/" + new PerguntaRespostaUsuarioId().toString()).header("token",
+				.perform(get("/api/perguntaNotificacao/" + new PerguntaRespostaUsuarioId().toString()).header("token",
 						logar("wagnerju", "1234")))
 				.andExpect(jsonPath("$.error",
 						equalTo("A pergunta de notificação procurada não existe no banco de dados")))
 				.andExpect(status().isNotFound());
 
 		this.mockMvc
-				.perform(get("/perguntaNotificacao/" + new PerguntaRespostaUsuarioId().toString())
+				.perform(get("/api/perguntaNotificacao/" + new PerguntaRespostaUsuarioId().toString())
 						.accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
 						.header("token", logarAdm("admin", "1234")))
 				.andExpect(jsonPath("$.error", equalTo("Acesso negado"))).andExpect(status().isForbidden());
@@ -286,7 +286,7 @@ public class TestPerguntaRespostaUsuarioController {
 				criarPerguntaRespostaUsuario(pergunta.get(0).getIdPergunta(), resposta.get(0).getIdResposta()));
 
 		this.mockMvc
-				.perform(post("/perguntaNotificacao").header("token", logar("wagnerju", "1234"))
+				.perform(post("/api/perguntaNotificacao").header("token", logar("wagnerju", "1234"))
 						.accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON).content(jsonString))
 				.andExpect(jsonPath("$", equalTo("A  pergunta de notificação foi respondida com sucesso")))
 				.andExpect(status().isCreated());
@@ -295,7 +295,7 @@ public class TestPerguntaRespostaUsuarioController {
 		assertThat(respostasUser.get(0), notNullValue());
 
 		this.mockMvc
-				.perform(get("/perguntaNotificacao/" + respostasUser.get(0).getId().toString()).header("token",
+				.perform(get("/api/perguntaNotificacao/" + respostasUser.get(0).getId().toString()).header("token",
 						logar("wagnerju", "1234")))
 				.andExpect(jsonPath("$.pergunta.idPergunta.value", equalTo(pergunta.get(0).getIdPergunta().toString())))
 				.andExpect(status().isOk());

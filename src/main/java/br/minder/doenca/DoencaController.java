@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
@@ -28,7 +29,7 @@ import io.swagger.annotations.ApiOperation;
 
 @Api("Basic Doença Controller")
 @RestController
-@RequestMapping("/doencas")
+@RequestMapping("/api/doenca")
 @CrossOrigin
 public class DoencaController {
 	private static final String ACESSONEGADO = "Acesso negado";
@@ -41,9 +42,12 @@ public class DoencaController {
 
 	@ApiOperation("Busque todas as doenças")
 	@GetMapping
-	public ResponseEntity<Page<BuscarDoenca>> getDoencas(Pageable p, @RequestHeader String token) throws AccessDeniedException {
+	public ResponseEntity<Page<BuscarDoenca>> getDoencas(Pageable p, @RequestHeader String token,
+			@RequestParam(name = "searchTerm", defaultValue = "", required = false) String searchTerm)
+			throws AccessDeniedException {
 		if (autentica.autenticaRequisicao(token)) {
-			Optional<Page<BuscarDoenca>> optionalDoencas = doencaService.encontrar(p, autentica.idUser(token));
+			Optional<Page<BuscarDoenca>> optionalDoencas = doencaService.encontrar(p, autentica.idUser(token),
+					searchTerm);
 			if (optionalDoencas.isPresent()) {
 				return ResponseEntity.ok(optionalDoencas.get());
 			}

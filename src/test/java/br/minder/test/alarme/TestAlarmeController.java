@@ -115,18 +115,18 @@ public class TestAlarmeController {
 		String erro = objectMapper.writeValueAsString(new CriarAlarme());
 
 		this.mockMvc
-				.perform(post("/alarmes").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+				.perform(post("/api/alarme").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
 						.header("token", logar("wagnerju", "1234")).content(erro))
 				.andExpect(jsonPath("$.error", equalTo("O alarme não foi salvo devido a um erro interno")))
 				.andExpect(status().isInternalServerError());
 
 		this.mockMvc
-				.perform(post("/alarmes").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+				.perform(post("/api/alarme").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
 						.header("token", logar("wagnerju", "1234") + "erroToken").content(jsonString))
 				.andExpect(jsonPath("$.error", equalTo("Acesso negado"))).andExpect(status().isForbidden());
 
 		this.mockMvc
-				.perform(post("/alarmes").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+				.perform(post("/api/alarme").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
 						.header("token", logar("wagner@hotmail.com", "1234")).content(jsonString))
 				.andExpect(jsonPath("$", equalTo("O alarme foi cadastrado com sucesso")))
 				.andExpect(status().isCreated());
@@ -134,7 +134,7 @@ public class TestAlarmeController {
 		erro = objectMapper.writeValueAsString(criarAlarmeErro1(idMedicamento, "Tomar medicamento"));
 
 		this.mockMvc
-				.perform(post("/alarmes").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+				.perform(post("/api/alarme").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
 						.header("token", logar("wagnerju", "1234")).content(erro))
 				.andExpect(jsonPath("$.error", equalTo("O alarme não foi salvo devido a um erro interno")))
 				.andExpect(status().isInternalServerError());
@@ -142,7 +142,7 @@ public class TestAlarmeController {
 		erro = objectMapper.writeValueAsString(criarAlarmeErro2(idMedicamento, "Tomar medicamento"));
 
 		this.mockMvc
-				.perform(post("/alarmes").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+				.perform(post("/api/alarme").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
 						.header("token", logar("wagnerju", "1234")).content(erro))
 				.andExpect(jsonPath("$.error", equalTo("O alarme não foi salvo devido a um erro interno")))
 				.andExpect(status().isInternalServerError());
@@ -150,7 +150,7 @@ public class TestAlarmeController {
 		erro = objectMapper.writeValueAsString(criarAlarmeErro3(idMedicamento));
 
 		this.mockMvc
-				.perform(post("/alarmes").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+				.perform(post("/api/alarme").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
 						.header("token", logar("wagnerju", "1234")).content(erro))
 				.andExpect(jsonPath("$.error", equalTo("O alarme não foi salvo devido a um erro interno")))
 				.andExpect(status().isInternalServerError());
@@ -158,7 +158,7 @@ public class TestAlarmeController {
 		erro = objectMapper.writeValueAsString(criarAlarmeErro4(idMedicamento, "Tomar medicamento"));
 
 		this.mockMvc
-				.perform(post("/alarmes").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+				.perform(post("/api/alarme").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
 						.header("token", logar("wagnerju", "1234")).content(erro))
 				.andExpect(jsonPath("$.error", equalTo("O alarme não foi salvo devido a um erro interno")))
 				.andExpect(status().isInternalServerError());
@@ -166,7 +166,7 @@ public class TestAlarmeController {
 		erro = objectMapper.writeValueAsString(criarAlarmeErro5(idMedicamento, "Tomar medicamento"));
 
 		this.mockMvc
-				.perform(post("/alarmes").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+				.perform(post("/api/alarme").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
 						.header("token", logar("wagnerju", "1234")).content(erro))
 				.andExpect(jsonPath("$.error", equalTo("O alarme não foi salvo devido a um erro interno")))
 				.andExpect(status().isInternalServerError());
@@ -187,7 +187,7 @@ public class TestAlarmeController {
 		String jsonString = objectMapper.writeValueAsString(criarAlarme(idMedicamento, "Tomar medicamento"));
 
 		this.mockMvc
-				.perform(post("/alarmes").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+				.perform(post("/api/alarme").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
 						.header("token", logar("wagnerju", "1234")).content(jsonString))
 				.andExpect(jsonPath("$", equalTo("O alarme foi cadastrado com sucesso")))
 				.andExpect(status().isCreated());
@@ -198,19 +198,19 @@ public class TestAlarmeController {
 		jsonString = objectMapper.writeValueAsString(editarAlarme(alarmes.get(0)));
 
 		this.mockMvc
-				.perform(put("/alarmes").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+				.perform(put("/api/alarme").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
 						.header("token", logar("wagnerju", "1234")).content(jsonString))
 				.andExpect(jsonPath("$", equalTo("O alarme foi alterado com sucesso"))).andExpect(status().isOk());
 
 		this.mockMvc
-				.perform(put("/alarmes").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+				.perform(put("/api/alarme").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
 						.header("token", logar("wagnerju", "1234") + "erroToken").content(jsonString))
 				.andExpect(jsonPath("$.error", equalTo("Acesso negado"))).andExpect(status().isForbidden());
 
 		jsonString = objectMapper.writeValueAsString(editarAlarmeErro(alarmes.get(0)));
 
 		this.mockMvc
-				.perform(put("/alarmes").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+				.perform(put("/api/alarme").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
 						.header("token", logar("wagnerju", "1234")).content(jsonString))
 				.andExpect(jsonPath("$.error", equalTo("O alarme a ser alterado não existe no banco de dados")))
 				.andExpect(status().isNotFound());
@@ -218,7 +218,7 @@ public class TestAlarmeController {
 		jsonString = objectMapper.writeValueAsString(editarAlarmeErro1(alarmes.get(0)));
 
 		this.mockMvc
-				.perform(put("/alarmes").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+				.perform(put("/api/alarme").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
 						.header("token", logar("wagnerju", "1234")).content(jsonString))
 				.andExpect(jsonPath("$.error", equalTo("O alarme a ser alterado não existe no banco de dados")))
 				.andExpect(status().isNotFound());
@@ -226,7 +226,7 @@ public class TestAlarmeController {
 		jsonString = objectMapper.writeValueAsString(editarAlarmeErro2(alarmes.get(0)));
 
 		this.mockMvc
-				.perform(put("/alarmes").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+				.perform(put("/api/alarme").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
 						.header("token", logar("wagnerju", "1234")).content(jsonString))
 				.andExpect(jsonPath("$.error", equalTo("O alarme a ser alterado não existe no banco de dados")))
 				.andExpect(status().isNotFound());
@@ -234,7 +234,7 @@ public class TestAlarmeController {
 		jsonString = objectMapper.writeValueAsString(editarAlarmeErro3(alarmes.get(0)));
 
 		this.mockMvc
-				.perform(put("/alarmes").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+				.perform(put("/api/alarme").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
 						.header("token", logar("wagnerju", "1234")).content(jsonString))
 				.andExpect(jsonPath("$.error", equalTo("O alarme a ser alterado não existe no banco de dados")))
 				.andExpect(status().isNotFound());
@@ -242,7 +242,7 @@ public class TestAlarmeController {
 		jsonString = objectMapper.writeValueAsString(editarAlarmeErro4(alarmes.get(0)));
 
 		this.mockMvc
-				.perform(put("/alarmes").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+				.perform(put("/api/alarme").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
 						.header("token", logar("wagnerju", "1234")).content(jsonString))
 				.andExpect(jsonPath("$.error", equalTo("O alarme a ser alterado não existe no banco de dados")))
 				.andExpect(status().isNotFound());
@@ -250,7 +250,7 @@ public class TestAlarmeController {
 		jsonString = objectMapper.writeValueAsString(editarAlarmeErro5(alarmes.get(0)));
 
 		this.mockMvc
-				.perform(put("/alarmes").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+				.perform(put("/api/alarme").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
 						.header("token", logar("wagnerju", "1234")).content(jsonString))
 				.andExpect(jsonPath("$.error", equalTo("O alarme a ser alterado não existe no banco de dados")))
 				.andExpect(status().isNotFound());
@@ -258,7 +258,7 @@ public class TestAlarmeController {
 		jsonString = objectMapper.writeValueAsString(editarAlarmeErro6());
 
 		this.mockMvc
-				.perform(put("/alarmes").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+				.perform(put("/api/alarme").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
 						.header("token", logar("wagnerju", "1234")).content(jsonString))
 				.andExpect(jsonPath("$.error", equalTo("O alarme a ser alterado não existe no banco de dados")))
 				.andExpect(status().isNotFound());
@@ -266,7 +266,7 @@ public class TestAlarmeController {
 		jsonString = objectMapper.writeValueAsString(editarAlarmeErro7(alarmes.get(0)));
 
 		this.mockMvc
-				.perform(put("/alarmes").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+				.perform(put("/api/alarme").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
 						.header("token", logar("wagnerju", "1234")).content(jsonString))
 				.andExpect(jsonPath("$.error", equalTo("Ocorreu um erro interno durante a alteração do alarme")))
 				.andExpect(status().isInternalServerError());
@@ -274,7 +274,7 @@ public class TestAlarmeController {
 		jsonString = objectMapper.writeValueAsString(editarAlarmeErro8(alarmes.get(0)));
 
 		this.mockMvc
-				.perform(put("/alarmes").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+				.perform(put("/api/alarme").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
 						.header("token", logar("wagnerju", "1234")).content(jsonString))
 				.andExpect(jsonPath("$.error", equalTo("Ocorreu um erro interno durante a alteração do alarme")))
 				.andExpect(status().isInternalServerError());
@@ -282,7 +282,7 @@ public class TestAlarmeController {
 		jsonString = objectMapper.writeValueAsString(editarAlarmeErro9(alarmes.get(0)));
 
 		this.mockMvc
-				.perform(put("/alarmes").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+				.perform(put("/api/alarme").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
 						.header("token", logar("wagnerju", "1234")).content(jsonString))
 				.andExpect(jsonPath("$.error", equalTo("Ocorreu um erro interno durante a alteração do alarme")))
 				.andExpect(status().isInternalServerError());
@@ -290,7 +290,7 @@ public class TestAlarmeController {
 		jsonString = objectMapper.writeValueAsString(editarAlarmeErro10(alarmes.get(0)));
 
 		this.mockMvc
-				.perform(put("/alarmes").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+				.perform(put("/api/alarme").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
 						.header("token", logar("wagnerju", "1234")).content(jsonString))
 				.andExpect(jsonPath("$.error", equalTo("Ocorreu um erro interno durante a alteração do alarme")))
 				.andExpect(status().isInternalServerError());
@@ -298,7 +298,7 @@ public class TestAlarmeController {
 		jsonString = objectMapper.writeValueAsString(editarAlarmeErro11(alarmes.get(0)));
 
 		this.mockMvc
-				.perform(put("/alarmes").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+				.perform(put("/api/alarme").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
 						.header("token", logar("wagnerju", "1234")).content(jsonString))
 				.andExpect(jsonPath("$.error", equalTo("Ocorreu um erro interno durante a alteração do alarme")))
 				.andExpect(status().isInternalServerError());
@@ -306,7 +306,7 @@ public class TestAlarmeController {
 		jsonString = objectMapper.writeValueAsString(editarAlarmeErro12(alarmes.get(0)));
 
 		this.mockMvc
-				.perform(put("/alarmes").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+				.perform(put("/api/alarme").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
 						.header("token", logar("wagnerju", "1234")).content(jsonString))
 				.andExpect(jsonPath("$.error", equalTo("Ocorreu um erro interno durante a alteração do alarme")))
 				.andExpect(status().isInternalServerError());
@@ -329,7 +329,7 @@ public class TestAlarmeController {
 		final String jsonString = objectMapper.writeValueAsString(criarAlarme(idMedicamento, "Tomar medicamento"));
 
 		this.mockMvc
-				.perform(post("/alarmes").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+				.perform(post("/api/alarme").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
 						.header("token", logar("wagnerju", "1234")).content(jsonString))
 				.andExpect(jsonPath("$", equalTo("O alarme foi cadastrado com sucesso")))
 				.andExpect(status().isCreated());
@@ -339,22 +339,22 @@ public class TestAlarmeController {
 
 		this.mockMvc
 				.perform(
-						get("/alarmes/" + alarmes.get(0).getId().toString()).header("token", logar("wagnerju", "1234")))
+						get("/api/alarme/" + alarmes.get(0).getId().toString()).header("token", logar("wagnerju", "1234")))
 
 				.andExpect(jsonPath("$.descricao", equalTo("Tomar medicamento"))).andExpect(status().isOk());
 
 		this.mockMvc
-				.perform(get("/alarmes/" + alarmes.get(0).getId().toString()).header("token",
+				.perform(get("/api/alarme/" + alarmes.get(0).getId().toString()).header("token",
 						logar("lathuanny", "1234")))
 				.andExpect(jsonPath("$.error", equalTo("O alarme procurado não existe no banco de dados")))
 				.andExpect(status().isNotFound());
 
 		this.mockMvc
-				.perform(get("/alarmes/" + alarmes.get(0).getId().toString()).header("token",
+				.perform(get("/api/alarme/" + alarmes.get(0).getId().toString()).header("token",
 						logar("wagnerju", "1234") + "erroToken"))
 				.andExpect(jsonPath("$.error", equalTo("Acesso negado"))).andExpect(status().isForbidden());
 
-		this.mockMvc.perform(get("/alarmes/" + new AlarmeId()).header("token", logar("wagnerju", "1234")))
+		this.mockMvc.perform(get("/api/alarme/" + new AlarmeId()).header("token", logar("wagnerju", "1234")))
 				.andExpect(jsonPath("$.error", equalTo("O alarme procurado não existe no banco de dados")))
 				.andExpect(status().isNotFound());
 
@@ -371,17 +371,17 @@ public class TestAlarmeController {
 		List<Usuario> usuarios = repo.findAll();
 		assertThat(usuarios.get(0), notNullValue());
 
-		this.mockMvc.perform(get("/alarmes").header("token", logar("wagnerju", "1234")))
+		this.mockMvc.perform(get("/api/alarme").header("token", logar("wagnerju", "1234")))
 				.andExpect(jsonPath("$.error", equalTo("Não existe nenhum alarme cadastrado no banco de dados")))
 				.andExpect(status().isNotFound());
 
-		this.mockMvc.perform(get("/alarmes").header("token", logar("wagnerju", "1234") + "erroToken"))
+		this.mockMvc.perform(get("/api/alarme").header("token", logar("wagnerju", "1234") + "erroToken"))
 				.andExpect(jsonPath("$.error", equalTo("Acesso negado"))).andExpect(status().isForbidden());
 
 		String jsonString = objectMapper.writeValueAsString(criarAlarme(idMedicamento, "Tomar medicamento"));
 
 		this.mockMvc
-				.perform(post("/alarmes").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+				.perform(post("/api/alarme").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
 						.header("token", logar("wagnerju", "1234")).content(jsonString))
 				.andExpect(jsonPath("$", equalTo("O alarme foi cadastrado com sucesso")))
 				.andExpect(status().isCreated());
@@ -389,7 +389,7 @@ public class TestAlarmeController {
 		jsonString = objectMapper.writeValueAsString(criarAlarme(idMedicamento, "Aplicar medicamento"));
 
 		this.mockMvc
-				.perform(post("/alarmes").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+				.perform(post("/api/alarme").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
 						.header("token", logar("wagnerju", "1234")).content(jsonString))
 				.andExpect(jsonPath("$", equalTo("O alarme foi cadastrado com sucesso")))
 				.andExpect(status().isCreated());
@@ -398,10 +398,11 @@ public class TestAlarmeController {
 		assertThat(alarmes.get(0), notNullValue());
 		assertThat(alarmes.get(1), notNullValue());
 
-		this.mockMvc.perform(get("/alarmes").header("token", logar("wagnerju", "1234"))).andExpect(status().isOk());
+		this.mockMvc.perform(get("/api/alarme").header("token", logar("wagnerju", "1234"))).andExpect(status().isOk());
 
-		this.mockMvc.perform(get("/alarmes").param("searchTerm", "Aplicar medicamento").header("token",
-				logar("wagnerju", "1234"))).andExpect(status().isOk());
+		this.mockMvc.perform(
+				get("/api/alarme").param("searchTerm", "Aplicar medicamento").header("token", logar("wagnerju", "1234")))
+				.andExpect(status().isOk());
 	}
 
 	@Test
@@ -418,7 +419,7 @@ public class TestAlarmeController {
 		String jsonString = objectMapper.writeValueAsString(criarAlarme(idMedicamento, "Tomar medicamento"));
 
 		this.mockMvc
-				.perform(post("/alarmes").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+				.perform(post("/api/alarme").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
 						.header("token", logar("wagnerju", "1234")).content(jsonString))
 				.andExpect(jsonPath("$", equalTo("O alarme foi cadastrado com sucesso")))
 				.andExpect(status().isCreated());
@@ -427,26 +428,26 @@ public class TestAlarmeController {
 		assertThat(alarmes.get(0), notNullValue());
 
 		this.mockMvc
-				.perform(delete("/alarmes/" + alarmes.get(0).getId().toString()).header("token",
+				.perform(delete("/api/alarme/" + alarmes.get(0).getId().toString()).header("token",
 						logar("wagnerju", "1234")))
 				.andExpect(jsonPath("$",
 						equalTo("Alarme ===> " + alarmes.get(0).getId().toString() + ": deletado com sucesso")))
 				.andExpect(status().isOk());
 
 		this.mockMvc
-				.perform(delete("/alarmes/" + alarmes.get(0).getId().toString()).header("token",
+				.perform(delete("/api/alarme/" + alarmes.get(0).getId().toString()).header("token",
 						logar("wagnerju", "1234")))
 				.andExpect(jsonPath("$.error", equalTo("O alarme a ser deletado não existe no banco de dados")))
 				.andExpect(status().isNotFound());
 
 		this.mockMvc
-				.perform(delete("/alarmes/" + new AlarmeId().toString()).accept(MediaType.APPLICATION_JSON)
+				.perform(delete("/api/alarme/" + new AlarmeId().toString()).accept(MediaType.APPLICATION_JSON)
 						.contentType(MediaType.APPLICATION_JSON).header("token", logar("wagnerju", "1234")))
 				.andExpect(jsonPath("$.error", equalTo("O alarme a ser deletado não existe no banco de dados")))
 				.andExpect(status().isNotFound());
 
 		this.mockMvc
-				.perform(delete("/alarmes/" + alarmes.get(0).getId().toString()).header("token",
+				.perform(delete("/api/alarme/" + alarmes.get(0).getId().toString()).header("token",
 						logar("wagnerju", "1234") + "erroToken"))
 				.andExpect(jsonPath("$.error", equalTo("Acesso negado"))).andExpect(status().isForbidden());
 

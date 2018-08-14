@@ -78,12 +78,12 @@ public class TestSangueController {
 		String jsonString = objectMapper.writeValueAsString(criarSangue("AB"));
 
 		this.mockMvc
-				.perform(post("/sangues").header("token", logarAdm("admin", "1234") + "erroToken")
+				.perform(post("/api/sangue").header("token", logarAdm("admin", "1234") + "erroToken")
 						.accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON).content(jsonString))
 				.andExpect(jsonPath("$.error", equalTo("Acesso negado"))).andExpect(status().isForbidden());
 
 		this.mockMvc
-				.perform(post("/sangues").header("token", logarAdm("admin", "1234")).accept(MediaType.APPLICATION_JSON)
+				.perform(post("/api/sangue").header("token", logarAdm("admin", "1234")).accept(MediaType.APPLICATION_JSON)
 						.contentType(MediaType.APPLICATION_JSON).content(jsonString))
 				.andExpect(jsonPath("$", equalTo("O tipo sanguíneo foi cadastrado com sucesso")))
 				.andExpect(status().isCreated());
@@ -91,7 +91,7 @@ public class TestSangueController {
 		jsonString = objectMapper.writeValueAsString(criarSangueErro());
 
 		this.mockMvc
-				.perform(post("/sangues").header("token", logarAdm("admin", "1234"))
+				.perform(post("/api/sangue").header("token", logarAdm("admin", "1234"))
 						.accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON).content(jsonString))
 				.andExpect(jsonPath("$.error", equalTo("O tipo sanguíneo não foi salvo devido a um erro interno")))
 				.andExpect(status().isInternalServerError());
@@ -106,7 +106,7 @@ public class TestSangueController {
 		String jsonString = objectMapper.writeValueAsString(criarSangue("AB"));
 
 		this.mockMvc
-				.perform(post("/sangues").header("token", logarAdm("admin", "1234")).accept(MediaType.APPLICATION_JSON)
+				.perform(post("/api/sangue").header("token", logarAdm("admin", "1234")).accept(MediaType.APPLICATION_JSON)
 						.contentType(MediaType.APPLICATION_JSON).content(jsonString))
 				.andExpect(jsonPath("$", equalTo("O tipo sanguíneo foi cadastrado com sucesso")))
 				.andExpect(status().isCreated());
@@ -117,12 +117,12 @@ public class TestSangueController {
 		jsonString = objectMapper.writeValueAsString(editarSangue(sangues.get(0)));
 
 		this.mockMvc
-				.perform(put("/sangues").header("token", logarAdm("admin", "1234") + "erroToken")
+				.perform(put("/api/sangue").header("token", logarAdm("admin", "1234") + "erroToken")
 						.accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON).content(jsonString))
 				.andExpect(jsonPath("$.error", equalTo("Acesso negado"))).andExpect(status().isForbidden());
 
 		this.mockMvc
-				.perform(put("/sangues").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+				.perform(put("/api/sangue").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
 						.header("token", logarAdm("admin", "1234")).content(jsonString))
 				.andExpect(jsonPath("$", equalTo("O tipo sanguíneo foi alterado com sucesso")))
 				.andExpect(status().isOk());
@@ -130,7 +130,7 @@ public class TestSangueController {
 		jsonString = objectMapper.writeValueAsString(editarSangueErroId(sangues.get(0)));
 
 		this.mockMvc
-				.perform(put("/sangues").header("token", logarAdm("admin", "1234"))
+				.perform(put("/api/sangue").header("token", logarAdm("admin", "1234"))
 						.accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON).content(jsonString))
 				.andExpect(jsonPath("$.error", equalTo("O tipo sanguíneo a ser alterado não existe no banco de dados")))
 				.andExpect(status().isNotFound());
@@ -138,7 +138,7 @@ public class TestSangueController {
 		jsonString = objectMapper.writeValueAsString(editarSangueErro1(sangues.get(0)));
 
 		this.mockMvc
-				.perform(put("/sangues").header("token", logarAdm("admin", "1234"))
+				.perform(put("/api/sangue").header("token", logarAdm("admin", "1234"))
 						.accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON).content(jsonString))
 				.andExpect(
 						jsonPath("$.error", equalTo("Ocorreu um erro interno durante a alteração do tipo sanguíneo")))
@@ -151,7 +151,7 @@ public class TestSangueController {
 		List<UsuarioAdm> adm = repoAdm.findAll();
 		assertThat(adm.get(0), notNullValue());
 
-		this.mockMvc.perform(get("/sangues"))
+		this.mockMvc.perform(get("/api/sangue"))
 				.andExpect(
 						jsonPath("$.error", equalTo("Não existe nenhum tipo sanguíneo cadastrado no banco de dados")))
 				.andExpect(status().isNotFound());
@@ -159,7 +159,7 @@ public class TestSangueController {
 		String jsonString = objectMapper.writeValueAsString(criarSangue("AB"));
 
 		this.mockMvc
-				.perform(post("/sangues").header("token", logarAdm("admin", "1234")).accept(MediaType.APPLICATION_JSON)
+				.perform(post("/api/sangue").header("token", logarAdm("admin", "1234")).accept(MediaType.APPLICATION_JSON)
 						.contentType(MediaType.APPLICATION_JSON).content(jsonString))
 				.andExpect(jsonPath("$", equalTo("O tipo sanguíneo foi cadastrado com sucesso")))
 				.andExpect(status().isCreated());
@@ -167,7 +167,7 @@ public class TestSangueController {
 		jsonString = objectMapper.writeValueAsString(criarSangue("A+"));
 
 		this.mockMvc
-				.perform(post("/sangues").header("token", logarAdm("admin", "1234")).accept(MediaType.APPLICATION_JSON)
+				.perform(post("/api/sangue").header("token", logarAdm("admin", "1234")).accept(MediaType.APPLICATION_JSON)
 						.contentType(MediaType.APPLICATION_JSON).content(jsonString))
 				.andExpect(jsonPath("$", equalTo("O tipo sanguíneo foi cadastrado com sucesso")))
 				.andExpect(status().isCreated());
@@ -176,7 +176,7 @@ public class TestSangueController {
 		assertThat(sangues.get(0), notNullValue());
 		assertThat(sangues.get(1), notNullValue());
 
-		this.mockMvc.perform(get("/sangues")).andExpect(jsonPath("$[0].tipoSanguineo", equalTo("AB")))
+		this.mockMvc.perform(get("/api/sangue")).andExpect(jsonPath("$[0].tipoSanguineo", equalTo("AB")))
 				.andExpect(jsonPath("$[1].tipoSanguineo", equalTo("A+"))).andExpect(status().isOk());
 	}
 
@@ -189,7 +189,7 @@ public class TestSangueController {
 		String jsonString = objectMapper.writeValueAsString(criarSangue("AB"));
 
 		this.mockMvc
-				.perform(post("/sangues").header("token", logarAdm("admin", "1234")).accept(MediaType.APPLICATION_JSON)
+				.perform(post("/api/sangue").header("token", logarAdm("admin", "1234")).accept(MediaType.APPLICATION_JSON)
 						.contentType(MediaType.APPLICATION_JSON).content(jsonString))
 				.andExpect(jsonPath("$", equalTo("O tipo sanguíneo foi cadastrado com sucesso")))
 				.andExpect(status().isCreated());
@@ -197,10 +197,10 @@ public class TestSangueController {
 		List<Sangue> sangues = repo.findAll();
 		assertThat(sangues.get(0), notNullValue());
 
-		this.mockMvc.perform(get("/sangues/" + sangues.get(0).getIdSangue().toString()))
+		this.mockMvc.perform(get("/api/sangue/" + sangues.get(0).getIdSangue().toString()))
 				.andExpect(jsonPath("$.tipoSanguineo", equalTo("AB"))).andExpect(status().isOk());
 
-		this.mockMvc.perform(get("/sangues/" + new SangueId().toString()))
+		this.mockMvc.perform(get("/api/sangue/" + new SangueId().toString()))
 				.andExpect(jsonPath("$.error", equalTo("O tipo sanguíneo procurado não existe no banco de dados")))
 				.andExpect(status().isNotFound());
 	}
