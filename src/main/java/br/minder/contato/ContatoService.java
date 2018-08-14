@@ -81,8 +81,8 @@ public class ContatoService {
 	}
 
 	public Optional<Page<BuscarContato>> encontrar(Pageable pageable, String usuarioId, String searchTerm) {
-		List<Contato> contatos = repo.findAll(usuarioId);
-		if (contatos.isEmpty()) {
+		Page<Contato> contatos = repo.findAll(usuarioId, pageable);
+		if (!contatos.hasContent()) {
 			return Optional.empty();
 		}
 		List<BuscarContato> resultados = new ArrayList<>();
@@ -102,12 +102,12 @@ public class ContatoService {
 		return Optional.of(page);
 	}
 
-	public Optional<ContatoId> alterar(EditarContato comando) {
-		Optional<Contato> optional = repo.findById(comando.getId());
-		if (optional.isPresent() && comando.getTelefone() != null && comando.getNome() != null) {
+	public Optional<ContatoId> alterar(EditarContato comando, UsuarioId usuarioId) {
+		Contato optional = repo.findById(comando.getId().toString(), usuarioId.toString());
+		if (optional != null && comando.getTelefone() != null && comando.getNome() != null) {
 			if (comando.getTelefone() != null)
 				telefoneService.alterar(comando.getTelefone());
-			Contato contato = optional.get();
+			Contato contato = optional;
 			contato.apply(comando);
 			repo.save(contato);
 			return Optional.of(comando.getId());
@@ -116,14 +116,14 @@ public class ContatoService {
 	}
 
 	public Optional<String> deletar(ContatoId id, UsuarioId idUsuario) {
-		Optional<Contato> contato = repo.findById(id);
-		if (contato.isPresent()) {
+		Contato contato = repo.findById(id.toString(), idUsuario.toString());
+		if (contato != null) {
 			EmergenciaId idEmergencia = executeQuery(idUsuario.toString(), sql).get(0).getId();
 			ContatoEmergenciaId idContatoEmergencia = buscaId(idEmergencia.toString(), id.toString(),
 					sqlContatoEmergencia).get(0).getId();
 			repoContatoEmergencia.deleteById(idContatoEmergencia);
 			repo.deleteById(id);
-			telefoneService.deletar(contato.get().getIdTelefone());
+			telefoneService.deletar(contato.getIdTelefone());
 			return Optional.of("Contato ===> " + id + ": deletado com sucesso");
 		}
 		return Optional.empty();

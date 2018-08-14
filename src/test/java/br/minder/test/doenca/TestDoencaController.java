@@ -299,7 +299,7 @@ public class TestDoencaController {
 	private EditarDoenca editarDoenca(Doenca doenca, Set<MedicamentoId> idsMedicamentos) {
 		EditarDoenca doencaEditada = new EditarDoenca();
 		doencaEditada.setIdDoenca(doenca.getIdDoenca());
-		doencaEditada.setDataDescoberta(doencaEditada.getDataDescoberta());
+		doencaEditada.setDataDescoberta(Date.valueOf(LocalDate.of(2018, 07, 20)));
 		doencaEditada.setIdMedicamentos(idsMedicamentos);
 		doencaEditada.setNomeDoenca("Asma");
 		return doencaEditada;

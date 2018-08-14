@@ -33,9 +33,9 @@ public class ConvenioService {
 	}
 
 	public Optional<BuscarConvenio> encontrar(ConvenioId id) {
-		Optional<Convenio> convenio = convenioRepo.findById(id);
-		if (convenio.isPresent() && convenio.get().getAtivo() == 1) {
-			BuscarConvenio resultado = new BuscarConvenio(convenio.get());
+		Convenio convenio = convenioRepo.findById(id.toString());
+		if (convenio != null) {
+			BuscarConvenio resultado = new BuscarConvenio(convenio);
 			return Optional.of(resultado);
 		}
 		return Optional.empty();
@@ -43,8 +43,8 @@ public class ConvenioService {
 
 	public Optional<Page<BuscarConvenio>> encontrar(Pageable pageable, String searchTerm) {
 		List<BuscarConvenio> resultados = new ArrayList<>();
-		List<Convenio> convenios = convenioRepo.findAll();
-		if (!convenios.isEmpty()) {
+		Page<Convenio> convenios = convenioRepo.findAll(pageable);
+		if (convenios.hasContent()) {
 			for (Convenio convenio : convenios) {
 				if (convenio.getAtivo() == 1 && TermoDeBusca.searchTerm(convenio.getNome(), searchTerm)) {
 					BuscarConvenio nova = new BuscarConvenio(convenio);
@@ -60,19 +60,19 @@ public class ConvenioService {
 	}
 
 	public Optional<String> deletar(ConvenioId id) {
-		Optional<Convenio> convenio = convenioRepo.findById(id);
-		if (convenio.isPresent()) {
-			convenio.get().setAtivo(0);
-			convenioRepo.save(convenio.get());
+		Convenio convenio = convenioRepo.findById(id.toString());
+		if (convenio != null) {
+			convenio.setAtivo(0);
+			convenioRepo.save(convenio);
 			return Optional.of("Convênio ===> " + id + ": deletado com sucesso");
 		}
 		return Optional.empty();
 	}
 
 	public Optional<ConvenioId> alterar(EditarConvenio comando) {
-		Optional<Convenio> optional = convenioRepo.findById(comando.getId());
-		if (optional.isPresent() && comando.getNome() != null) {
-			Convenio conv = optional.get();
+		Convenio optional = convenioRepo.findById(comando.getId().toString());
+		if (optional != null && comando.getNome() != null) {
+			Convenio conv = optional;
 			conv.apply(comando);
 			convenioRepo.save(conv);
 			return Optional.of(comando.getId());

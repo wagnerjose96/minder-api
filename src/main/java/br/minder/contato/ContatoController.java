@@ -92,16 +92,15 @@ public class ContatoController {
 	public ResponseEntity<String> putContato(@RequestBody EditarContato comando, @RequestHeader String token)
 			throws AccessDeniedException, SQLException {
 		if (autentica.autenticaRequisicao(token)) {
-			if (!contatoService.encontrar(comando.getId(), autentica.idUser(token).toString()).isPresent()) {
-				throw new NullPointerException("O contato a ser alterado não existe no banco de dados");
+			if (contatoService.encontrar(comando.getId(), autentica.idUser(token).toString()).isPresent()) {
+				Optional<ContatoId> optionalContatoId = contatoService.alterar(comando, autentica.idUser(token));
+				if (optionalContatoId.isPresent()) {
+					return ResponseEntity.ok().body("O contato foi alterado com sucesso");
+				} else {
+					throw new SQLException("Ocorreu um erro interno durante a alteração do contato");
+				}
 			}
-
-			Optional<ContatoId> optionalContatoId = contatoService.alterar(comando);
-			if (optionalContatoId.isPresent()) {
-				return ResponseEntity.ok().body("O contato foi alterado com sucesso");
-			} else {
-				throw new SQLException("Ocorreu um erro interno durante a alteração do contato");
-			}
+			throw new NullPointerException("O contato a ser alterado não existe no banco de dados");
 		}
 		throw new AccessDeniedException(ACESSONEGADO);
 	}

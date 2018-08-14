@@ -239,6 +239,8 @@ public class TestMedicamentoController {
 				.andExpect(status().isOk());
 
 		this.mockMvc.perform(get("/api/medicamento")).andExpect(status().isOk());
+		
+		this.mockMvc.perform(get("/api/medicamento").param("searchTerm", "Teste 2")).andExpect(status().isOk());
 
 		this.mockMvc
 				.perform(delete("/api/medicamento/" + medicamentos.get(1).getIdMedicamento().toString()).header("token",
@@ -247,9 +249,8 @@ public class TestMedicamentoController {
 						+ ": deletado com sucesso")))
 				.andExpect(status().isOk());
 
-		this.mockMvc.perform(get("/api/medicamento")).andExpect(status().isOk());
+		this.mockMvc.perform(get("/api/medicamento")).andExpect(status().isNotFound());
 
-		this.mockMvc.perform(get("/api/medicamento").param("searchTerm", "Teste 2")).andExpect(status().isOk());
 	}
 
 	@Test

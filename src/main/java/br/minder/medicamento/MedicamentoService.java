@@ -31,9 +31,9 @@ public class MedicamentoService {
 	}
 
 	public Optional<BuscarMedicamento> encontrar(MedicamentoId id) {
-		Optional<Medicamento> medicamento = medicamentoRepo.findById(id);
-		if (medicamento.isPresent() && medicamento.get().getAtivo() == 1) {
-			BuscarMedicamento resultado = new BuscarMedicamento(medicamento.get());
+		Medicamento medicamento = medicamentoRepo.findById(id.toString());
+		if (medicamento != null) {
+			BuscarMedicamento resultado = new BuscarMedicamento(medicamento);
 			return Optional.of(resultado);
 		}
 		return Optional.empty();
@@ -41,11 +41,10 @@ public class MedicamentoService {
 
 	public Optional<Page<BuscarMedicamento>> encontrar(Pageable pageable, String searchTerm) {
 		List<BuscarMedicamento> resultados = new ArrayList<>();
-		List<Medicamento> medicamentos = medicamentoRepo.findAll();
-		if (!medicamentos.isEmpty()) {
+		Page<Medicamento> medicamentos = medicamentoRepo.findAll(pageable);
+		if (medicamentos.hasContent()) {
 			for (Medicamento medicamento : medicamentos) {
-				if (medicamento.getAtivo() == 1
-						&& TermoDeBusca.searchTerm(medicamento.getNomeMedicamento(), searchTerm)) {
+				if (TermoDeBusca.searchTerm(medicamento.getNomeMedicamento(), searchTerm)) {
 					BuscarMedicamento med = new BuscarMedicamento(medicamento);
 					resultados.add(med);
 				}
@@ -59,19 +58,19 @@ public class MedicamentoService {
 	}
 
 	public Optional<String> deletar(MedicamentoId id) {
-		Optional<Medicamento> medicamento = medicamentoRepo.findById(id);
-		if (medicamento.isPresent()) {
-			medicamento.get().setAtivo(0);
-			medicamentoRepo.save(medicamento.get());
+		Medicamento medicamento = medicamentoRepo.findById(id.toString());
+		if (medicamento != null) {
+			medicamento.setAtivo(0);
+			medicamentoRepo.save(medicamento);
 			return Optional.of("Medicamento ===> " + id + ": deletado com sucesso");
 		}
 		return Optional.empty();
 	}
 
 	public Optional<MedicamentoId> alterar(EditarMedicamento comando) {
-		Optional<Medicamento> optional = medicamentoRepo.findById(comando.getIdMedicamento());
-		if (optional.isPresent() && comando.getComposicao() != null && comando.getNomeMedicamento() != null) {
-			Medicamento med = optional.get();
+		Medicamento optional = medicamentoRepo.findById(comando.getIdMedicamento().toString());
+		if (optional != null && comando.getComposicao() != null && comando.getNomeMedicamento() != null) {
+			Medicamento med = optional;
 			med.apply(comando);
 			medicamentoRepo.save(med);
 			return Optional.of(comando.getIdMedicamento());

@@ -45,7 +45,8 @@ public class AlergiaController {
 			@RequestParam(name = "searchTerm", defaultValue = "", required = false) String searchTerm)
 			throws AccessDeniedException {
 		if (autentica.autenticaRequisicao(token)) {
-			Optional<Page<BuscarAlergia>> optionalAlergias = alergiaService.encontrar(p, autentica.idUser(token), searchTerm);
+			Optional<Page<BuscarAlergia>> optionalAlergias = alergiaService.encontrar(p, autentica.idUser(token),
+					searchTerm);
 			if (optionalAlergias.isPresent()) {
 				return ResponseEntity.ok(optionalAlergias.get());
 			}
@@ -89,15 +90,15 @@ public class AlergiaController {
 	public ResponseEntity<String> putAlergia(@RequestBody EditarAlergia comando, @RequestHeader String token)
 			throws SQLException, AccessDeniedException {
 		if (autentica.autenticaRequisicao(token)) {
-			if (!alergiaService.encontrar(comando.getIdAlergia(), autentica.idUser(token)).isPresent()) {
-				throw new NullPointerException("A alergia a ser alterada não existe no banco de dados");
+			if (alergiaService.encontrar(comando.getIdAlergia(), autentica.idUser(token)).isPresent()) {
+				Optional<AlergiaId> optionalAlergiaId = alergiaService.alterar(comando);
+				if (optionalAlergiaId.isPresent()) {
+					return ResponseEntity.ok().body("A alergia foi alterada com sucesso");
+				} else {
+					throw new SQLException("Ocorreu um erro interno durante a alteração da alergia");
+				}
 			}
-			Optional<AlergiaId> optionalAlergiaId = alergiaService.alterar(comando);
-			if (optionalAlergiaId.isPresent()) {
-				return ResponseEntity.ok().body("A alergia foi alterada com sucesso");
-			} else {
-				throw new SQLException("Ocorreu um erro interno durante a alteração da alergia");
-			}
+			throw new NullPointerException("A alergia a ser alterada não existe no banco de dados");
 		}
 		throw new AccessDeniedException(ACESSONEGADO);
 	}

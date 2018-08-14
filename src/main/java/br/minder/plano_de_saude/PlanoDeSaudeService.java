@@ -13,6 +13,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import br.minder.convenio.Convenio;
 import br.minder.convenio.ConvenioRepository;
+import br.minder.convenio.comandos.BuscarConvenio;
 import br.minder.plano_de_saude.comandos.BuscarPlanoDeSaude;
 import br.minder.plano_de_saude.comandos.CriarPlanoDeSaude;
 import br.minder.plano_de_saude.comandos.EditarPlanoDeSaude;
@@ -49,9 +50,9 @@ public class PlanoDeSaudeService {
 		Optional<PlanoDeSaude> plano = repo.findById(planoId);
 		if (plano.isPresent() && id.toString().equals(plano.get().getIdUsuario().toString())) {
 			BuscarPlanoDeSaude resultado = new BuscarPlanoDeSaude(plano.get());
-			Optional<Convenio> convenio = convRepo.findById(plano.get().getIdConvenio());
-			if (convenio.isPresent()) {
-				resultado.setConvenio(convenio.get());
+			Convenio convenio = convRepo.findById(plano.get().getIdConvenio().toString());
+			if (convenio != null) {
+				resultado.setConvenio(new BuscarConvenio(convenio));
 				return Optional.of(resultado);
 			}
 		}
@@ -60,17 +61,15 @@ public class PlanoDeSaudeService {
 
 	public Optional<Page<BuscarPlanoDeSaude>> encontrar(Pageable pageable, UsuarioId id) {
 		List<BuscarPlanoDeSaude> rsPlanos = new ArrayList<>();
-		List<PlanoDeSaude> planos = repo.findAll();
-		if (!planos.isEmpty()) {
+		Page<PlanoDeSaude> planos = repo.findAll(pageable, id.toString());
+		if (planos.hasContent()) {
 			for (PlanoDeSaude plano : planos) {
-				if (id.toString().equals(plano.getIdUsuario().toString())) {
-					Optional<Convenio> convenio = convRepo.findById(plano.getIdConvenio());
+					Convenio convenio = convRepo.findById(plano.getIdConvenio().toString());
 					BuscarPlanoDeSaude nova = new BuscarPlanoDeSaude(plano);
-					if (convenio.isPresent()) {
-						nova.setConvenio(convenio.get());
+					if (convenio != null) {
+						nova.setConvenio(new BuscarConvenio(convenio));
 						rsPlanos.add(nova);
 					}
-				}
 			}
 			Page<BuscarPlanoDeSaude> page = new PageImpl<>(rsPlanos,
 					PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), pageable.getSort()),

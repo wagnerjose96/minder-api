@@ -47,10 +47,11 @@ public class EmergenciaController {
 		}
 		throw new AccessDeniedException(ACESSONEGADO);
 	}
-	
+
 	@ApiOperation("Gere o PDF da sua emergência")
 	@GetMapping("/pdf")
-	public ResponseEntity<BuscarEmergenciaPdf> getEmergenciaPdf(@RequestHeader String token) throws AccessDeniedException {
+	public ResponseEntity<BuscarEmergenciaPdf> getEmergenciaPdf(@RequestHeader String token)
+			throws AccessDeniedException {
 		if (autentica.autenticaRequisicao(token)) {
 			Optional<BuscarEmergenciaPdf> optionalEmergencias = service.encontrarPdf(autentica.idUser(token));
 			if (optionalEmergencias.isPresent()) {
@@ -79,11 +80,11 @@ public class EmergenciaController {
 	public ResponseEntity<String> putEmergencia(@RequestBody EditarEmergencia comando, @RequestHeader String token)
 			throws AccessDeniedException {
 		if (autentica.autenticaRequisicao(token)) {
-			if (!service.encontrar(autentica.idUser(token)).isPresent()) {
-				throw new NullPointerException("A emergência a ser alterada não existe no banco de dados");
+			if (service.encontrar(autentica.idUser(token)).isPresent()) {
+				service.alterar(comando);
+				return ResponseEntity.ok().body("A emergência foi alterada com sucesso");
 			}
-			service.alterar(comando);
-			return ResponseEntity.ok().body("A emergência foi alterada com sucesso");
+			throw new NullPointerException("A emergência a ser alterada não existe no banco de dados");
 		}
 		throw new AccessDeniedException(ACESSONEGADO);
 	}

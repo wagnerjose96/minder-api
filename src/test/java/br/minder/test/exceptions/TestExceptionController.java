@@ -52,6 +52,7 @@ public class TestExceptionController {
 
 	@Test
 	public void testBuscarTodos() throws Exception {
+		repo.deleteAll();
 
 		this.mockMvc.perform(get("/api/exception"))
 				.andExpect(jsonPath("$.error", equalTo("Não existe nenhuma exceção cadastrada no banco de dados")))

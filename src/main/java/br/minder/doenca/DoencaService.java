@@ -74,9 +74,9 @@ public class DoencaService {
 	}
 
 	public Optional<Page<BuscarDoenca>> encontrar(Pageable pageable, UsuarioId id, String searchTerm) {
-		List<Doenca> doencas = doencaRepo.findAll();
+		Page<Doenca> doencas = doencaRepo.findAll(pageable, id.toString());
 		List<BuscarDoenca> rsDoencas = new ArrayList<>();
-		if (!doencas.isEmpty()) {
+		if (doencas.hasContent()) {
 			for (Doenca doenca : doencas) {
 				if (id.toString().equals(doenca.getIdUsuario().toString())
 						&& TermoDeBusca.searchTerm(doenca.getNomeDoenca(), searchTerm)) {
@@ -95,7 +95,7 @@ public class DoencaService {
 	}
 
 	public List<BuscarDoenca> encontrar(UsuarioId id) {
-		List<Doenca> doencas = doencaRepo.findAll();
+		List<Doenca> doencas = doencaRepo.findAll(id.toString());
 		List<BuscarDoenca> rsDoencas = new ArrayList<>();
 		if (!doencas.isEmpty()) {
 			for (Doenca doenca : doencas) {
@@ -137,7 +137,6 @@ public class DoencaService {
 				med.setIdMedicamento(new MedicamentoId(rs.getString("id_medicamento")));
 				med.setNomeMedicamento(rs.getString("nome_medicamento"));
 				med.setComposicao(rs.getString("composicao"));
-				med.setAtivo(rs.getInt("ativo"));
 			}
 			return med;
 		});

@@ -91,15 +91,15 @@ public class DoencaController {
 	public ResponseEntity<String> putDoenca(@RequestBody EditarDoenca comando, @RequestHeader String token)
 			throws AccessDeniedException, SQLException {
 		if (autentica.autenticaRequisicao(token)) {
-			if (!doencaService.encontrar(comando.getIdDoenca(), autentica.idUser(token)).isPresent()) {
-				throw new NullPointerException("A doença a ser alterada não existe no banco de dados");
+			if (doencaService.encontrar(comando.getIdDoenca(), autentica.idUser(token)).isPresent()) {
+				Optional<DoencaId> optionalDoencaId = doencaService.alterar(comando);
+				if (optionalDoencaId.isPresent()) {
+					return ResponseEntity.ok().body("A doença foi alterada com sucesso");
+				} else {
+					throw new SQLException("Ocorreu um erro interno durante a alteração da doença");
+				}
 			}
-			Optional<DoencaId> optionalDoencaId = doencaService.alterar(comando);
-			if (optionalDoencaId.isPresent()) {
-				return ResponseEntity.ok().body("A doença foi alterada com sucesso");
-			} else {
-				throw new SQLException("Ocorreu um erro interno durante a alteração da doença");
-			}
+			throw new NullPointerException("A doença a ser alterada não existe no banco de dados");
 		}
 		throw new AccessDeniedException(ACESSONEGADO);
 	}

@@ -43,11 +43,11 @@ public class MedicamentoController {
 
 	@ApiOperation("Busque todos os medicamentos")
 	@GetMapping
-	public ResponseEntity<Optional<Page<BuscarMedicamento>>> getMedicamento(Pageable pageable,
+	public ResponseEntity<Page<BuscarMedicamento>> getMedicamento(Pageable pageable,
 			@RequestParam(name = "searchTerm", defaultValue = "", required = false) String searchTerm) {
 		Optional<Page<BuscarMedicamento>> medicamentos = service.encontrar(pageable, searchTerm);
 		if (medicamentos.isPresent()) {
-			return ResponseEntity.ok(medicamentos);
+			return ResponseEntity.ok(medicamentos.get());
 		}
 		throw new NullPointerException("Não existe nenhum medicamento cadastrado no banco de dados");
 	}

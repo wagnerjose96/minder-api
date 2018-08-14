@@ -75,12 +75,11 @@ public class AlergiaService {
 	}
 
 	public Optional<Page<BuscarAlergia>> encontrar(Pageable pageable, UsuarioId id, String searchTerm) {
-		List<Alergia> alergias = repo.findAll();
+		Page<Alergia> alergias = repo.findAll(pageable, id.toString());
 		List<BuscarAlergia> rsAlergias = new ArrayList<>();
-		if (!alergias.isEmpty()) {
+		if (alergias.hasContent()) {
 			for (Alergia alergia : alergias) {
-				if (id.toString().equals(alergia.getIdUsuario().toString())
-						&& TermoDeBusca.searchTerm(alergia.getTipoAlergia(), searchTerm)) {
+				if (TermoDeBusca.searchTerm(alergia.getTipoAlergia(), searchTerm)) {
 					List<BuscarMedicamento> medicamentos = executeQuery(alergia.getIdAlergia().toString(), sql);
 					BuscarAlergia nova = new BuscarAlergia(alergia);
 					nova.setMedicamentos(medicamentos);
@@ -96,7 +95,7 @@ public class AlergiaService {
 	}
 
 	public List<BuscarAlergia> encontrar(UsuarioId id) {
-		List<Alergia> alergias = repo.findAll();
+		List<Alergia> alergias = repo.findAll(id.toString());
 		List<BuscarAlergia> rsAlergias = new ArrayList<>();
 		if (!alergias.isEmpty()) {
 			for (Alergia alergia : alergias) {
@@ -142,7 +141,6 @@ public class AlergiaService {
 				med.setIdMedicamento(new MedicamentoId(rs.getString("id_medicamento")));
 				med.setNomeMedicamento(rs.getString("nome_medicamento"));
 				med.setComposicao(rs.getString("composicao"));
-				med.setAtivo(rs.getInt("ativo"));
 			}
 			return med;
 		});

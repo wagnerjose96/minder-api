@@ -54,11 +54,10 @@ public class AlarmeService {
 
 	public Optional<Page<BuscarAlarme>> encontrar(Pageable pageable, UsuarioId id, String searchTerm) {
 		List<BuscarAlarme> resultados = new ArrayList<>();
-		List<Alarme> alarmes = repo.findAll();
-		if (!alarmes.isEmpty()) {
+		Page<Alarme> alarmes = repo.findAll(pageable, id.toString());
+		if (alarmes.hasContent()) {
 			for (Alarme alarme : alarmes) {
-				if (alarme.getIdUsuario().toString().equals(id.toString())
-						&& TermoDeBusca.searchTerm(alarme.getDescricao(), searchTerm)) {
+				if (TermoDeBusca.searchTerm(alarme.getDescricao(), searchTerm)) {
 					BuscarAlarme nova = new BuscarAlarme(alarme);
 					Optional<Medicamento> medicamento = medRepo.findById(alarme.getIdMedicamento());
 					if (medicamento.isPresent())

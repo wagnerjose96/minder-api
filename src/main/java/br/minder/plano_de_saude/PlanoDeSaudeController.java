@@ -91,16 +91,15 @@ public class PlanoDeSaudeController {
 	public ResponseEntity<String> putPlanoDeSaude(@RequestBody EditarPlanoDeSaude comando, @RequestHeader String token)
 			throws AccessDeniedException, SQLException, ParseException {
 		if (autentica.autenticaRequisicao(token)) {
-			if (!service.encontrar(comando.getId(), autentica.idUser(token)).isPresent()) {
-				throw new NullPointerException("O plano de saúde a ser alterado não existe no banco de dados");
+			if (service.encontrar(comando.getId(), autentica.idUser(token)).isPresent()) {
+				Optional<PlanoDeSaudeId> optionalPlanoId = service.alterar(comando);
+				if (optionalPlanoId.isPresent()) {
+					return ResponseEntity.ok().body("O plano de saúde foi alterado com sucesso");
+				} else {
+					throw new SQLException("Ocorreu um erro interno durante a alteração do plano de saúde");
+				}
 			}
-
-			Optional<PlanoDeSaudeId> optionalPlanoId = service.alterar(comando);
-			if (optionalPlanoId.isPresent()) {
-				return ResponseEntity.ok().body("O plano de saúde foi alterado com sucesso");
-			} else {
-				throw new SQLException("Ocorreu um erro interno durante a alteração do plano de saúde");
-			}
+			throw new NullPointerException("O plano de saúde a ser alterado não existe no banco de dados");
 		}
 		throw new AccessDeniedException(ACESSONEGADO);
 	}
@@ -110,9 +109,11 @@ public class PlanoDeSaudeController {
 	public ResponseEntity<String> deletePlanoDeSaude(@PathVariable PlanoDeSaudeId id, @RequestHeader String token)
 			throws AccessDeniedException {
 		if (autentica.autenticaRequisicao(token)) {
-			Optional<String> resultado = service.deletar(id);
-			if (resultado.isPresent())
-				return ResponseEntity.ok(resultado.get());
+			if (service.encontrar(id, autentica.idUser(token)).isPresent()) {
+				Optional<String> resultado = service.deletar(id);
+				if (resultado.isPresent())
+					return ResponseEntity.ok(resultado.get());
+			}
 			throw new NullPointerException("O plano de saúde a ser deletado não existe no banco de dados");
 		}
 		throw new AccessDeniedException(ACESSONEGADO);

@@ -72,12 +72,11 @@ public class CirurgiaService {
 	}
 
 	public Optional<Page<BuscarCirurgia>> encontrar(Pageable pageable, UsuarioId id, String searchTerm) {
-		List<Cirurgia> cirurgias = cirurgiaRepo.findAll();
+		Page<Cirurgia> cirurgias = cirurgiaRepo.findAll(pageable, id.toString());
 		List<BuscarCirurgia> rsCirurgias = new ArrayList<>();
-		if (!cirurgias.isEmpty()) {
+		if (cirurgias.hasContent()) {
 			for (Cirurgia cirurgia : cirurgias) {
-				if (id.toString().equals(cirurgia.getIdUsuario().toString())
-						&& TermoDeBusca.searchTerm(cirurgia.getTipoCirurgia(), searchTerm)) {
+				if (TermoDeBusca.searchTerm(cirurgia.getTipoCirurgia(), searchTerm)) {
 					List<BuscarMedicamento> medicamentos = executeQuery(cirurgia.getIdCirurgia().toString(), sql);
 					BuscarCirurgia nova = new BuscarCirurgia(cirurgia);
 					nova.setMedicamentos(medicamentos);
@@ -93,7 +92,7 @@ public class CirurgiaService {
 	}
 
 	public List<BuscarCirurgia> encontrar(UsuarioId id) {
-		List<Cirurgia> cirurgias = cirurgiaRepo.findAll();
+		List<Cirurgia> cirurgias = cirurgiaRepo.findAll(id.toString());
 		List<BuscarCirurgia> rsCirurgias = new ArrayList<>();
 		if (!cirurgias.isEmpty()) {
 			for (Cirurgia cirurgia : cirurgias) {
@@ -137,7 +136,6 @@ public class CirurgiaService {
 				med.setIdMedicamento(new MedicamentoId(rs.getString("id_medicamento")));
 				med.setNomeMedicamento(rs.getString("nome_medicamento"));
 				med.setComposicao(rs.getString("composicao"));
-				med.setAtivo(rs.getInt("ativo"));
 			}
 			return med;
 		});
