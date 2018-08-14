@@ -4,6 +4,9 @@ import java.text.Normalizer;
 
 public class TermoDeBusca {
 
+	private TermoDeBusca() {
+	}
+
 	private static String deAccent(String str) {
 		return Normalizer.normalize(str, Normalizer.Form.NFD).replaceAll("[^\\p{ASCII}]", "");
 	}
