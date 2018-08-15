@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import br.minder.emergencia.comandos.BuscarEmergencia;
+import br.minder.emergencia.comandos.BuscarEmergenciaPdf;
 import br.minder.emergencia.comandos.CriarEmergencia;
 import br.minder.emergencia.comandos.EditarEmergencia;
 import br.minder.security.Autentica;
@@ -23,7 +24,7 @@ import io.swagger.annotations.ApiOperation;
 
 @Api("Basic Emergência Controller")
 @RestController
-@RequestMapping("/emergencias")
+@RequestMapping("/api/emergencia")
 @CrossOrigin
 public class EmergenciaController {
 	private static final String ACESSONEGADO = "Acesso negado";
@@ -34,11 +35,25 @@ public class EmergenciaController {
 	@Autowired
 	private Autentica autentica;
 
-	@ApiOperation("Busque a sua emergencias")
+	@ApiOperation("Busque a sua emergência")
 	@GetMapping
 	public ResponseEntity<BuscarEmergencia> getEmergencia(@RequestHeader String token) throws AccessDeniedException {
 		if (autentica.autenticaRequisicao(token)) {
 			Optional<BuscarEmergencia> optionalEmergencias = service.encontrar(autentica.idUser(token));
+			if (optionalEmergencias.isPresent()) {
+				return ResponseEntity.ok(optionalEmergencias.get());
+			}
+			throw new NullPointerException("Não existe nenhuma emergência cadastrada no banco de dados");
+		}
+		throw new AccessDeniedException(ACESSONEGADO);
+	}
+
+	@ApiOperation("Gere o PDF da sua emergência")
+	@GetMapping("/pdf")
+	public ResponseEntity<BuscarEmergenciaPdf> getEmergenciaPdf(@RequestHeader String token)
+			throws AccessDeniedException {
+		if (autentica.autenticaRequisicao(token)) {
+			Optional<BuscarEmergenciaPdf> optionalEmergencias = service.encontrarPdf(autentica.idUser(token));
 			if (optionalEmergencias.isPresent()) {
 				return ResponseEntity.ok(optionalEmergencias.get());
 			}
@@ -65,11 +80,9 @@ public class EmergenciaController {
 	public ResponseEntity<String> putEmergencia(@RequestBody EditarEmergencia comando, @RequestHeader String token)
 			throws AccessDeniedException {
 		if (autentica.autenticaRequisicao(token)) {
-			if (!service.encontrar(comando.getId(), autentica.idUser(token)).isPresent()) {
-				throw new NullPointerException("A emergência a ser alterada não existe no banco de dados");
-			}
-			service.alterar(comando);
-			return ResponseEntity.ok().body("A emergência foi alterada com sucesso");
+			if (service.alterar(comando, autentica.idUser(token)).isPresent())
+				return ResponseEntity.ok().body("A emergência foi alterada com sucesso");
+			throw new NullPointerException("A emergência a ser alterada não existe no banco de dados");
 		}
 		throw new AccessDeniedException(ACESSONEGADO);
 	}

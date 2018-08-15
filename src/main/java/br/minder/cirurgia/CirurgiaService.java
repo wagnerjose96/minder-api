@@ -4,6 +4,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -12,6 +16,7 @@ import br.minder.cirurgia.cirurgia_medicamento.CirurgiaMedicamentoService;
 import br.minder.cirurgia.comandos.BuscarCirurgia;
 import br.minder.cirurgia.comandos.CriarCirurgia;
 import br.minder.cirurgia.comandos.EditarCirurgia;
+import br.minder.conversor.TermoDeBusca;
 import br.minder.medicamento.MedicamentoId;
 import br.minder.medicamento.MedicamentoService;
 import br.minder.medicamento.comandos.BuscarMedicamento;
@@ -66,8 +71,28 @@ public class CirurgiaService {
 		return Optional.empty();
 	}
 
-	public Optional<List<BuscarCirurgia>> encontrar(UsuarioId id) {
-		List<Cirurgia> cirurgias = cirurgiaRepo.findAll();
+	public Optional<Page<BuscarCirurgia>> encontrar(Pageable pageable, UsuarioId id, String searchTerm) {
+		Page<Cirurgia> cirurgias = cirurgiaRepo.findAll(pageable, id.toString());
+		List<BuscarCirurgia> rsCirurgias = new ArrayList<>();
+		if (cirurgias.hasContent()) {
+			for (Cirurgia cirurgia : cirurgias) {
+				if (TermoDeBusca.searchTerm(cirurgia.getTipoCirurgia(), searchTerm)) {
+					List<BuscarMedicamento> medicamentos = executeQuery(cirurgia.getIdCirurgia().toString(), sql);
+					BuscarCirurgia nova = new BuscarCirurgia(cirurgia);
+					nova.setMedicamentos(medicamentos);
+					rsCirurgias.add(nova);
+				}
+			}
+			Page<BuscarCirurgia> page = new PageImpl<>(rsCirurgias,
+					PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), pageable.getSort()),
+					rsCirurgias.size());
+			return Optional.of(page);
+		}
+		return Optional.empty();
+	}
+
+	public List<BuscarCirurgia> encontrar(UsuarioId id) {
+		List<Cirurgia> cirurgias = cirurgiaRepo.findAll(id.toString());
 		List<BuscarCirurgia> rsCirurgias = new ArrayList<>();
 		if (!cirurgias.isEmpty()) {
 			for (Cirurgia cirurgia : cirurgias) {
@@ -78,9 +103,8 @@ public class CirurgiaService {
 					rsCirurgias.add(nova);
 				}
 			}
-			return Optional.of(rsCirurgias);
 		}
-		return Optional.empty();
+		return rsCirurgias;
 	}
 
 	public Optional<CirurgiaId> alterar(EditarCirurgia comando) {
@@ -112,7 +136,6 @@ public class CirurgiaService {
 				med.setIdMedicamento(new MedicamentoId(rs.getString("id_medicamento")));
 				med.setNomeMedicamento(rs.getString("nome_medicamento"));
 				med.setComposicao(rs.getString("composicao"));
-				med.setAtivo(rs.getInt("ativo"));
 			}
 			return med;
 		});

@@ -6,9 +6,10 @@ import static org.junit.Assert.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+import java.security.NoSuchAlgorithmException;
 import java.sql.Date;
 import java.time.LocalDate;
 import java.util.HashSet;
@@ -122,18 +123,18 @@ public class TestAlergiaController {
 		String error = objectMapper.writeValueAsString(new CriarAlergia());
 
 		this.mockMvc
-				.perform(post("/alergias").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+				.perform(post("/api/alergia").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
 						.header("token", logar("wagnerju", "1234")).content(jsonString))
 				.andExpect(jsonPath("$", equalTo("A alergia foi cadastrada com sucesso")))
 				.andExpect(status().isCreated());
 
 		this.mockMvc
-				.perform(post("/alergias").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+				.perform(post("/api/alergia").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
 						.header("token", logar("wagnerju", "1234") + "TokenErrado").content(jsonString))
 				.andExpect(jsonPath("$.error", equalTo("Acesso negado"))).andExpect(status().isForbidden());
 
 		this.mockMvc
-				.perform(post("/alergias").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+				.perform(post("/api/alergia").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
 						.header("token", logar("wagnerju", "1234")).content(error))
 				.andExpect(jsonPath("$.error", equalTo("A alergia não foi salva devido a um erro interno")))
 				.andExpect(status().isInternalServerError());
@@ -141,7 +142,7 @@ public class TestAlergiaController {
 		error = objectMapper.writeValueAsString(criarAlergiaErro1(idsMedicamentos, "Alergia de pele"));
 
 		this.mockMvc
-				.perform(post("/alergias").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+				.perform(post("/api/alergia").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
 						.header("token", logar("wagnerju", "1234")).content(error))
 				.andExpect(jsonPath("$.error", equalTo("A alergia não foi salva devido a um erro interno")))
 				.andExpect(status().isInternalServerError());
@@ -149,7 +150,7 @@ public class TestAlergiaController {
 		error = objectMapper.writeValueAsString(criarAlergiaErro2(idsMedicamentos, "Alergia de pele"));
 
 		this.mockMvc
-				.perform(post("/alergias").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+				.perform(post("/api/alergia").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
 						.header("token", logar("wagnerju", "1234")).content(error))
 				.andExpect(jsonPath("$.error", equalTo("A alergia não foi salva devido a um erro interno")))
 				.andExpect(status().isInternalServerError());
@@ -157,7 +158,7 @@ public class TestAlergiaController {
 		error = objectMapper.writeValueAsString(criarAlergiaErro3(idsMedicamentos, "Alergia de pele"));
 
 		this.mockMvc
-				.perform(post("/alergias").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+				.perform(post("/api/alergia").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
 						.header("token", logar("wagnerju", "1234")).content(error))
 				.andExpect(jsonPath("$.error", equalTo("A alergia não foi salva devido a um erro interno")))
 				.andExpect(status().isInternalServerError());
@@ -165,7 +166,7 @@ public class TestAlergiaController {
 		error = objectMapper.writeValueAsString(criarAlergiaErro4(idsMedicamentos, "Alergia de pele"));
 
 		this.mockMvc
-				.perform(post("/alergias").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+				.perform(post("/api/alergia").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
 						.header("token", logar("wagnerju", "1234")).content(error))
 				.andExpect(jsonPath("$.error", equalTo("A alergia não foi salva devido a um erro interno")))
 				.andExpect(status().isInternalServerError());
@@ -173,7 +174,7 @@ public class TestAlergiaController {
 		error = objectMapper.writeValueAsString(criarAlergiaErro5(idsMedicamentos, "Alergia de pele"));
 
 		this.mockMvc
-				.perform(post("/alergias").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+				.perform(post("/api/alergia").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
 						.header("token", logar("wagnerju", "1234")).content(error))
 				.andExpect(jsonPath("$.error", equalTo("A alergia não foi salva devido a um erro interno")))
 				.andExpect(status().isInternalServerError());
@@ -184,7 +185,7 @@ public class TestAlergiaController {
 		error = objectMapper.writeValueAsString(criarAlergiaErro6(idsMedicamentos2, "Alergia de pele"));
 
 		this.mockMvc
-				.perform(post("/alergias").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+				.perform(post("/api/alergia").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
 						.header("token", logar("wagnerju", "1234")).content(error))
 				.andExpect(jsonPath("$", equalTo("A alergia foi cadastrada com sucesso")))
 				.andExpect(status().isCreated());
@@ -207,7 +208,7 @@ public class TestAlergiaController {
 		String jsonString = objectMapper.writeValueAsString(criarAlergia(idsMedicamentos, "Alergia de pele"));
 
 		this.mockMvc
-				.perform(post("/alergias").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+				.perform(post("/api/alergia").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
 						.header("token", logar("wagnerju", "1234")).content(jsonString))
 				.andExpect(jsonPath("$", equalTo("A alergia foi cadastrada com sucesso")))
 				.andExpect(status().isCreated());
@@ -215,22 +216,22 @@ public class TestAlergiaController {
 		List<Alergia> alergias = repoAlergia.findAll();
 		assertThat(alergias.get(0), notNullValue());
 
-		String error = objectMapper.writeValueAsString(editarAlergia(alergias.get(0), idsMedicamentos));
+		jsonString = objectMapper.writeValueAsString(editarAlergia(alergias.get(0), idsMedicamentos));
 
 		this.mockMvc
-				.perform(put("/alergias").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
-						.header("token", logar("wagnerju", "1234")).content(error))
+				.perform(put("/api/alergia").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+						.header("token", logar("wagnerju", "1234")).content(jsonString))
 				.andExpect(jsonPath("$", equalTo("A alergia foi alterada com sucesso"))).andExpect(status().isOk());
 
 		this.mockMvc
-				.perform(put("/alergias").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+				.perform(put("/api/alergia").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
 						.header("token", logar("wagnerju", "1234") + "TokenErrado").content(jsonString))
 				.andExpect(jsonPath("$.error", equalTo("Acesso negado"))).andExpect(status().isForbidden());
 
-		error = objectMapper.writeValueAsString(editarAlergiaError(alergias.get(0).getIdAlergia()));
+		String error = objectMapper.writeValueAsString(editarAlergiaError(alergias.get(0).getIdAlergia()));
 
 		this.mockMvc
-				.perform(put("/alergias").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+				.perform(put("/api/alergia").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
 						.header("token", logar("wagnerju", "1234")).content(error))
 				.andExpect(jsonPath("$.error", equalTo("Ocorreu um erro interno durante a alteração da alergia")))
 				.andExpect(status().isInternalServerError());
@@ -238,7 +239,7 @@ public class TestAlergiaController {
 		error = objectMapper.writeValueAsString(editarAlergiaError(alergias.get(0).getIdAlergia()));
 
 		this.mockMvc
-				.perform(put("/alergias").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+				.perform(put("/api/alergia").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
 						.header("token", logar("wagnerju", "1234")).content(error))
 				.andExpect(jsonPath("$.error", equalTo("Ocorreu um erro interno durante a alteração da alergia")))
 				.andExpect(status().isInternalServerError());
@@ -247,7 +248,7 @@ public class TestAlergiaController {
 		usuarios = repo.findAll();
 
 		this.mockMvc
-				.perform(put("/alergias").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+				.perform(put("/api/alergia").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
 						.header("token", logar("lathuanny", "1234")).content(error))
 				.andExpect(jsonPath("$.error", equalTo("A alergia a ser alterada não existe no banco de dados")))
 				.andExpect(status().isNotFound());
@@ -255,7 +256,7 @@ public class TestAlergiaController {
 		error = objectMapper.writeValueAsString(editarAlergiaError1(alergias.get(0), idsMedicamentos));
 
 		this.mockMvc
-				.perform(put("/alergias").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+				.perform(put("/api/alergia").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
 						.header("token", logar("wagnerju", "1234")).content(error))
 				.andExpect(jsonPath("$.error", equalTo("Ocorreu um erro interno durante a alteração da alergia")))
 				.andExpect(status().isInternalServerError());
@@ -263,7 +264,7 @@ public class TestAlergiaController {
 		error = objectMapper.writeValueAsString(editarAlergiaError2(alergias.get(0), idsMedicamentos));
 
 		this.mockMvc
-				.perform(put("/alergias").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+				.perform(put("/api/alergia").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
 						.header("token", logar("wagnerju", "1234")).content(error))
 				.andExpect(jsonPath("$.error", equalTo("Ocorreu um erro interno durante a alteração da alergia")))
 				.andExpect(status().isInternalServerError());
@@ -271,7 +272,7 @@ public class TestAlergiaController {
 		error = objectMapper.writeValueAsString(editarAlergiaError3(alergias.get(0), idsMedicamentos));
 
 		this.mockMvc
-				.perform(put("/alergias").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+				.perform(put("/api/alergia").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
 						.header("token", logar("wagnerju", "1234")).content(error))
 				.andExpect(jsonPath("$.error", equalTo("Ocorreu um erro interno durante a alteração da alergia")))
 				.andExpect(status().isInternalServerError());
@@ -279,7 +280,7 @@ public class TestAlergiaController {
 		error = objectMapper.writeValueAsString(editarAlergiaError4(alergias.get(0), idsMedicamentos));
 
 		this.mockMvc
-				.perform(put("/alergias").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+				.perform(put("/api/alergia").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
 						.header("token", logar("wagnerju", "1234")).content(error))
 				.andExpect(jsonPath("$.error", equalTo("Ocorreu um erro interno durante a alteração da alergia")))
 				.andExpect(status().isInternalServerError());
@@ -287,7 +288,7 @@ public class TestAlergiaController {
 		error = objectMapper.writeValueAsString(editarAlergiaError5(alergias.get(0), idsMedicamentos));
 
 		this.mockMvc
-				.perform(put("/alergias").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+				.perform(put("/api/alergia").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
 						.header("token", logar("wagnerju", "1234")).content(error))
 				.andExpect(jsonPath("$.error", equalTo("Ocorreu um erro interno durante a alteração da alergia")))
 				.andExpect(status().isInternalServerError());
@@ -295,7 +296,7 @@ public class TestAlergiaController {
 		error = objectMapper.writeValueAsString(editarAlergiaError6());
 
 		this.mockMvc
-				.perform(put("/alergias").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+				.perform(put("/api/alergia").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
 						.header("token", logar("wagnerju", "1234")).content(error))
 				.andExpect(jsonPath("$.error", equalTo("A alergia a ser alterada não existe no banco de dados")))
 				.andExpect(status().isNotFound());
@@ -303,7 +304,7 @@ public class TestAlergiaController {
 		error = objectMapper.writeValueAsString(editarAlergiaError7(alergias.get(0), idsMedicamentos));
 
 		this.mockMvc
-				.perform(put("/alergias").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+				.perform(put("/api/alergia").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
 						.header("token", logar("wagnerju", "1234")).content(error))
 				.andExpect(jsonPath("$.error", equalTo("A alergia a ser alterada não existe no banco de dados")))
 				.andExpect(status().isNotFound());
@@ -311,7 +312,7 @@ public class TestAlergiaController {
 		error = objectMapper.writeValueAsString(editarAlergiaError8(alergias.get(0), idsMedicamentos));
 
 		this.mockMvc
-				.perform(put("/alergias").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+				.perform(put("/api/alergia").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
 						.header("token", logar("wagnerju", "1234")).content(error))
 				.andExpect(jsonPath("$.error", equalTo("A alergia a ser alterada não existe no banco de dados")))
 				.andExpect(status().isNotFound());
@@ -319,40 +320,38 @@ public class TestAlergiaController {
 		error = objectMapper.writeValueAsString(editarAlergiaError9(alergias.get(0), idsMedicamentos));
 
 		this.mockMvc
-				.perform(put("/alergias").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+				.perform(put("/api/alergia").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
 						.header("token", logar("wagnerju", "1234")).content(error))
 				.andExpect(jsonPath("$.error", equalTo("A alergia a ser alterada não existe no banco de dados")))
 				.andExpect(status().isNotFound());
-		
+
 		error = objectMapper.writeValueAsString(editarAlergiaError10(alergias.get(0), idsMedicamentos));
 
 		this.mockMvc
-				.perform(put("/alergias").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+				.perform(put("/api/alergia").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
 						.header("token", logar("wagnerju", "1234")).content(error))
 				.andExpect(jsonPath("$.error", equalTo("A alergia a ser alterada não existe no banco de dados")))
 				.andExpect(status().isNotFound());
-		
+
 		error = objectMapper.writeValueAsString(editarAlergiaError11(alergias.get(0), idsMedicamentos));
 
 		this.mockMvc
-				.perform(put("/alergias").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+				.perform(put("/api/alergia").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
 						.header("token", logar("wagnerju", "1234")).content(error))
 				.andExpect(jsonPath("$.error", equalTo("A alergia a ser alterada não existe no banco de dados")))
 				.andExpect(status().isNotFound());
-		
+
 		idsMedicamentos.add(new MedicamentoId());
-		
+
 		error = objectMapper.writeValueAsString(editarAlergiaError12(alergias.get(0), idsMedicamentos));
 
-		this.mockMvc
-				.perform(put("/alergias").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
-						.header("token", logar("wagnerju", "1234")).content(error))
-				.andExpect(status().isOk());
-		
+		this.mockMvc.perform(put("/api/alergia").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+				.header("token", logar("wagnerju", "1234")).content(error)).andExpect(status().isOk());
+
 		error = objectMapper.writeValueAsString(editarAlergiaError13(alergias.get(0), idsMedicamentos));
 
 		this.mockMvc
-				.perform(put("/alergias").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+				.perform(put("/api/alergia").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
 						.header("token", logar("wagnerju", "1234")).content(error))
 				.andExpect(jsonPath("$.error", equalTo("A alergia a ser alterada não existe no banco de dados")))
 				.andExpect(status().isNotFound());
@@ -377,7 +376,7 @@ public class TestAlergiaController {
 		final String jsonString = objectMapper.writeValueAsString(criarAlergia(idsMedicamentos, "Alergia de pele"));
 
 		this.mockMvc
-				.perform(post("/alergias").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+				.perform(post("/api/alergia").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
 						.header("token", logar("wagnerju", "1234")).content(jsonString))
 				.andExpect(jsonPath("$", equalTo("A alergia foi cadastrada com sucesso")))
 				.andExpect(status().isCreated());
@@ -386,16 +385,16 @@ public class TestAlergiaController {
 		assertThat(alergias.get(0), notNullValue());
 
 		this.mockMvc
-				.perform(get("/alergias/" + alergias.get(0).getIdAlergia().toString()).header("token",
+				.perform(get("/api/alergia/" + alergias.get(0).getIdAlergia().toString()).header("token",
 						logar("wagnerju", "1234")))
 				.andExpect(jsonPath("$.tipoAlergia", equalTo("Alergia de pele"))).andExpect(status().isOk());
 
 		this.mockMvc
-				.perform(get("/alergias/" + alergias.get(0).getIdAlergia().toString()).header("token",
+				.perform(get("/api/alergia/" + alergias.get(0).getIdAlergia().toString()).header("token",
 						logar("wagnerju", "1234") + "TokenError"))
 				.andExpect(jsonPath("$.error", equalTo("Acesso negado"))).andExpect(status().isForbidden());
 
-		this.mockMvc.perform(get("/alergias/" + new AlergiaId().toString()).header("token", logar("wagnerju", "1234")))
+		this.mockMvc.perform(get("/api/alergia/" + new AlergiaId().toString()).header("token", logar("wagnerju", "1234")))
 				.andExpect(jsonPath("$.error", equalTo("A alergia procurada não existe no banco de dados")))
 				.andExpect(status().isNotFound());
 
@@ -403,7 +402,7 @@ public class TestAlergiaController {
 		usuarios = repo.findAll();
 
 		this.mockMvc
-				.perform(get("/alergias/" + alergias.get(0).getIdAlergia().toString()).header("token",
+				.perform(get("/api/alergia/" + alergias.get(0).getIdAlergia().toString()).header("token",
 						logar("lathuanny", "1234")))
 				.andExpect(jsonPath("$.error", equalTo("A alergia procurada não existe no banco de dados")))
 				.andExpect(status().isNotFound());
@@ -421,15 +420,15 @@ public class TestAlergiaController {
 
 		List<Usuario> usuarios = repo.findAll();
 		assertThat(usuarios.get(0), notNullValue());
-		
-		this.mockMvc.perform(get("/alergias").header("token", logar("wagnerju", "1234")))
+
+		this.mockMvc.perform(get("/api/alergia").header("token", logar("wagnerju", "1234")))
 				.andExpect(jsonPath("$.error", equalTo("Não existe nenhuma alergia cadastrada no banco de dados")))
 				.andExpect(status().isNotFound());
-		
+
 		String jsonString = objectMapper.writeValueAsString(criarAlergia(idsMedicamentos, "Alergia de pele"));
 
 		this.mockMvc
-				.perform(post("/alergias").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+				.perform(post("/api/alergia").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
 						.header("token", logar("wagnerju", "1234")).content(jsonString))
 				.andExpect(jsonPath("$", equalTo("A alergia foi cadastrada com sucesso")))
 				.andExpect(status().isCreated());
@@ -437,7 +436,7 @@ public class TestAlergiaController {
 		jsonString = objectMapper.writeValueAsString(criarAlergia(idsMedicamentos, "Alergia nas pernas"));
 
 		this.mockMvc
-				.perform(post("/alergias").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+				.perform(post("/api/alergia").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
 						.header("token", logar("wagnerju", "1234")).content(jsonString))
 				.andExpect(jsonPath("$", equalTo("A alergia foi cadastrada com sucesso")))
 				.andExpect(status().isCreated());
@@ -445,18 +444,14 @@ public class TestAlergiaController {
 		List<Alergia> alergias = repoAlergia.findAll();
 		assertThat(alergias.get(0), notNullValue());
 
-		this.mockMvc.perform(get("/alergias").header("token", logar("wagnerju", "1234"))).andDo(print())
-				.andExpect(jsonPath("$[0].tipoAlergia", equalTo("Alergia de pele")))
-				.andExpect(jsonPath("$[1].tipoAlergia", equalTo("Alergia nas pernas"))).andExpect(status().isOk());
+		this.mockMvc.perform(get("/api/alergia").header("token", logar("wagnerju", "1234"))).andExpect(status().isOk());
 
-		this.mockMvc.perform(get("/alergias").header("token", logar("wagnerju", "1234") + "TokenError"))
+		this.mockMvc.perform(
+				get("/api/alergia").param("searchTerm", "Alergia nas pernas").header("token", logar("wagnerju", "1234")))
+				.andExpect(status().isOk());
+
+		this.mockMvc.perform(get("/api/alergia").header("token", logar("wagnerju", "1234") + "TokenError"))
 				.andExpect(jsonPath("$.error", equalTo("Acesso negado"))).andExpect(status().isForbidden());
-
-		serviceUsuario.salvar(criarUsuario("lathuanny@hotmail.com", "lathuanny", idGenero, idSangue)).get();
-		usuarios = repo.findAll();
-		assertThat(usuarios.get(1), notNullValue());
-
-		this.mockMvc.perform(get("/alergias").header("token", logar("lathuanny", "1234"))).andExpect(status().isOk());
 	}
 
 	private CriarAlergia criarAlergia(Set<MedicamentoId> idsMedicamentos, String tipoAlergia) {
@@ -665,7 +660,7 @@ public class TestAlergiaController {
 		alergiaEditada.setLocalAfetado("Pernas");
 		return alergiaEditada;
 	}
-	
+
 	private EditarAlergia editarAlergiaError13(Alergia alergia, Set<MedicamentoId> idsMedicamentos) {
 		EditarAlergia alergiaEditada = new EditarAlergia();
 		alergiaEditada.setIdAlergia(new AlergiaId());
@@ -712,7 +707,7 @@ public class TestAlergiaController {
 		return id;
 	}
 
-	private String logar(String nomeUsuario, String senha) {
+	private String logar(String nomeUsuario, String senha) throws NoSuchAlgorithmException {
 		LogarUsuario corpoLogin = new LogarUsuario();
 		corpoLogin.setIdentificador(nomeUsuario);
 		corpoLogin.setSenha(senha);

@@ -273,7 +273,7 @@ public class TestAlarmeService {
 		assertThat(alarme.getQuantidade(), equalTo("1"));
 		assertThat(alarme.getIdUsuario().toString(), equalTo(idUsuario.toString()));
 
-		Optional<String> mensagemDeletado = serviceAlarme.deletar(idAlarme);
+		Optional<String> mensagemDeletado = serviceAlarme.deletar(idAlarme, idUsuario);
 
 		assertThat(mensagemDeletado.get(), notNullValue());
 		assertThat(mensagemDeletado.get(),

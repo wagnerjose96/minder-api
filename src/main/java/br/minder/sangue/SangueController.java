@@ -27,7 +27,7 @@ import io.swagger.annotations.ApiOperation;
 
 @Api("Basic Tipo Sanguíneo Controller")
 @RestController
-@RequestMapping("/sangues")
+@RequestMapping("/api/sangue")
 @CrossOrigin
 public class SangueController {
 	private static final String ACESSONEGADO = "Acesso negado";

@@ -6,7 +6,6 @@ import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import org.hibernate.envers.Audited;
-
 import br.minder.alarme.comandos.CriarAlarme;
 import br.minder.alarme.comandos.EditarAlarme;
 import br.minder.medicamento.MedicamentoId;
@@ -23,8 +22,6 @@ public class Alarme {
 	@AttributeOverride(name = "value", column = @Column(name = "id"))
 	@Setter(AccessLevel.NONE) 
 	private AlarmeId id;
-	@AttributeOverride(name = "value", column = @Column(name = "id_medicamento"))
-	private MedicamentoId idMedicamento;
 	@AttributeOverride(name = "value", column = @Column(name = "id_usuario"))
 	private UsuarioId idUsuario;
 	private Date dataInicio;
@@ -32,6 +29,8 @@ public class Alarme {
 	private String quantidade;
 	private String descricao;
 	private int periodicidade;
+	@AttributeOverride(name = "value", column = @Column(name = "id_medicamento"))
+	private MedicamentoId idMedicamento;
 
 	public Alarme() {
 	}

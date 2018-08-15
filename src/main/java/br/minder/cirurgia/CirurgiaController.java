@@ -3,9 +3,10 @@ package br.minder.cirurgia;
 import java.net.URI;
 import java.nio.file.AccessDeniedException;
 import java.sql.SQLException;
-import java.util.List;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
@@ -27,7 +29,7 @@ import io.swagger.annotations.ApiOperation;
 
 @Api("Basic Cirurgia Controller")
 @RestController
-@RequestMapping("/cirurgias")
+@RequestMapping("/api/cirurgia")
 @CrossOrigin
 public class CirurgiaController {
 	private static final String ACESSONEGADO = "Acesso negado";
@@ -40,9 +42,12 @@ public class CirurgiaController {
 
 	@ApiOperation("Busque todas as cirurgias")
 	@GetMapping
-	public ResponseEntity<List<BuscarCirurgia>> getCirurgias(@RequestHeader String token) throws AccessDeniedException {
+	public ResponseEntity<Page<BuscarCirurgia>> getCirurgias(Pageable p, @RequestHeader String token,
+			@RequestParam(name = "searchTerm", defaultValue = "", required = false) String searchTerm)
+			throws AccessDeniedException {
 		if (autentica.autenticaRequisicao(token)) {
-			Optional<List<BuscarCirurgia>> optionalCirurgias = cirurgiaService.encontrar(autentica.idUser(token));
+			Optional<Page<BuscarCirurgia>> optionalCirurgias = cirurgiaService.encontrar(p, autentica.idUser(token),
+					searchTerm);
 			if (optionalCirurgias.isPresent()) {
 				return ResponseEntity.ok(optionalCirurgias.get());
 			}
@@ -86,15 +91,15 @@ public class CirurgiaController {
 	public ResponseEntity<String> putCirurgia(@RequestBody EditarCirurgia comando, @RequestHeader String token)
 			throws SQLException, AccessDeniedException {
 		if (autentica.autenticaRequisicao(token)) {
-			if (!cirurgiaService.encontrar(comando.getIdCirurgia(), autentica.idUser(token)).isPresent()) {
-				throw new NullPointerException("A cirurgia a ser alterada não existe no banco de dados");
+			if (cirurgiaService.encontrar(comando.getIdCirurgia(), autentica.idUser(token)).isPresent()) {
+				Optional<CirurgiaId> optionalCirurgiaId = cirurgiaService.alterar(comando);
+				if (optionalCirurgiaId.isPresent()) {
+					return ResponseEntity.ok().body("A cirurgia foi alterada com sucesso");
+				} else {
+					throw new SQLException("Ocorreu um erro interno durante a alteração do cirurgia");
+				}
 			}
-			Optional<CirurgiaId> optionalCirurgiaId = cirurgiaService.alterar(comando);
-			if (optionalCirurgiaId.isPresent()) {
-				return ResponseEntity.ok().body("A cirurgia foi alterada com sucesso");
-			} else {
-				throw new SQLException("Ocorreu um erro interno durante a alteração do cirurgia");
-			}
+			throw new NullPointerException("A cirurgia a ser alterada não existe no banco de dados");
 		}
 		throw new AccessDeniedException(ACESSONEGADO);
 	}

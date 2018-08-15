@@ -1,5 +1,6 @@
 package br.minder.usuario_adm;
 
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -20,7 +21,7 @@ public class UsuarioAdmService {
 	@Autowired
 	private UsuarioAdmRepository repo;
 
-	public Optional<UsuarioAdmId> salvar(CriarUsuarioAdm comando) {
+	public Optional<UsuarioAdmId> salvar(CriarUsuarioAdm comando) throws NoSuchAlgorithmException {
 		if (comando.getNome() != null) {
 			UsuarioAdm novo = repo.save(new UsuarioAdm(comando));
 			return Optional.of(novo.getId());
@@ -58,7 +59,7 @@ public class UsuarioAdmService {
 		return Optional.empty();
 	}
 
-	public Optional<UsuarioAdmId> alterar(EditarUsuarioAdm comando) {
+	public Optional<UsuarioAdmId> alterar(EditarUsuarioAdm comando) throws NoSuchAlgorithmException {
 		Optional<UsuarioAdm> optional = repo.findById(comando.getId());
 		if (comando.getNome() != null && optional.isPresent()) {
 			UsuarioAdm user = optional.get();

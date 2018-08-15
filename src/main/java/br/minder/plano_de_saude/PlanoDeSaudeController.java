@@ -3,9 +3,11 @@ package br.minder.plano_de_saude;
 import java.net.URI;
 import java.nio.file.AccessDeniedException;
 import java.sql.SQLException;
-import java.util.List;
+import java.text.ParseException;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -18,7 +20,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
-
 import br.minder.plano_de_saude.PlanoDeSaudeId;
 import br.minder.plano_de_saude.PlanoDeSaudeService;
 import br.minder.plano_de_saude.comandos.BuscarPlanoDeSaude;
@@ -30,7 +31,7 @@ import io.swagger.annotations.ApiOperation;
 
 @Api("Basic Plano De Saúde Controller")
 @Controller
-@RequestMapping("/planos")
+@RequestMapping("/api/plano")
 @CrossOrigin
 public class PlanoDeSaudeController {
 	private static final String ACESSONEGADO = "Acesso negado";
@@ -43,10 +44,10 @@ public class PlanoDeSaudeController {
 
 	@ApiOperation("Busque todos os planos de saúde")
 	@GetMapping
-	public ResponseEntity<List<BuscarPlanoDeSaude>> getPlanoDeSaudes(@RequestHeader String token)
+	public ResponseEntity<Page<BuscarPlanoDeSaude>> getPlanoDeSaudes(Pageable p, @RequestHeader String token)
 			throws AccessDeniedException {
 		if (autentica.autenticaRequisicao(token)) {
-			Optional<List<BuscarPlanoDeSaude>> optionalPlanoDeSaude = service.encontrar(autentica.idUser(token));
+			Optional<Page<BuscarPlanoDeSaude>> optionalPlanoDeSaude = service.encontrar(p, autentica.idUser(token));
 			if (optionalPlanoDeSaude.isPresent()) {
 				return ResponseEntity.ok(optionalPlanoDeSaude.get());
 			}
@@ -72,7 +73,7 @@ public class PlanoDeSaudeController {
 	@ApiOperation("Cadastre um novo plano de saúde")
 	@PostMapping
 	public ResponseEntity<String> postPlanoDeSaude(@RequestBody CriarPlanoDeSaude comando, @RequestHeader String token)
-			throws AccessDeniedException, SQLException {
+			throws AccessDeniedException, SQLException, ParseException {
 		if (autentica.autenticaRequisicao(token)) {
 			Optional<PlanoDeSaudeId> optionalPlanoDeSaudeId = service.salvar(comando, autentica.idUser(token));
 			if (optionalPlanoDeSaudeId.isPresent()) {
@@ -88,18 +89,17 @@ public class PlanoDeSaudeController {
 	@ApiOperation("Altere um plano de saúde")
 	@PutMapping
 	public ResponseEntity<String> putPlanoDeSaude(@RequestBody EditarPlanoDeSaude comando, @RequestHeader String token)
-			throws AccessDeniedException, SQLException {
+			throws AccessDeniedException, SQLException, ParseException {
 		if (autentica.autenticaRequisicao(token)) {
-			if (!service.encontrar(comando.getId(), autentica.idUser(token)).isPresent()) {
-				throw new NullPointerException("O plano de saúde a ser alterado não existe no banco de dados");
+			if (service.encontrar(comando.getId(), autentica.idUser(token)).isPresent()) {
+				Optional<PlanoDeSaudeId> optionalPlanoId = service.alterar(comando);
+				if (optionalPlanoId.isPresent()) {
+					return ResponseEntity.ok().body("O plano de saúde foi alterado com sucesso");
+				} else {
+					throw new SQLException("Ocorreu um erro interno durante a alteração do plano de saúde");
+				}
 			}
-
-			Optional<PlanoDeSaudeId> optionalPlanoId = service.alterar(comando);
-			if (optionalPlanoId.isPresent()) {
-				return ResponseEntity.ok().body("O plano de saúde foi alterado com sucesso");
-			} else {
-				throw new SQLException("Ocorreu um erro interno durante a alteração do plano de saúde");
-			}
+			throw new NullPointerException("O plano de saúde a ser alterado não existe no banco de dados");
 		}
 		throw new AccessDeniedException(ACESSONEGADO);
 	}
@@ -109,7 +109,7 @@ public class PlanoDeSaudeController {
 	public ResponseEntity<String> deletePlanoDeSaude(@PathVariable PlanoDeSaudeId id, @RequestHeader String token)
 			throws AccessDeniedException {
 		if (autentica.autenticaRequisicao(token)) {
-			Optional<String> resultado = service.deletar(id);
+			Optional<String> resultado = service.deletar(id, autentica.idUser(token));
 			if (resultado.isPresent())
 				return ResponseEntity.ok(resultado.get());
 			throw new NullPointerException("O plano de saúde a ser deletado não existe no banco de dados");

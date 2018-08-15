@@ -1,7 +1,8 @@
 package br.minder.conversor;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.sql.Date;
+import java.util.Date;
 
 import org.springframework.stereotype.Component;
 
@@ -11,7 +12,7 @@ public class ConverterData {
 		SimpleDateFormat formato = new SimpleDateFormat("dd-MM-yyyy");
 		return formato.format(data);
 	}
-	
+
 	public static String converterDataToTest(Date date) {
 		SimpleDateFormat formato = new SimpleDateFormat("yyyy-MM-dd");
 		return formato.format(date);
@@ -19,5 +20,15 @@ public class ConverterData {
 
 	private ConverterData() {
 
+	}
+
+	public static Date converterDataVencimentoSalvar(String string) throws ParseException {
+		SimpleDateFormat formato = new SimpleDateFormat("yyyy-MM");
+		return formato.parse(string);
+	}
+
+	public static String converterDataVencimento(Long data) {
+		SimpleDateFormat formato = new SimpleDateFormat("MM-yyyy");
+		return formato.format(data);
 	}
 }

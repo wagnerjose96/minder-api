@@ -6,7 +6,6 @@ import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import org.hibernate.envers.Audited;
-
 import br.minder.alergia.comandos.CriarAlergia;
 import br.minder.alergia.comandos.EditarAlergia;
 import br.minder.usuario.UsuarioId;
@@ -29,6 +28,7 @@ public class Alergia {
 	@AttributeOverride(name = "value", column = @Column(name = "id_usuario"))
 	private UsuarioId idUsuario;
 
+
 	public Alergia() {
 	}
 	
@@ -48,4 +48,6 @@ public class Alergia {
 		this.dataDescoberta = comando.getDataDescoberta();
 		this.efeitos = comando.getEfeitos();
 	}
+	
+	
 }

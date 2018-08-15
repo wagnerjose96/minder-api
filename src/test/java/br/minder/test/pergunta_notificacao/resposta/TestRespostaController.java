@@ -8,6 +8,8 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+import java.security.NoSuchAlgorithmException;
 import java.sql.Date;
 import java.time.LocalDate;
 import java.util.List;
@@ -111,6 +113,7 @@ public class TestRespostaController {
 	@Test
 	public void testCadastrar() throws Exception {
 		perguntaService.salvar(criarPergunta("Como vc está se sentindo hj??"));
+		perguntaService.salvar(criarPergunta("Como vc está se sentindo hj??"));
 		List<Pergunta> pergunta = repoPergunta.findAll();
 		assertThat(pergunta.get(0), notNullValue());
 
@@ -127,20 +130,60 @@ public class TestRespostaController {
 		String jsonString = objectMapper.writeValueAsString(criarResposta("Bem", pergunta.get(0).getIdPergunta()));
 
 		this.mockMvc
-				.perform(post("/respostas").header("token", logarAdm("admin", "1234"))
+				.perform(post("/api/resposta").header("token", logarAdm("admin", "1234"))
+						.accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON).content(jsonString))
+				.andExpect(jsonPath("$", equalTo("A resposta foi cadastrada com sucesso")))
+				.andExpect(status().isCreated());
+		
+		jsonString = objectMapper.writeValueAsString(criarResposta("Bem", pergunta.get(1).getIdPergunta()));
+
+		this.mockMvc
+				.perform(post("/api/resposta").header("token", logarAdm("admin", "1234"))
 						.accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON).content(jsonString))
 				.andExpect(jsonPath("$", equalTo("A resposta foi cadastrada com sucesso")))
 				.andExpect(status().isCreated());
 
+		jsonString = objectMapper.writeValueAsString(criarResposta("Mal", pergunta.get(0).getIdPergunta()));
+
 		this.mockMvc
-				.perform(post("/respostas").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+				.perform(post("/api/resposta").header("token", logarAdm("admin", "1234"))
+						.accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON).content(jsonString))
+				.andExpect(jsonPath("$", equalTo("A resposta foi cadastrada com sucesso")))
+				.andExpect(status().isCreated());
+
+		jsonString = objectMapper.writeValueAsString(criarResposta("Triste", pergunta.get(0).getIdPergunta()));
+
+		this.mockMvc
+				.perform(post("/api/resposta").header("token", logarAdm("admin", "1234"))
+						.accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON).content(jsonString))
+				.andExpect(jsonPath("$", equalTo("A resposta foi cadastrada com sucesso")))
+				.andExpect(status().isCreated());
+
+		jsonString = objectMapper.writeValueAsString(criarResposta("Alegre", pergunta.get(0).getIdPergunta()));
+
+		this.mockMvc
+				.perform(post("/api/resposta").header("token", logarAdm("admin", "1234"))
+						.accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON).content(jsonString))
+				.andExpect(jsonPath("$", equalTo("A resposta foi cadastrada com sucesso")))
+				.andExpect(status().isCreated());
+
+		jsonString = objectMapper.writeValueAsString(criarResposta("Erro", pergunta.get(0).getIdPergunta()));
+
+		this.mockMvc
+				.perform(post("/api/resposta").header("token", logarAdm("admin", "1234"))
+						.accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON).content(jsonString))
+				.andExpect(jsonPath("$.error", equalTo("A resposta não foi salva devido a um erro interno")))
+				.andExpect(status().isInternalServerError());
+
+		this.mockMvc
+				.perform(post("/api/resposta").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
 						.header("token", logar("wagnerju", "1234")).content(jsonString))
 				.andExpect(jsonPath("$.error", equalTo("Acesso negado"))).andExpect(status().isForbidden());
 
 		jsonString = objectMapper.writeValueAsString(criarRespostaErro1("Bem", pergunta.get(0).getIdPergunta()));
 
 		this.mockMvc
-				.perform(post("/respostas").header("token", logarAdm("admin", "1234"))
+				.perform(post("/api/resposta").header("token", logarAdm("admin", "1234"))
 						.accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON).content(jsonString))
 				.andExpect(jsonPath("$.error", equalTo("A resposta não foi salva devido a um erro interno")))
 				.andExpect(status().isInternalServerError());
@@ -148,7 +191,7 @@ public class TestRespostaController {
 		jsonString = objectMapper.writeValueAsString(criarRespostaErro2("Bem", pergunta.get(0).getIdPergunta()));
 
 		this.mockMvc
-				.perform(post("/respostas").header("token", logarAdm("admin", "1234"))
+				.perform(post("/api/resposta").header("token", logarAdm("admin", "1234"))
 						.accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON).content(jsonString))
 				.andExpect(jsonPath("$.error", equalTo("A resposta não foi salva devido a um erro interno")))
 				.andExpect(status().isInternalServerError());
@@ -174,7 +217,7 @@ public class TestRespostaController {
 		String jsonString = objectMapper.writeValueAsString(criarResposta("Bem", pergunta.get(0).getIdPergunta()));
 
 		this.mockMvc
-				.perform(post("/respostas").header("token", logarAdm("admin", "1234"))
+				.perform(post("/api/resposta").header("token", logarAdm("admin", "1234"))
 						.accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON).content(jsonString))
 				.andExpect(jsonPath("$", equalTo("A resposta foi cadastrada com sucesso")))
 				.andExpect(status().isCreated());
@@ -185,19 +228,19 @@ public class TestRespostaController {
 		jsonString = objectMapper.writeValueAsString(editarResposta(respostas.get(0)));
 
 		this.mockMvc
-				.perform(put("/respostas").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+				.perform(put("/api/resposta").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
 						.header("token", logarAdm("admin", "1234")).content(jsonString))
 				.andExpect(jsonPath("$", equalTo("A resposta foi alterada com sucesso"))).andExpect(status().isOk());
 
 		this.mockMvc
-				.perform(put("/respostas").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+				.perform(put("/api/resposta").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
 						.header("token", logar("wagnerju", "1234")).content(jsonString))
 				.andExpect(jsonPath("$.error", equalTo("Acesso negado"))).andExpect(status().isForbidden());
 
 		jsonString = objectMapper.writeValueAsString(editarRespostaErro1(respostas.get(0)));
 
 		this.mockMvc
-				.perform(put("/respostas").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+				.perform(put("/api/resposta").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
 						.header("token", logarAdm("admin", "1234")).content(jsonString))
 				.andExpect(jsonPath("$.error", equalTo("Ocorreu um erro interno durante a alteração da resposta")))
 				.andExpect(status().isInternalServerError());
@@ -205,7 +248,7 @@ public class TestRespostaController {
 		jsonString = objectMapper.writeValueAsString(editarRespostaErro2(respostas.get(0)));
 
 		this.mockMvc
-				.perform(put("/respostas").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+				.perform(put("/api/resposta").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
 						.header("token", logarAdm("admin", "1234")).content(jsonString))
 				.andExpect(jsonPath("$.error", equalTo("A resposta a ser alterada não existe no banco de dados")))
 				.andExpect(status().isNotFound());
@@ -213,7 +256,7 @@ public class TestRespostaController {
 		jsonString = objectMapper.writeValueAsString(editarRespostaErro3(respostas.get(0)));
 
 		this.mockMvc
-				.perform(put("/respostas").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+				.perform(put("/api/resposta").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
 						.header("token", logarAdm("admin", "1234")).content(jsonString))
 				.andExpect(jsonPath("$.error", equalTo("A resposta a ser alterada não existe no banco de dados")))
 				.andExpect(status().isNotFound());
@@ -230,14 +273,14 @@ public class TestRespostaController {
 		List<UsuarioAdm> adm = repoAdm.findAll();
 		assertThat(adm.get(0), notNullValue());
 
-		this.mockMvc.perform(get("/respostas").header("token", logarAdm("admin", "1234")))
+		this.mockMvc.perform(get("/api/resposta").header("token", logarAdm("admin", "1234")))
 				.andExpect(jsonPath("$.error", equalTo("Não existe nenhuma resposta cadastrada no banco de dados")))
 				.andExpect(status().isNotFound());
 
 		String jsonString = objectMapper.writeValueAsString(criarResposta("Bem", pergunta.get(0).getIdPergunta()));
 
 		this.mockMvc
-				.perform(post("/respostas").header("token", logarAdm("admin", "1234"))
+				.perform(post("/api/resposta").header("token", logarAdm("admin", "1234"))
 						.accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON).content(jsonString))
 				.andExpect(jsonPath("$", equalTo("A resposta foi cadastrada com sucesso")))
 				.andExpect(status().isCreated());
@@ -245,7 +288,7 @@ public class TestRespostaController {
 		jsonString = objectMapper.writeValueAsString(criarResposta("Ruim", pergunta.get(0).getIdPergunta()));
 
 		this.mockMvc
-				.perform(post("/respostas").header("token", logarAdm("admin", "1234"))
+				.perform(post("/api/resposta").header("token", logarAdm("admin", "1234"))
 						.accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON).content(jsonString))
 				.andExpect(jsonPath("$", equalTo("A resposta foi cadastrada com sucesso")))
 				.andExpect(status().isCreated());
@@ -254,7 +297,7 @@ public class TestRespostaController {
 		assertThat(respostas.get(0), notNullValue());
 		assertThat(respostas.get(1), notNullValue());
 
-		this.mockMvc.perform(get("/respostas").header("token", logarAdm("admin", "1234")))
+		this.mockMvc.perform(get("/api/resposta").header("token", logarAdm("admin", "1234")))
 				.andExpect(jsonPath("$[0].descricao", equalTo("Bem")))
 				.andExpect(jsonPath("$[1].descricao", equalTo("Ruim"))).andExpect(status().isOk());
 	}
@@ -270,14 +313,14 @@ public class TestRespostaController {
 		assertThat(adm.get(0), notNullValue());
 
 		this.mockMvc
-				.perform(get("/respostas/" + new RespostaId().toString()).header("token", logarAdm("admin", "1234")))
+				.perform(get("/api/resposta/" + new RespostaId().toString()).header("token", logarAdm("admin", "1234")))
 				.andExpect(jsonPath("$.error", equalTo("A resposta procurada não existe no banco de dados")))
 				.andExpect(status().isNotFound());
 
 		String jsonString = objectMapper.writeValueAsString(criarResposta("Bem", pergunta.get(0).getIdPergunta()));
 
 		this.mockMvc
-				.perform(post("/respostas").header("token", logarAdm("admin", "1234"))
+				.perform(post("/api/resposta").header("token", logarAdm("admin", "1234"))
 						.accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON).content(jsonString))
 				.andExpect(jsonPath("$", equalTo("A resposta foi cadastrada com sucesso")))
 				.andExpect(status().isCreated());
@@ -285,7 +328,7 @@ public class TestRespostaController {
 		List<Resposta> respostas = repo.findAll();
 		assertThat(respostas.get(0), notNullValue());
 
-		this.mockMvc.perform(get("/respostas/" + respostas.get(0).getIdResposta().toString()))
+		this.mockMvc.perform(get("/api/resposta/" + respostas.get(0).getIdResposta().toString()))
 				.andExpect(jsonPath("$", notNullValue())).andExpect(jsonPath("$.descricao", equalTo("Bem")))
 				.andExpect(status().isOk());
 	}
@@ -342,7 +385,7 @@ public class TestRespostaController {
 		return adm;
 	}
 
-	private String logarAdm(String nomeUsuario, String senha) {
+	private String logarAdm(String nomeUsuario, String senha) throws NoSuchAlgorithmException {
 		LogarUsuario corpoLogin = new LogarUsuario();
 		corpoLogin.setIdentificador(nomeUsuario);
 		corpoLogin.setSenha(senha);

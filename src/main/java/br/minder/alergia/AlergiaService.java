@@ -5,6 +5,10 @@ import java.util.List;
 import java.util.Optional;
 import javax.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 import br.minder.alergia.Alergia;
@@ -14,6 +18,7 @@ import br.minder.alergia.alergia_medicamento.AlergiaMedicamentoService;
 import br.minder.alergia.comandos.BuscarAlergia;
 import br.minder.alergia.comandos.CriarAlergia;
 import br.minder.alergia.comandos.EditarAlergia;
+import br.minder.conversor.TermoDeBusca;
 import br.minder.medicamento.MedicamentoId;
 import br.minder.medicamento.MedicamentoService;
 import br.minder.medicamento.comandos.BuscarMedicamento;
@@ -69,8 +74,28 @@ public class AlergiaService {
 		return Optional.empty();
 	}
 
-	public Optional<List<BuscarAlergia>> encontrar(UsuarioId id) {
-		List<Alergia> alergias = repo.findAll();
+	public Optional<Page<BuscarAlergia>> encontrar(Pageable pageable, UsuarioId id, String searchTerm) {
+		Page<Alergia> alergias = repo.findAll(pageable, id.toString());
+		List<BuscarAlergia> rsAlergias = new ArrayList<>();
+		if (alergias.hasContent()) {
+			for (Alergia alergia : alergias) {
+				if (TermoDeBusca.searchTerm(alergia.getTipoAlergia(), searchTerm)) {
+					List<BuscarMedicamento> medicamentos = executeQuery(alergia.getIdAlergia().toString(), sql);
+					BuscarAlergia nova = new BuscarAlergia(alergia);
+					nova.setMedicamentos(medicamentos);
+					rsAlergias.add(nova);
+				}
+			}
+			Page<BuscarAlergia> page = new PageImpl<>(rsAlergias,
+					PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), pageable.getSort()),
+					rsAlergias.size());
+			return Optional.of(page);
+		}
+		return Optional.empty();
+	}
+
+	public List<BuscarAlergia> encontrar(UsuarioId id) {
+		List<Alergia> alergias = repo.findAll(id.toString());
 		List<BuscarAlergia> rsAlergias = new ArrayList<>();
 		if (!alergias.isEmpty()) {
 			for (Alergia alergia : alergias) {
@@ -81,9 +106,8 @@ public class AlergiaService {
 					rsAlergias.add(nova);
 				}
 			}
-			return Optional.of(rsAlergias);
 		}
-		return Optional.empty();
+		return rsAlergias;
 	}
 
 	public Optional<AlergiaId> alterar(EditarAlergia comando) {
@@ -117,7 +141,6 @@ public class AlergiaService {
 				med.setIdMedicamento(new MedicamentoId(rs.getString("id_medicamento")));
 				med.setNomeMedicamento(rs.getString("nome_medicamento"));
 				med.setComposicao(rs.getString("composicao"));
-				med.setAtivo(rs.getInt("ativo"));
 			}
 			return med;
 		});

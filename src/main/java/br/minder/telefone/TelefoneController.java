@@ -23,7 +23,7 @@ import io.swagger.annotations.ApiOperation;
 
 @Api("Basic Telefone Controller")
 @RestController
-@RequestMapping("/telefones")
+@RequestMapping("/api/telefone")
 @CrossOrigin
 public class TelefoneController {
 	@Autowired

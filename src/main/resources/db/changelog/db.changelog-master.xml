@@ -56,5 +56,6 @@
 	<include file="db/changelog/alterações/db.changelog-cirurgia_usuario.xml" />
 	<include file="db/changelog/alterações/db.changelog-doenca_usuario.xml" />
 	<include file="db/changelog/alterações/db.changelog-plano_de_saude_usuario.xml" />
+	<include file="db/changelog/alterações/db.changelog-plano_de_saude_vencimento.xml" />
 	
 </databaseChangeLog>

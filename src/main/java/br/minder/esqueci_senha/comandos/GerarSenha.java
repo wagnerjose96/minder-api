@@ -10,5 +10,6 @@ public class GerarSenha {
 	private UsuarioId id;
 	private String senha;
 	private String email;
+	private String nome;
 	private int ativo;
 }

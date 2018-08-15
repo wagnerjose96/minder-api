@@ -8,6 +8,8 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+import java.security.NoSuchAlgorithmException;
 import java.sql.Date;
 import java.time.LocalDate;
 import java.util.HashSet;
@@ -118,68 +120,68 @@ public class TestCirurgiaController {
 		String jsonString = objectMapper.writeValueAsString(criarCirurgia(idsMedicamentos, "Pedra no rim"));
 
 		this.mockMvc
-				.perform(post("/cirurgias").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+				.perform(post("/api/cirurgia").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
 						.header("token", logar("wagnerju", "1234")).content(jsonString))
 				.andExpect(jsonPath("$", equalTo("A cirurgia foi cadastrada com sucesso")))
 				.andExpect(status().isCreated());
 
 		this.mockMvc
-				.perform(post("/cirurgias").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+				.perform(post("/api/cirurgia").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
 						.header("token", logar("wagnerju", "1234") + "TokenError").content(jsonString))
 				.andExpect(jsonPath("$.error", equalTo("Acesso negado"))).andExpect(status().isForbidden());
 
 		jsonString = objectMapper.writeValueAsString(new CriarCirurgia());
 
 		this.mockMvc
-				.perform(post("/cirurgias").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+				.perform(post("/api/cirurgia").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
 						.header("token", logar("wagnerju", "1234")).content(jsonString))
 				.andExpect(jsonPath("$.error", equalTo("A cirurgia não foi salva devido a um erro interno")))
 				.andExpect(status().isInternalServerError());
-		
+
 		jsonString = objectMapper.writeValueAsString(criarCirurgiaError1(idsMedicamentos, "Pedra no rim"));
 
 		this.mockMvc
-				.perform(post("/cirurgias").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+				.perform(post("/api/cirurgia").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
 						.header("token", logar("wagnerju", "1234")).content(jsonString))
 				.andExpect(jsonPath("$.error", equalTo("A cirurgia não foi salva devido a um erro interno")))
 				.andExpect(status().isInternalServerError());
-		
+
 		jsonString = objectMapper.writeValueAsString(criarCirurgiaError2(idsMedicamentos, "Pedra no rim"));
 
 		this.mockMvc
-				.perform(post("/cirurgias").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+				.perform(post("/api/cirurgia").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
 						.header("token", logar("wagnerju", "1234")).content(jsonString))
 				.andExpect(jsonPath("$.error", equalTo("A cirurgia não foi salva devido a um erro interno")))
 				.andExpect(status().isInternalServerError());
-		
+
 		jsonString = objectMapper.writeValueAsString(criarCirurgiaError3(idsMedicamentos, "Pedra no rim"));
 
 		this.mockMvc
-				.perform(post("/cirurgias").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+				.perform(post("/api/cirurgia").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
 						.header("token", logar("wagnerju", "1234")).content(jsonString))
 				.andExpect(jsonPath("$.error", equalTo("A cirurgia não foi salva devido a um erro interno")))
 				.andExpect(status().isInternalServerError());
-		
+
 		jsonString = objectMapper.writeValueAsString(criarCirurgiaError4(idsMedicamentos, "Pedra no rim"));
 
 		this.mockMvc
-				.perform(post("/cirurgias").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+				.perform(post("/api/cirurgia").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
 						.header("token", logar("wagnerju", "1234")).content(jsonString))
 				.andExpect(jsonPath("$.error", equalTo("A cirurgia não foi salva devido a um erro interno")))
 				.andExpect(status().isInternalServerError());
-		
+
 		jsonString = objectMapper.writeValueAsString(criarCirurgiaError5(idsMedicamentos, "Pedra no rim"));
 
 		this.mockMvc
-				.perform(post("/cirurgias").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+				.perform(post("/api/cirurgia").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
 						.header("token", logar("wagnerju", "1234")).content(jsonString))
 				.andExpect(jsonPath("$.error", equalTo("A cirurgia não foi salva devido a um erro interno")))
 				.andExpect(status().isInternalServerError());
-		
+
 		jsonString = objectMapper.writeValueAsString(criarCirurgiaError6(idsMedicamentos, "Pedra no rim"));
 
 		this.mockMvc
-				.perform(post("/cirurgias").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+				.perform(post("/api/cirurgia").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
 						.header("token", logar("wagnerju", "1234")).content(jsonString))
 				.andExpect(jsonPath("$", equalTo("A cirurgia foi cadastrada com sucesso")))
 				.andExpect(status().isCreated());
@@ -201,7 +203,7 @@ public class TestCirurgiaController {
 		String jsonString = objectMapper.writeValueAsString(criarCirurgia(idsMedicamentos, "Pedra no rim"));
 
 		this.mockMvc
-				.perform(post("/cirurgias").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+				.perform(post("/api/cirurgia").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
 						.header("token", logar("wagnerju", "1234")).content(jsonString))
 				.andExpect(jsonPath("$", equalTo("A cirurgia foi cadastrada com sucesso")))
 				.andExpect(status().isCreated());
@@ -212,19 +214,19 @@ public class TestCirurgiaController {
 		jsonString = objectMapper.writeValueAsString(editarCirurgia(cirurgias.get(0), idsMedicamentos));
 
 		this.mockMvc
-				.perform(put("/cirurgias").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+				.perform(put("/api/cirurgia").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
 						.header("token", logar("wagnerju", "1234")).content(jsonString))
 				.andExpect(jsonPath("$", equalTo("A cirurgia foi alterada com sucesso"))).andExpect(status().isOk());
 
 		this.mockMvc
-				.perform(put("/cirurgias").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+				.perform(put("/api/cirurgia").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
 						.header("token", logar("wagnerju", "1234") + "TokenError").content(jsonString))
 				.andExpect(jsonPath("$.error", equalTo("Acesso negado"))).andExpect(status().isForbidden());
 
 		String error = objectMapper.writeValueAsString(editarCirurgiaError1(cirurgias.get(0), idsMedicamentos));
 
 		this.mockMvc
-				.perform(put("/cirurgias").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+				.perform(put("/api/cirurgia").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
 						.header("token", logar("wagnerju", "1234")).content(error))
 				.andExpect(jsonPath("$.error", equalTo("Ocorreu um erro interno durante a alteração do cirurgia")))
 				.andExpect(status().isInternalServerError());
@@ -232,87 +234,87 @@ public class TestCirurgiaController {
 		error = objectMapper.writeValueAsString(editarCirurgiaError2(cirurgias.get(0), idsMedicamentos));
 
 		this.mockMvc
-				.perform(put("/cirurgias").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+				.perform(put("/api/cirurgia").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
 						.header("token", logar("wagnerju", "1234")).content(error))
 				.andExpect(jsonPath("$.error", equalTo("Ocorreu um erro interno durante a alteração do cirurgia")))
 				.andExpect(status().isInternalServerError());
-		
+
 		error = objectMapper.writeValueAsString(editarCirurgiaError3(cirurgias.get(0), idsMedicamentos));
 
 		this.mockMvc
-				.perform(put("/cirurgias").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+				.perform(put("/api/cirurgia").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
 						.header("token", logar("wagnerju", "1234")).content(error))
 				.andExpect(jsonPath("$.error", equalTo("Ocorreu um erro interno durante a alteração do cirurgia")))
 				.andExpect(status().isInternalServerError());
-		
+
 		error = objectMapper.writeValueAsString(editarCirurgiaError4(cirurgias.get(0), idsMedicamentos));
 
 		this.mockMvc
-				.perform(put("/cirurgias").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+				.perform(put("/api/cirurgia").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
 						.header("token", logar("wagnerju", "1234")).content(error))
 				.andExpect(jsonPath("$.error", equalTo("Ocorreu um erro interno durante a alteração do cirurgia")))
 				.andExpect(status().isInternalServerError());
-		
+
 		error = objectMapper.writeValueAsString(editarCirurgiaError5(cirurgias.get(0), idsMedicamentos));
 
 		this.mockMvc
-				.perform(put("/cirurgias").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+				.perform(put("/api/cirurgia").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
 						.header("token", logar("wagnerju", "1234")).content(error))
 				.andExpect(jsonPath("$.error", equalTo("Ocorreu um erro interno durante a alteração do cirurgia")))
 				.andExpect(status().isInternalServerError());
-		
+
 		error = objectMapper.writeValueAsString(editarCirurgiaError6(cirurgias.get(0), idsMedicamentos));
 
 		this.mockMvc
-				.perform(put("/cirurgias").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+				.perform(put("/api/cirurgia").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
 						.header("token", logar("wagnerju", "1234")).content(error))
 				.andExpect(jsonPath("$.error", equalTo("A cirurgia a ser alterada não existe no banco de dados")))
 				.andExpect(status().isNotFound());
-		
+
 		error = objectMapper.writeValueAsString(editarCirurgiaError7(cirurgias.get(0), idsMedicamentos));
 
 		this.mockMvc
-				.perform(put("/cirurgias").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+				.perform(put("/api/cirurgia").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
 						.header("token", logar("wagnerju", "1234")).content(error))
 				.andExpect(jsonPath("$.error", equalTo("A cirurgia a ser alterada não existe no banco de dados")))
 				.andExpect(status().isNotFound());
-		
+
 		error = objectMapper.writeValueAsString(editarCirurgiaError8(cirurgias.get(0), idsMedicamentos));
 
 		this.mockMvc
-				.perform(put("/cirurgias").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+				.perform(put("/api/cirurgia").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
 						.header("token", logar("wagnerju", "1234")).content(error))
 				.andExpect(jsonPath("$.error", equalTo("A cirurgia a ser alterada não existe no banco de dados")))
 				.andExpect(status().isNotFound());
-		
+
 		error = objectMapper.writeValueAsString(editarCirurgiaError9(cirurgias.get(0), idsMedicamentos));
 
 		this.mockMvc
-				.perform(put("/cirurgias").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+				.perform(put("/api/cirurgia").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
 						.header("token", logar("wagnerju", "1234")).content(error))
 				.andExpect(jsonPath("$.error", equalTo("A cirurgia a ser alterada não existe no banco de dados")))
 				.andExpect(status().isNotFound());
-		
+
 		error = objectMapper.writeValueAsString(editarCirurgiaError10(cirurgias.get(0), idsMedicamentos));
 
 		this.mockMvc
-				.perform(put("/cirurgias").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+				.perform(put("/api/cirurgia").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
 						.header("token", logar("wagnerju", "1234")).content(error))
 				.andExpect(jsonPath("$.error", equalTo("A cirurgia a ser alterada não existe no banco de dados")))
 				.andExpect(status().isNotFound());
-		
+
 		error = objectMapper.writeValueAsString(editarCirurgiaError11(cirurgias.get(0), idsMedicamentos));
 
 		this.mockMvc
-				.perform(put("/cirurgias").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+				.perform(put("/api/cirurgia").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
 						.header("token", logar("wagnerju", "1234")).content(error))
 				.andExpect(jsonPath("$.error", equalTo("A cirurgia a ser alterada não existe no banco de dados")))
 				.andExpect(status().isNotFound());
-		
+
 		error = objectMapper.writeValueAsString(editarCirurgiaError12(cirurgias.get(0), idsMedicamentos));
 
 		this.mockMvc
-				.perform(put("/cirurgias").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+				.perform(put("/api/cirurgia").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
 						.header("token", logar("wagnerju", "1234")).content(error))
 				.andExpect(jsonPath("$.error", equalTo("A cirurgia a ser alterada não existe no banco de dados")))
 				.andExpect(status().isNotFound());
@@ -335,7 +337,7 @@ public class TestCirurgiaController {
 		final String jsonString = objectMapper.writeValueAsString(criarCirurgia(idsMedicamentos, "Pedra no rim"));
 
 		this.mockMvc
-				.perform(post("/cirurgias").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+				.perform(post("/api/cirurgia").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
 						.header("token", logar("wagnerju", "1234")).content(jsonString))
 				.andExpect(jsonPath("$", equalTo("A cirurgia foi cadastrada com sucesso")))
 				.andExpect(status().isCreated());
@@ -344,25 +346,25 @@ public class TestCirurgiaController {
 		assertThat(cirurgias.get(0), notNullValue());
 
 		this.mockMvc
-				.perform(get("/cirurgias/" + cirurgias.get(0).getIdCirurgia().toString()).header("token",
+				.perform(get("/api/cirurgia/" + cirurgias.get(0).getIdCirurgia().toString()).header("token",
 						logar("wagnerju", "1234")))
 				.andExpect(jsonPath("$.tipoCirurgia", equalTo("Pedra no rim"))).andExpect(status().isOk());
-		
+
 		this.mockMvc
-		.perform(get("/cirurgias/" + cirurgias.get(0).getIdCirurgia().toString()).header("token",
-				logar("wagnerju", "1234") + "TokenError"))
-		.andExpect(jsonPath("$.error", equalTo("Acesso negado"))).andExpect(status().isForbidden());
-		
+				.perform(get("/api/cirurgia/" + cirurgias.get(0).getIdCirurgia().toString()).header("token",
+						logar("wagnerju", "1234") + "TokenError"))
+				.andExpect(jsonPath("$.error", equalTo("Acesso negado"))).andExpect(status().isForbidden());
+
 		this.mockMvc
-		.perform(get("/cirurgias/" + new CirurgiaId().toString()).header("token",
-				logar("wagnerju", "1234")))
-		.andExpect(jsonPath("$.error", equalTo("A cirurgia procurada não existe no banco de dados"))).andExpect(status().isNotFound());
-	
+				.perform(get("/api/cirurgia/" + new CirurgiaId().toString()).header("token", logar("wagnerju", "1234")))
+				.andExpect(jsonPath("$.error", equalTo("A cirurgia procurada não existe no banco de dados")))
+				.andExpect(status().isNotFound());
+
 		this.mockMvc
-		.perform(get("/cirurgias/" + new CirurgiaId().toString()).header("token",
-				logar("lathuanny", "1234")))
-		.andExpect(jsonPath("$.error", equalTo("A cirurgia procurada não existe no banco de dados"))).andExpect(status().isNotFound());
-	
+				.perform(get("/api/cirurgia/" + new CirurgiaId().toString()).header("token", logar("lathuanny", "1234")))
+				.andExpect(jsonPath("$.error", equalTo("A cirurgia procurada não existe no banco de dados")))
+				.andExpect(status().isNotFound());
+
 	}
 
 	@Test
@@ -371,22 +373,21 @@ public class TestCirurgiaController {
 		GeneroId idGenero = criarGenero("Masculino");
 
 		serviceUsuario.salvar(criarUsuario("wagner@hotmail.com", "wagnerju", idGenero, idSangue)).get();
-		serviceUsuario.salvar(criarUsuario("lathuanny@hotmail.com", "lathuanny", idGenero, idSangue)).get();
 		MedicamentoId idMedicamento = serviceMedicamento.salvar(criarMedicamento("DorFlex", "100mg")).get();
 		Set<MedicamentoId> idsMedicamentos = new HashSet<MedicamentoId>();
 		idsMedicamentos.add(idMedicamento);
 
 		List<Usuario> usuarios = repo.findAll();
 		assertThat(usuarios.get(0), notNullValue());
-		
-		this.mockMvc.perform(get("/cirurgias").header("token", logar("wagnerju", "1234")))
-		.andExpect(jsonPath("$.error", equalTo("Não existe nenhuma cirurgia cadastrada no banco de dados")))
-		.andExpect(status().isNotFound());
+
+		this.mockMvc.perform(get("/api/cirurgia").header("token", logar("wagnerju", "1234")))
+				.andExpect(jsonPath("$.error", equalTo("Não existe nenhuma cirurgia cadastrada no banco de dados")))
+				.andExpect(status().isNotFound());
 
 		String jsonString = objectMapper.writeValueAsString(criarCirurgia(idsMedicamentos, "Pedra no rim"));
 
 		this.mockMvc
-				.perform(post("/cirurgias").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+				.perform(post("/api/cirurgia").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
 						.header("token", logar("wagnerju", "1234")).content(jsonString))
 				.andExpect(jsonPath("$", equalTo("A cirurgia foi cadastrada com sucesso")))
 				.andExpect(status().isCreated());
@@ -394,7 +395,7 @@ public class TestCirurgiaController {
 		jsonString = objectMapper.writeValueAsString(criarCirurgia(idsMedicamentos, "Báriatrica"));
 
 		this.mockMvc
-				.perform(post("/cirurgias").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+				.perform(post("/api/cirurgia").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
 						.header("token", logar("wagnerju", "1234")).content(jsonString))
 				.andExpect(jsonPath("$", equalTo("A cirurgia foi cadastrada com sucesso")))
 				.andExpect(status().isCreated());
@@ -402,14 +403,14 @@ public class TestCirurgiaController {
 		List<Cirurgia> cirurgias = repoCirurgia.findAll();
 		assertThat(cirurgias.get(0), notNullValue());
 
-		this.mockMvc.perform(get("/cirurgias").header("token", logar("wagnerju", "1234")))
-				.andExpect(jsonPath("$[0].tipoCirurgia", equalTo("Pedra no rim")))
-				.andExpect(jsonPath("$[1].tipoCirurgia", equalTo("Báriatrica"))).andExpect(status().isOk());
-		
-		this.mockMvc.perform(get("/cirurgias").header("token", logar("wagnerju", "1234") + "TokenError"))
-		.andExpect(jsonPath("$.error", equalTo("Acesso negado"))).andExpect(status().isForbidden());
-		
-		this.mockMvc.perform(get("/cirurgias").header("token", logar("lathuanny", "1234"))).andExpect(status().isOk());
+		this.mockMvc.perform(get("/api/cirurgia").header("token", logar("wagnerju", "1234"))).andExpect(status().isOk());
+
+		this.mockMvc.perform(get("/api/cirurgia").header("token", logar("wagnerju", "1234") + "TokenError"))
+				.andExpect(jsonPath("$.error", equalTo("Acesso negado"))).andExpect(status().isForbidden());
+
+		this.mockMvc
+				.perform(get("/api/cirurgia").param("searchTerm", "bariatrica").header("token", logar("wagnerju", "1234")))
+				.andExpect(status().isOk());
 
 	}
 
@@ -422,7 +423,7 @@ public class TestCirurgiaController {
 		cirurgia.setTipoCirurgia(tipoCirurgia);
 		return cirurgia;
 	}
-	
+
 	private CriarCirurgia criarCirurgiaError1(Set<MedicamentoId> idsMedicamentos, String tipoCirurgia) {
 		CriarCirurgia cirurgia = new CriarCirurgia();
 		cirurgia.setClinicaResponsavel("Unimed");
@@ -431,7 +432,7 @@ public class TestCirurgiaController {
 		cirurgia.setTipoCirurgia(tipoCirurgia);
 		return cirurgia;
 	}
-	
+
 	private CriarCirurgia criarCirurgiaError2(Set<MedicamentoId> idsMedicamentos, String tipoCirurgia) {
 		CriarCirurgia cirurgia = new CriarCirurgia();
 		cirurgia.setDataCirurgia(Date.valueOf(LocalDate.of(2018, 07, 10)));
@@ -440,7 +441,7 @@ public class TestCirurgiaController {
 		cirurgia.setTipoCirurgia(tipoCirurgia);
 		return cirurgia;
 	}
-	
+
 	private CriarCirurgia criarCirurgiaError3(Set<MedicamentoId> idsMedicamentos, String tipoCirurgia) {
 		CriarCirurgia cirurgia = new CriarCirurgia();
 		cirurgia.setDataCirurgia(Date.valueOf(LocalDate.of(2018, 07, 10)));
@@ -449,7 +450,7 @@ public class TestCirurgiaController {
 		cirurgia.setTipoCirurgia(tipoCirurgia);
 		return cirurgia;
 	}
-	
+
 	private CriarCirurgia criarCirurgiaError4(Set<MedicamentoId> idsMedicamentos, String tipoCirurgia) {
 		CriarCirurgia cirurgia = new CriarCirurgia();
 		cirurgia.setDataCirurgia(Date.valueOf(LocalDate.of(2018, 07, 10)));
@@ -458,7 +459,7 @@ public class TestCirurgiaController {
 		cirurgia.setTipoCirurgia(tipoCirurgia);
 		return cirurgia;
 	}
-	
+
 	private CriarCirurgia criarCirurgiaError5(Set<MedicamentoId> idsMedicamentos, String tipoCirurgia) {
 		CriarCirurgia cirurgia = new CriarCirurgia();
 		cirurgia.setDataCirurgia(Date.valueOf(LocalDate.of(2018, 07, 10)));
@@ -467,7 +468,7 @@ public class TestCirurgiaController {
 		cirurgia.setMedicoResponsavel("Dr Maikon");
 		return cirurgia;
 	}
-	
+
 	private CriarCirurgia criarCirurgiaError6(Set<MedicamentoId> idsMedicamentos, String tipoCirurgia) {
 		CriarCirurgia cirurgia = new CriarCirurgia();
 		cirurgia.setDataCirurgia(Date.valueOf(LocalDate.of(2018, 07, 10)));
@@ -488,7 +489,7 @@ public class TestCirurgiaController {
 		cirurgiaEditada.setTipoCirurgia("Báriatrica");
 		return cirurgiaEditada;
 	}
-	
+
 	private EditarCirurgia editarCirurgiaError1(Cirurgia cirurgia, Set<MedicamentoId> idsMedicamentos) {
 		EditarCirurgia cirurgiaEditada = new EditarCirurgia();
 		cirurgiaEditada.setIdCirurgia(cirurgia.getIdCirurgia());
@@ -498,7 +499,7 @@ public class TestCirurgiaController {
 		cirurgiaEditada.setTipoCirurgia("Báriatrica");
 		return cirurgiaEditada;
 	}
-	
+
 	private EditarCirurgia editarCirurgiaError2(Cirurgia cirurgia, Set<MedicamentoId> idsMedicamentos) {
 		EditarCirurgia cirurgiaEditada = new EditarCirurgia();
 		cirurgiaEditada.setIdCirurgia(cirurgia.getIdCirurgia());
@@ -508,7 +509,7 @@ public class TestCirurgiaController {
 		cirurgiaEditada.setTipoCirurgia("Báriatrica");
 		return cirurgiaEditada;
 	}
-	
+
 	private EditarCirurgia editarCirurgiaError3(Cirurgia cirurgia, Set<MedicamentoId> idsMedicamentos) {
 		EditarCirurgia cirurgiaEditada = new EditarCirurgia();
 		cirurgiaEditada.setIdCirurgia(cirurgia.getIdCirurgia());
@@ -518,7 +519,7 @@ public class TestCirurgiaController {
 		cirurgiaEditada.setTipoCirurgia("Báriatrica");
 		return cirurgiaEditada;
 	}
-	
+
 	private EditarCirurgia editarCirurgiaError4(Cirurgia cirurgia, Set<MedicamentoId> idsMedicamentos) {
 		EditarCirurgia cirurgiaEditada = new EditarCirurgia();
 		cirurgiaEditada.setIdCirurgia(cirurgia.getIdCirurgia());
@@ -528,7 +529,7 @@ public class TestCirurgiaController {
 		cirurgiaEditada.setTipoCirurgia("Báriatrica");
 		return cirurgiaEditada;
 	}
-	
+
 	private EditarCirurgia editarCirurgiaError5(Cirurgia cirurgia, Set<MedicamentoId> idsMedicamentos) {
 		EditarCirurgia cirurgiaEditada = new EditarCirurgia();
 		cirurgiaEditada.setIdCirurgia(cirurgia.getIdCirurgia());
@@ -538,7 +539,7 @@ public class TestCirurgiaController {
 		cirurgiaEditada.setMedicoResponsavel(cirurgia.getMedicoResponsavel());
 		return cirurgiaEditada;
 	}
-	
+
 	private EditarCirurgia editarCirurgiaError6(Cirurgia cirurgia, Set<MedicamentoId> idsMedicamentos) {
 		EditarCirurgia cirurgiaEditada = new EditarCirurgia();
 		cirurgiaEditada.setIdCirurgia(new CirurgiaId());
@@ -549,7 +550,7 @@ public class TestCirurgiaController {
 		cirurgiaEditada.setTipoCirurgia("Báriatrica");
 		return cirurgiaEditada;
 	}
-	
+
 	private EditarCirurgia editarCirurgiaError7(Cirurgia cirurgia, Set<MedicamentoId> idsMedicamentos) {
 		EditarCirurgia cirurgiaEditada = new EditarCirurgia();
 		cirurgiaEditada.setIdCirurgia(new CirurgiaId());
@@ -559,7 +560,7 @@ public class TestCirurgiaController {
 		cirurgiaEditada.setTipoCirurgia("Báriatrica");
 		return cirurgiaEditada;
 	}
-	
+
 	private EditarCirurgia editarCirurgiaError8(Cirurgia cirurgia, Set<MedicamentoId> idsMedicamentos) {
 		EditarCirurgia cirurgiaEditada = new EditarCirurgia();
 		cirurgiaEditada.setIdCirurgia(new CirurgiaId());
@@ -569,7 +570,7 @@ public class TestCirurgiaController {
 		cirurgiaEditada.setTipoCirurgia("Báriatrica");
 		return cirurgiaEditada;
 	}
-	
+
 	private EditarCirurgia editarCirurgiaError9(Cirurgia cirurgia, Set<MedicamentoId> idsMedicamentos) {
 		EditarCirurgia cirurgiaEditada = new EditarCirurgia();
 		cirurgiaEditada.setIdCirurgia(new CirurgiaId());
@@ -579,7 +580,7 @@ public class TestCirurgiaController {
 		cirurgiaEditada.setTipoCirurgia("Báriatrica");
 		return cirurgiaEditada;
 	}
-	
+
 	private EditarCirurgia editarCirurgiaError10(Cirurgia cirurgia, Set<MedicamentoId> idsMedicamentos) {
 		EditarCirurgia cirurgiaEditada = new EditarCirurgia();
 		cirurgiaEditada.setIdCirurgia(new CirurgiaId());
@@ -589,7 +590,7 @@ public class TestCirurgiaController {
 		cirurgiaEditada.setTipoCirurgia("Báriatrica");
 		return cirurgiaEditada;
 	}
-	
+
 	private EditarCirurgia editarCirurgiaError11(Cirurgia cirurgia, Set<MedicamentoId> idsMedicamentos) {
 		EditarCirurgia cirurgiaEditada = new EditarCirurgia();
 		cirurgiaEditada.setIdCirurgia(new CirurgiaId());
@@ -599,7 +600,7 @@ public class TestCirurgiaController {
 		cirurgiaEditada.setMedicoResponsavel(cirurgia.getMedicoResponsavel());
 		return cirurgiaEditada;
 	}
-	
+
 	private EditarCirurgia editarCirurgiaError12(Cirurgia cirurgia, Set<MedicamentoId> idsMedicamentos) {
 		EditarCirurgia cirurgiaEditada = new EditarCirurgia();
 		cirurgiaEditada.setIdCirurgia(new CirurgiaId());
@@ -649,7 +650,7 @@ public class TestCirurgiaController {
 		return id;
 	}
 
-	private String logar(String nomeUsuario, String senha) {
+	private String logar(String nomeUsuario, String senha) throws NoSuchAlgorithmException {
 		LogarUsuario corpoLogin = new LogarUsuario();
 		corpoLogin.setIdentificador(nomeUsuario);
 		corpoLogin.setSenha(senha);

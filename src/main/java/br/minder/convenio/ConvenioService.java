@@ -5,14 +5,18 @@ import java.util.List;
 import java.util.Optional;
 import javax.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-
 import br.minder.convenio.Convenio;
 import br.minder.convenio.ConvenioId;
 import br.minder.convenio.ConvenioRepository;
 import br.minder.convenio.comandos.BuscarConvenio;
 import br.minder.convenio.comandos.CriarConvenio;
 import br.minder.convenio.comandos.EditarConvenio;
+import br.minder.conversor.TermoDeBusca;
 
 @Service
 @Transactional
@@ -29,34 +33,37 @@ public class ConvenioService {
 	}
 
 	public Optional<BuscarConvenio> encontrar(ConvenioId id) {
-		Optional<Convenio> convenio = convenioRepo.findById(id);
-		if (convenio.isPresent() && convenio.get().getAtivo() == 1) {
-			BuscarConvenio resultado = new BuscarConvenio(convenio.get());
+		Convenio convenio = convenioRepo.findById(id.toString());
+		if (convenio != null) {
+			BuscarConvenio resultado = new BuscarConvenio(convenio);
 			return Optional.of(resultado);
 		}
 		return Optional.empty();
 	}
 
-	public Optional<List<BuscarConvenio>> encontrar() {
+	public Optional<Page<BuscarConvenio>> encontrar(Pageable pageable, String searchTerm) {
 		List<BuscarConvenio> resultados = new ArrayList<>();
-		List<Convenio> convenios = convenioRepo.findAll();
-		if (!convenios.isEmpty()) {
+		Page<Convenio> convenios = convenioRepo.findAll(pageable);
+		if (convenios.hasContent()) {
 			for (Convenio convenio : convenios) {
-				if (convenio.getAtivo() == 1) {
+				if (convenio.getAtivo() == 1 && TermoDeBusca.searchTerm(convenio.getNome(), searchTerm)) {
 					BuscarConvenio nova = new BuscarConvenio(convenio);
 					resultados.add(nova);
 				}
 			}
-			return Optional.of(resultados);
+			Page<BuscarConvenio> page = new PageImpl<>(resultados,
+					PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), pageable.getSort()),
+					resultados.size());
+			return Optional.of(page);
 		}
 		return Optional.empty();
 	}
 
 	public Optional<String> deletar(ConvenioId id) {
-		Optional<Convenio> convenio = convenioRepo.findById(id);
-		if (convenio.isPresent()) {
-			convenio.get().setAtivo(0);
-			convenioRepo.save(convenio.get());
+		Convenio convenio = convenioRepo.findById(id.toString());
+		if (convenio != null) {
+			convenio.setAtivo(0);
+			convenioRepo.save(convenio);
 			return Optional.of("Convênio ===> " + id + ": deletado com sucesso");
 		}
 		return Optional.empty();

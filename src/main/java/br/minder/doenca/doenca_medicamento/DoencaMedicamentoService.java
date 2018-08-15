@@ -19,13 +19,8 @@ public class DoencaMedicamentoService {
 	public List<DoencaMedicamento> encontrar() {
 		return repo.findAll();
 	}
-	
+
 	public Optional<DoencaMedicamento> encontrar(DoencaMedicamentoId id) {
-		Optional<DoencaMedicamento> doenca = repo.findById(id);
-		DoencaMedicamento resultado = null;
-		if (doenca.isPresent()) {
-			resultado = new DoencaMedicamento(doenca.get());
-		}
-		return Optional.of(resultado);
+		return repo.findById(id);
 	}
 }

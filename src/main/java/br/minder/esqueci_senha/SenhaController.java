@@ -1,6 +1,9 @@
 package br.minder.esqueci_senha;
 
-import java.util.Optional;
+import java.io.UnsupportedEncodingException;
+import java.security.NoSuchAlgorithmException;
+
+import javax.mail.MessagingException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -9,13 +12,13 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import br.minder.esqueci_senha.comandos.GerarSenha;
+import br.minder.esqueci_senha.comandos.EsqueciSenha;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 
 @Api("Basic Senha Controller")
 @RestController
-@RequestMapping("/senha")
+@RequestMapping("/api/senha")
 @CrossOrigin
 public class SenhaController {
 	@Autowired
@@ -23,10 +26,10 @@ public class SenhaController {
 
 	@ApiOperation(value = "Crie uma senha aleatória para um usuário")
 	@PutMapping
-	public ResponseEntity<String> putUSenha(@RequestBody GerarSenha comando) {
-		Optional<String> senhaGerada = service.gerarSenhaAleatoria(comando);
-		if (senhaGerada.isPresent())
-			return ResponseEntity.ok("Nova senha -> " + senhaGerada.get() + ": criada com sucesso");
+	public ResponseEntity<String> putUSenha(@RequestBody EsqueciSenha comando)
+			throws MessagingException, UnsupportedEncodingException, NoSuchAlgorithmException {
+		if (service.gerarSenhaAleatoria(comando))
+			return ResponseEntity.ok("Nova senha criada com sucesso, verifique a caixa de entrada do seu email");
 		else
 			throw new NullPointerException("Usuário não encontrado");
 	}

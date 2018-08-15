@@ -101,18 +101,18 @@ public class TestLoginController {
 
 		String jsonString = objectMapper.writeValueAsString(logar("wagnerju", "1234"));
 
-		this.mockMvc.perform(post("/login").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+		this.mockMvc.perform(post("/api/login").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
 				.content(jsonString)).andExpect(jsonPath("$", notNullValue())).andExpect(status().isOk());
 
 		jsonString = objectMapper.writeValueAsString(logar("wagner@hotmail.com", "1234"));
 
-		this.mockMvc.perform(post("/login").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+		this.mockMvc.perform(post("/api/login").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
 				.content(jsonString)).andExpect(jsonPath("$", notNullValue())).andExpect(status().isOk());
 
 		jsonString = objectMapper.writeValueAsString(logar("lathuanny", "1234"));
 
 		this.mockMvc
-				.perform(post("/login").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+				.perform(post("/api/login").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
 						.content(jsonString))
 				.andExpect(jsonPath("$.error", equalTo("Login não realizado! Favor conferir os dados digitados")))
 				.andExpect(status().isNotFound());
@@ -120,7 +120,7 @@ public class TestLoginController {
 		jsonString = objectMapper.writeValueAsString(logar("lathuanny", "1235"));
 
 		this.mockMvc
-				.perform(post("/login").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+				.perform(post("/api/login").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
 						.content(jsonString))
 				.andExpect(jsonPath("$.error", equalTo("Login não realizado! Favor conferir os dados digitados")))
 				.andExpect(status().isNotFound());
@@ -128,7 +128,7 @@ public class TestLoginController {
 		jsonString = objectMapper.writeValueAsString(logar("wagner@hotmail.com", "12345"));
 
 		this.mockMvc
-				.perform(post("/login").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+				.perform(post("/api/login").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
 						.content(jsonString))
 				.andExpect(jsonPath("$.error", equalTo("Login não realizado! Favor conferir os dados digitados")))
 				.andExpect(status().isNotFound());
@@ -136,7 +136,7 @@ public class TestLoginController {
 		jsonString = objectMapper.writeValueAsString(logar("lathuanny@hotmail.com", "1234"));
 
 		this.mockMvc
-				.perform(post("/login").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+				.perform(post("/api/login").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
 						.content(jsonString))
 				.andExpect(jsonPath("$.error", equalTo("Login não realizado! Favor conferir os dados digitados")))
 				.andExpect(status().isNotFound());
@@ -144,7 +144,7 @@ public class TestLoginController {
 		jsonString = objectMapper.writeValueAsString(logar("lathuanny@", "1234"));
 
 		this.mockMvc
-				.perform(post("/login").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+				.perform(post("/api/login").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
 						.content(jsonString))
 				.andExpect(jsonPath("$.error", equalTo("Login não realizado! Favor conferir os dados digitados")))
 				.andExpect(status().isNotFound());
@@ -152,7 +152,7 @@ public class TestLoginController {
 		jsonString = objectMapper.writeValueAsString(logar("lathuannyhotmail.com", "1234"));
 
 		this.mockMvc
-				.perform(post("/login").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+				.perform(post("/api/login").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
 						.content(jsonString))
 				.andExpect(jsonPath("$.error", equalTo("Login não realizado! Favor conferir os dados digitados")))
 				.andExpect(status().isNotFound());
@@ -160,7 +160,7 @@ public class TestLoginController {
 		jsonString = objectMapper.writeValueAsString(logar("lathuanny@hotmail", "1234"));
 
 		this.mockMvc
-				.perform(post("/login").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+				.perform(post("/api/login").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
 						.content(jsonString))
 				.andExpect(jsonPath("$.error", equalTo("Login não realizado! Favor conferir os dados digitados")))
 				.andExpect(status().isNotFound());
@@ -168,7 +168,7 @@ public class TestLoginController {
 		jsonString = objectMapper.writeValueAsString(logar("@.com", "1234"));
 
 		this.mockMvc
-				.perform(post("/login").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+				.perform(post("/api/login").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
 						.content(jsonString))
 				.andExpect(jsonPath("$.error", equalTo("Login não realizado! Favor conferir os dados digitados")))
 				.andExpect(status().isNotFound());
@@ -176,7 +176,7 @@ public class TestLoginController {
 		jsonString = objectMapper.writeValueAsString(logar("lathuanny@.com", "1234"));
 
 		this.mockMvc
-				.perform(post("/login").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+				.perform(post("/api/login").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
 						.content(jsonString))
 				.andExpect(jsonPath("$.error", equalTo("Login não realizado! Favor conferir os dados digitados")))
 				.andExpect(status().isNotFound());
@@ -189,7 +189,7 @@ public class TestLoginController {
 		jsonString = objectMapper.writeValueAsString(logar("wagnerju", "1234"));
 
 		this.mockMvc
-				.perform(post("/login").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+				.perform(post("/api/login").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
 						.content(jsonString))
 				.andExpect(jsonPath("$.error", equalTo("Login não realizado! Favor conferir os dados digitados")))
 				.andExpect(status().isNotFound());
@@ -197,7 +197,7 @@ public class TestLoginController {
 		jsonString = objectMapper.writeValueAsString(logar("wagner@hotmail.com", "1234"));
 
 		this.mockMvc
-				.perform(post("/login").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+				.perform(post("/api/login").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
 						.content(jsonString))
 				.andExpect(jsonPath("$.error", equalTo("Login não realizado! Favor conferir os dados digitados")))
 				.andExpect(status().isNotFound());
@@ -212,14 +212,14 @@ public class TestLoginController {
 
 		String jsonString = objectMapper.writeValueAsString(logarAdm("admin", "1234"));
 
-		this.mockMvc.perform(post("/loginAdm").accept(MediaType.APPLICATION_JSON)
+		this.mockMvc.perform(post("/api/loginAdm").accept(MediaType.APPLICATION_JSON)
 				.contentType(MediaType.APPLICATION_JSON).content(jsonString)).andExpect(jsonPath("$", notNullValue()))
 				.andExpect(status().isOk());
 
 		jsonString = objectMapper.writeValueAsString(logarAdm("adm", "1234"));
 
 		this.mockMvc
-				.perform(post("/loginAdm").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+				.perform(post("/api/loginAdm").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
 						.content(jsonString))
 				.andExpect(jsonPath("$.error", equalTo("Login não realizado! Favor conferir os dados digitados")))
 				.andExpect(status().isNotFound());
@@ -227,7 +227,7 @@ public class TestLoginController {
 		jsonString = objectMapper.writeValueAsString(logarAdm("adm", "12345"));
 
 		this.mockMvc
-				.perform(post("/loginAdm").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+				.perform(post("/api/loginAdm").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
 						.content(jsonString))
 				.andExpect(jsonPath("$.error", equalTo("Login não realizado! Favor conferir os dados digitados")))
 				.andExpect(status().isNotFound());
@@ -235,7 +235,7 @@ public class TestLoginController {
 		jsonString = objectMapper.writeValueAsString(logarAdm("admin", "12345"));
 
 		this.mockMvc
-				.perform(post("/loginAdm").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+				.perform(post("/api/loginAdm").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
 						.content(jsonString))
 				.andExpect(jsonPath("$.error", equalTo("Login não realizado! Favor conferir os dados digitados")))
 				.andExpect(status().isNotFound());

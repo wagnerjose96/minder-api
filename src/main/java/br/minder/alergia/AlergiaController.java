@@ -3,9 +3,10 @@ package br.minder.alergia;
 import java.net.URI;
 import java.nio.file.AccessDeniedException;
 import java.sql.SQLException;
-import java.util.List;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,9 +16,9 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
-
 import br.minder.alergia.comandos.BuscarAlergia;
 import br.minder.alergia.comandos.CriarAlergia;
 import br.minder.alergia.comandos.EditarAlergia;
@@ -27,7 +28,7 @@ import io.swagger.annotations.ApiOperation;
 
 @Api("Basic Alergia Controller")
 @RestController
-@RequestMapping("/alergias")
+@RequestMapping("/api/alergia")
 @CrossOrigin
 public class AlergiaController {
 	private static final String ACESSONEGADO = "Acesso negado";
@@ -40,9 +41,12 @@ public class AlergiaController {
 
 	@ApiOperation("Busque todas as alergias")
 	@GetMapping
-	public ResponseEntity<List<BuscarAlergia>> getAlergias(@RequestHeader String token) throws AccessDeniedException {
+	public ResponseEntity<Page<BuscarAlergia>> getAlergias(Pageable p, @RequestHeader String token,
+			@RequestParam(name = "searchTerm", defaultValue = "", required = false) String searchTerm)
+			throws AccessDeniedException {
 		if (autentica.autenticaRequisicao(token)) {
-			Optional<List<BuscarAlergia>> optionalAlergias = alergiaService.encontrar(autentica.idUser(token));
+			Optional<Page<BuscarAlergia>> optionalAlergias = alergiaService.encontrar(p, autentica.idUser(token),
+					searchTerm);
 			if (optionalAlergias.isPresent()) {
 				return ResponseEntity.ok(optionalAlergias.get());
 			}
@@ -86,15 +90,15 @@ public class AlergiaController {
 	public ResponseEntity<String> putAlergia(@RequestBody EditarAlergia comando, @RequestHeader String token)
 			throws SQLException, AccessDeniedException {
 		if (autentica.autenticaRequisicao(token)) {
-			if (!alergiaService.encontrar(comando.getIdAlergia(), autentica.idUser(token)).isPresent()) {
-				throw new NullPointerException("A alergia a ser alterada não existe no banco de dados");
+			if (alergiaService.encontrar(comando.getIdAlergia(), autentica.idUser(token)).isPresent()) {
+				Optional<AlergiaId> optionalAlergiaId = alergiaService.alterar(comando);
+				if (optionalAlergiaId.isPresent()) {
+					return ResponseEntity.ok().body("A alergia foi alterada com sucesso");
+				} else {
+					throw new SQLException("Ocorreu um erro interno durante a alteração da alergia");
+				}
 			}
-			Optional<AlergiaId> optionalAlergiaId = alergiaService.alterar(comando);
-			if (optionalAlergiaId.isPresent()) {
-				return ResponseEntity.ok().body("A alergia foi alterada com sucesso");
-			} else {
-				throw new SQLException("Ocorreu um erro interno durante a alteração da alergia");
-			}
+			throw new NullPointerException("A alergia a ser alterada não existe no banco de dados");
 		}
 		throw new AccessDeniedException(ACESSONEGADO);
 	}

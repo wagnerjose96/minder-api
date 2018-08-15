@@ -2,6 +2,7 @@ package br.minder.usuario_adm;
 
 import java.net.URI;
 import java.nio.file.AccessDeniedException;
+import java.security.NoSuchAlgorithmException;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Optional;
@@ -32,7 +33,7 @@ import io.swagger.annotations.ApiOperation;
 
 @Api("Basic Usuário Admin Controller")
 @RestController
-@RequestMapping("/adm")
+@RequestMapping("/api/adm")
 @CrossOrigin
 public class UsuarioAdmController {
 	private static final String ACESSONEGADO = "Acesso negado";
@@ -102,7 +103,7 @@ public class UsuarioAdmController {
 
 	@ApiOperation("Cadastre um novo administrador")
 	@PostMapping
-	public ResponseEntity<String> postUsuarioAdmin(@RequestBody CriarUsuarioAdm comando) throws SQLException {
+	public ResponseEntity<String> postUsuarioAdmin(@RequestBody CriarUsuarioAdm comando) throws SQLException, NoSuchAlgorithmException {
 		Optional<UsuarioAdmId> optionalUsuarioAdminId = service.salvar(comando);
 		if (optionalUsuarioAdminId.isPresent()) {
 			URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
@@ -115,7 +116,7 @@ public class UsuarioAdmController {
 	@ApiOperation("Altere um administrador")
 	@PutMapping
 	public ResponseEntity<String> putUsuarioAdmin(@RequestHeader String token, @RequestBody EditarUsuarioAdm comando)
-			throws AccessDeniedException, SQLException {
+			throws AccessDeniedException, SQLException, NoSuchAlgorithmException {
 		if (autentica.autenticaRequisicaoAdm(token)) {
 			if (!service.encontrar(comando.getId()).isPresent()) {
 				throw new NullPointerException("O administrador a ser alterado não existe no banco de dados");
