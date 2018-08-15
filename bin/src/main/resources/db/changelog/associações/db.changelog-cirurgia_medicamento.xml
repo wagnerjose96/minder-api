@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd
+        http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
+
+	<changeSet id="create_relation_cirurgia_medicamento" author="camila.emilly">
+		<createTable tableName="cirurgia_medicamento">
+			<column name="id" type="${TYPE_ID}">
+				<constraints nullable="false" primaryKey="true"
+					primaryKeyName="PK_CIRURGIA_MEDICAMENTO" />
+			</column>
+			<column name="id_cirurgia" type="${TYPE_ID}">
+				<constraints nullable="false" unique="false"
+					foreignKeyName="FK_CIRURGIAMEDICAMENTO_CIRURGIA" references="cirurgia(id)" />
+			</column>
+			<column name="id_medicamento" type="${TYPE_ID}">
+				<constraints nullable="false" unique="false"
+					foreignKeyName="FK_CIRURGIAMEDICAMENTO_MEDICAMENTO" references="medicamento(id_medicamento)" />
+			</column>
+		</createTable>
+
+	</changeSet>
+</databaseChangeLog>
