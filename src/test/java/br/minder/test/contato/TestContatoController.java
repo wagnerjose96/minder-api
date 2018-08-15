@@ -9,6 +9,8 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+import java.security.NoSuchAlgorithmException;
 import java.sql.Date;
 import java.time.LocalDate;
 import java.util.List;
@@ -124,12 +126,12 @@ public class TestContatoController {
 		final String jsonString = objectMapper.writeValueAsString(criarContato("Larissa Thuanny"));
 
 		this.mockMvc
-				.perform(post("/contatos").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+				.perform(post("/api/contato").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
 						.header("token", logar("wagnerju", "1234") + "TokenError").content(jsonString))
 				.andExpect(jsonPath("$.error", equalTo("Acesso negado"))).andExpect(status().isForbidden());
 
 		this.mockMvc
-				.perform(post("/contatos").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+				.perform(post("/api/contato").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
 						.header("token", logar("wagnerju", "1234")).content(jsonString))
 				.andExpect(jsonPath("$", equalTo("O contato foi cadastrado com sucesso")))
 				.andExpect(status().isCreated());
@@ -137,7 +139,7 @@ public class TestContatoController {
 		String error = objectMapper.writeValueAsString(new CriarContato());
 
 		this.mockMvc
-				.perform(post("/contatos").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+				.perform(post("/api/contato").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
 						.header("token", logar("wagnerju", "1234")).content(error))
 				.andExpect(jsonPath("$.error", equalTo("O contato não foi salvo devido a um erro interno")))
 				.andExpect(status().isInternalServerError());
@@ -145,7 +147,7 @@ public class TestContatoController {
 		objectMapper.writeValueAsString(criarContatoError1("Larissa Thuanny"));
 
 		this.mockMvc
-				.perform(post("/contatos").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+				.perform(post("/api/contato").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
 						.header("token", logar("wagnerju", "1234")).content(error))
 				.andExpect(jsonPath("$.error", equalTo("O contato não foi salvo devido a um erro interno")))
 				.andExpect(status().isInternalServerError());
@@ -153,7 +155,7 @@ public class TestContatoController {
 		objectMapper.writeValueAsString(criarContatoError2("Larissa Thuanny"));
 
 		this.mockMvc
-				.perform(post("/contatos").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+				.perform(post("/api/contato").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
 						.header("token", logar("wagnerju", "1234")).content(error))
 				.andExpect(jsonPath("$.error", equalTo("O contato não foi salvo devido a um erro interno")))
 				.andExpect(status().isInternalServerError());
@@ -178,7 +180,7 @@ public class TestContatoController {
 		String jsonString = objectMapper.writeValueAsString(criarContato("Larissa Thuanny"));
 
 		this.mockMvc
-				.perform(post("/contatos").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+				.perform(post("/api/contato").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
 						.header("token", logar("wagnerju", "1234")).content(jsonString))
 				.andExpect(jsonPath("$", equalTo("O contato foi cadastrado com sucesso")))
 				.andExpect(status().isCreated());
@@ -189,19 +191,19 @@ public class TestContatoController {
 		jsonString = objectMapper.writeValueAsString(editarContato(contatos.get(0)));
 
 		this.mockMvc
-				.perform(put("/contatos").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+				.perform(put("/api/contato").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
 						.header("token", logar("wagnerju", "1234") + "TokenError").content(jsonString))
 				.andExpect(jsonPath("$.error", equalTo("Acesso negado"))).andExpect(status().isForbidden());
 
 		this.mockMvc
-				.perform(put("/contatos").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+				.perform(put("/api/contato").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
 						.header("token", logar("wagnerju", "1234")).content(jsonString))
 				.andExpect(jsonPath("$", equalTo("O contato foi alterado com sucesso"))).andExpect(status().isOk());
 
 		String error = objectMapper.writeValueAsString(editarContatoError(contatos.get(0).getId()));
 
 		this.mockMvc
-				.perform(put("/contatos").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+				.perform(put("/api/contato").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
 						.header("token", logar("wagnerju", "1234")).content(error))
 				.andExpect(jsonPath("$.error", equalTo("Ocorreu um erro interno durante a alteração do contato")))
 				.andExpect(status().isInternalServerError());
@@ -209,7 +211,7 @@ public class TestContatoController {
 		error = objectMapper.writeValueAsString(editarContatoError1(contatos.get(0)));
 
 		this.mockMvc
-				.perform(put("/contatos").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+				.perform(put("/api/contato").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
 						.header("token", logar("wagnerju", "1234")).content(error))
 				.andExpect(jsonPath("$.error", equalTo("Ocorreu um erro interno durante a alteração do contato")))
 				.andExpect(status().isInternalServerError());
@@ -217,7 +219,7 @@ public class TestContatoController {
 		error = objectMapper.writeValueAsString(editarContatoError2(contatos.get(0)));
 
 		this.mockMvc
-				.perform(put("/contatos").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+				.perform(put("/api/contato").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
 						.header("token", logar("wagnerju", "1234")).content(error))
 				.andExpect(jsonPath("$.error", equalTo("Ocorreu um erro interno durante a alteração do contato")))
 				.andExpect(status().isInternalServerError());
@@ -225,7 +227,7 @@ public class TestContatoController {
 		error = objectMapper.writeValueAsString(editarContatoError3(contatos.get(0)));
 
 		this.mockMvc
-				.perform(put("/contatos").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+				.perform(put("/api/contato").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
 						.header("token", logar("wagnerju", "1234")).content(error))
 				.andExpect(jsonPath("$.error", equalTo("O contato a ser alterado não existe no banco de dados")))
 				.andExpect(status().isNotFound());
@@ -233,7 +235,7 @@ public class TestContatoController {
 		error = objectMapper.writeValueAsString(editarContatoError4(contatos.get(0)));
 
 		this.mockMvc
-				.perform(put("/contatos").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+				.perform(put("/api/contato").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
 						.header("token", logar("wagnerju", "1234")).content(error))
 				.andExpect(jsonPath("$.error", equalTo("O contato a ser alterado não existe no banco de dados")))
 				.andExpect(status().isNotFound());
@@ -241,7 +243,7 @@ public class TestContatoController {
 		error = objectMapper.writeValueAsString(editarContatoError5(contatos.get(0)));
 
 		this.mockMvc
-				.perform(put("/contatos").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+				.perform(put("/api/contato").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
 						.header("token", logar("wagnerju", "1234")).content(error))
 				.andExpect(jsonPath("$.error", equalTo("O contato a ser alterado não existe no banco de dados")))
 				.andExpect(status().isNotFound());
@@ -249,7 +251,7 @@ public class TestContatoController {
 		error = objectMapper.writeValueAsString(editarContatoError6(contatos.get(0)));
 
 		this.mockMvc
-				.perform(put("/contatos").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+				.perform(put("/api/contato").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
 						.header("token", logar("wagnerju", "1234")).content(error))
 				.andExpect(jsonPath("$.error", equalTo("O contato a ser alterado não existe no banco de dados")))
 				.andExpect(status().isNotFound());
@@ -273,7 +275,7 @@ public class TestContatoController {
 		final String jsonString = objectMapper.writeValueAsString(criarContato("Larissa Thuanny"));
 
 		this.mockMvc
-				.perform(post("/contatos").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+				.perform(post("/api/contato").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
 						.header("token", logar("wagnerju", "1234")).content(jsonString))
 				.andExpect(jsonPath("$", equalTo("O contato foi cadastrado com sucesso")))
 				.andExpect(status().isCreated());
@@ -281,12 +283,20 @@ public class TestContatoController {
 		List<Contato> contatos = repoContato.findAll();
 		assertThat(contatos.get(0), notNullValue());
 
-		this.mockMvc.perform(get("/contatos/" + contatos.get(0).getId().toString()))
+		this.mockMvc
+				.perform(get("/api/contato/" + contatos.get(0).getId().toString()).header("token",
+						logar("wagnerju", "1234")))
 				.andExpect(jsonPath("$.nome", equalTo("Larissa Thuanny"))).andExpect(status().isOk());
 
-		this.mockMvc.perform(get("/contatos/" + new ContatoId().toString()))
+		this.mockMvc.perform(get("/api/contato/" + new ContatoId().toString()).header("token", logar("wagnerju", "1234")))
 				.andExpect(jsonPath("$.error", equalTo("O contato procurado não existe no banco de dados")))
 				.andExpect(status().isNotFound());
+
+		this.mockMvc
+				.perform(get("/api/contato/" + contatos.get(0).getId().toString()).header("token",
+						logar("wagnerju", "1234") + "erroToken"))
+				.andExpect(jsonPath("$.error", equalTo("Acesso negado"))).andExpect(status().isForbidden());
+
 	}
 
 	@Test
@@ -304,12 +314,16 @@ public class TestContatoController {
 		List<Emergencia> emergencias = repoEmergencia.findAll();
 		assertThat(emergencias.get(0), notNullValue());
 
-		this.mockMvc.perform(get("/contatos")).andExpect(status().isNotFound());
+		this.mockMvc.perform(get("/api/contato").header("token", logar("wagnerju", "1234")))
+				.andExpect(status().isNotFound());
+
+		this.mockMvc.perform(get("/api/contato").header("token", logar("wagnerju", "1234") + "erroToken"))
+				.andExpect(jsonPath("$.error", equalTo("Acesso negado"))).andExpect(status().isForbidden());
 
 		String jsonString = objectMapper.writeValueAsString(criarContato("Larissa Thuanny"));
 
 		this.mockMvc
-				.perform(post("/contatos").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+				.perform(post("/api/contato").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
 						.header("token", logar("wagnerju", "1234")).content(jsonString))
 				.andExpect(jsonPath("$", equalTo("O contato foi cadastrado com sucesso")))
 				.andExpect(status().isCreated());
@@ -317,7 +331,7 @@ public class TestContatoController {
 		jsonString = objectMapper.writeValueAsString(criarContato("Wagner Junior"));
 
 		this.mockMvc
-				.perform(post("/contatos").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+				.perform(post("/api/contato").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
 						.header("token", logar("wagnerju", "1234")).content(jsonString))
 				.andExpect(jsonPath("$", equalTo("O contato foi cadastrado com sucesso")))
 				.andExpect(status().isCreated());
@@ -325,9 +339,10 @@ public class TestContatoController {
 		List<Contato> contatos = repoContato.findAll();
 		assertThat(contatos.get(0), notNullValue());
 
-		this.mockMvc.perform(get("/contatos").header("token", logar("wagnerju", "1234")))
-				.andExpect(jsonPath("$[0].nome", equalTo("Larissa Thuanny")))
-				.andExpect(jsonPath("$[1].nome", equalTo("Wagner Junior"))).andExpect(status().isOk());
+		this.mockMvc.perform(get("/api/contato").header("token", logar("wagnerju", "1234"))).andExpect(status().isOk());
+
+		this.mockMvc.perform(get("/api/contato").header("token", logar("wagnerju", "1234")).param("searchTerm", "Junior"))
+				.andExpect(status().isOk());
 
 	}
 
@@ -349,7 +364,7 @@ public class TestContatoController {
 		String jsonString = objectMapper.writeValueAsString(criarContato("Larissa Thuanny"));
 
 		this.mockMvc
-				.perform(post("/contatos").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+				.perform(post("/api/contato").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
 						.header("token", logar("wagnerju", "1234")).content(jsonString))
 				.andExpect(jsonPath("$", equalTo("O contato foi cadastrado com sucesso")))
 				.andExpect(status().isCreated());
@@ -358,24 +373,24 @@ public class TestContatoController {
 		assertThat(contatos.get(0), notNullValue());
 
 		this.mockMvc
-				.perform(delete("/contatos/" + contatos.get(0).getId().toString()).header("token",
+				.perform(delete("/api/contato/" + contatos.get(0).getId().toString()).header("token",
 						logar("wagnerju", "1234")))
 				.andExpect(jsonPath("$",
 						equalTo("Contato ===> " + contatos.get(0).getId().toString() + ": deletado com sucesso")))
 				.andExpect(status().isOk());
 
 		this.mockMvc
-				.perform(delete("/contatos/" + contatos.get(0).getId().toString()).header("token",
+				.perform(delete("/api/contato/" + contatos.get(0).getId().toString()).header("token",
 						logar("wagnerju", "1234") + "ErroToken"))
 				.andExpect(jsonPath("$.error", equalTo("Acesso negado"))).andExpect(status().isForbidden());
 
 		this.mockMvc
-				.perform(delete("/contatos/" + new ContatoId().toString()).header("token", logar("wagnerju", "1234")))
+				.perform(delete("/api/contato/" + new ContatoId().toString()).header("token", logar("wagnerju", "1234")))
 				.andExpect(jsonPath("$.error", equalTo("O contato a deletar não existe no banco de dados")))
 				.andExpect(status().isNotFound());
 
 		this.mockMvc
-				.perform(delete("/contatos/" + new ContatoId().toString()).header("token",
+				.perform(delete("/api/contato/" + new ContatoId().toString()).header("token",
 						logar("wagnerju", "1234") + "ErroToken"))
 				.andExpect(jsonPath("$.error", equalTo("Acesso negado"))).andExpect(status().isForbidden());
 	}
@@ -503,7 +518,7 @@ public class TestContatoController {
 		return id;
 	}
 
-	private String logar(String nomeUsuario, String senha) {
+	private String logar(String nomeUsuario, String senha) throws NoSuchAlgorithmException {
 		LogarUsuario corpoLogin = new LogarUsuario();
 		corpoLogin.setIdentificador(nomeUsuario);
 		corpoLogin.setSenha(senha);

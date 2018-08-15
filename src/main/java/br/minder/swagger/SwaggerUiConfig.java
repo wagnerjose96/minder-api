@@ -33,7 +33,7 @@ public class SwaggerUiConfig {
                 "Aqui você possui todas as informações necessárias para interagir com essa API.",
                 "v1.0",
                 "",
-                new Contact("Equipe Minder", "http://minder.io/", "minder@minder.io"),
+                new Contact("Equipe Minder", "http://minder.com/", "minder.application@gmail.com"),
                 "Todos os direitos reservados", "", Collections.emptyList());
     }
 }

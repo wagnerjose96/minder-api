@@ -2,6 +2,7 @@ package br.minder.usuario;
 
 import java.net.URI;
 import java.nio.file.AccessDeniedException;
+import java.security.NoSuchAlgorithmException;
 import java.sql.SQLException;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,7 +26,7 @@ import io.swagger.annotations.ApiOperation;
 
 @Api("Basic Usuário Controller")
 @RestController
-@RequestMapping("/usuarios")
+@RequestMapping("/api/usuario")
 @CrossOrigin
 public class UsuarioController {
 	private static final String ACESSONEGADO = "Acesso negado";
@@ -51,8 +52,7 @@ public class UsuarioController {
 
 	@ApiOperation("Delete um usuário pelo ID")
 	@DeleteMapping
-	public ResponseEntity<String> deletarUsuario(@RequestHeader String token)
-			throws AccessDeniedException {
+	public ResponseEntity<String> deletarUsuario(@RequestHeader String token) throws AccessDeniedException {
 		if (autentica.autenticaRequisicao(token)) {
 			Optional<String> optionalUsuario = service.deletar(autentica.idUser(token));
 			if (optionalUsuario.isPresent())
@@ -64,7 +64,7 @@ public class UsuarioController {
 
 	@ApiOperation("Cadastre um novo usuário")
 	@PostMapping
-	public ResponseEntity<String> postUsuario(@RequestBody CriarUsuario comando) throws SQLException {
+	public ResponseEntity<String> postUsuario(@RequestBody CriarUsuario comando) throws SQLException, NoSuchAlgorithmException {
 		Optional<UsuarioId> optionalUsuarioId = service.salvar(comando);
 		if (optionalUsuarioId.isPresent()) {
 			URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
@@ -77,17 +77,18 @@ public class UsuarioController {
 	@ApiOperation("Altere um usuário")
 	@PutMapping
 	public ResponseEntity<String> putUsuario(@RequestBody EditarUsuario comando, @RequestHeader String token)
-			throws AccessDeniedException, SQLException {
+			throws AccessDeniedException, SQLException, NoSuchAlgorithmException {
 		if (autentica.autenticaRequisicao(token)) {
-			if (!service.encontrar(comando.getId()).isPresent()) {
-				throw new NullPointerException("O usuário a ser alterado não existe no banco de dados");
+			if (service.encontrar(comando.getId()).isPresent()
+					&& comando.getId().toString().equals(autentica.idUser(token).toString())) {
+				Optional<UsuarioId> optionalUsuarioId = service.alterar(comando);
+				if (optionalUsuarioId.isPresent()) {
+					return ResponseEntity.ok().body("O usuário foi alterado com sucesso");
+				} else {
+					throw new SQLException("Ocorreu um erro interno durante a alteração do usuário");
+				}
 			}
-			Optional<UsuarioId> optionalUsuarioId = service.alterar(comando);
-			if (optionalUsuarioId.isPresent()) {
-				return ResponseEntity.ok().body("O usuário foi alterado com sucesso");
-			} else {
-				throw new SQLException("Ocorreu um erro interno durante a alteração do usuário");
-			}
+			throw new NullPointerException("O usuário a ser alterado não existe no banco de dados");
 		}
 		throw new AccessDeniedException(ACESSONEGADO);
 	}

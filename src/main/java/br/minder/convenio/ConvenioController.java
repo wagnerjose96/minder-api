@@ -3,9 +3,10 @@ package br.minder.convenio;
 import java.net.URI;
 import java.nio.file.AccessDeniedException;
 import java.sql.SQLException;
-import java.util.List;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import br.minder.convenio.ConvenioId;
@@ -30,7 +32,7 @@ import io.swagger.annotations.ApiOperation;
 
 @Api("Basic Convênios Controller")
 @Controller
-@RequestMapping("/convenios")
+@RequestMapping("/api/convenio")
 @CrossOrigin
 public class ConvenioController {
 	private static final String ACESSONEGADO = "Acesso negado";
@@ -43,8 +45,9 @@ public class ConvenioController {
 
 	@ApiOperation("Busque todos os convênios")
 	@GetMapping
-	public ResponseEntity<List<BuscarConvenio>> getConvenio() {
-		Optional<List<BuscarConvenio>> optionalConvenios = service.encontrar();
+	public ResponseEntity<Page<BuscarConvenio>> getConvenio(Pageable p,
+			@RequestParam(name = "searchTerm", defaultValue = "", required = false) String searchTerm) {
+		Optional<Page<BuscarConvenio>> optionalConvenios = service.encontrar(p, searchTerm);
 		if (optionalConvenios.isPresent()) {
 			return ResponseEntity.ok(optionalConvenios.get());
 		}

@@ -15,17 +15,13 @@ public class AlergiaMedicamentoService {
 	public void salvar(AlergiaMedicamento novoAlergiaMedicamento) {
 		repo.save(novoAlergiaMedicamento);
 	}
-	
+
 	public List<AlergiaMedicamento> encontrar() {
 		return repo.findAll();
 	}
-	
+
 	public Optional<AlergiaMedicamento> encontrar(AlergiaMedicamentoId id) {
-		Optional<AlergiaMedicamento> alergia = repo.findById(id);
-		if (alergia.isPresent()) {
-			AlergiaMedicamento resultado = new AlergiaMedicamento(alergia.get());
-			return Optional.of(resultado);
-		}
-		return Optional.empty();
+		return repo.findById(id);
 	}
+
 }

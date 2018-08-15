@@ -1,5 +1,6 @@
 package br.minder.login;
 
+import java.security.NoSuchAlgorithmException;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -26,11 +27,11 @@ public class LoginService {
 	private static final String COLUNANOMEUSUARIO = "nome_usuario";
 	private static final String COLUNAEMAIL = "email";
 
-	public boolean consultarUsuario(LogarUsuario comando) {
+	public boolean consultarUsuario(LogarUsuario comando) throws NoSuchAlgorithmException {
 		return logarUser(comando, sqlNomeUsuario);
 	}
 
-	public boolean consultarEmail(LogarUsuario comando) {
+	public boolean consultarEmail(LogarUsuario comando) throws NoSuchAlgorithmException {
 		String senha = Criptografia.criptografa(comando.getSenha());
 		String email = comando.getIdentificador();
 		LogarUsuario usuario = new LogarUsuario();
@@ -46,11 +47,11 @@ public class LoginService {
 		return user.size() == 1;
 	}
 
-	public boolean consultarAdm(LogarUsuario comando) {
+	public boolean consultarAdm(LogarUsuario comando) throws NoSuchAlgorithmException {
 		return logarUser(comando, sqlAdm);
 	}
 
-	private boolean logarUser(LogarUsuario comando, String sql) {
+	private boolean logarUser(LogarUsuario comando, String sql) throws NoSuchAlgorithmException {
 		String senha = Criptografia.criptografa(comando.getSenha());
 		String username = comando.getIdentificador();
 		LogarUsuario usuario = new LogarUsuario();

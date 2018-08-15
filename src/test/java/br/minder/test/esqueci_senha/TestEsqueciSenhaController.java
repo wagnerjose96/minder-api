@@ -55,7 +55,7 @@ import br.minder.usuario.comandos.CriarUsuario;
 @Rollback
 @WebAppConfiguration
 @SpringBootTest(classes = { MinderApplication.class }, webEnvironment = WebEnvironment.MOCK)
-public class TestEsqueci_senhaController {
+public class TestEsqueciSenhaController {
 
 	@Autowired
 	private WebApplicationContext context;
@@ -94,13 +94,13 @@ public class TestEsqueci_senhaController {
 
 		String jsonString = objectMapper.writeValueAsString(criarSenha("wagner@hotmail.com"));
 
-		this.mockMvc.perform(put("/senha").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+		this.mockMvc.perform(put("/api/senha").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
 				.content(jsonString)).andExpect(jsonPath("$", notNullValue())).andExpect(status().isOk());
 
 		jsonString = objectMapper.writeValueAsString(criarSenha("lathuanny@hotmail.com"));
 
 		this.mockMvc
-				.perform(put("/senha").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+				.perform(put("/api/senha").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
 						.content(jsonString))
 				.andExpect(jsonPath("$.error", equalTo("Usuário não encontrado"))).andExpect(status().isNotFound());
 
@@ -112,7 +112,7 @@ public class TestEsqueci_senhaController {
 		jsonString = objectMapper.writeValueAsString(criarSenha("wagner@hotmail.com"));
 
 		this.mockMvc
-				.perform(put("/senha").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+				.perform(put("/api/senha").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
 						.content(jsonString))
 				.andExpect(jsonPath("$.error", equalTo("Usuário não encontrado"))).andExpect(status().isNotFound());
 

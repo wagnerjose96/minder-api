@@ -2,10 +2,8 @@ package br.minder.emergencia.comandos;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import br.minder.alergia.comandos.BuscarAlergia;
 import br.minder.cirurgia.comandos.BuscarCirurgia;
-import br.minder.contato.comandos.BuscarContato;
 import br.minder.doenca.comandos.BuscarDoenca;
 import br.minder.emergencia.Emergencia;
 import br.minder.emergencia.EmergenciaId;
@@ -27,7 +25,6 @@ public class BuscarEmergenciaPdf {
 	private int ataqueConvulsivos;
 	private String problemasCardiacos;
 	private int doadorDeOrgaos;
-	private List<BuscarContato> contatos = new ArrayList<>();
 
 	public BuscarEmergenciaPdf(Emergencia comandos) {
 		this.id = comandos.getIdEmergencia();

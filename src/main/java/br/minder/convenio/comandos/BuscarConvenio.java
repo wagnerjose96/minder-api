@@ -8,11 +8,9 @@ import lombok.Getter;
 public class BuscarConvenio {
 	private ConvenioId id;
 	private String nome;
-	private int ativo;
 
 	public BuscarConvenio(Convenio comandos) {
 		this.id = comandos.getId();
 		this.nome = comandos.getNome();
-		this.ativo = comandos.getAtivo();
 	}
 }

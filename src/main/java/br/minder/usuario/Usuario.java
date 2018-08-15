@@ -1,5 +1,6 @@
 package br.minder.usuario;
 
+import java.security.NoSuchAlgorithmException;
 import java.sql.Date;
 import javax.persistence.AttributeOverride;
 import javax.persistence.Column;
@@ -52,7 +53,7 @@ public class Usuario {
 	public Usuario() {
 	}
 
-	public Usuario(CriarUsuario comando) {
+	public Usuario(CriarUsuario comando) throws NoSuchAlgorithmException {
 		this.id = new UsuarioId();
 		this.nomeCompleto = comando.getNome();
 		this.nomeUsuario = comando.getUsername();
@@ -65,14 +66,14 @@ public class Usuario {
 		this.ativo = 1;
 	}
 
-	public void apply(EditarUsuario comando) {
+	public void apply(EditarUsuario comando) throws NoSuchAlgorithmException {
 		this.id = comando.getId();
 		this.nomeCompleto = comando.getNome();
 		this.senha = Criptografia.criptografa(comando.getSenha());
 		this.imagemUsuario = comando.getImagem();
 	}
 
-	public void applySenha(GerarSenha comando) {
+	public void applySenha(GerarSenha comando) throws NoSuchAlgorithmException {
 		this.senha = Criptografia.criptografa(comando.getSenha());
 	}
 

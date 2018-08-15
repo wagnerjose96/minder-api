@@ -3,9 +3,7 @@ package br.minder.telefone.comandos;
 import br.minder.telefone.Telefone;
 import br.minder.telefone.TelefoneId;
 import lombok.Getter;
-import lombok.Setter;
 
-@Setter
 @Getter
 public class BuscarTelefone {
 	private TelefoneId id;
@@ -16,8 +14,5 @@ public class BuscarTelefone {
 		this.id = plano.getId();
 		this.ddd = plano.getDdd();
 		this.numero = plano.getNumero();
-	}
-
-	public BuscarTelefone() {
 	}
 }

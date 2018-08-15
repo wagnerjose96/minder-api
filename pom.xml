@@ -26,6 +26,7 @@
 		<sonar.core.codeCoveragePlugin>jacoco</sonar.core.codeCoveragePlugin>
 		<sonar.jacoco.reportPath>${project.basedir}/../target/jacoco.exec</sonar.jacoco.reportPath>
 		<sonar.languages>java, xml</sonar.languages>
+		<sonar.sources>src/main/java,src/main/resources</sonar.sources>
 	</properties>
 
 	<dependencies>
@@ -271,5 +272,5 @@
 		</profile>
 
 	</profiles>
-
+	
 </project>

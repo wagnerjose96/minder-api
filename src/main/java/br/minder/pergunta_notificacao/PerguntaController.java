@@ -27,7 +27,7 @@ import io.swagger.annotations.ApiOperation;
 
 @Api("Basic Perguntas Controller")
 @RestController
-@RequestMapping("/perguntas")
+@RequestMapping("/api/pergunta")
 @CrossOrigin
 public class PerguntaController {
 	private static final String ACESSONEGADO = "Acesso negado";

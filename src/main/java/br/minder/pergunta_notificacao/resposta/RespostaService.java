@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import br.minder.pergunta_notificacao.PerguntaId;
 import br.minder.pergunta_notificacao.resposta.comandos.BuscarResposta;
 import br.minder.pergunta_notificacao.resposta.comandos.CriarResposta;
 import br.minder.pergunta_notificacao.resposta.comandos.EditarResposta;
@@ -18,7 +19,8 @@ public class RespostaService {
 	private RespostaRepository repo;
 
 	public Optional<RespostaId> salvar(CriarResposta comando) {
-		if (comando.getDescricao() != null && comando.getIdPergunta() != null) {
+		if (comando.getDescricao() != null && comando.getIdPergunta() != null
+				&& contarRespostas(comando.getIdPergunta())) {
 			Resposta novo = repo.save(new Resposta(comando));
 			return Optional.of(novo.getIdResposta());
 		}
@@ -56,5 +58,16 @@ public class RespostaService {
 			return Optional.of(comando.getIdResposta());
 		}
 		return Optional.empty();
+	}
+
+	private boolean contarRespostas(PerguntaId idPergunta) {
+		List<Resposta> respostas = repo.findAll();
+		int contadorRespostas = 0;
+		for (Resposta resposta : respostas) {
+			if (resposta.getIdPergunta().toString().equals(idPergunta.toString())) {
+				contadorRespostas++;
+			}
+		}
+		return (contadorRespostas < 4);
 	}
 }

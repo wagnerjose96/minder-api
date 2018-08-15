@@ -27,7 +27,7 @@ import io.swagger.annotations.ApiOperation;
 
 @Api("Basic Gênero Controller")
 @RestController
-@RequestMapping("/generos")
+@RequestMapping("/api/genero")
 @CrossOrigin
 public class GeneroController {
 	private static final String ACESSONEGADO = "Acesso negado";

@@ -5,12 +5,17 @@ import java.util.List;
 import java.util.Optional;
 import javax.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import br.minder.alarme.Alarme;
 import br.minder.alarme.AlarmeId;
 import br.minder.alarme.comandos.BuscarAlarme;
 import br.minder.alarme.comandos.CriarAlarme;
 import br.minder.alarme.comandos.EditarAlarme;
+import br.minder.conversor.TermoDeBusca;
 import br.minder.medicamento.Medicamento;
 import br.minder.medicamento.MedicamentoRepository;
 import br.minder.medicamento.comandos.BuscarMedicamento;
@@ -47,12 +52,12 @@ public class AlarmeService {
 		return Optional.empty();
 	}
 
-	public Optional<List<BuscarAlarme>> encontrar(UsuarioId id) {
+	public Optional<Page<BuscarAlarme>> encontrar(Pageable pageable, UsuarioId id, String searchTerm) {
 		List<BuscarAlarme> resultados = new ArrayList<>();
-		List<Alarme> alarmes = repo.findAll();
-		if (!alarmes.isEmpty()) {
+		Page<Alarme> alarmes = repo.findAll(pageable, id.toString());
+		if (alarmes.hasContent()) {
 			for (Alarme alarme : alarmes) {
-				if (alarme.getIdUsuario().toString().equals(id.toString())) {
+				if (TermoDeBusca.searchTerm(alarme.getDescricao(), searchTerm)) {
 					BuscarAlarme nova = new BuscarAlarme(alarme);
 					Optional<Medicamento> medicamento = medRepo.findById(alarme.getIdMedicamento());
 					if (medicamento.isPresent())
@@ -60,7 +65,10 @@ public class AlarmeService {
 					resultados.add(nova);
 				}
 			}
-			return Optional.of(resultados);
+			Page<BuscarAlarme> page = new PageImpl<>(resultados,
+					PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), pageable.getSort()),
+					resultados.size());
+			return Optional.of(page);
 		}
 		return Optional.empty();
 	}
@@ -77,8 +85,8 @@ public class AlarmeService {
 		return Optional.empty();
 	}
 
-	public Optional<String> deletar(AlarmeId id) {
-		if (repo.findById(id).isPresent()) {
+	public Optional<String> deletar(AlarmeId id, UsuarioId usuarioId) {
+		if (repo.findById(id.toString(), usuarioId.toString()) != null) {
 			repo.deleteById(id);
 			return Optional.of("Alarme ===> " + id + ": deletado com sucesso");
 		}

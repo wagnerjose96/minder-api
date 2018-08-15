@@ -21,11 +21,11 @@ public class Emergencia {
 	@AttributeOverride(name = "value", column = @Column(name = "id_emergencia"))
 	@Setter(AccessLevel.NONE)
 	private EmergenciaId idEmergencia;
+	@AttributeOverride(name = "value", column = @Column(name = "id_usuario"))
+	private UsuarioId idUsuario;
 	private int ataqueConvulsivos;
 	private String problemasCardiacos;
 	private int doadorDeOrgaos;
-	@AttributeOverride(name = "value", column = @Column(name = "id_usuario"))
-	private UsuarioId idUsuario;
 
 	public Emergencia() {
 	}

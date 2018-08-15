@@ -1,5 +1,7 @@
 package br.minder.usuario_adm;
 
+import java.security.NoSuchAlgorithmException;
+
 import javax.persistence.AttributeOverride;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
@@ -28,13 +30,13 @@ public class UsuarioAdm {
 	public UsuarioAdm(){
 	}
 
-	public UsuarioAdm(CriarUsuarioAdm comando) {
+	public UsuarioAdm(CriarUsuarioAdm comando) throws NoSuchAlgorithmException {
 		this.id = new UsuarioAdmId();
 		this.nomeUsuario = comando.getNome();
 		this.senha = Criptografia.criptografa(comando.getSenha());
 	}
 	
-	public void apply(EditarUsuarioAdm comando) {
+	public void apply(EditarUsuarioAdm comando) throws NoSuchAlgorithmException {
 		this.id = comando.getId();
 		this.nomeUsuario = comando.getNome();
 		this.senha = Criptografia.criptografa(comando.getSenha());

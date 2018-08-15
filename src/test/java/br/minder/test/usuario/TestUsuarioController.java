@@ -9,6 +9,8 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+import java.security.NoSuchAlgorithmException;
 import java.sql.Date;
 import java.time.LocalDate;
 import java.util.List;
@@ -89,7 +91,7 @@ public class TestUsuarioController {
 				.writeValueAsString(criarUsuario("wagner@hotmail.com", "wagnerju", idGenero, idSangue));
 
 		this.mockMvc
-				.perform(post("/usuarios").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+				.perform(post("/api/usuario").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
 						.content(jsonString))
 				.andExpect(jsonPath("$", equalTo("O usuário foi cadastrado com sucesso")))
 				.andExpect(status().isCreated());
@@ -98,7 +100,7 @@ public class TestUsuarioController {
 				.writeValueAsString(criarUsuarioErro("wagner@hotmail.com", "wagnerju", idGenero, idSangue));
 
 		this.mockMvc
-				.perform(post("/usuarios").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+				.perform(post("/api/usuario").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
 						.content(jsonString))
 				.andExpect(jsonPath("$.error", equalTo("O usuário não foi salvo devido a um erro interno")))
 				.andExpect(status().isInternalServerError());
@@ -113,7 +115,7 @@ public class TestUsuarioController {
 				.writeValueAsString(criarUsuario("wagner@hotmail.com", "wagnerju", idGenero, idSangue));
 
 		this.mockMvc
-				.perform(post("/usuarios").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+				.perform(post("/api/usuario").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
 						.content(jsonString))
 				.andExpect(jsonPath("$", equalTo("O usuário foi cadastrado com sucesso")))
 				.andExpect(status().isCreated());
@@ -124,19 +126,19 @@ public class TestUsuarioController {
 		jsonString = objectMapper.writeValueAsString(editarUsuario(usuarios.get(0)));
 
 		this.mockMvc
-				.perform(put("/usuarios").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+				.perform(put("/api/usuario").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
 						.header("token", logar("wagnerju", "1234") + "erroToken").content(jsonString))
 				.andExpect(jsonPath("$.error", equalTo("Acesso negado"))).andExpect(status().isForbidden());
 
 		this.mockMvc
-				.perform(put("/usuarios").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+				.perform(put("/api/usuario").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
 						.header("token", logar("wagnerju", "1234")).content(jsonString))
 				.andExpect(jsonPath("$", equalTo("O usuário foi alterado com sucesso"))).andExpect(status().isOk());
 
 		jsonString = objectMapper.writeValueAsString(editarUsuarioErroId(usuarios.get(0)));
 
 		this.mockMvc
-				.perform(put("/usuarios").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+				.perform(put("/api/usuario").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
 						.header("token", logar("wagnerju", "1234")).content(jsonString))
 				.andExpect(jsonPath("$.error", equalTo("O usuário a ser alterado não existe no banco de dados")))
 				.andExpect(status().isNotFound());
@@ -144,7 +146,7 @@ public class TestUsuarioController {
 		jsonString = objectMapper.writeValueAsString(editarUsuarioErro1(usuarios.get(0)));
 
 		this.mockMvc
-				.perform(put("/usuarios").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+				.perform(put("/api/usuario").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
 						.header("token", logar("wagnerju", "1234")).content(jsonString))
 				.andExpect(jsonPath("$.error", equalTo("Ocorreu um erro interno durante a alteração do usuário")))
 				.andExpect(status().isInternalServerError());
@@ -159,7 +161,7 @@ public class TestUsuarioController {
 				.writeValueAsString(criarUsuario("wagner@hotmail.com", "wagnerju", idGenero, idSangue));
 
 		this.mockMvc
-				.perform(post("/usuarios").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+				.perform(post("/api/usuario").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
 						.content(jsonString))
 				.andExpect(jsonPath("$", equalTo("O usuário foi cadastrado com sucesso")))
 				.andExpect(status().isCreated());
@@ -168,7 +170,7 @@ public class TestUsuarioController {
 				.writeValueAsString(criarUsuario("lathuanny@hotmail.com", "lathuanny", idGenero, idSangue));
 
 		this.mockMvc
-				.perform(post("/usuarios").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+				.perform(post("/api/usuario").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
 						.content(jsonString))
 				.andExpect(jsonPath("$", equalTo("O usuário foi cadastrado com sucesso")))
 				.andExpect(status().isCreated());
@@ -180,19 +182,19 @@ public class TestUsuarioController {
 		String token = logar("lathuanny", "1234");
 
 		this.mockMvc
-				.perform(delete("/usuarios").header("token",
+				.perform(delete("/api/usuario").header("token",
 						logar("lathuanny", "1234")))
 				.andExpect(jsonPath("$",
 						equalTo("Usuário ===> " + usuarios.get(1).getId().toString() + ": deletado com sucesso")))
 				.andExpect(status().isOk());
 
-		this.mockMvc.perform(get("/usuarios").header("token", logar("wagnerju", "1234")))
+		this.mockMvc.perform(get("/api/usuario").header("token", logar("wagnerju", "1234")))
 				.andExpect(jsonPath("$.username", equalTo("wagnerju"))).andExpect(status().isOk());
 
-		this.mockMvc.perform(get("/usuarios").header("token", logar("wagnerju", "1234") + "erroToken"))
+		this.mockMvc.perform(get("/api/usuario").header("token", logar("wagnerju", "1234") + "erroToken"))
 				.andExpect(jsonPath("$.error", equalTo("Acesso negado"))).andExpect(status().isForbidden());
 
-		this.mockMvc.perform(get("/usuarios").header("token", token))
+		this.mockMvc.perform(get("/api/usuario").header("token", token))
 				.andExpect(jsonPath("$.error", equalTo("O usuário procurado não existe no banco de dados")))
 				.andExpect(status().isNotFound());
 
@@ -207,7 +209,7 @@ public class TestUsuarioController {
 				.writeValueAsString(criarUsuario("wagner@hotmail.com", "wagnerju", idGenero, idSangue));
 
 		this.mockMvc
-				.perform(post("/usuarios").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+				.perform(post("/api/usuario").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
 						.content(jsonString))
 				.andExpect(jsonPath("$", equalTo("O usuário foi cadastrado com sucesso")))
 				.andExpect(status().isCreated());
@@ -216,7 +218,7 @@ public class TestUsuarioController {
 				.writeValueAsString(criarUsuario("lathuanny@hotmail.com", "lathuanny", idGenero, idSangue));
 
 		this.mockMvc
-				.perform(post("/usuarios").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+				.perform(post("/api/usuario").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
 						.content(jsonString))
 				.andExpect(jsonPath("$", equalTo("O usuário foi cadastrado com sucesso")))
 				.andExpect(status().isCreated());
@@ -227,24 +229,24 @@ public class TestUsuarioController {
 		String token = logar("lathuanny", "1234");
 
 		this.mockMvc
-				.perform(delete("/usuarios").header("token",
+				.perform(delete("/api/usuario").header("token",
 						logar("lathuanny", "1234")))
 				.andExpect(jsonPath("$",
 						equalTo("Usuário ===> " + usuarios.get(1).getId().toString() + ": deletado com sucesso")))
 				.andExpect(status().isOk());
 
 		this.mockMvc
-				.perform(delete("/usuarios").header("token",
+				.perform(delete("/api/usuario").header("token",
 						logar("wagnerju", "1234") + "erroToken"))
 				.andExpect(jsonPath("$.error", equalTo("Acesso negado"))).andExpect(status().isForbidden());
 
 		this.mockMvc
-				.perform(delete("/usuarios").header("token", token))
+				.perform(delete("/api/usuario").header("token", token))
 				.andExpect(jsonPath("$.error", equalTo("O usuário a deletar não existe no banco de dados")))
 				.andExpect(status().isNotFound());
 
 		this.mockMvc
-				.perform(delete("/usuarios").header("token",
+				.perform(delete("/api/usuario").header("token",
 						logar("wagnerju", "1234")))
 				.andExpect(jsonPath("$",
 						equalTo("Usuário ===> " + usuarios.get(0).getId().toString() + ": deletado com sucesso")))
@@ -376,7 +378,7 @@ public class TestUsuarioController {
 		return usuarioEditado;
 	}
 
-	private String logar(String nomeUsuario, String senha) {
+	private String logar(String nomeUsuario, String senha) throws NoSuchAlgorithmException {
 		LogarUsuario corpoLogin = new LogarUsuario();
 		corpoLogin.setIdentificador(nomeUsuario);
 		corpoLogin.setSenha(senha);

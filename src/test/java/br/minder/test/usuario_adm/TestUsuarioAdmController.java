@@ -9,6 +9,8 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+import java.security.NoSuchAlgorithmException;
 import java.sql.Date;
 import java.time.LocalDate;
 import java.util.List;
@@ -93,7 +95,7 @@ public class TestUsuarioAdmController {
 		String jsonString = objectMapper.writeValueAsString(criarAdm("admin"));
 
 		this.mockMvc
-				.perform(post("/adm").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+				.perform(post("/api/adm").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
 						.content(jsonString))
 				.andExpect(jsonPath("$", equalTo("O administrador foi cadastrado com sucesso")))
 				.andExpect(status().isCreated());
@@ -101,7 +103,7 @@ public class TestUsuarioAdmController {
 		jsonString = objectMapper.writeValueAsString(criarAdmErro("admin"));
 
 		this.mockMvc
-				.perform(post("/adm").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+				.perform(post("/api/adm").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
 						.content(jsonString))
 				.andExpect(jsonPath("$.error", equalTo("O administrador não foi salvo devido a um erro interno")))
 				.andExpect(status().isInternalServerError());
@@ -112,7 +114,7 @@ public class TestUsuarioAdmController {
 		String jsonString = objectMapper.writeValueAsString(criarAdm("admin"));
 
 		this.mockMvc
-				.perform(post("/adm").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+				.perform(post("/api/adm").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
 						.content(jsonString))
 				.andExpect(jsonPath("$", equalTo("O administrador foi cadastrado com sucesso")))
 				.andExpect(status().isCreated());
@@ -123,20 +125,20 @@ public class TestUsuarioAdmController {
 		jsonString = objectMapper.writeValueAsString(editarAdm(adms.get(0)));
 
 		this.mockMvc
-				.perform(put("/adm").header("token", logarAdm("admin", "1234")).accept(MediaType.APPLICATION_JSON)
+				.perform(put("/api/adm").header("token", logarAdm("admin", "1234")).accept(MediaType.APPLICATION_JSON)
 						.contentType(MediaType.APPLICATION_JSON).content(jsonString))
 				.andExpect(jsonPath("$", equalTo("O administrador foi alterado com sucesso")))
 				.andExpect(status().isOk());
 
 		this.mockMvc
-				.perform(put("/adm").header("token", logarAdm("admin", "1234") + "erroToken")
+				.perform(put("/api/adm").header("token", logarAdm("admin", "1234") + "erroToken")
 						.accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON).content(jsonString))
 				.andExpect(jsonPath("$.error", equalTo("Acesso negado"))).andExpect(status().isForbidden());
 
 		jsonString = objectMapper.writeValueAsString(editarAdmErroId(adms.get(0)));
 
 		this.mockMvc
-				.perform(put("/adm").header("token", logarAdm("admin", "1234")).accept(MediaType.APPLICATION_JSON)
+				.perform(put("/api/adm").header("token", logarAdm("admin", "1234")).accept(MediaType.APPLICATION_JSON)
 						.contentType(MediaType.APPLICATION_JSON).content(jsonString))
 				.andExpect(jsonPath("$.error", equalTo("O administrador a ser alterado não existe no banco de dados")))
 				.andExpect(status().isNotFound());
@@ -144,7 +146,7 @@ public class TestUsuarioAdmController {
 		jsonString = objectMapper.writeValueAsString(editarAdmErro(adms.get(0)));
 
 		this.mockMvc
-				.perform(put("/adm").header("token", logarAdm("admin", "1234")).accept(MediaType.APPLICATION_JSON)
+				.perform(put("/api/adm").header("token", logarAdm("admin", "1234")).accept(MediaType.APPLICATION_JSON)
 						.contentType(MediaType.APPLICATION_JSON).content(jsonString))
 				.andExpect(jsonPath("$.error", equalTo("Ocorreu um erro interno durante a alteração do administrador")))
 				.andExpect(status().isInternalServerError());
@@ -155,7 +157,7 @@ public class TestUsuarioAdmController {
 		String jsonString = objectMapper.writeValueAsString(criarAdm("admin"));
 
 		this.mockMvc
-				.perform(post("/adm").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+				.perform(post("/api/adm").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
 						.content(jsonString))
 				.andExpect(jsonPath("$", equalTo("O administrador foi cadastrado com sucesso")))
 				.andExpect(status().isCreated());
@@ -163,7 +165,7 @@ public class TestUsuarioAdmController {
 		jsonString = objectMapper.writeValueAsString(criarAdm("adm"));
 
 		this.mockMvc
-				.perform(post("/adm").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+				.perform(post("/api/adm").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
 						.content(jsonString))
 				.andExpect(jsonPath("$", equalTo("O administrador foi cadastrado com sucesso")))
 				.andExpect(status().isCreated());
@@ -172,10 +174,10 @@ public class TestUsuarioAdmController {
 		assertThat(adms.get(0), notNullValue());
 		assertThat(adms.get(1), notNullValue());
 
-		this.mockMvc.perform(get("/adm").header("token", logarAdm("admin", "1234") + "erroToken"))
+		this.mockMvc.perform(get("/api/adm").header("token", logarAdm("admin", "1234") + "erroToken"))
 				.andExpect(jsonPath("$.error", equalTo("Acesso negado"))).andExpect(status().isForbidden());
 
-		this.mockMvc.perform(get("/adm").header("token", logarAdm("admin", "1234")))
+		this.mockMvc.perform(get("/api/adm").header("token", logarAdm("admin", "1234")))
 				.andExpect(jsonPath("$[0].id.value", equalTo(adms.get(0).getId().toString())))
 				.andExpect(jsonPath("$[1].id.value", equalTo(adms.get(1).getId().toString())))
 				.andExpect(status().isOk());
@@ -183,18 +185,18 @@ public class TestUsuarioAdmController {
 		String token = logarAdm("admin", "1234");
 
 		this.mockMvc
-				.perform(delete("/adm/" + adms.get(0).getId().toString()).header("token", logarAdm("admin", "1234")))
+				.perform(delete("/api/adm/" + adms.get(0).getId().toString()).header("token", logarAdm("admin", "1234")))
 				.andExpect(jsonPath("$",
 						equalTo("Administrador ===> " + adms.get(0).getId().toString() + ": deletado com sucesso")))
 				.andExpect(status().isOk());
 
 		this.mockMvc
-				.perform(delete("/adm/" + adms.get(1).getId().toString()).header("token", logarAdm("admin", "1234")))
+				.perform(delete("/api/adm/" + adms.get(1).getId().toString()).header("token", logarAdm("admin", "1234")))
 				.andExpect(jsonPath("$",
 						equalTo("Administrador ===> " + adms.get(1).getId().toString() + ": deletado com sucesso")))
 				.andExpect(status().isOk());
 
-		this.mockMvc.perform(get("/adm").header("token", token))
+		this.mockMvc.perform(get("/api/adm").header("token", token))
 				.andExpect(jsonPath("$.error", equalTo("Não existe nenhum administrador cadastrado no banco de dados")))
 				.andExpect(status().isNotFound());
 
@@ -205,18 +207,18 @@ public class TestUsuarioAdmController {
 		String jsonString = objectMapper.writeValueAsString(criarAdm("admin"));
 
 		this.mockMvc
-				.perform(post("/adm").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+				.perform(post("/api/adm").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
 						.content(jsonString))
 				.andExpect(jsonPath("$", equalTo("O administrador foi cadastrado com sucesso")))
 				.andExpect(status().isCreated());
 		List<UsuarioAdm> adms = repo.findAll();
 		assertThat(adms.get(0), notNullValue());
 
-		this.mockMvc.perform(get("/adm/usuarios").header("token", logarAdm("admin", "1234")))
+		this.mockMvc.perform(get("/api/adm/usuarios").header("token", logarAdm("admin", "1234")))
 				.andExpect(jsonPath("$.error", equalTo("Não existe nenhum usuário cadastrado no banco de dados")))
 				.andExpect(status().isNotFound());
 
-		this.mockMvc.perform(get("/adm/usuarios").header("token", logarAdm("admin", "1234") + "erroToken"))
+		this.mockMvc.perform(get("/api/adm/usuarios").header("token", logarAdm("admin", "1234") + "erroToken"))
 				.andExpect(jsonPath("$.error", equalTo("Acesso negado"))).andExpect(status().isForbidden());
 
 		GeneroId idGenero = criarGenero("Masculino");
@@ -227,7 +229,7 @@ public class TestUsuarioAdmController {
 		assertThat(usuarios.get(0), notNullValue());
 		assertThat(usuarios.get(1), notNullValue());
 
-		this.mockMvc.perform(get("/adm/usuarios").header("token", logarAdm("admin", "1234")))
+		this.mockMvc.perform(get("/api/adm/usuarios").header("token", logarAdm("admin", "1234")))
 				.andExpect(jsonPath("$[0].id.value", equalTo(usuarios.get(0).getId().toString())))
 				.andExpect(jsonPath("$[1].id.value", equalTo(usuarios.get(1).getId().toString())))
 				.andExpect(status().isOk());
@@ -238,7 +240,7 @@ public class TestUsuarioAdmController {
 		String jsonString = objectMapper.writeValueAsString(criarAdm("admin"));
 
 		this.mockMvc
-				.perform(post("/adm").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+				.perform(post("/api/adm").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
 						.content(jsonString))
 				.andExpect(jsonPath("$", equalTo("O administrador foi cadastrado com sucesso")))
 				.andExpect(status().isCreated());
@@ -247,14 +249,14 @@ public class TestUsuarioAdmController {
 		assertThat(adms.get(0), notNullValue());
 
 		this.mockMvc
-				.perform(get("/adm/" + adms.get(0).getId().toString()).header("token",
+				.perform(get("/api/adm/" + adms.get(0).getId().toString()).header("token",
 						logarAdm("admin", "1234") + "erroToken"))
 				.andExpect(jsonPath("$.error", equalTo("Acesso negado"))).andExpect(status().isForbidden());
 
-		this.mockMvc.perform(get("/adm/" + adms.get(0).getId().toString()).header("token", logarAdm("admin", "1234")))
+		this.mockMvc.perform(get("/api/adm/" + adms.get(0).getId().toString()).header("token", logarAdm("admin", "1234")))
 				.andExpect(jsonPath("$.id.value", equalTo(adms.get(0).getId().toString()))).andExpect(status().isOk());
 
-		this.mockMvc.perform(get("/adm/" + new UsuarioAdmId().toString()).header("token", logarAdm("admin", "1234")))
+		this.mockMvc.perform(get("/api/adm/" + new UsuarioAdmId().toString()).header("token", logarAdm("admin", "1234")))
 				.andExpect(jsonPath("$.error", equalTo("O administrador procurado não existe no banco de dados")))
 				.andExpect(status().isNotFound());
 
@@ -265,7 +267,7 @@ public class TestUsuarioAdmController {
 		String jsonString = objectMapper.writeValueAsString(criarAdm("admin"));
 
 		this.mockMvc
-				.perform(post("/adm").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+				.perform(post("/api/adm").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
 						.content(jsonString))
 				.andExpect(jsonPath("$", equalTo("O administrador foi cadastrado com sucesso")))
 				.andExpect(status().isCreated());
@@ -274,17 +276,17 @@ public class TestUsuarioAdmController {
 		assertThat(usuarios.get(0), notNullValue());
 
 		this.mockMvc
-				.perform(delete("/adm/" + usuarios.get(0).getId().toString()).header("token",
+				.perform(delete("/api/adm/" + usuarios.get(0).getId().toString()).header("token",
 						logarAdm("admin", "1234") + "erroToken"))
 				.andExpect(jsonPath("$.error", equalTo("Acesso negado"))).andExpect(status().isForbidden());
 
-		this.mockMvc.perform(delete("/adm/" + new UsuarioAdmId().toString()).header("token", logarAdm("admin", "1234")))
+		this.mockMvc.perform(delete("/api/adm/" + new UsuarioAdmId().toString()).header("token", logarAdm("admin", "1234")))
 				.andExpect(jsonPath("$.error", equalTo("O administrador a deletar não existe no banco de dados")))
 				.andExpect(status().isNotFound());
 
 		this.mockMvc
 				.perform(
-						delete("/adm/" + usuarios.get(0).getId().toString()).header("token", logarAdm("admin", "1234")))
+						delete("/api/adm/" + usuarios.get(0).getId().toString()).header("token", logarAdm("admin", "1234")))
 				.andExpect(jsonPath("$",
 						equalTo("Administrador ===> " + usuarios.get(0).getId().toString() + ": deletado com sucesso")))
 				.andExpect(status().isOk());
@@ -326,7 +328,7 @@ public class TestUsuarioAdmController {
 		return admAtualizado;
 	}
 
-	private String logarAdm(String nomeUsuario, String senha) {
+	private String logarAdm(String nomeUsuario, String senha) throws NoSuchAlgorithmException {
 		LogarUsuario corpoLogin = new LogarUsuario();
 		corpoLogin.setIdentificador(nomeUsuario);
 		corpoLogin.setSenha(senha);

@@ -4,9 +4,15 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import br.minder.conversor.TermoDeBusca;
 import br.minder.doenca.Doenca;
 import br.minder.doenca.DoencaId;
 import br.minder.doenca.comandos.BuscarDoenca;
@@ -67,8 +73,29 @@ public class DoencaService {
 		return Optional.empty();
 	}
 
-	public Optional<List<BuscarDoenca>> encontrar(UsuarioId id) {
-		List<Doenca> doencas = doencaRepo.findAll();
+	public Optional<Page<BuscarDoenca>> encontrar(Pageable pageable, UsuarioId id, String searchTerm) {
+		Page<Doenca> doencas = doencaRepo.findAll(pageable, id.toString());
+		List<BuscarDoenca> rsDoencas = new ArrayList<>();
+		if (doencas.hasContent()) {
+			for (Doenca doenca : doencas) {
+				if (id.toString().equals(doenca.getIdUsuario().toString())
+						&& TermoDeBusca.searchTerm(doenca.getNomeDoenca(), searchTerm)) {
+					List<BuscarMedicamento> medicamentos = executeQuery(doenca.getIdDoenca().toString(), sql);
+					BuscarDoenca nova = new BuscarDoenca(doenca);
+					nova.setMedicamentos(medicamentos);
+					rsDoencas.add(nova);
+				}
+			}
+			Page<BuscarDoenca> page = new PageImpl<>(rsDoencas,
+					PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), pageable.getSort()),
+					rsDoencas.size());
+			return Optional.of(page);
+		}
+		return Optional.empty();
+	}
+
+	public List<BuscarDoenca> encontrar(UsuarioId id) {
+		List<Doenca> doencas = doencaRepo.findAll(id.toString());
 		List<BuscarDoenca> rsDoencas = new ArrayList<>();
 		if (!doencas.isEmpty()) {
 			for (Doenca doenca : doencas) {
@@ -79,9 +106,8 @@ public class DoencaService {
 					rsDoencas.add(nova);
 				}
 			}
-			return Optional.of(rsDoencas);
 		}
-		return Optional.empty();
+		return rsDoencas;
 	}
 
 	public Optional<DoencaId> alterar(EditarDoenca comando) {
@@ -111,7 +137,6 @@ public class DoencaService {
 				med.setIdMedicamento(new MedicamentoId(rs.getString("id_medicamento")));
 				med.setNomeMedicamento(rs.getString("nome_medicamento"));
 				med.setComposicao(rs.getString("composicao"));
-				med.setAtivo(rs.getInt("ativo"));
 			}
 			return med;
 		});
