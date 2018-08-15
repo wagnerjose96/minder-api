@@ -17,4 +17,5 @@ public class CriarPlanoDeSaude {
 	private BigInteger numeroCartao;
 	private String habitacao;
 	private String territorio;
+	private String dataVencimento;
 }

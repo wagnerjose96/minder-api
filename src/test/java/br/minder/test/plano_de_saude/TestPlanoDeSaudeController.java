@@ -203,7 +203,7 @@ public class TestPlanoDeSaudeController {
 						.header("token", logar("wagnerju", "1234")).content(jsonString))
 				.andExpect(jsonPath("$.error", equalTo("O plano de saúde a ser alterado não existe no banco de dados")))
 				.andExpect(status().isNotFound());
-		
+
 		jsonString = objectMapper.writeValueAsString(editarPlanoErroId(planos.get(0)));
 
 		this.mockMvc
@@ -211,37 +211,41 @@ public class TestPlanoDeSaudeController {
 						.header("token", logar("lathuanny", "1234")).content(jsonString))
 				.andExpect(jsonPath("$.error", equalTo("O plano de saúde a ser alterado não existe no banco de dados")))
 				.andExpect(status().isNotFound());
-		
+
 		jsonString = objectMapper.writeValueAsString(editarPlanoErro1(planos.get(0)));
 
 		this.mockMvc
 				.perform(put("/planos").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
 						.header("token", logar("wagnerju", "1234")).content(jsonString))
-				.andExpect(jsonPath("$.error", equalTo("Ocorreu um erro interno durante a alteração do plano de saúde")))
+				.andExpect(
+						jsonPath("$.error", equalTo("Ocorreu um erro interno durante a alteração do plano de saúde")))
 				.andExpect(status().isInternalServerError());
-		
+
 		jsonString = objectMapper.writeValueAsString(editarPlanoErro2(planos.get(0)));
 
 		this.mockMvc
 				.perform(put("/planos").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
 						.header("token", logar("wagnerju", "1234")).content(jsonString))
-				.andExpect(jsonPath("$.error", equalTo("Ocorreu um erro interno durante a alteração do plano de saúde")))
+				.andExpect(
+						jsonPath("$.error", equalTo("Ocorreu um erro interno durante a alteração do plano de saúde")))
 				.andExpect(status().isInternalServerError());
-		
+
 		jsonString = objectMapper.writeValueAsString(editarPlanoErro3(planos.get(0)));
 
 		this.mockMvc
 				.perform(put("/planos").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
 						.header("token", logar("wagnerju", "1234")).content(jsonString))
-				.andExpect(jsonPath("$.error", equalTo("Ocorreu um erro interno durante a alteração do plano de saúde")))
+				.andExpect(
+						jsonPath("$.error", equalTo("Ocorreu um erro interno durante a alteração do plano de saúde")))
 				.andExpect(status().isInternalServerError());
-		
+
 		jsonString = objectMapper.writeValueAsString(editarPlanoErro4(planos.get(0)));
 
 		this.mockMvc
 				.perform(put("/planos").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
 						.header("token", logar("wagnerju", "1234")).content(jsonString))
-				.andExpect(jsonPath("$.error", equalTo("Ocorreu um erro interno durante a alteração do plano de saúde")))
+				.andExpect(
+						jsonPath("$.error", equalTo("Ocorreu um erro interno durante a alteração do plano de saúde")))
 				.andExpect(status().isInternalServerError());
 
 	}
@@ -388,6 +392,7 @@ public class TestPlanoDeSaudeController {
 		plano.setNumeroCartao(new BigInteger("1122334455667788990"));
 		plano.setHabitacao("quarto");
 		plano.setTerritorio("nacional");
+		plano.setDataVencimento("1997-03-17");
 		return plano;
 	}
 
@@ -396,6 +401,7 @@ public class TestPlanoDeSaudeController {
 		plano.setNumeroCartao(new BigInteger("1122334455667788990"));
 		plano.setHabitacao("quarto");
 		plano.setTerritorio("nacional");
+		plano.setDataVencimento("1997-03-17");
 		return plano;
 	}
 
@@ -404,6 +410,7 @@ public class TestPlanoDeSaudeController {
 		plano.setIdConvenio(idConvenio);
 		plano.setHabitacao("quarto");
 		plano.setTerritorio("nacional");
+		plano.setDataVencimento("1997-03-17");
 		return plano;
 	}
 
@@ -412,6 +419,7 @@ public class TestPlanoDeSaudeController {
 		plano.setIdConvenio(idConvenio);
 		plano.setNumeroCartao(new BigInteger("1122334455667788990"));
 		plano.setTerritorio("nacional");
+		plano.setDataVencimento("1997-03-17");
 		return plano;
 	}
 
@@ -420,6 +428,7 @@ public class TestPlanoDeSaudeController {
 		plano.setIdConvenio(idConvenio);
 		plano.setNumeroCartao(new BigInteger("1122334455667788990"));
 		plano.setHabitacao("quarto");
+		plano.setDataVencimento("1997-03-17");
 		return plano;
 	}
 
@@ -430,6 +439,7 @@ public class TestPlanoDeSaudeController {
 		planoAtualizado.setNumeroCartao(plano.getNumeroCartao());
 		planoAtualizado.setHabitacao("apartamento");
 		planoAtualizado.setTerritorio(plano.getTerritorio());
+		planoAtualizado.setDataVencimento("1997-03-17");
 		return planoAtualizado;
 	}
 
@@ -440,6 +450,7 @@ public class TestPlanoDeSaudeController {
 		planoAtualizado.setNumeroCartao(plano.getNumeroCartao());
 		planoAtualizado.setHabitacao("apartamento");
 		planoAtualizado.setTerritorio(plano.getTerritorio());
+		planoAtualizado.setDataVencimento("1997-03-17");
 		return planoAtualizado;
 	}
 
@@ -449,6 +460,7 @@ public class TestPlanoDeSaudeController {
 		planoAtualizado.setNumeroCartao(plano.getNumeroCartao());
 		planoAtualizado.setHabitacao("apartamento");
 		planoAtualizado.setTerritorio(plano.getTerritorio());
+		planoAtualizado.setDataVencimento("1997-03-17");
 		return planoAtualizado;
 	}
 
@@ -458,6 +470,7 @@ public class TestPlanoDeSaudeController {
 		planoAtualizado.setIdConvenio(plano.getIdConvenio());
 		planoAtualizado.setHabitacao("apartamento");
 		planoAtualizado.setTerritorio(plano.getTerritorio());
+		planoAtualizado.setDataVencimento("1997-03-17");
 		return planoAtualizado;
 	}
 
@@ -467,6 +480,7 @@ public class TestPlanoDeSaudeController {
 		planoAtualizado.setIdConvenio(plano.getIdConvenio());
 		planoAtualizado.setNumeroCartao(plano.getNumeroCartao());
 		planoAtualizado.setTerritorio(plano.getTerritorio());
+		planoAtualizado.setDataVencimento("1997-03-17");
 		return planoAtualizado;
 	}
 
@@ -476,6 +490,7 @@ public class TestPlanoDeSaudeController {
 		planoAtualizado.setIdConvenio(plano.getIdConvenio());
 		planoAtualizado.setNumeroCartao(plano.getNumeroCartao());
 		planoAtualizado.setHabitacao("apartamento");
+		planoAtualizado.setDataVencimento("1997-03-17");
 		return planoAtualizado;
 	}
 

@@ -1,5 +1,6 @@
 package br.minder.plano_de_saude;
 
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -35,7 +36,7 @@ public class PlanoDeSaudeService {
 		return Optional.empty();
 	}
 
-	public Optional<PlanoDeSaudeId> salvar(CriarPlanoDeSaude comando, UsuarioId id) {
+	public Optional<PlanoDeSaudeId> salvar(CriarPlanoDeSaude comando, UsuarioId id) throws ParseException {
 		if (comando.getHabitacao() != null && comando.getIdConvenio() != null && comando.getNumeroCartao() != null
 				&& comando.getTerritorio() != null) {
 			PlanoDeSaude novo = repo.save(new PlanoDeSaude(comando, id));
@@ -76,7 +77,7 @@ public class PlanoDeSaudeService {
 		return Optional.empty();
 	}
 
-	public Optional<PlanoDeSaudeId> alterar(EditarPlanoDeSaude comando) {
+	public Optional<PlanoDeSaudeId> alterar(EditarPlanoDeSaude comando) throws ParseException {
 		Optional<PlanoDeSaude> optional = repo.findById(comando.getId());
 		if (comando.getHabitacao() != null && comando.getIdConvenio() != null && comando.getNumeroCartao() != null
 				&& comando.getTerritorio() != null && optional.isPresent()) {

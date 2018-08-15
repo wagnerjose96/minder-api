@@ -3,6 +3,7 @@ package br.minder.plano_de_saude;
 import java.net.URI;
 import java.nio.file.AccessDeniedException;
 import java.sql.SQLException;
+import java.text.ParseException;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -72,7 +73,7 @@ public class PlanoDeSaudeController {
 	@ApiOperation("Cadastre um novo plano de saúde")
 	@PostMapping
 	public ResponseEntity<String> postPlanoDeSaude(@RequestBody CriarPlanoDeSaude comando, @RequestHeader String token)
-			throws AccessDeniedException, SQLException {
+			throws AccessDeniedException, SQLException, ParseException {
 		if (autentica.autenticaRequisicao(token)) {
 			Optional<PlanoDeSaudeId> optionalPlanoDeSaudeId = service.salvar(comando, autentica.idUser(token));
 			if (optionalPlanoDeSaudeId.isPresent()) {
@@ -88,7 +89,7 @@ public class PlanoDeSaudeController {
 	@ApiOperation("Altere um plano de saúde")
 	@PutMapping
 	public ResponseEntity<String> putPlanoDeSaude(@RequestBody EditarPlanoDeSaude comando, @RequestHeader String token)
-			throws AccessDeniedException, SQLException {
+			throws AccessDeniedException, SQLException, ParseException {
 		if (autentica.autenticaRequisicao(token)) {
 			if (!service.encontrar(comando.getId(), autentica.idUser(token)).isPresent()) {
 				throw new NullPointerException("O plano de saúde a ser alterado não existe no banco de dados");
