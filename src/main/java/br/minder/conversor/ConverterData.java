@@ -13,11 +13,6 @@ public class ConverterData {
 		return formato.format(data);
 	}
 
-	public static String converterDataToTest(Date date) {
-		SimpleDateFormat formato = new SimpleDateFormat("yyyy-MM-dd");
-		return formato.format(date);
-	}
-
 	private ConverterData() {
 
 	}
