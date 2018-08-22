@@ -3,6 +3,7 @@ package br.minder.test.alarme;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.junit.Assert.assertThat;
+
 import java.sql.Date;
 import java.time.LocalDate;
 import java.util.List;
@@ -114,8 +115,8 @@ public class TestAlarmeService {
 		assertThat(alarme, notNullValue());
 
 		assertThat(alarme.getId().getValue().toString(), equalTo(idAlarme.toString()));
-		assertThat(converterData(alarme.getDataInicio()), equalTo(LocalDate.of(2018, 07, 10).toString()));
-		assertThat(converterData(alarme.getDataFim()), equalTo(LocalDate.of(2018, 07, 20).toString()));
+		assertThat(ConverterData.converterData(alarme.getDataInicio().getTime()), equalTo("10-07-2018"));
+		assertThat(ConverterData.converterData(alarme.getDataFim().getTime()), equalTo("20-07-2018"));
 		assertThat(alarme.getDescricao(), equalTo("Tomar medicamento"));
 		assertThat(alarme.getIdMedicamento().toString(), equalTo(idMedicamento.toString()));
 		assertThat(alarme.getPeriodicidade(), equalTo(8));
@@ -141,8 +142,8 @@ public class TestAlarmeService {
 		assertThat(alarme, notNullValue());
 
 		assertThat(alarme.getId().getValue().toString(), equalTo(idAlarme.toString()));
-		assertThat(converterData(alarme.getDataInicio()), equalTo(LocalDate.of(2018, 07, 10).toString()));
-		assertThat(converterData(alarme.getDataFim()), equalTo(LocalDate.of(2018, 07, 20).toString()));
+		assertThat(ConverterData.converterData(alarme.getDataInicio().getTime()), equalTo("10-07-2018"));
+		assertThat(ConverterData.converterData(alarme.getDataFim().getTime()), equalTo("20-07-2018"));
 		assertThat(alarme.getDescricao(), equalTo("Tomar medicamento"));
 		assertThat(alarme.getIdMedicamento().toString(), equalTo(idMedicamento.toString()));
 		assertThat(alarme.getPeriodicidade(), equalTo(8));
@@ -157,8 +158,8 @@ public class TestAlarmeService {
 		assertThat(repoAlarme.findAll().size(), equalTo(1));
 
 		assertThat(alarmeEditado.getId().getValue().toString(), equalTo(idAlarmeEditado.toString()));
-		assertThat(converterData(alarmeEditado.getDataInicio()), equalTo(LocalDate.of(2018, 07, 10).toString()));
-		assertThat(converterData(alarmeEditado.getDataFim()), equalTo(LocalDate.of(2018, 07, 20).toString()));
+		assertThat(ConverterData.converterData(alarme.getDataInicio().getTime()), equalTo("10-07-2018"));
+		assertThat(ConverterData.converterData(alarme.getDataFim().getTime()), equalTo("20-07-2018"));
 		assertThat(alarmeEditado.getDescricao(), equalTo("Tomar medicamento Editado !!!"));
 		assertThat(alarmeEditado.getIdMedicamento().toString(), equalTo(idMedicamento.toString()));
 		assertThat(alarmeEditado.getPeriodicidade(), equalTo(8));
@@ -184,8 +185,8 @@ public class TestAlarmeService {
 		assertThat(alarme, notNullValue());
 
 		assertThat(alarme.getId().getValue().toString(), equalTo(idAlarme.toString()));
-		assertThat(converterData(alarme.getDataInicio()), equalTo(LocalDate.of(2018, 07, 10).toString()));
-		assertThat(converterData(alarme.getDataFim()), equalTo(LocalDate.of(2018, 07, 20).toString()));
+		assertThat(ConverterData.converterData(alarme.getDataInicio().getTime()), equalTo("10-07-2018"));
+		assertThat(ConverterData.converterData(alarme.getDataFim().getTime()), equalTo("20-07-2018"));
 		assertThat(alarme.getDescricao(), equalTo("Tomar medicamento"));
 		assertThat(alarme.getIdMedicamento().toString(), equalTo(idMedicamento.toString()));
 		assertThat(alarme.getPeriodicidade(), equalTo(8));
@@ -194,8 +195,8 @@ public class TestAlarmeService {
 
 		Alarme alarmeEncontrado = repoAlarme.findById(alarme.getId()).get();
 		assertThat(alarmeEncontrado.getId().getValue().toString(), equalTo(idAlarme.toString()));
-		assertThat(converterData(alarmeEncontrado.getDataInicio()), equalTo(LocalDate.of(2018, 07, 10).toString()));
-		assertThat(converterData(alarmeEncontrado.getDataFim()), equalTo(LocalDate.of(2018, 07, 20).toString()));
+		assertThat(ConverterData.converterData(alarmeEncontrado.getDataInicio().getTime()), equalTo("10-07-2018"));
+		assertThat(ConverterData.converterData(alarmeEncontrado.getDataFim().getTime()), equalTo("20-07-2018"));
 		assertThat(alarmeEncontrado.getDescricao(), equalTo("Tomar medicamento"));
 		assertThat(alarmeEncontrado.getPeriodicidade(), equalTo(8));
 		assertThat(alarmeEncontrado.getQuantidade(), equalTo("1"));
@@ -221,8 +222,8 @@ public class TestAlarmeService {
 		assertThat(alarme1, notNullValue());
 
 		assertThat(alarme1.getId().getValue().toString(), equalTo(idAlarme1.toString()));
-		assertThat(converterData(alarme1.getDataInicio()), equalTo(LocalDate.of(2018, 07, 10).toString()));
-		assertThat(converterData(alarme1.getDataFim()), equalTo(LocalDate.of(2018, 07, 20).toString()));
+		assertThat(ConverterData.converterData(alarme1.getDataInicio().getTime()), equalTo("10-07-2018"));
+		assertThat(ConverterData.converterData(alarme1.getDataFim().getTime()), equalTo("20-07-2018"));
 		assertThat(alarme1.getDescricao(), equalTo("Tomar medicamento"));
 		assertThat(alarme1.getIdMedicamento().toString(), equalTo(idMedicamento.toString()));
 		assertThat(alarme1.getPeriodicidade(), equalTo(8));
@@ -237,8 +238,8 @@ public class TestAlarmeService {
 		assertThat(alarme2, notNullValue());
 
 		assertThat(alarme2.getId().getValue().toString(), equalTo(idAlarme2.toString()));
-		assertThat(converterData(alarme2.getDataInicio()), equalTo(LocalDate.of(2018, 07, 10).toString()));
-		assertThat(converterData(alarme2.getDataFim()), equalTo(LocalDate.of(2018, 07, 20).toString()));
+		assertThat(ConverterData.converterData(alarme2.getDataInicio().getTime()), equalTo("10-07-2018"));
+		assertThat(ConverterData.converterData(alarme2.getDataFim().getTime()), equalTo("20-07-2018"));
 		assertThat(alarme2.getDescricao(), equalTo("Tomar medicamento 2"));
 		assertThat(alarme2.getIdMedicamento().toString(), equalTo(idMedicamento.toString()));
 		assertThat(alarme2.getPeriodicidade(), equalTo(8));
@@ -265,8 +266,8 @@ public class TestAlarmeService {
 		assertThat(alarme, notNullValue());
 
 		assertThat(alarme.getId().getValue().toString(), equalTo(idAlarme.toString()));
-		assertThat(converterData(alarme.getDataInicio()), equalTo(LocalDate.of(2018, 07, 10).toString()));
-		assertThat(converterData(alarme.getDataFim()), equalTo(LocalDate.of(2018, 07, 20).toString()));
+		assertThat(ConverterData.converterData(alarme.getDataInicio().getTime()), equalTo("10-07-2018"));
+		assertThat(ConverterData.converterData(alarme.getDataFim().getTime()), equalTo("20-07-2018"));
 		assertThat(alarme.getDescricao(), equalTo("Tomar medicamento"));
 		assertThat(alarme.getIdMedicamento().toString(), equalTo(idMedicamento.toString()));
 		assertThat(alarme.getPeriodicidade(), equalTo(8));
@@ -278,10 +279,6 @@ public class TestAlarmeService {
 		assertThat(mensagemDeletado.get(), notNullValue());
 		assertThat(mensagemDeletado.get(),
 				equalTo("Alarme ===> " + alarme.getId().toString() + ": deletado com sucesso"));
-	}
-
-	private String converterData(Date date) {
-		return ConverterData.converterDataToTest(date);
 	}
 
 	private CriarAlarme criarAlarme(MedicamentoId idMedicamento, String descrição) {

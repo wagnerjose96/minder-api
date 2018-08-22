@@ -116,6 +116,7 @@ public class DoencaService {
 			Doenca doenca = optional.get();
 			doenca.apply(comando);
 			doencaRepo.save(doenca);
+			service.alterar(comando.getIdDoenca().toString());
 			for (MedicamentoId idMedicamento : comando.getIdMedicamentos()) {
 				if (medService.encontrar(idMedicamento).isPresent()) {
 					DoencaMedicamento doencaMedicamento = new DoencaMedicamento();

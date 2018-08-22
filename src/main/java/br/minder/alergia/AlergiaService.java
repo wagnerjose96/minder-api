@@ -119,6 +119,7 @@ public class AlergiaService {
 				Alergia alergia = optional.get();
 				alergia.apply(comando);
 				repo.save(alergia);
+				service.alterar(alergia.getIdAlergia().toString());
 				for (MedicamentoId idMedicamento : comando.getIdMedicamentos()) {
 					if (medService.encontrar(idMedicamento).isPresent()) {
 						AlergiaMedicamento alergiaMedicamento = new AlergiaMedicamento();

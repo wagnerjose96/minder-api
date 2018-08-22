@@ -1,7 +1,8 @@
 package br.minder.usuario;
 
 import java.security.NoSuchAlgorithmException;
-import java.sql.Date;
+import java.util.Date;
+
 import javax.persistence.AttributeOverride;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;

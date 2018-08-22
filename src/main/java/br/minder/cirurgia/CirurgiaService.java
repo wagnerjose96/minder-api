@@ -115,6 +115,7 @@ public class CirurgiaService {
 			Cirurgia cirurgia = optional.get();
 			cirurgia.apply(comando);
 			cirurgiaRepo.save(cirurgia);
+			service.alterar(comando.getIdCirurgia().toString());
 			for (MedicamentoId idMedicamento : comando.getIdMedicamentos()) {
 				if (medService.encontrar(idMedicamento).isPresent()) {
 					CirurgiaMedicamento cirurgiaMedicamento = new CirurgiaMedicamento();

@@ -1,6 +1,6 @@
 package br.minder.usuario.comandos;
 
-import java.sql.Date;
+import java.util.Date;
 
 import br.minder.endereco.comandos.CriarEndereco;
 import br.minder.genero.GeneroId;

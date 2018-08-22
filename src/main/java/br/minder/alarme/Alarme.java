@@ -1,6 +1,7 @@
 package br.minder.alarme;
 
-import java.sql.Date;
+import java.util.Date;
+
 import javax.persistence.AttributeOverride;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
@@ -20,7 +21,7 @@ import lombok.Setter;
 public class Alarme {
 	@EmbeddedId
 	@AttributeOverride(name = "value", column = @Column(name = "id"))
-	@Setter(AccessLevel.NONE) 
+	@Setter(AccessLevel.NONE)
 	private AlarmeId id;
 	@AttributeOverride(name = "value", column = @Column(name = "id_usuario"))
 	private UsuarioId idUsuario;

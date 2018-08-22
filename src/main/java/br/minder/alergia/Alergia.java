@@ -1,6 +1,7 @@
 package br.minder.alergia;
 
-import java.sql.Date;
+import java.util.Date;
+
 import javax.persistence.AttributeOverride;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
@@ -28,10 +29,9 @@ public class Alergia {
 	@AttributeOverride(name = "value", column = @Column(name = "id_usuario"))
 	private UsuarioId idUsuario;
 
-
 	public Alergia() {
 	}
-	
+
 	public Alergia(CriarAlergia comandos, UsuarioId id) {
 		this.idAlergia = new AlergiaId();
 		this.tipoAlergia = comandos.getTipoAlergia();
@@ -48,6 +48,5 @@ public class Alergia {
 		this.dataDescoberta = comando.getDataDescoberta();
 		this.efeitos = comando.getEfeitos();
 	}
-	
-	
+
 }
