@@ -10,10 +10,9 @@ import org.springframework.data.repository.query.Param;
 import br.minder.cirurgia.Cirurgia;
 
 public interface CirurgiaRepository extends JpaRepository<Cirurgia, CirurgiaId> {
-	@Query(nativeQuery = true, countQuery = "select count(id) from cirurgia", value = "select * from cirurgia where id_usuario = :usuarioId")
+	@Query(nativeQuery = true, countQuery = "select count(id) from cirurgia", value = "select * from cirurgia where id_usuario = :usuarioId order by id")
 	Page<Cirurgia> findAll(Pageable pageable, @Param("usuarioId") String usuarioId);
 
-	@Query(nativeQuery = true, countQuery = "select count(id) from cirurgia", value = "select * from cirurgia where id_usuario = :usuarioId")
+	@Query(nativeQuery = true, countQuery = "select count(id) from cirurgia", value = "select * from cirurgia where id_usuario = :usuarioId order by id")
 	List<Cirurgia> findAll(@Param("usuarioId") String usuarioId);
-
 }

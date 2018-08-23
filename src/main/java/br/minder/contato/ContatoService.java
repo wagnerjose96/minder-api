@@ -102,7 +102,7 @@ public class ContatoService {
 		}
 		Page<BuscarContato> page = new PageImpl<>(resultados,
 				PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), pageable.getSort()),
-				resultados.size());
+				contatos.getTotalElements());
 		return Optional.of(page);
 	}
 

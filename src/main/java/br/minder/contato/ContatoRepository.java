@@ -20,5 +20,4 @@ public interface ContatoRepository extends JpaRepository<Contato, ContatoId> {
 			+ "group by e.id_emergencia, c.id, b.id_contato, t.id having e.id_usuario = :usuarioId and c.id = :contatoId "
 			+ "order by c.id")
 	Contato findById(@Param("contatoId") String contatoId, @Param("usuarioId") String usuarioId);
-
 }

@@ -85,7 +85,7 @@ public class CirurgiaService {
 			}
 			Page<BuscarCirurgia> page = new PageImpl<>(rsCirurgias,
 					PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), pageable.getSort()),
-					rsCirurgias.size());
+					cirurgias.getTotalElements());
 			return Optional.of(page);
 		}
 		return Optional.empty();

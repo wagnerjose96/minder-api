@@ -53,7 +53,7 @@ public class ConvenioService {
 			}
 			Page<BuscarConvenio> page = new PageImpl<>(resultados,
 					PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), pageable.getSort()),
-					resultados.size());
+					convenios.getTotalElements());
 			return Optional.of(page);
 		}
 		return Optional.empty();

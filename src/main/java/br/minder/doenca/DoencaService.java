@@ -88,7 +88,7 @@ public class DoencaService {
 			}
 			Page<BuscarDoenca> page = new PageImpl<>(rsDoencas,
 					PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), pageable.getSort()),
-					rsDoencas.size());
+					doencas.getTotalElements());
 			return Optional.of(page);
 		}
 		return Optional.empty();

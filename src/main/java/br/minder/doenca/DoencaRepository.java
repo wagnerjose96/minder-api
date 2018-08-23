@@ -9,9 +9,9 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 public interface DoencaRepository extends JpaRepository<Doenca, DoencaId> {
-	@Query(nativeQuery = true, countQuery = "select count(id) from doenca", value = "select * from doenca where id_usuario = :usuarioId")
+	@Query(nativeQuery = true, countQuery = "select count(id_doenca) from doenca", value = "select * from doenca where id_usuario = :usuarioId order by id_doenca")
 	Page<Doenca> findAll(Pageable pageable, @Param("usuarioId") String usuarioId);
 
-	@Query(nativeQuery = true, countQuery = "select count(id) from doenca", value = "select * from doenca where id_usuario = :usuarioId")
+	@Query(nativeQuery = true, countQuery = "select count(id_doenca) from doenca", value = "select * from doenca where id_usuario = :usuarioId order by id_doenca")
 	List<Doenca> findAll(@Param("usuarioId") String usuarioId);
 }

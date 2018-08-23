@@ -51,7 +51,7 @@ public class MedicamentoService {
 			}
 			Page<BuscarMedicamento> page = new PageImpl<>(resultados,
 					PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), pageable.getSort()),
-					resultados.size());
+					medicamentos.getTotalElements());
 			return Optional.of(page);
 		}
 		return Optional.empty();

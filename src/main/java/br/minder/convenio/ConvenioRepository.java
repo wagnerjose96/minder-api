@@ -7,9 +7,9 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 public interface ConvenioRepository extends JpaRepository<Convenio, ConvenioId> {
-	@Query(nativeQuery = true, countQuery = "select count(id) from convenio", value = "select * from convenio where ativo = 1")
+	@Query(nativeQuery = true, countQuery = "select count(id) from convenio", value = "select * from convenio where ativo = 1 order by id")
 	Page<Convenio> findAll(Pageable pageable);
 
-	@Query(nativeQuery = true, countQuery = "select count(id) from convenio", value = "select * from convenio where ativo = 1 and id = :convenioId")
+	@Query(nativeQuery = true, countQuery = "select count(id) from convenio", value = "select * from convenio where ativo = 1 and id = :convenioId order by id")
 	Convenio findById(@Param("convenioId") String convenioId);
 }

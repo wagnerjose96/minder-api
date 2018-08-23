@@ -9,10 +9,9 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 public interface AlergiaRepository extends JpaRepository<Alergia, AlergiaId> {
-	@Query(nativeQuery = true, countQuery = "select count(id) from alergia", value = "select * from alergia where id_usuario = :usuarioId")
+	@Query(nativeQuery = true, countQuery = "select count(id) from alergia", value = "select * from alergia where id_usuario = :usuarioId order by id")
 	Page<Alergia> findAll(Pageable pageable, @Param("usuarioId") String usuarioId);
 
-	@Query(nativeQuery = true, countQuery = "select count(id) from alergia", value = "select * from alergia where id_usuario = :usuarioId")
+	@Query(nativeQuery = true, countQuery = "select count(id) from alergia", value = "select * from alergia where id_usuario = :usuarioId order by id")
 	List<Alergia> findAll(@Param("usuarioId") String usuarioId);
-
 }

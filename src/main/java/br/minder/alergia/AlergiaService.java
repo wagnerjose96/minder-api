@@ -78,7 +78,7 @@ public class AlergiaService {
 		Page<Alergia> alergias = repo.findAll(pageable, id.toString());
 		List<BuscarAlergia> rsAlergias = new ArrayList<>();
 		if (alergias.hasContent()) {
-			for (Alergia alergia : alergias) {
+			for (Alergia alergia : alergias.getContent()) {
 				if (TermoDeBusca.searchTerm(alergia.getTipoAlergia(), searchTerm)) {
 					List<BuscarMedicamento> medicamentos = executeQuery(alergia.getIdAlergia().toString(), sql);
 					BuscarAlergia nova = new BuscarAlergia(alergia);
@@ -88,7 +88,7 @@ public class AlergiaService {
 			}
 			Page<BuscarAlergia> page = new PageImpl<>(rsAlergias,
 					PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), pageable.getSort()),
-					rsAlergias.size());
+					alergias.getTotalElements());
 			return Optional.of(page);
 		}
 		return Optional.empty();

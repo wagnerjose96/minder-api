@@ -73,7 +73,7 @@ public class PlanoDeSaudeService {
 			}
 			Page<BuscarPlanoDeSaude> page = new PageImpl<>(rsPlanos,
 					PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), pageable.getSort()),
-					rsPlanos.size());
+					planos.getTotalElements());
 			return Optional.of(page);
 		}
 		return Optional.empty();

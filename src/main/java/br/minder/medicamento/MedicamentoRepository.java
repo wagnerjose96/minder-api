@@ -7,10 +7,9 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 public interface MedicamentoRepository extends JpaRepository<Medicamento, MedicamentoId> {
-	@Query(nativeQuery = true, countQuery = "select count(id_medicamento) from medicamento", value = "select * from medicamento where ativo = 1")
+	@Query(nativeQuery = true, countQuery = "select count(id_medicamento) from medicamento", value = "select * from medicamento where ativo = 1 order by id_medicamento")
 	Page<Medicamento> findAll(Pageable pageable);
 
-	@Query(nativeQuery = true, countQuery = "select count(id_medicamento) from medicamento", value = "select * from medicamento where ativo = 1 and id_medicamento = :medicamentoId")
+	@Query(nativeQuery = true, countQuery = "select count(id_medicamento) from medicamento", value = "select * from medicamento where ativo = 1 and id_medicamento = :medicamentoId order by id_medicamento")
 	Medicamento findById(@Param("medicamentoId") String medicamentoId);
-
 }

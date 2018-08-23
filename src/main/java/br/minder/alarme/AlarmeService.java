@@ -67,7 +67,7 @@ public class AlarmeService {
 			}
 			Page<BuscarAlarme> page = new PageImpl<>(resultados,
 					PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), pageable.getSort()),
-					resultados.size());
+					alarmes.getTotalElements());
 			return Optional.of(page);
 		}
 		return Optional.empty();
