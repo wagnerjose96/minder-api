@@ -27,7 +27,9 @@
 		<sonar.jacoco.reportPath>${project.basedir}/../target/jacoco.exec</sonar.jacoco.reportPath>
 		<sonar.languages>java, xml</sonar.languages>
 		<sonar.sources>src/main/java,src/main/resources</sonar.sources>
+		<sonar.java.binaries>target/*</sonar.java.binaries>
 	</properties>
+
 
 	<dependencies>
 
@@ -201,7 +203,7 @@
 			<plugin>
 				<groupId>org.sonarsource.scanner.maven</groupId>
 				<artifactId>sonar-maven-plugin</artifactId>
-				<version>3.2</version>
+				<version>3.4</version>
 			</plugin>
 
 			<plugin>
@@ -263,7 +265,7 @@
 			</activation>
 			<properties>
 				<sonar.login>
-					2194ae3abede42026dfa99e0e3d153422f283457
+					076e7d8d96e875ef0d2a2f511062e5d6af665d0e
 				</sonar.login>
 				<sonar.host.url>
 					http://sonar.minderapplication.com/
@@ -272,5 +274,5 @@
 		</profile>
 
 	</profiles>
-	
+
 </project>
