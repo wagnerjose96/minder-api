@@ -26,10 +26,10 @@
 				<constraints nullable="false" />
 			</column>
 			<column name="nome_usuario" type="${TYPE_DESCRICAO}">
-				<constraints nullable="false" />
+				<constraints nullable="true" />
 			</column>
 			<column name="senha" type="${TYPE_DESCRICAO}">
-				<constraints nullable="false" />
+				<constraints nullable="true" />
 			</column>
 			<column name="rev" type="${TYPE_NUMBER}">
 				<constraints nullable="false" referencedTableName="revinfo"

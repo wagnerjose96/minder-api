@@ -19,7 +19,6 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
-
 import br.minder.security.Autentica;
 import br.minder.usuario.UsuarioService;
 import br.minder.usuario.comandos.BuscarUsuario;
@@ -28,10 +27,10 @@ import br.minder.usuario_adm.UsuarioAdmService;
 import br.minder.usuario_adm.comandos.BuscarUsuarioAdm;
 import br.minder.usuario_adm.comandos.CriarUsuarioAdm;
 import br.minder.usuario_adm.comandos.EditarUsuarioAdm;
-import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import springfox.documentation.annotations.ApiIgnore;
 
-@Api("Basic Usuário Admin Controller")
+@ApiIgnore("Basic Usuário Admin Controller")
 @RestController
 @RequestMapping("/api/adm")
 @CrossOrigin

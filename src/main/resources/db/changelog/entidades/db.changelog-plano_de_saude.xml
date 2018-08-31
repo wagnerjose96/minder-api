@@ -42,13 +42,13 @@
 				<constraints nullable="false" />
 			</column>
 			<column name="numero_cartao" type="${TYPE_BIG_INTEGER}">
-				<constraints nullable="false" />
+				<constraints nullable="true" />
 			</column>
 			<column name="habitacao" type="${TYPE_DESCRICAO}">
-				<constraints nullable="false" />
+				<constraints nullable="true" />
 			</column>
 			<column name="territorio" type="${TYPE_DESCRICAO}">
-				<constraints nullable="false" />
+				<constraints nullable="true" />
 			</column>
 			<column name="rev" type="${TYPE_NUMBER}">
 				<constraints nullable="false"
