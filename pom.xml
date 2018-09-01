@@ -265,10 +265,10 @@
 			</activation>
 			<properties>
 				<sonar.login>
-					076e7d8d96e875ef0d2a2f511062e5d6af665d0e
+					6746e909fd7b9b5e4c96930ca5697c65077f4f8b
 				</sonar.login>
 				<sonar.host.url>
-					http://sonar.minderapplication.com/
+					http://sonarqube.eastus.cloudapp.azure.com:9000/
 				</sonar.host.url>
 			</properties>
 		</profile>

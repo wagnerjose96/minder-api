@@ -1,4 +1,4 @@
-package br.minder.listaDeEspera;
+package br.minder.lista_de_espera;
 
 import java.io.UnsupportedEncodingException;
 import java.util.*;
@@ -14,6 +14,8 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @Transactional
 public class ListaDeEsperaService {
+
+	private static final String EMAIL = "minder.application@gmail.com";
 
 	private static String formataEmail(String email) {
 		email = email.replaceAll("%40", "@");
@@ -32,8 +34,9 @@ public class ListaDeEsperaService {
 
 		getMailSession = Session.getDefaultInstance(mailServerProperties, null);
 		generateMailMessage = new MimeMessage(getMailSession);
-		generateMailMessage.setFrom(new InternetAddress("minder.application@gmail.com", "Minder"));
+		generateMailMessage.setFrom(new InternetAddress(EMAIL, "Minder"));
 		generateMailMessage.addRecipient(Message.RecipientType.TO, new InternetAddress(formataEmail(email)));
+		generateMailMessage.addRecipient(Message.RecipientType.TO, new InternetAddress(formataEmail(EMAIL)));
 		generateMailMessage.setSubject("Minder - Bem vindo a nossa lista de espera");
 		String emailBody = "<div style=\"text-align: center;\"><strong>O que é o Minder ?</strong><br>\n"
 				+ "&nbsp;</div>\n" + "\n"
@@ -41,16 +44,13 @@ public class ListaDeEsperaService {
 				+ "<br>\n"
 				+ "Agora você está na nossa lista de espera, fique tranquilo que iremos te avisar quando o aplicativo for lançado nas lojas virtuais Google Play e Apple Store.<br>\n"
 				+ "<br>\n"
-				+ "Para esclarecimento de dúvidas, por favor entre em contato conosco através do e-mail <u><span style=\"color:#0000CD\">minder.application@gmail.com</span></u></div>";
+				+ "Para esclarecimento de dúvidas, por favor entre em contato conosco através deste e-mail!</div>";
 		generateMailMessage.setContent(emailBody, "text/html; charset=UTF-8");
 
 		Transport transport = getMailSession.getTransport("smtp");
-		transport.connect("smtp.gmail.com", "minder.application@gmail.com", "15065132");
+		transport.connect("smtp.gmail.com", EMAIL, "15065132");
 		transport.sendMessage(generateMailMessage, generateMailMessage.getAllRecipients());
-		if (transport.isConnected()) {
-			transport.close();
-			return true;
-		} else
-			return false;
+		transport.close();
+		return true;
 	}
 }

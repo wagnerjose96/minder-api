@@ -1,4 +1,4 @@
-package br.minder.listaDeEspera;
+package br.minder.lista_de_espera;
 
 import java.io.UnsupportedEncodingException;
 
