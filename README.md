@@ -87,7 +87,7 @@
         @ApiIgnore: 
         OBS: o Swagger documenta apenas os métodos com a anotação de um método http (@PostMapping...).
 
-* PARA VER A DOCUMENTAÇÃO: http://swagger.minderapplication.com/
+* PARA VER A DOCUMENTAÇÃO: http://swagger.minderapplication.com
 
 
    
