@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<databaseChangeLog
+	xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd
+        http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
+
+	<changeSet author="larissa.andrade"
+		id="alter_table_usuario_aud">
+		<dropColumn tableName="usuario_aud" columnName="imagem_usuario"/>
+		<addColumn tableName="usuario_aud">
+			<column name="imagem_usuario" type="${TYPE_IMAGEM_MAXIMO}">
+				<constraints nullable="true" />
+			</column>
+		</addColumn>
+	</changeSet>
+	
+	<changeSet author="larissa.andrade"
+		id="alter_table_usuario">
+		<dropColumn tableName="usuario" columnName="imagem_usuario"/>
+		<addColumn tableName="usuario">
+			<column name="imagem_usuario" type="${TYPE_IMAGEM_MAXIMO}">
+				<constraints nullable="true" />
+			</column>
+		</addColumn>
+	</changeSet>
+</databaseChangeLog>

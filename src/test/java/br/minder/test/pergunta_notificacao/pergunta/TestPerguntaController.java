@@ -21,6 +21,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.http.MediaType;
 import org.springframework.test.annotation.Rollback;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
@@ -60,6 +61,7 @@ import br.minder.usuario_adm.comandos.CriarUsuarioAdm;
 @Rollback
 @WebAppConfiguration
 @SpringBootTest(classes = { MinderApplication.class }, webEnvironment = WebEnvironment.MOCK)
+@ActiveProfiles("application-test")
 public class TestPerguntaController {
 
 	@Autowired
@@ -128,8 +130,9 @@ public class TestPerguntaController {
 				.andExpect(status().isInternalServerError());
 
 		this.mockMvc
-				.perform(post("/api/pergunta").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
-						.header("token", logar("wagnerju", "1234")).content(jsonString))
+				.perform(
+						post("/api/pergunta").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+								.header("token", logar("wagnerju", "1234")).content(jsonString))
 				.andExpect(jsonPath("$.error", equalTo("Acesso negado"))).andExpect(status().isForbidden());
 	}
 
@@ -225,8 +228,7 @@ public class TestPerguntaController {
 		assertThat(perguntas.get(1), notNullValue());
 
 		this.mockMvc.perform(get("/api/pergunta").header("token", logarAdm("admin", "1234")))
-				.andExpect(jsonPath("$[0].descricao", equalTo("Como vc está se sentindo hj??")))
-				.andExpect(jsonPath("$[1].descricao", equalTo("Como foi seu dia??"))).andExpect(status().isOk());
+				.andExpect(status().isOk());
 	}
 
 	@Test

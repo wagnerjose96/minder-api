@@ -1,61 +1,101 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+<databaseChangeLog
+	xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
 	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd
         http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
 
-	
-		<!-- Tipos de dados utilizados -->
-		
+
+	<!-- Tipos de dados utilizados -->
+
 	<property name="TYPE_ID" value="varchar(36)" />
 	<property name="TYPE_DESCRICAO" value="varchar(255)" />
+	<property name="TYPE_IMAGEM" value="varchar(9999)" />
+	<property name="TYPE_IMAGEM_MAXIMO" value="varchar(10485760)" />
 	<property name="TYPE_TEXT" value="text" />
 	<property name="TYPE_SANGUE" value="varchar(3)" />
 	<property name="TYPE_BIG_INTEGER" value="bigint" />
 	<property name="TYPE_DATA" value="date" />
 	<property name="TYPE_NUMBER" value="integer" />
 	<property name="TYPE_TIME" value="timestamp" />
-	
-		<!-- Carregando entidades no banco de dados -->
-	
+	<property name="TYPE_HORA" value="time" />
+
+	<!-- Carregando entidades no banco de dados -->
+
 	<include file="db/changelog/entidades/db.changelog-revinfo.xml" />
 	<include file="db/changelog/entidades/db.changelog-sangue.xml" />
 	<include file="db/changelog/entidades/db.changelog-genero.xml" />
-	<include file="db/changelog/entidades/db.changelog-endereco.xml" />
-	<include file="db/changelog/entidades/db.changelog-telefone.xml" />
-	<include file="db/changelog/entidades/db.changelog-usuario_adm.xml" />
+	<include
+		file="db/changelog/entidades/db.changelog-endereco.xml" />
+	<include
+		file="db/changelog/entidades/db.changelog-telefone.xml" />
+	<include
+		file="db/changelog/entidades/db.changelog-usuario_adm.xml" />
 	<include file="db/changelog/entidades/db.changelog-usuario.xml" />
-	<include file="db/changelog/entidades/db.changelog-medicamento.xml" />
+	<include
+		file="db/changelog/entidades/db.changelog-medicamento.xml" />
 	<include file="db/changelog/entidades/db.changelog-alarme.xml" />
 	<include file="db/changelog/entidades/db.changelog-alergia.xml" />
-	<include file="db/changelog/entidades/db.changelog-cirurgia.xml" />
+	<include
+		file="db/changelog/entidades/db.changelog-cirurgia.xml" />
 	<include file="db/changelog/entidades/db.changelog-contato.xml" />
-	<include file="db/changelog/entidades/db.changelog-convenio.xml" />
+	<include
+		file="db/changelog/entidades/db.changelog-convenio.xml" />
 	<include file="db/changelog/entidades/db.changelog-doenca.xml" />
-	<include file="db/changelog/entidades/db.changelog-emergencia.xml" />
+	<include
+		file="db/changelog/entidades/db.changelog-emergencia.xml" />
 	<include file="db/changelog/entidades/db.changelog-error.xml" />
-	<include file="db/changelog/entidades/db.changelog-plano_de_saude.xml" />
-	<include file="db/changelog/entidades/db.changelog-pergunta.xml" />
-	<include file="db/changelog/entidades/db.changelog-resposta.xml" />
-	
-	
-		<!-- Carregando associações no banco de dados -->
-		
-	<include file="db/changelog/associacoes/db.changelog-alergia_medicamento.xml" />
-	<include file="db/changelog/associacoes/db.changelog-doenca_medicamento.xml" />
-	<include file="db/changelog/associacoes/db.changelog-cirurgia_medicamento.xml" />
-	<include file="db/changelog/associacoes/db.changelog-contato_emergencia.xml" />
-	<include file="db/changelog/associacoes/db.changelog-pergunta_resposta_usuario.xml" />
-	
-	
-		<!-- Carregando alterações no banco de dados -->
-	
-	<include file="db/changelog/alteracoes/db.changelog-alarme_usuario.xml" />
-	<include file="db/changelog/alteracoes/db.changelog-alergia_usuario.xml" />
-	<include file="db/changelog/alteracoes/db.changelog-cirurgia_usuario.xml" />
-	<include file="db/changelog/alteracoes/db.changelog-doenca_usuario.xml" />
-	<include file="db/changelog/alteracoes/db.changelog-plano_de_saude_usuario.xml" />
-	<include file="db/changelog/alteracoes/db.changelog-plano_de_saude_vencimento.xml" />	
-	
+	<include
+		file="db/changelog/entidades/db.changelog-plano_de_saude.xml" />
+	<include
+		file="db/changelog/entidades/db.changelog-pergunta.xml" />
+	<include
+		file="db/changelog/entidades/db.changelog-resposta.xml" />
+
+
+	<!-- Carregando associações no banco de dados -->
+
+	<include
+		file="db/changelog/associacoes/db.changelog-alergia_medicamento.xml" />
+	<include
+		file="db/changelog/associacoes/db.changelog-doenca_medicamento.xml" />
+	<include
+		file="db/changelog/associacoes/db.changelog-cirurgia_medicamento.xml" />
+	<include
+		file="db/changelog/associacoes/db.changelog-contato_emergencia.xml" />
+	<include
+		file="db/changelog/associacoes/db.changelog-pergunta_resposta_usuario.xml" />
+	<include
+		file="db/changelog/associacoes/db.changelog-alarme_hora.xml" />
+
+
+	<!-- Carregando alterações no banco de dados -->
+
+	<include
+		file="db/changelog/alteracoes/db.changelog-alarme_usuario.xml" />
+	<include
+		file="db/changelog/alteracoes/db.changelog-alergia_usuario.xml" />
+	<include
+		file="db/changelog/alteracoes/db.changelog-cirurgia_usuario.xml" />
+	<include
+		file="db/changelog/alteracoes/db.changelog-doenca_usuario.xml" />
+	<include
+		file="db/changelog/alteracoes/db.changelog-plano_de_saude_usuario.xml" />
+	<include
+		file="db/changelog/alteracoes/db.changelog-plano_de_saude_vencimento.xml" />
+	<include
+		file="db/changelog/alteracoes/db.changelog-plano_de_saude_aud.xml" />
+	<include
+		file="db/changelog/alteracoes/db.changelog-alarme_hora.xml" />
+	<include
+		file="db/changelog/alteracoes/db.changelog-emergencia.xml" />
+	<include
+		file="db/changelog/alteracoes/db.changelog-emergencia_aud.xml" />
+	<include
+		file="db/changelog/alteracoes/db.changelog-imagem_usuario.xml" />
+	<include
+		file="db/changelog/alteracoes/db.changelog-imagem_usuario_tamanho.xml" />
+
 </databaseChangeLog>

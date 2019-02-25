@@ -1,5 +1,6 @@
 package br.minder.alarme.comandos;
 
+import java.sql.Time;
 import java.util.Date;
 
 import br.minder.medicamento.MedicamentoId;
@@ -15,4 +16,6 @@ public class CriarAlarme {
 	private String descricao;
 	private int periodicidade;
 	private MedicamentoId idMedicamento;
+	private Time horaPrimeiraDose;
+	
 }

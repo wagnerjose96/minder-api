@@ -5,9 +5,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import br.minder.endereco.EnderecoId;
 import br.minder.endereco.EnderecoService;
 import br.minder.endereco.comandos.BuscarEndereco;
@@ -25,6 +25,15 @@ import br.minder.usuario.comandos.EditarUsuario;
 @Service
 @Transactional
 public class UsuarioService {
+	private static final String COLUNANOMEUSUARIO = "nome_usuario";
+	private static final String COLUNAEMAIL = "email";
+
+	@Autowired
+	private JdbcTemplate jdbcTemplate;
+
+	private String sqlUsername = "select nome_usuario from usuario where nome_usuario = ?";
+
+	private String sqlEmail = "select email from usuario  where email = ?";
 	@Autowired
 	private UsuarioRepository repo;
 
@@ -39,6 +48,13 @@ public class UsuarioService {
 
 	@Autowired
 	private GeneroService generoService;
+
+	private static String formataEmail(String email) {
+		email = email.replaceAll("%40", "@");
+		email = email.replaceAll("=", "");
+		email = email.replaceAll(COLUNAEMAIL, "");
+		return email;
+	}
 
 	public Optional<UsuarioId> salvar(CriarUsuario comando) throws NoSuchAlgorithmException {
 		if (comando.getNome() != null) {
@@ -113,7 +129,7 @@ public class UsuarioService {
 		return Optional.empty();
 	}
 
-	public Optional<UsuarioId> alterar(EditarUsuario comando) throws NoSuchAlgorithmException {
+	public Optional<UsuarioId> alterar(EditarUsuario comando) {
 		Optional<Usuario> optional = repo.findById(comando.getId());
 		if (comando.getNome() != null && optional.isPresent()) {
 			if (comando.getEndereco() != null)
@@ -128,4 +144,27 @@ public class UsuarioService {
 		return Optional.empty();
 	}
 
+	public boolean validarEmail(String email) {
+		List<String> user = jdbcTemplate.query(sqlEmail, new Object[] { formataEmail(email) }, (rs, rowNum) -> {
+			String usuario = null;
+			String emailUsuario = rs.getString(COLUNAEMAIL);
+			if (emailUsuario.equals(email)) {
+				usuario = rs.getString(COLUNAEMAIL);
+			}
+			return usuario;
+		});
+		return user.size() == 1;
+	}
+
+	public boolean validarUsername(String username) {
+		List<String> user = jdbcTemplate.query(sqlUsername, new Object[] { username }, (rs, rowNum) -> {
+			String usuario = null;
+			String nomeUsuario = rs.getString(COLUNANOMEUSUARIO);
+			if (nomeUsuario.equals(username)) {
+				usuario = rs.getString(COLUNANOMEUSUARIO);
+			}
+			return usuario;
+		});
+		return user.size() == 1;
+	}
 }

@@ -79,7 +79,7 @@ public class AlarmeController {
 			if (optionalAlarmeId.isPresent()) {
 				URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
 						.buildAndExpand(optionalAlarmeId.get()).toUri();
-				return ResponseEntity.created(location).body("O alarme foi cadastrado com sucesso");
+				return ResponseEntity.created(location).body(optionalAlarmeId.toString());
 			}
 			throw new SQLException("O alarme não foi salvo devido a um erro interno");
 		}

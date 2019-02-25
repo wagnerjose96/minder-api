@@ -68,6 +68,6 @@ public class RespostaService {
 				contadorRespostas++;
 			}
 		}
-		return (contadorRespostas < 4);
+		return (contadorRespostas < 2);
 	}
 }

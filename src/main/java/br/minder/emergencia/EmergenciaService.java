@@ -53,9 +53,14 @@ public class EmergenciaService {
 			List<BuscarAlergia> alergias = alergia.encontrar(optional.get().getId());
 			List<BuscarCirurgia> cirurgias = cirurgia.encontrar(optional.get().getId());
 			List<BuscarDoenca> doencas = doenca.encontrar(optional.get().getId());
-			if (!alergias.isEmpty() && !cirurgias.isEmpty() && !doencas.isEmpty()) {
+			if (!alergias.isEmpty()) {
 				resultado.setAlergias(alergias);
+			}
+			if (!cirurgias.isEmpty()) {
 				resultado.setCirurgias(cirurgias);
+
+			}
+			if (!doencas.isEmpty()) {
 				resultado.setDoencas(doencas);
 			}
 			resultado.setNomeDoUsuario(nome);

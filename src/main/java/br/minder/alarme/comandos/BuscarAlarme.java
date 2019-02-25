@@ -1,5 +1,7 @@
 package br.minder.alarme.comandos;
 
+import java.sql.Time;
+
 import br.minder.alarme.Alarme;
 import br.minder.alarme.AlarmeId;
 import br.minder.conversor.ConverterData;
@@ -17,6 +19,8 @@ public class BuscarAlarme {
 	private String descricao;
 	private int periodicidade;
 	private BuscarMedicamento medicamento;
+	private Time horaPrimeiraDose;
+	private Time horaUltimaDose;
 
 	public BuscarAlarme(Alarme comandos) {
 		this.id = comandos.getId();
@@ -27,6 +31,10 @@ public class BuscarAlarme {
 		this.quantidade = comandos.getQuantidade();
 		this.descricao = comandos.getDescricao();
 		this.periodicidade = comandos.getPeriodicidade();
+		this.horaPrimeiraDose = comandos.getHoraPrimeiraDose();
+		if (comandos.getHoraUltimaDose() != null)
+			this.horaUltimaDose = comandos.getHoraUltimaDose();
+
 	}
 
 }

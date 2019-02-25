@@ -3,9 +3,10 @@ package br.minder.test.alarme;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.junit.Assert.assertThat;
-
 import java.sql.Date;
+import java.sql.Time;
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.List;
 import java.util.Optional;
 import org.junit.Before;
@@ -15,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.test.annotation.Rollback;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
@@ -24,7 +26,6 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.WebApplicationContext;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.springtestdbunit.TransactionDbUnitTestExecutionListener;
 import br.minder.MinderApplication;
 import br.minder.alarme.Alarme;
@@ -60,13 +61,10 @@ import br.minder.usuario.comandos.CriarUsuario;
 @Rollback
 @WebAppConfiguration
 @SpringBootTest(classes = { MinderApplication.class }, webEnvironment = WebEnvironment.MOCK)
+@ActiveProfiles("application-test")
 public class TestAlarmeService {
 	@Autowired
 	private WebApplicationContext context;
-
-	@SuppressWarnings("unused")
-	@Autowired
-	private ObjectMapper objectMapper;
 
 	@SuppressWarnings("unused")
 	private MockMvc mockMvc;
@@ -121,6 +119,8 @@ public class TestAlarmeService {
 		assertThat(alarme.getIdMedicamento().toString(), equalTo(idMedicamento.toString()));
 		assertThat(alarme.getPeriodicidade(), equalTo(8));
 		assertThat(alarme.getQuantidade(), equalTo("1"));
+		 assertThat(alarme.getHoraPrimeiraDose().toString(), equalTo("12:12:00"));
+		 assertThat(alarme.getHoraUltimaDose().toString(), equalTo("12:12:00"));
 		assertThat(alarme.getIdUsuario().toString(), equalTo(idUsuario.toString()));
 	}
 
@@ -149,6 +149,8 @@ public class TestAlarmeService {
 		assertThat(alarme.getPeriodicidade(), equalTo(8));
 		assertThat(alarme.getQuantidade(), equalTo("1"));
 		assertThat(alarme.getIdUsuario().toString(), equalTo(idUsuario.toString()));
+		assertThat(alarme.getHoraPrimeiraDose().toString(), equalTo("12:12:00"));
+		assertThat(alarme.getHoraUltimaDose().toString(), equalTo("12:12:00"));
 
 		AlarmeId idAlarmeEditado = serviceAlarme.alterar(editarAlarme(alarme)).get();
 
@@ -164,6 +166,8 @@ public class TestAlarmeService {
 		assertThat(alarmeEditado.getIdMedicamento().toString(), equalTo(idMedicamento.toString()));
 		assertThat(alarmeEditado.getPeriodicidade(), equalTo(8));
 		assertThat(alarmeEditado.getQuantidade(), equalTo("1"));
+		assertThat(alarme.getHoraPrimeiraDose().toString(), equalTo("12:12:00"));
+		assertThat(alarme.getHoraUltimaDose().toString(), equalTo("16:12:00"));
 		assertThat(alarmeEditado.getIdUsuario().toString(), equalTo(idUsuario.toString()));
 	}
 
@@ -191,6 +195,8 @@ public class TestAlarmeService {
 		assertThat(alarme.getIdMedicamento().toString(), equalTo(idMedicamento.toString()));
 		assertThat(alarme.getPeriodicidade(), equalTo(8));
 		assertThat(alarme.getQuantidade(), equalTo("1"));
+		assertThat(alarme.getHoraPrimeiraDose().toString(), equalTo("12:12:00"));
+		assertThat(alarme.getHoraUltimaDose().toString(), equalTo("12:12:00"));
 		assertThat(alarme.getIdUsuario().toString(), equalTo(idUsuario.toString()));
 
 		Alarme alarmeEncontrado = repoAlarme.findById(alarme.getId()).get();
@@ -200,6 +206,8 @@ public class TestAlarmeService {
 		assertThat(alarmeEncontrado.getDescricao(), equalTo("Tomar medicamento"));
 		assertThat(alarmeEncontrado.getPeriodicidade(), equalTo(8));
 		assertThat(alarmeEncontrado.getQuantidade(), equalTo("1"));
+		assertThat(alarme.getHoraPrimeiraDose().toString(), equalTo("12:12:00"));
+		assertThat(alarme.getHoraUltimaDose().toString(), equalTo("12:12:00"));
 		assertThat(alarmeEncontrado.getIdMedicamento().toString(), equalTo(idMedicamento.toString()));
 
 	}
@@ -228,6 +236,8 @@ public class TestAlarmeService {
 		assertThat(alarme1.getIdMedicamento().toString(), equalTo(idMedicamento.toString()));
 		assertThat(alarme1.getPeriodicidade(), equalTo(8));
 		assertThat(alarme1.getQuantidade(), equalTo("1"));
+		assertThat(alarme1.getHoraPrimeiraDose().toString(), equalTo("12:12:00"));
+		assertThat(alarme1.getHoraUltimaDose().toString(), equalTo("12:12:00"));
 		assertThat(alarme1.getIdUsuario().toString(), equalTo(idUsuario.toString()));
 
 		AlarmeId idAlarme2 = serviceAlarme.salvar(criarAlarme(idMedicamento, "Tomar medicamento 2"), idUsuario).get();
@@ -244,6 +254,8 @@ public class TestAlarmeService {
 		assertThat(alarme2.getIdMedicamento().toString(), equalTo(idMedicamento.toString()));
 		assertThat(alarme2.getPeriodicidade(), equalTo(8));
 		assertThat(alarme2.getQuantidade(), equalTo("1"));
+		assertThat(alarme2.getHoraPrimeiraDose().toString(), equalTo("12:12:00"));
+		assertThat(alarme2.getHoraUltimaDose().toString(), equalTo("12:12:00"));
 		assertThat(alarme2.getIdUsuario().toString(), equalTo(idUsuario.toString()));
 
 	}
@@ -272,6 +284,8 @@ public class TestAlarmeService {
 		assertThat(alarme.getIdMedicamento().toString(), equalTo(idMedicamento.toString()));
 		assertThat(alarme.getPeriodicidade(), equalTo(8));
 		assertThat(alarme.getQuantidade(), equalTo("1"));
+		assertThat(alarme.getHoraPrimeiraDose().toString(), equalTo("12:12:00"));
+		assertThat(alarme.getHoraUltimaDose().toString(), equalTo("12:12:00"));
 		assertThat(alarme.getIdUsuario().toString(), equalTo(idUsuario.toString()));
 
 		Optional<String> mensagemDeletado = serviceAlarme.deletar(idAlarme, idUsuario);
@@ -289,6 +303,7 @@ public class TestAlarmeService {
 		alarme.setIdMedicamento(idMedicamento);
 		alarme.setPeriodicidade(8);
 		alarme.setQuantidade("1");
+		alarme.setHoraPrimeiraDose(Time.valueOf(LocalTime.of(12, 12)));
 		return alarme;
 	}
 
@@ -301,6 +316,8 @@ public class TestAlarmeService {
 		alarmeEditado.setIdMedicamento(alarme.getIdMedicamento());
 		alarmeEditado.setPeriodicidade(8);
 		alarmeEditado.setQuantidade("1");
+		alarmeEditado.setHoraPrimeiraDose(Time.valueOf(LocalTime.of(12, 12)));
+		alarmeEditado.setHoraUltimaDose(Time.valueOf(LocalTime.of(16, 12)));
 		return alarmeEditado;
 	}
 

@@ -1,8 +1,8 @@
 package br.minder.usuario.comandos;
 
 import br.minder.endereco.comandos.EditarEndereco;
-import br.minder.genero.comandos.EditarGenero;
-import br.minder.sangue.comandos.EditarSangue;
+import br.minder.genero.GeneroId;
+import br.minder.sangue.SangueId;
 import br.minder.telefone.comandos.EditarTelefone;
 import br.minder.usuario.UsuarioId;
 import lombok.Getter;
@@ -14,12 +14,11 @@ public class EditarUsuario {
 	private UsuarioId id;
 	private String username;
 	private String email;
-	private String senha;
 	private String nome;
-	private EditarSangue sangue;
+	private SangueId idSangue;
 	private EditarEndereco endereco;
 	private EditarTelefone telefone;
 	private String dataNascimento;
-	private EditarGenero genero;
+	private GeneroId idGenero;
 	private String imagem;
 }

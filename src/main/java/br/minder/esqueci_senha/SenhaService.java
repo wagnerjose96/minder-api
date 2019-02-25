@@ -14,6 +14,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import br.minder.esqueci_senha.comandos.EditarSenha;
 import br.minder.esqueci_senha.comandos.EsqueciSenha;
 import br.minder.esqueci_senha.comandos.GerarSenha;
 import br.minder.usuario.Usuario;
@@ -78,7 +80,8 @@ public class SenhaService {
 		return senha != null;
 	}
 
-	public static void sendEmail(String senha, String email, String nome) throws MessagingException, UnsupportedEncodingException {
+	public void sendEmail(String senha, String email, String nome)
+			throws MessagingException, UnsupportedEncodingException {
 		Properties mailServerProperties;
 		Session getMailSession;
 		MimeMessage generateMailMessage;
@@ -91,7 +94,7 @@ public class SenhaService {
 		generateMailMessage = new MimeMessage(getMailSession);
 		generateMailMessage.setFrom(new InternetAddress("minder.application@gmail.com", "Minder"));
 		generateMailMessage.addRecipient(Message.RecipientType.TO, new InternetAddress(email));
-		generateMailMessage.setSubject("Minder - Recuperação de senha");
+		generateMailMessage.setSubject("Minder - Nova senha");
 		String emailBody = "<br><br>Prezado(a) <b>" + nome.toUpperCase() + "</b>,"
 				+ "<br><br> A sua solicitação de geração de nova senha foi concluída com sucesso."
 				+ "<br><b> Sua nova senha é: </b>" + senha
@@ -103,5 +106,15 @@ public class SenhaService {
 		transport.connect("smtp.gmail.com", "minder.application@gmail.com", "15065132");
 		transport.sendMessage(generateMailMessage, generateMailMessage.getAllRecipients());
 		transport.close();
+	}
+
+	public boolean alterarSenha(EditarSenha comando, UsuarioId usuarioId) throws NoSuchAlgorithmException {
+		Optional<Usuario> user = repo.findById(usuarioId);
+		String senha = null;
+		if (user.isPresent() && comando.getSenha() != null) {
+			user.get().applySenha(comando);
+			senha = repo.save(user.get()).getSenha();
+		}
+		return senha != null;
 	}
 }

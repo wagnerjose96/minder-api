@@ -40,16 +40,12 @@ public class PerguntaService {
 		return Optional.empty();
 	}
 
-	public Optional<List<BuscarPergunta>> encontrar() {
-		List<BuscarPergunta> resultados = new ArrayList<>();
-		List<Pergunta> perguntas = repo.findAll();
-		if (!perguntas.isEmpty()) {
-			for (Pergunta pergunta : perguntas) {
-				BuscarPergunta resultado = new BuscarPergunta(pergunta);
-				resultado.setRespostas(construir(resultado));
-				resultados.add(resultado);
-			}
-			return Optional.of(resultados);
+	public Optional<BuscarPergunta> encontrar() {
+		Optional<Pergunta> pergunta = repo.findAll().stream().findAny();
+		if (pergunta.isPresent()) {
+			BuscarPergunta resultado = new BuscarPergunta(pergunta.get());
+			resultado.setRespostas(construir(resultado));
+			return Optional.of(resultado);
 		}
 		return Optional.empty();
 	}

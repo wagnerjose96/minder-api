@@ -17,6 +17,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.http.MediaType;
 import org.springframework.test.annotation.Rollback;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
@@ -34,6 +35,7 @@ import br.minder.genero.Genero;
 import br.minder.genero.GeneroId;
 import br.minder.genero.GeneroRepository;
 import br.minder.genero.comandos.CriarGenero;
+import br.minder.login.comandos.GerarToken;
 import br.minder.login.comandos.LogarUsuario;
 import br.minder.sangue.Sangue;
 import br.minder.sangue.SangueId;
@@ -56,6 +58,7 @@ import br.minder.usuario_adm.comandos.CriarUsuarioAdm;
 @Rollback
 @WebAppConfiguration
 @SpringBootTest(classes = { MinderApplication.class }, webEnvironment = WebEnvironment.MOCK)
+@ActiveProfiles("application-test")
 public class TestLoginController {
 
 	@Autowired
@@ -87,6 +90,120 @@ public class TestLoginController {
 	@Before
 	public void setup() {
 		mockMvc = MockMvcBuilders.webAppContextSetup(context).build();
+	}
+
+	@Test
+	public void testGerarToken() throws Exception {
+		SangueId idSangue = criarSangue("A+");
+		GeneroId idGenero = criarGenero("Masculino");
+
+		serviceUsuario.salvar(criarUsuario("wagner@hotmail.com", "wagnerju", idGenero, idSangue)).get();
+
+		List<Usuario> usuarios = repo.findAll();
+		assertThat(usuarios.get(0), notNullValue());
+
+		String jsonString = objectMapper.writeValueAsString(gerarToken("wagnerju"));
+
+		this.mockMvc.perform(post("/api/token").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+				.content(jsonString)).andExpect(jsonPath("$", notNullValue())).andExpect(status().isOk());
+
+		jsonString = objectMapper.writeValueAsString(gerarToken("wagner@hotmail.com"));
+
+		this.mockMvc.perform(post("/api/token").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+				.content(jsonString)).andExpect(jsonPath("$", notNullValue())).andExpect(status().isOk());
+
+		jsonString = objectMapper.writeValueAsString(gerarToken("lathuanny"));
+
+		this.mockMvc
+				.perform(post("/api/token").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+						.content(jsonString))
+				.andExpect(jsonPath("$.error", equalTo("Usuário inválido! Favor conferir os dados digitados")))
+				.andExpect(status().isNotFound());
+
+		jsonString = objectMapper.writeValueAsString(gerarToken("lathuanny"));
+
+		this.mockMvc
+				.perform(post("/api/token").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+						.content(jsonString))
+				.andExpect(jsonPath("$.error", equalTo("Usuário inválido! Favor conferir os dados digitados")))
+				.andExpect(status().isNotFound());
+
+		jsonString = objectMapper.writeValueAsString(gerarToken("Wagner@hotmail.com"));
+
+		this.mockMvc
+				.perform(post("/api/token").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+						.content(jsonString))
+				.andExpect(jsonPath("$.error", equalTo("Usuário inválido! Favor conferir os dados digitados")))
+				.andExpect(status().isNotFound());
+
+		jsonString = objectMapper.writeValueAsString(gerarToken("lathuanny@hotmail.com"));
+
+		this.mockMvc
+				.perform(post("/api/token").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+						.content(jsonString))
+				.andExpect(jsonPath("$.error", equalTo("Usuário inválido! Favor conferir os dados digitados")))
+				.andExpect(status().isNotFound());
+
+		jsonString = objectMapper.writeValueAsString(gerarToken("lathuanny@"));
+
+		this.mockMvc
+				.perform(post("/api/token").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+						.content(jsonString))
+				.andExpect(jsonPath("$.error", equalTo("Usuário inválido! Favor conferir os dados digitados")))
+				.andExpect(status().isNotFound());
+
+		jsonString = objectMapper.writeValueAsString(gerarToken("lathuannyhotmail.com"));
+
+		this.mockMvc
+				.perform(post("/api/token").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+						.content(jsonString))
+				.andExpect(jsonPath("$.error", equalTo("Usuário inválido! Favor conferir os dados digitados")))
+				.andExpect(status().isNotFound());
+
+		jsonString = objectMapper.writeValueAsString(gerarToken("lathuanny@hotmail"));
+
+		this.mockMvc
+				.perform(post("/api/token").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+						.content(jsonString))
+				.andExpect(jsonPath("$.error", equalTo("Usuário inválido! Favor conferir os dados digitados")))
+				.andExpect(status().isNotFound());
+
+		jsonString = objectMapper.writeValueAsString(gerarToken("@.com"));
+
+		this.mockMvc
+				.perform(post("/api/token").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+						.content(jsonString))
+				.andExpect(jsonPath("$.error", equalTo("Usuário inválido! Favor conferir os dados digitados")))
+				.andExpect(status().isNotFound());
+
+		jsonString = objectMapper.writeValueAsString(gerarToken("lathuanny@.com"));
+
+		this.mockMvc
+				.perform(post("/api/token").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+						.content(jsonString))
+				.andExpect(jsonPath("$.error", equalTo("Usuário inválido! Favor conferir os dados digitados")))
+				.andExpect(status().isNotFound());
+
+		serviceUsuario.deletar(usuarios.get(0).getId()).get();
+		usuarios = repo.findAll();
+		assertThat(usuarios.get(0).getAtivo(), equalTo(0));
+		assertThat(usuarios.get(0).getNomeUsuario(), equalTo("wagnerju"));
+
+		jsonString = objectMapper.writeValueAsString(gerarToken("wagnerju"));
+
+		this.mockMvc
+				.perform(post("/api/token").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+						.content(jsonString))
+				.andExpect(jsonPath("$.error", equalTo("Usuário inválido! Favor conferir os dados digitados")))
+				.andExpect(status().isNotFound());
+
+		jsonString = objectMapper.writeValueAsString(gerarToken("wagner@hotmail.com"));
+
+		this.mockMvc
+				.perform(post("/api/token").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+						.content(jsonString))
+				.andExpect(jsonPath("$.error", equalTo("Usuário inválido! Favor conferir os dados digitados")))
+				.andExpect(status().isNotFound());
 	}
 
 	@Test
@@ -239,6 +356,12 @@ public class TestLoginController {
 						.content(jsonString))
 				.andExpect(jsonPath("$.error", equalTo("Login não realizado! Favor conferir os dados digitados")))
 				.andExpect(status().isNotFound());
+	}
+	
+	private GerarToken gerarToken(String identificador) {
+		GerarToken corpoToken = new GerarToken();
+		corpoToken.setIdentificador(identificador);
+		return corpoToken;
 	}
 
 	private LogarUsuario logar(String nomeUsuario, String senha) {

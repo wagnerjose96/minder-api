@@ -32,12 +32,6 @@
 
 
 	<dependencies>
-		<!-- https://mvnrepository.com/artifact/com.google.appengine/appengine-api-1.0-sdk -->
-		<dependency>
-		    <groupId>com.google.appengine</groupId>
-		    <artifactId>appengine-api-1.0-sdk</artifactId>
-		    <version>1.9.64</version>
-		</dependency>
 
 		<dependency>
 			<groupId>javax.mail</groupId>
@@ -219,7 +213,7 @@
 				<configuration>
 					<append>true</append>
 				</configuration>
-				<executions>
+				<executions>					
 					<execution>
 						<goals>
 							<goal>prepare-agent</goal>
@@ -271,7 +265,7 @@
 			</activation>
 			<properties>
 				<sonar.login>
-					da0c7a06d5310617a108b164f98b31c32d7af24b
+					ada521a04ac0de81321b035b5c823eae6df21223
 				</sonar.login>
 				<sonar.host.url>
 					http://sonar.minderapplication.com/

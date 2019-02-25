@@ -23,6 +23,11 @@ public class LoginService {
 	private String sqlEmail = "select email, senha, ativo from usuario "
 			+ "where email = ? and senha = ? and ativo = 1";
 
+	private String sqlNomeUsuarioSemSenha = "select nome_usuario, ativo from usuario "
+			+ "where nome_usuario = ? and ativo = 1";
+
+	private String sqlEmailSemSenha = "select email, ativo from usuario " + "where email = ? and ativo = 1";
+
 	private static final String COLUNASENHA = "senha";
 	private static final String COLUNANOMEUSUARIO = "nome_usuario";
 	private static final String COLUNAEMAIL = "email";
@@ -61,6 +66,30 @@ public class LoginService {
 			if (senhaUsuario.equals(senha) && nomeUsuario.equals(username)) {
 				usuario.setIdentificador(rs.getString(COLUNANOMEUSUARIO));
 				usuario.setSenha(rs.getString(COLUNASENHA));
+			}
+			return usuario;
+		});
+		return user.size() == 1;
+	}
+
+	public boolean consultarEmail(String identificador) {
+		List<String> user = jdbcTemplate.query(sqlEmailSemSenha, new Object[] { identificador }, (rs, rowNum) -> {
+			String usuario = null;
+			String emailUsuario = rs.getString(COLUNAEMAIL);
+			if (emailUsuario.equals(identificador)) {
+				usuario = rs.getString(COLUNAEMAIL);
+			}
+			return usuario;
+		});
+		return user.size() == 1;
+	}
+
+	public boolean consultarUsuario(String identificador) {
+		List<String> user = jdbcTemplate.query(sqlNomeUsuarioSemSenha, new Object[] { identificador }, (rs, rowNum) -> {
+			String usuario = null;
+			String nomeUsuario = rs.getString(COLUNANOMEUSUARIO);
+			if (nomeUsuario.equals(identificador)) {
+				usuario = rs.getString(COLUNANOMEUSUARIO);
 			}
 			return usuario;
 		});

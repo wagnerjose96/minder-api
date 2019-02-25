@@ -9,7 +9,6 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
 import java.security.NoSuchAlgorithmException;
 import java.sql.Date;
 import java.time.LocalDate;
@@ -22,6 +21,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.http.MediaType;
 import org.springframework.test.annotation.Rollback;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
@@ -55,6 +55,7 @@ import br.minder.usuario.comandos.EditarUsuario;
 @Rollback
 @WebAppConfiguration
 @SpringBootTest(classes = { MinderApplication.class }, webEnvironment = WebEnvironment.MOCK)
+@ActiveProfiles("application-test")
 public class TestUsuarioController {
 
 	@Autowired
@@ -80,6 +81,56 @@ public class TestUsuarioController {
 	@Before
 	public void setup() {
 		mockMvc = MockMvcBuilders.webAppContextSetup(context).build();
+	}
+
+	@Test
+	public void testValidaUsername() throws Exception {
+		GeneroId idGenero = criarGenero("Masculino");
+		SangueId idSangue = criarSangue("A+");
+
+		String jsonString = objectMapper
+				.writeValueAsString(criarUsuario("wagner@hotmail.com", "wagnerju", idGenero, idSangue));
+
+		this.mockMvc
+				.perform(post("/api/usuario").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+						.content(jsonString))
+				.andExpect(jsonPath("$", equalTo("O usuário foi cadastrado com sucesso")))
+				.andExpect(status().isCreated());
+
+		List<Usuario> usuarios = repo.findAll();
+		assertThat(usuarios.get(0), notNullValue());
+
+		this.mockMvc
+				.perform(get("/api/usuario/username/" + usuarios.get(0).getNomeUsuario())
+						.accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON))
+				.andExpect(jsonPath("$", equalTo(true)));
+
+		this.mockMvc.perform(get("/api/usuario/username/lathuanny").accept(MediaType.APPLICATION_JSON)
+				.contentType(MediaType.APPLICATION_JSON)).andExpect(jsonPath("$", equalTo(false)));
+	}
+
+	@Test
+	public void testValidaEmail() throws Exception {
+		GeneroId idGenero = criarGenero("Masculino");
+		SangueId idSangue = criarSangue("A+");
+
+		String jsonString = objectMapper
+				.writeValueAsString(criarUsuario("wagner@hotmail.com", "wagnerju", idGenero, idSangue));
+
+		this.mockMvc
+				.perform(post("/api/usuario").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+						.content(jsonString))
+				.andExpect(jsonPath("$", equalTo("O usuário foi cadastrado com sucesso")))
+				.andExpect(status().isCreated());
+
+		List<Usuario> usuarios = repo.findAll();
+		assertThat(usuarios.get(0), notNullValue());
+
+		this.mockMvc.perform(get("/api/usuario/email/" + usuarios.get(0).getEmail()).accept(MediaType.APPLICATION_JSON)
+				.contentType(MediaType.APPLICATION_JSON)).andExpect(jsonPath("$", equalTo(true)));
+
+		this.mockMvc.perform(get("/api/usuario/email/larissa@hotmail.com").accept(MediaType.APPLICATION_JSON)
+				.contentType(MediaType.APPLICATION_JSON)).andExpect(jsonPath("$", equalTo(false)));
 	}
 
 	@Test
@@ -181,9 +232,7 @@ public class TestUsuarioController {
 
 		String token = logar("lathuanny", "1234");
 
-		this.mockMvc
-				.perform(delete("/api/usuario").header("token",
-						logar("lathuanny", "1234")))
+		this.mockMvc.perform(delete("/api/usuario").header("token", logar("lathuanny", "1234")))
 				.andExpect(jsonPath("$",
 						equalTo("Usuário ===> " + usuarios.get(1).getId().toString() + ": deletado com sucesso")))
 				.andExpect(status().isOk());
@@ -213,7 +262,7 @@ public class TestUsuarioController {
 						.content(jsonString))
 				.andExpect(jsonPath("$", equalTo("O usuário foi cadastrado com sucesso")))
 				.andExpect(status().isCreated());
-		
+
 		jsonString = objectMapper
 				.writeValueAsString(criarUsuario("lathuanny@hotmail.com", "lathuanny", idGenero, idSangue));
 
@@ -225,29 +274,22 @@ public class TestUsuarioController {
 
 		List<Usuario> usuarios = repo.findAll();
 		assertThat(usuarios.get(0), notNullValue());
-		
+
 		String token = logar("lathuanny", "1234");
 
-		this.mockMvc
-				.perform(delete("/api/usuario").header("token",
-						logar("lathuanny", "1234")))
+		this.mockMvc.perform(delete("/api/usuario").header("token", logar("lathuanny", "1234")))
 				.andExpect(jsonPath("$",
 						equalTo("Usuário ===> " + usuarios.get(1).getId().toString() + ": deletado com sucesso")))
 				.andExpect(status().isOk());
 
-		this.mockMvc
-				.perform(delete("/api/usuario").header("token",
-						logar("wagnerju", "1234") + "erroToken"))
+		this.mockMvc.perform(delete("/api/usuario").header("token", logar("wagnerju", "1234") + "erroToken"))
 				.andExpect(jsonPath("$.error", equalTo("Acesso negado"))).andExpect(status().isForbidden());
 
-		this.mockMvc
-				.perform(delete("/api/usuario").header("token", token))
+		this.mockMvc.perform(delete("/api/usuario").header("token", token))
 				.andExpect(jsonPath("$.error", equalTo("O usuário a deletar não existe no banco de dados")))
 				.andExpect(status().isNotFound());
 
-		this.mockMvc
-				.perform(delete("/api/usuario").header("token",
-						logar("wagnerju", "1234")))
+		this.mockMvc.perform(delete("/api/usuario").header("token", logar("wagnerju", "1234")))
 				.andExpect(jsonPath("$",
 						equalTo("Usuário ===> " + usuarios.get(0).getId().toString() + ": deletado com sucesso")))
 				.andExpect(status().isOk());
@@ -320,7 +362,6 @@ public class TestUsuarioController {
 
 		EditarUsuario usuarioEditado = new EditarUsuario();
 		usuarioEditado.setId(usuario.getId());
-		usuarioEditado.setSenha(usuario.getSenha());
 		usuarioEditado.setNome("Wagner Junior");
 		usuarioEditado.setEndereco(endereco);
 		usuarioEditado.setTelefone(telefone);
@@ -345,7 +386,6 @@ public class TestUsuarioController {
 
 		EditarUsuario usuarioEditado = new EditarUsuario();
 		usuarioEditado.setId(new UsuarioId());
-		usuarioEditado.setSenha(usuario.getSenha());
 		usuarioEditado.setNome("Wagner Junior");
 		usuarioEditado.setEndereco(endereco);
 		usuarioEditado.setTelefone(telefone);
@@ -370,7 +410,6 @@ public class TestUsuarioController {
 
 		EditarUsuario usuarioEditado = new EditarUsuario();
 		usuarioEditado.setId(usuario.getId());
-		usuarioEditado.setSenha(usuario.getSenha());
 		usuarioEditado.setEndereco(endereco);
 		usuarioEditado.setTelefone(telefone);
 		usuarioEditado.setImagem(usuario.getImagemUsuario());

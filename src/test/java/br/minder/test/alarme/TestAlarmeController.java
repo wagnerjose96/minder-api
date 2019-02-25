@@ -9,10 +9,11 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
 import java.security.NoSuchAlgorithmException;
 import java.sql.Date;
+import java.sql.Time;
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
@@ -22,6 +23,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.http.MediaType;
 import org.springframework.test.annotation.Rollback;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
@@ -66,6 +68,7 @@ import br.minder.usuario.comandos.CriarUsuario;
 @Rollback
 @WebAppConfiguration
 @SpringBootTest(classes = { MinderApplication.class }, webEnvironment = WebEnvironment.MOCK)
+@ActiveProfiles("application-test")
 public class TestAlarmeController {
 
 	@Autowired
@@ -108,7 +111,7 @@ public class TestAlarmeController {
 		GeneroId idGenero = criarGenero("Masculino");
 
 		serviceUsuario.salvar(criarUsuario("wagner@hotmail.com", "wagnerju", idGenero, idSangue)).get();
-		MedicamentoId idMedicamento = serviceMedicamento.salvar(criarMedicamento("DorFlex", "100mg")).get();
+		MedicamentoId idMedicamento = serviceMedicamento.salvar(criarMedicamento("DorFlex", "1mg")).get();
 
 		List<Usuario> usuarios = repo.findAll();
 		assertThat(usuarios.get(0), notNullValue());
@@ -130,7 +133,6 @@ public class TestAlarmeController {
 		this.mockMvc
 				.perform(post("/api/alarme").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
 						.header("token", logar("wagner@hotmail.com", "1234")).content(jsonString))
-				.andExpect(jsonPath("$", equalTo("O alarme foi cadastrado com sucesso")))
 				.andExpect(status().isCreated());
 
 		erro = objectMapper.writeValueAsString(criarAlarmeErro1(idMedicamento, "Tomar medicamento"));
@@ -181,7 +183,7 @@ public class TestAlarmeController {
 		GeneroId idGenero = criarGenero("Masculino");
 
 		serviceUsuario.salvar(criarUsuario("wagner@hotmail.com", "wagnerju", idGenero, idSangue)).get();
-		MedicamentoId idMedicamento = serviceMedicamento.salvar(criarMedicamento("DorFlex", "100mg")).get();
+		MedicamentoId idMedicamento = serviceMedicamento.salvar(criarMedicamento("DorFlex", "1mg")).get();
 
 		List<Usuario> usuarios = repo.findAll();
 		assertThat(usuarios.get(0), notNullValue());
@@ -191,7 +193,6 @@ public class TestAlarmeController {
 		this.mockMvc
 				.perform(post("/api/alarme").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
 						.header("token", logar("wagnerju", "1234")).content(jsonString))
-				.andExpect(jsonPath("$", equalTo("O alarme foi cadastrado com sucesso")))
 				.andExpect(status().isCreated());
 
 		List<Alarme> alarmes = repoAlarme.findAll();
@@ -321,7 +322,7 @@ public class TestAlarmeController {
 		GeneroId idGenero = criarGenero("Masculino");
 
 		serviceUsuario.salvar(criarUsuario("wagner@hotmail.com", "wagnerju", idGenero, idSangue)).get();
-		MedicamentoId idMedicamento = serviceMedicamento.salvar(criarMedicamento("DorFlex", "100mg")).get();
+		MedicamentoId idMedicamento = serviceMedicamento.salvar(criarMedicamento("DorFlex", "1mg")).get();
 		serviceUsuario.salvar(criarUsuario("lathuanny@hotmail.com", "lathuanny", idGenero, idSangue)).get();
 
 		List<Usuario> usuarios = repo.findAll();
@@ -333,15 +334,14 @@ public class TestAlarmeController {
 		this.mockMvc
 				.perform(post("/api/alarme").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
 						.header("token", logar("wagnerju", "1234")).content(jsonString))
-				.andExpect(jsonPath("$", equalTo("O alarme foi cadastrado com sucesso")))
 				.andExpect(status().isCreated());
 
 		List<Alarme> alarmes = repoAlarme.findAll();
 		assertThat(alarmes.get(0), notNullValue());
 
 		this.mockMvc
-				.perform(
-						get("/api/alarme/" + alarmes.get(0).getId().toString()).header("token", logar("wagnerju", "1234")))
+				.perform(get("/api/alarme/" + alarmes.get(0).getId().toString()).header("token",
+						logar("wagnerju", "1234")))
 
 				.andExpect(jsonPath("$.descricao", equalTo("Tomar medicamento"))).andExpect(status().isOk());
 
@@ -368,7 +368,7 @@ public class TestAlarmeController {
 		GeneroId idGenero = criarGenero("Masculino");
 
 		serviceUsuario.salvar(criarUsuario("wagner@hotmail.com", "wagnerju", idGenero, idSangue)).get();
-		MedicamentoId idMedicamento = serviceMedicamento.salvar(criarMedicamento("DorFlex", "100mg")).get();
+		MedicamentoId idMedicamento = serviceMedicamento.salvar(criarMedicamento("DorFlex", "1mg")).get();
 
 		List<Usuario> usuarios = repo.findAll();
 		assertThat(usuarios.get(0), notNullValue());
@@ -385,7 +385,6 @@ public class TestAlarmeController {
 		this.mockMvc
 				.perform(post("/api/alarme").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
 						.header("token", logar("wagnerju", "1234")).content(jsonString))
-				.andExpect(jsonPath("$", equalTo("O alarme foi cadastrado com sucesso")))
 				.andExpect(status().isCreated());
 
 		jsonString = objectMapper.writeValueAsString(criarAlarme(idMedicamento, "Aplicar medicamento"));
@@ -393,7 +392,6 @@ public class TestAlarmeController {
 		this.mockMvc
 				.perform(post("/api/alarme").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
 						.header("token", logar("wagnerju", "1234")).content(jsonString))
-				.andExpect(jsonPath("$", equalTo("O alarme foi cadastrado com sucesso")))
 				.andExpect(status().isCreated());
 
 		List<Alarme> alarmes = repoAlarme.findAll();
@@ -402,9 +400,8 @@ public class TestAlarmeController {
 
 		this.mockMvc.perform(get("/api/alarme").header("token", logar("wagnerju", "1234"))).andExpect(status().isOk());
 
-		this.mockMvc.perform(
-				get("/api/alarme").param("searchTerm", "Aplicar medicamento").header("token", logar("wagnerju", "1234")))
-				.andExpect(status().isOk());
+		this.mockMvc.perform(get("/api/alarme").param("searchTerm", "Aplicar medicamento").header("token",
+				logar("wagnerju", "1234"))).andExpect(status().isOk());
 	}
 
 	@Test
@@ -413,7 +410,7 @@ public class TestAlarmeController {
 		GeneroId idGenero = criarGenero("Masculino");
 
 		serviceUsuario.salvar(criarUsuario("wagner@hotmail.com", "wagnerju", idGenero, idSangue)).get();
-		MedicamentoId idMedicamento = serviceMedicamento.salvar(criarMedicamento("DorFlex", "100mg")).get();
+		MedicamentoId idMedicamento = serviceMedicamento.salvar(criarMedicamento("DorFlex", "1mg")).get();
 
 		List<Usuario> usuarios = repo.findAll();
 		assertThat(usuarios.get(0), notNullValue());
@@ -423,7 +420,6 @@ public class TestAlarmeController {
 		this.mockMvc
 				.perform(post("/api/alarme").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
 						.header("token", logar("wagnerju", "1234")).content(jsonString))
-				.andExpect(jsonPath("$", equalTo("O alarme foi cadastrado com sucesso")))
 				.andExpect(status().isCreated());
 
 		List<Alarme> alarmes = repoAlarme.findAll();
@@ -463,6 +459,7 @@ public class TestAlarmeController {
 		alarme.setIdMedicamento(idMedicamento);
 		alarme.setPeriodicidade(8);
 		alarme.setQuantidade("1");
+		alarme.setHoraPrimeiraDose(Time.valueOf(LocalTime.of(12, 12)));
 		return alarme;
 	}
 
@@ -473,6 +470,7 @@ public class TestAlarmeController {
 		alarme.setIdMedicamento(idMedicamento);
 		alarme.setPeriodicidade(8);
 		alarme.setQuantidade("1");
+		alarme.setHoraPrimeiraDose(Time.valueOf(LocalTime.of(12, 12)));
 		return alarme;
 	}
 
@@ -483,6 +481,7 @@ public class TestAlarmeController {
 		alarme.setIdMedicamento(idMedicamento);
 		alarme.setPeriodicidade(8);
 		alarme.setQuantidade("1");
+		alarme.setHoraPrimeiraDose(Time.valueOf(LocalTime.of(12, 12)));
 		return alarme;
 	}
 
@@ -493,6 +492,7 @@ public class TestAlarmeController {
 		alarme.setIdMedicamento(idMedicamento);
 		alarme.setPeriodicidade(8);
 		alarme.setQuantidade("1");
+		alarme.setHoraPrimeiraDose(Time.valueOf(LocalTime.of(12, 12)));
 		return alarme;
 	}
 
@@ -503,6 +503,7 @@ public class TestAlarmeController {
 		alarme.setDescricao(descrição);
 		alarme.setPeriodicidade(8);
 		alarme.setQuantidade("1");
+		alarme.setHoraPrimeiraDose(Time.valueOf(LocalTime.of(12, 12)));
 		return alarme;
 	}
 
@@ -513,6 +514,7 @@ public class TestAlarmeController {
 		alarme.setDescricao(descrição);
 		alarme.setIdMedicamento(idMedicamento);
 		alarme.setPeriodicidade(8);
+		alarme.setHoraPrimeiraDose(Time.valueOf(LocalTime.of(12, 12)));
 		return alarme;
 	}
 
@@ -525,6 +527,8 @@ public class TestAlarmeController {
 		editar.setIdMedicamento(alarme.getIdMedicamento());
 		editar.setPeriodicidade(8);
 		editar.setQuantidade("1");
+		editar.setHoraPrimeiraDose(Time.valueOf(LocalTime.of(12, 12)));
+		editar.setHoraUltimaDose(Time.valueOf(LocalTime.of(16, 12)));
 		return editar;
 	}
 
@@ -536,6 +540,8 @@ public class TestAlarmeController {
 		editar.setIdMedicamento(alarme.getIdMedicamento());
 		editar.setPeriodicidade(8);
 		editar.setQuantidade("1");
+		editar.setHoraPrimeiraDose(Time.valueOf(LocalTime.of(12, 12)));
+		editar.setHoraUltimaDose(Time.valueOf(LocalTime.of(16, 12)));
 		return editar;
 	}
 
@@ -547,6 +553,8 @@ public class TestAlarmeController {
 		editar.setIdMedicamento(alarme.getIdMedicamento());
 		editar.setPeriodicidade(8);
 		editar.setQuantidade("1");
+		editar.setHoraPrimeiraDose(Time.valueOf(LocalTime.of(12, 12)));
+		editar.setHoraUltimaDose(Time.valueOf(LocalTime.of(16, 12)));
 		return editar;
 	}
 
@@ -558,6 +566,8 @@ public class TestAlarmeController {
 		editar.setIdMedicamento(alarme.getIdMedicamento());
 		editar.setPeriodicidade(8);
 		editar.setQuantidade("1");
+		editar.setHoraPrimeiraDose(Time.valueOf(LocalTime.of(12, 12)));
+		editar.setHoraUltimaDose(Time.valueOf(LocalTime.of(16, 12)));
 		return editar;
 	}
 
@@ -569,6 +579,8 @@ public class TestAlarmeController {
 		editar.setDescricao("Erro");
 		editar.setPeriodicidade(8);
 		editar.setQuantidade("1");
+		editar.setHoraPrimeiraDose(Time.valueOf(LocalTime.of(12, 12)));
+		editar.setHoraUltimaDose(Time.valueOf(LocalTime.of(16, 12)));
 		return editar;
 	}
 
@@ -580,6 +592,8 @@ public class TestAlarmeController {
 		editar.setDescricao("Erro");
 		editar.setIdMedicamento(alarme.getIdMedicamento());
 		editar.setPeriodicidade(8);
+		editar.setHoraPrimeiraDose(Time.valueOf(LocalTime.of(12, 12)));
+		editar.setHoraUltimaDose(Time.valueOf(LocalTime.of(16, 12)));
 		return editar;
 	}
 
@@ -597,6 +611,8 @@ public class TestAlarmeController {
 		alarmeEditado.setIdMedicamento(alarme.getIdMedicamento());
 		alarmeEditado.setPeriodicidade(8);
 		alarmeEditado.setQuantidade("1");
+		alarmeEditado.setHoraPrimeiraDose(Time.valueOf(LocalTime.of(12, 12)));
+		alarmeEditado.setHoraUltimaDose(Time.valueOf(LocalTime.of(16, 12)));
 		return alarmeEditado;
 	}
 
@@ -608,6 +624,8 @@ public class TestAlarmeController {
 		alarmeEditado.setIdMedicamento(alarme.getIdMedicamento());
 		alarmeEditado.setPeriodicidade(8);
 		alarmeEditado.setQuantidade("1");
+		alarmeEditado.setHoraPrimeiraDose(Time.valueOf(LocalTime.of(12, 12)));
+		alarmeEditado.setHoraUltimaDose(Time.valueOf(LocalTime.of(16, 12)));
 		return alarmeEditado;
 	}
 
@@ -619,6 +637,8 @@ public class TestAlarmeController {
 		alarmeEditado.setIdMedicamento(alarme.getIdMedicamento());
 		alarmeEditado.setPeriodicidade(8);
 		alarmeEditado.setQuantidade("1");
+		alarmeEditado.setHoraPrimeiraDose(Time.valueOf(LocalTime.of(12, 12)));
+		alarmeEditado.setHoraUltimaDose(Time.valueOf(LocalTime.of(16, 12)));
 		return alarmeEditado;
 	}
 
@@ -630,6 +650,8 @@ public class TestAlarmeController {
 		alarmeEditado.setDescricao("Tomar medicamento Editado !!!");
 		alarmeEditado.setPeriodicidade(8);
 		alarmeEditado.setQuantidade("1");
+		alarmeEditado.setHoraPrimeiraDose(Time.valueOf(LocalTime.of(12, 12)));
+		alarmeEditado.setHoraUltimaDose(Time.valueOf(LocalTime.of(16, 12)));
 		return alarmeEditado;
 	}
 
@@ -641,6 +663,8 @@ public class TestAlarmeController {
 		alarmeEditado.setDescricao("Tomar medicamento Editado !!!");
 		alarmeEditado.setIdMedicamento(alarme.getIdMedicamento());
 		alarmeEditado.setPeriodicidade(8);
+		alarmeEditado.setHoraPrimeiraDose(Time.valueOf(LocalTime.of(12, 12)));
+		alarmeEditado.setHoraUltimaDose(Time.valueOf(LocalTime.of(16, 12)));
 		return alarmeEditado;
 	}
 
@@ -709,6 +733,8 @@ public class TestAlarmeController {
 		alarmeEditado.setIdMedicamento(alarme.getIdMedicamento());
 		alarmeEditado.setPeriodicidade(8);
 		alarmeEditado.setQuantidade("1");
+		alarmeEditado.setHoraPrimeiraDose(Time.valueOf(LocalTime.of(12, 12)));
+		alarmeEditado.setHoraUltimaDose(Time.valueOf(LocalTime.of(16, 12)));
 		return alarmeEditado;
 	}
 

@@ -1,5 +1,6 @@
 package br.minder.alarme;
 
+import java.sql.Time;
 import java.util.Date;
 
 import javax.persistence.AttributeOverride;
@@ -32,6 +33,8 @@ public class Alarme {
 	private int periodicidade;
 	@AttributeOverride(name = "value", column = @Column(name = "id_medicamento"))
 	private MedicamentoId idMedicamento;
+	private Time horaPrimeiraDose;
+	private Time horaUltimaDose;
 
 	public Alarme() {
 	}
@@ -45,6 +48,8 @@ public class Alarme {
 		this.descricao = comando.getDescricao();
 		this.periodicidade = comando.getPeriodicidade();
 		this.idUsuario = id;
+		this.horaPrimeiraDose = comando.getHoraPrimeiraDose();
+		this.horaUltimaDose = comando.getHoraPrimeiraDose();
 	}
 
 	public void apply(EditarAlarme comando) {
@@ -55,6 +60,9 @@ public class Alarme {
 		this.quantidade = comando.getQuantidade();
 		this.descricao = comando.getDescricao();
 		this.periodicidade = comando.getPeriodicidade();
+		this.horaPrimeiraDose = comando.getHoraPrimeiraDose();
+		this.horaUltimaDose = comando.getHoraUltimaDose();
+
 	}
 
 }

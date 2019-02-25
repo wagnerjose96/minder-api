@@ -20,6 +20,7 @@ public class ListaDeEsperaService {
 	private static String formataEmail(String email) {
 		email = email.replaceAll("%40", "@");
 		email = email.replaceAll("=", "");
+		email = email.replaceAll("email", "");
 		return email;
 	}
 
@@ -35,9 +36,9 @@ public class ListaDeEsperaService {
 		getMailSession = Session.getDefaultInstance(mailServerProperties, null);
 		generateMailMessage = new MimeMessage(getMailSession);
 		generateMailMessage.setFrom(new InternetAddress(EMAIL, "Minder"));
-		generateMailMessage.addRecipient(Message.RecipientType.TO, new InternetAddress(formataEmail(email)));
-		generateMailMessage.addRecipient(Message.RecipientType.TO, new InternetAddress(formataEmail(EMAIL)));
-		generateMailMessage.setSubject("Minder - Bem vindo a nossa lista de espera");
+		InternetAddress[] address = { new InternetAddress(EMAIL), new InternetAddress(formataEmail(email)) };
+		generateMailMessage.addRecipients(Message.RecipientType.TO, address);
+		generateMailMessage.setSubject("Minder - Bem vindo(a) a nossa lista de espera");
 		String emailBody = "<div style=\"text-align: center;\"><strong>O que é o Minder ?</strong><br>\n"
 				+ "&nbsp;</div>\n" + "\n"
 				+ "<div style=\"text-align: justify;\">Uma aplicação móvel onde você guarda todo seu histórico de saúde, como anamneses, exames, vacinas, carteirinhas, consultas, remédios, informações de emergência, dentre outros dados importantes, tudo em um único lugar e totalmente portátil.<br>\n"

@@ -18,22 +18,16 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 public class SwaggerUiConfig {
 
 	@Bean
-    public Docket api() {
-        return new Docket(DocumentationType.SWAGGER_2)
-                .select()
-                .apis(RequestHandlerSelectors.basePackage(MinderApplication.class.getPackage().getName()))
-                .paths(PathSelectors.any())
-                .build()
-                .apiInfo(apiInfo());
-    }
+	public Docket api() {
+		return new Docket(DocumentationType.SWAGGER_2).select()
+				.apis(RequestHandlerSelectors.basePackage(MinderApplication.class.getPackage().getName()))
+				.paths(PathSelectors.any()).build().apiInfo(apiInfo());
+	}
 
-    private ApiInfo apiInfo() {
-        return new ApiInfo(
-                "Minder REST API",               
-                "Aqui você possui todas as informações necessárias para interagir com essa API.",
-                "v1.0",
-                "",
-                new Contact("Equipe Minder", "http://minder.com/", "minder.application@gmail.com"),
-                "Todos os direitos reservados", "", Collections.emptyList());
-    }
+	private ApiInfo apiInfo() {
+		return new ApiInfo("Minder REST API",
+				"Aqui você possui todas as informações necessárias para interagir com essa API.", "v1.0", "",
+				new Contact("Equipe Minder", "http://www.minderapplication.com/", "minder.application@gmail.com"),
+				"Todos os direitos reservados", "", Collections.emptyList());
+	}
 }

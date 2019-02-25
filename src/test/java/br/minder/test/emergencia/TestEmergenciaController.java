@@ -22,6 +22,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.http.MediaType;
 import org.springframework.test.annotation.Rollback;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
@@ -78,6 +79,7 @@ import br.minder.usuario.comandos.CriarUsuario;
 @Rollback
 @WebAppConfiguration
 @SpringBootTest(classes = { MinderApplication.class }, webEnvironment = WebEnvironment.MOCK)
+@ActiveProfiles("application-test")
 public class TestEmergenciaController {
 
 	@Autowired
@@ -311,6 +313,8 @@ public class TestEmergenciaController {
 		emergencia.setAtaqueConvulsivos(0);
 		emergencia.setDoadorDeOrgaos(doador);
 		emergencia.setProblemasCardiacos("Arritmia");
+		emergencia.setDiabetes(0);
+		emergencia.setHipertensao(0);
 		return emergencia;
 	}
 
@@ -320,6 +324,8 @@ public class TestEmergenciaController {
 		emergenciaEditada.setAtaqueConvulsivos(emergencia.getAtaqueConvulsivos());
 		emergenciaEditada.setDoadorDeOrgaos(emergencia.getDoadorDeOrgaos());
 		emergenciaEditada.setProblemasCardiacos("Sopro no coração");
+		emergenciaEditada.setDiabetes(0);
+		emergenciaEditada.setHipertensao(0);
 		return emergenciaEditada;
 	}
 

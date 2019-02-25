@@ -21,6 +21,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.http.MediaType;
 import org.springframework.test.annotation.Rollback;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
@@ -65,6 +66,7 @@ import br.minder.usuario_adm.comandos.CriarUsuarioAdm;
 @Rollback
 @WebAppConfiguration
 @SpringBootTest(classes = { MinderApplication.class }, webEnvironment = WebEnvironment.MOCK)
+@ActiveProfiles("application-test")
 public class TestRespostaController {
 
 	@Autowired
@@ -134,7 +136,7 @@ public class TestRespostaController {
 						.accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON).content(jsonString))
 				.andExpect(jsonPath("$", equalTo("A resposta foi cadastrada com sucesso")))
 				.andExpect(status().isCreated());
-		
+
 		jsonString = objectMapper.writeValueAsString(criarResposta("Bem", pergunta.get(1).getIdPergunta()));
 
 		this.mockMvc
@@ -151,15 +153,7 @@ public class TestRespostaController {
 				.andExpect(jsonPath("$", equalTo("A resposta foi cadastrada com sucesso")))
 				.andExpect(status().isCreated());
 
-		jsonString = objectMapper.writeValueAsString(criarResposta("Triste", pergunta.get(0).getIdPergunta()));
-
-		this.mockMvc
-				.perform(post("/api/resposta").header("token", logarAdm("admin", "1234"))
-						.accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON).content(jsonString))
-				.andExpect(jsonPath("$", equalTo("A resposta foi cadastrada com sucesso")))
-				.andExpect(status().isCreated());
-
-		jsonString = objectMapper.writeValueAsString(criarResposta("Alegre", pergunta.get(0).getIdPergunta()));
+		jsonString = objectMapper.writeValueAsString(criarResposta("Triste", pergunta.get(1).getIdPergunta()));
 
 		this.mockMvc
 				.perform(post("/api/resposta").header("token", logarAdm("admin", "1234"))
@@ -176,8 +170,9 @@ public class TestRespostaController {
 				.andExpect(status().isInternalServerError());
 
 		this.mockMvc
-				.perform(post("/api/resposta").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
-						.header("token", logar("wagnerju", "1234")).content(jsonString))
+				.perform(
+						post("/api/resposta").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+								.header("token", logar("wagnerju", "1234")).content(jsonString))
 				.andExpect(jsonPath("$.error", equalTo("Acesso negado"))).andExpect(status().isForbidden());
 
 		jsonString = objectMapper.writeValueAsString(criarRespostaErro1("Bem", pergunta.get(0).getIdPergunta()));

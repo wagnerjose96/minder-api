@@ -1,7 +1,6 @@
 package br.minder.lista_de_espera;
 
 import java.io.UnsupportedEncodingException;
-
 import javax.mail.MessagingException;
 
 import org.springframework.beans.factory.annotation.Autowired;

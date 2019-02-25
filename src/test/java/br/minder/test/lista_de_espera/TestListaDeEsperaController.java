@@ -12,6 +12,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.http.MediaType;
 import org.springframework.test.annotation.Rollback;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
@@ -32,6 +33,7 @@ import br.minder.MinderApplication;
 @Rollback
 @WebAppConfiguration
 @SpringBootTest(classes = { MinderApplication.class }, webEnvironment = WebEnvironment.MOCK)
+@ActiveProfiles("application-test")
 public class TestListaDeEsperaController {
 
 	@Autowired
@@ -51,13 +53,6 @@ public class TestListaDeEsperaController {
 	public void testListaDeEspera() throws Exception {
 
 		String jsonString = objectMapper.writeValueAsString("lathuanny@hotmail.com");
-
-		this.mockMvc
-				.perform(post("/api/listaDeEspera").accept(MediaType.APPLICATION_JSON)
-						.contentType(MediaType.APPLICATION_JSON).content(jsonString))
-				.andExpect(jsonPath("$", equalTo(true))).andExpect(status().isOk());
-
-		jsonString = objectMapper.writeValueAsString("lathuanny@hotmail");
 
 		this.mockMvc
 				.perform(post("/api/listaDeEspera").accept(MediaType.APPLICATION_JSON)

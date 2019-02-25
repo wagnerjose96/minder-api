@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<databaseChangeLog
+	xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd
+        http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
+
+	<changeSet author="larissa.andrade"
+		id="alter_table_emergencia">
+		<addColumn tableName="emergencia">
+			<column name="hipertensao" type="${TYPE_NUMBER}">
+				<constraints nullable="true" />
+			</column>
+			<column name="diabetes" type="${TYPE_NUMBER}">
+				<constraints nullable="true" />
+			</column>
+		</addColumn>
+	</changeSet>
+
+	<changeSet author="larissa.andrade"
+		id="alter_table_emergencia_aud">
+		<addColumn tableName="emergencia_aud">
+			<column name="hibertensao" type="${TYPE_NUMBER}">
+				<constraints nullable="true" />
+			</column>
+			<column name="diabetes" type="${TYPE_NUMBER}">
+				<constraints nullable="true" />
+			</column>
+		</addColumn>
+	</changeSet>
+
+</databaseChangeLog>

@@ -1,5 +1,5 @@
 ## Informações gerais do Git
-* Informações básicas sobre como utilizar o GitLab
+* Informações básicas sobre sobre os processos do GitLab
 
 ## Configurando suas branchs
 *Esquema de branchs
@@ -86,14 +86,3 @@
     * Para não documentar um método é necessário a anotação:
         @ApiIgnore: 
         OBS: o Swagger documenta apenas os métodos com a anotação de um método http (@PostMapping...).
-
-* PARA VER A DOCUMENTAÇÃO: http://swagger.minderapplication.com/
-
-
-   
-
-
-
-
-
-

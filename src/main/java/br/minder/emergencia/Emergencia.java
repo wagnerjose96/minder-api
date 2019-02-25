@@ -26,6 +26,8 @@ public class Emergencia {
 	private int ataqueConvulsivos;
 	private String problemasCardiacos;
 	private int doadorDeOrgaos;
+	private int hipertensao;
+	private int diabetes;
 
 	public Emergencia() {
 	}
@@ -35,6 +37,8 @@ public class Emergencia {
 		this.ataqueConvulsivos = comando.getAtaqueConvulsivos();
 		this.problemasCardiacos = comando.getProblemasCardiacos();
 		this.doadorDeOrgaos = comando.getDoadorDeOrgaos();
+		this.hipertensao = comando.getHipertensao();
+		this.diabetes = comando.getDiabetes();
 		this.idUsuario = id;
 	}
 
@@ -43,5 +47,7 @@ public class Emergencia {
 		this.ataqueConvulsivos = comando.getAtaqueConvulsivos();
 		this.problemasCardiacos = comando.getProblemasCardiacos();
 		this.doadorDeOrgaos = comando.getDoadorDeOrgaos();
+		this.hipertensao = comando.getHipertensao();
+		this.diabetes = comando.getDiabetes();
 	}
 }

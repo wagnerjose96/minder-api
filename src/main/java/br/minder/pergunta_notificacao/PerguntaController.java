@@ -3,7 +3,6 @@ package br.minder.pergunta_notificacao;
 import java.net.URI;
 import java.nio.file.AccessDeniedException;
 import java.sql.SQLException;
-import java.util.List;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -17,7 +16,6 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
-
 import br.minder.pergunta_notificacao.comandos.BuscarPergunta;
 import br.minder.pergunta_notificacao.comandos.CriarPergunta;
 import br.minder.pergunta_notificacao.comandos.EditarPergunta;
@@ -40,8 +38,8 @@ public class PerguntaController {
 
 	@ApiOperation("Busque todas as perguntas")
 	@GetMapping
-	public ResponseEntity<List<BuscarPergunta>> getPerguntas() {
-		Optional<List<BuscarPergunta>> optionalPergunta = service.encontrar();
+	public ResponseEntity<BuscarPergunta> getPerguntas() {
+		Optional<BuscarPergunta> optionalPergunta = service.encontrar();
 		if (optionalPergunta.isPresent()) {
 			return ResponseEntity.ok(optionalPergunta.get());
 		}

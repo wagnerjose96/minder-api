@@ -25,12 +25,16 @@ public class BuscarEmergenciaPdf {
 	private int ataqueConvulsivos;
 	private String problemasCardiacos;
 	private int doadorDeOrgaos;
+	private int hipertensao;
+	private int diabetes;
 
 	public BuscarEmergenciaPdf(Emergencia comandos) {
 		this.id = comandos.getIdEmergencia();
 		this.ataqueConvulsivos = comandos.getAtaqueConvulsivos();
 		this.problemasCardiacos = comandos.getProblemasCardiacos();
 		this.doadorDeOrgaos = comandos.getDoadorDeOrgaos();
+		this.hipertensao = comandos.getHipertensao();
+		this.diabetes = comandos.getDiabetes();
 	}
 
 }

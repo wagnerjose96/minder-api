@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -50,6 +51,18 @@ public class UsuarioController {
 		throw new AccessDeniedException(ACESSONEGADO);
 	}
 
+	@ApiOperation("Verifica email existente")
+	@GetMapping("/email/{email}")
+	public boolean getEmailUsuario(@PathVariable String email) {
+		return service.validarEmail(email);
+	}
+
+	@ApiOperation("Verifica nome de usuário existente")
+	@GetMapping("/username/{username}")
+	public boolean getNomeUsuario(@PathVariable String username) {
+		return service.validarUsername(username);
+	}
+
 	@ApiOperation("Delete um usuário pelo ID")
 	@DeleteMapping
 	public ResponseEntity<String> deletarUsuario(@RequestHeader String token) throws AccessDeniedException {
@@ -64,7 +77,8 @@ public class UsuarioController {
 
 	@ApiOperation("Cadastre um novo usuário")
 	@PostMapping
-	public ResponseEntity<String> postUsuario(@RequestBody CriarUsuario comando) throws SQLException, NoSuchAlgorithmException {
+	public ResponseEntity<String> postUsuario(@RequestBody CriarUsuario comando)
+			throws SQLException, NoSuchAlgorithmException {
 		Optional<UsuarioId> optionalUsuarioId = service.salvar(comando);
 		if (optionalUsuarioId.isPresent()) {
 			URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
@@ -77,7 +91,7 @@ public class UsuarioController {
 	@ApiOperation("Altere um usuário")
 	@PutMapping
 	public ResponseEntity<String> putUsuario(@RequestBody EditarUsuario comando, @RequestHeader String token)
-			throws AccessDeniedException, SQLException, NoSuchAlgorithmException {
+			throws AccessDeniedException, SQLException {
 		if (autentica.autenticaRequisicao(token)) {
 			if (service.encontrar(comando.getId()).isPresent()
 					&& comando.getId().toString().equals(autentica.idUser(token).toString())) {

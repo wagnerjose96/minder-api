@@ -9,6 +9,7 @@ import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import org.hibernate.envers.Audited;
 import br.minder.endereco.EnderecoId;
+import br.minder.esqueci_senha.comandos.EditarSenha;
 import br.minder.esqueci_senha.comandos.GerarSenha;
 import br.minder.genero.GeneroId;
 import br.minder.sangue.SangueId;
@@ -67,14 +68,17 @@ public class Usuario {
 		this.ativo = 1;
 	}
 
-	public void apply(EditarUsuario comando) throws NoSuchAlgorithmException {
+	public void apply(EditarUsuario comando) {
 		this.id = comando.getId();
 		this.nomeCompleto = comando.getNome();
-		this.senha = Criptografia.criptografa(comando.getSenha());
 		this.imagemUsuario = comando.getImagem();
 	}
 
 	public void applySenha(GerarSenha comando) throws NoSuchAlgorithmException {
+		this.senha = Criptografia.criptografa(comando.getSenha());
+	}
+	
+	public void applySenha(EditarSenha comando) throws NoSuchAlgorithmException {
 		this.senha = Criptografia.criptografa(comando.getSenha());
 	}
 
